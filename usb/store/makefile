@@ -39,7 +39,7 @@ PROGRAM 		= stor_pci.tos
 endif
 
 STACKSIZE		= 64k
-OPTIMISATION		= -O2 -fomit-frame-pointer
+OPTIMISATION		= -O -fomit-frame-pointer
 CPU			= -m68020-60
 LIB			= 
 ASFLAGS			= $(CPU)

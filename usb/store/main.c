@@ -96,7 +96,6 @@ printf("idx %d PCI handle: %lx\n", idx -1, handle); /* Galvez: Debug */
 
 int main(int argc, char **argv)
 {
-printf("main()\n");	
 #ifdef CONFIG_USB_STORAGE			
 	long p = 0;
 	int r;
