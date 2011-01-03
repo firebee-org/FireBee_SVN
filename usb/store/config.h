@@ -38,9 +38,9 @@
 #define DEBUG_GLOBAL 1
 #if DEBUG_GLOBAL
 /* Define only one of the three debug posibilities below */
-#define DEBUG_TO_FILE 1
+#define DEBUG_TO_FILE 0
 #define DEBUG_TO_ARANYM 0	/* NOTE: No arguments are passed to the printf function */
-#define DEBUG_TO_CONSOLE 0
+#define DEBUG_TO_CONSOLE 1
 
 /* Define which local layer you want on */
 #define DEBUG_HOST_LAYER	0

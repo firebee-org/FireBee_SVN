@@ -198,7 +198,7 @@ typedef struct disk_partition {
 } disk_partition_t;
 
 //extern unsigned long swap_long(unsigned long val);
-#define le32_to_int(a) swap_32(*(unsigned long *)a)
+//#define le32_to_int(a) swap_32(*(unsigned long *)a)
 
 int usb_stor_get_info(struct usb_device *dev, struct us_data *us, block_dev_desc_t *dev_desc);
 int usb_storage_probe(struct usb_device *dev, unsigned int ifnum, struct us_data *ss);
@@ -289,8 +289,8 @@ static int get_partition_info_extended(block_dev_desc_t *dev_desc, int ext_part_
 		{
 			info->type = (unsigned long)pt->sys_ind;
 			info->blksz = 512;
-			info->start = ext_part_sector + le32_to_int(pt->start4);
-			info->size = le32_to_int(pt->size4);
+			info->start = ext_part_sector + __le32_to_cpu(pt->start4);
+			info->size = __le32_to_cpu(pt->size4);
 			DEBUG_STORAGE("DOS partition at offset 0x%lx, size 0x%lx, type 0x%x %s\r\n", 
 					info->start, info->size, pt->sys_ind, 
 					(is_extended(pt->sys_ind) ? " Extd" : ""));
@@ -307,7 +307,7 @@ static int get_partition_info_extended(block_dev_desc_t *dev_desc, int ext_part_
 	{
 		if(is_extended(pt->sys_ind))
 		{
-			int lba_start = le32_to_int(pt->start4) + relative;
+			int lba_start = __le32_to_cpu(pt->start4) + relative;
 			usb_free(buffer);
 			return get_partition_info_extended(dev_desc, lba_start, ext_part_sector == 0 ? lba_start : relative, part_num, which_part, info);
 		}
