@@ -52,7 +52,7 @@ OFF_TIME			EQU		.20			;2.5 SEC (EINHEIT IST EIN TICK = 128MS
 ON_TIME				EQU		.2			;0.25 SEC (EINHEIT IST EIN TICK = 128MS
 TIMER_HB			EQU		.240		;256- (32768Hz PRO 1/8SEC = 4096TICKS/256) => 256-16=240 (resp 256-16/4 (wenn osco) = 252)
 TIME_MAX			EQU		.160		;MAXIMALTIME
-U_ERR_PW_AUS		EQU		.5			;5 SEC
+U_ERR_PW_AUS		EQU		.40			;5 SEC
 ;SERIEL
 SYNC1				EQU		0FFh
 SYNC1_DATA			EQU		'A';
@@ -69,6 +69,7 @@ RTCD_FROM_MCF		EQU		82h			;RTC AND NVRAM DATEN HEADER UND STATUS
 U_MIN_TO_MCF		EQU		03h			;UNTERSPANNUNGSMITTEILUNG AN PROCESSOR
 EXT_SUB_GO			EQU		04h			;SERIELL CODE UM SUBROUTINEN/INTERRUPTS ZU AKTIVIEREN
 EXT_SUB_STOP		EQU		05h			;SERIELL CODE UM SUBROUTINEN/INTERRUPTS ZU STOPPEN
+CMD_FROM_MCF		EQU		0Ch			;3 BYT COMMANDOS FROM MCF = TOTAL 4 BYT
 CLK_SLEEP	   		EQU		B'00010010'		;125kHz intern, SLEEP MODE
 CLK_ACTIV	   		EQU		B'01110010'		;inTernal CLK=8MHz, SLEEP MODE, SLEEP MODE
 EXT_CODE			EQU		0xFB		;CODE FÜR EXTERNE SUBROUTINEN/INTERRUPTS AUSFÜHREN (FireBee!)
@@ -78,8 +79,9 @@ EXTERN_SUB_ADR		EQU		0x2010		;HIER MUSS 0xFB STEHEN WENN EXTERNE SUBROUTINES AUS
 EXTERN_SUBROUTINES	EQU		0x2012		;STARTPUNKT EXTERNE SUBROUTINES
 REQ_BLOCK			EQU		0xA0		;BLOCK DATEN LESEN -> CODE UND 3 BYTS ADRESSE = TOTAL 4 BYTES
 READ_BLOCK			EQU		0xA1		;PROGRAMM BLOCK PIC->MCF -> CODE, 3 BYTS ADRESSE UND 64 BYTS DATEN = TOTAL 68 BYTES
-WRITE_BLOCK			EQU		0xA2		;PROGRAMM BLOCK MCF->PIC -> CODE, 3 BYTS ADRESSE UND 64 BYTS DATEN = TOTAL 68 BYTES
-PRG_OK_PIC			EQU		0x22		;PROGRAMMIERUNG BLOCK FERTIG
+WRITE_BLOCK			EQU		0xA2		;PROGRAMM BLOCK MCF->PIC -> CODE, 3 BYTS ADRESSE UND 64 BYTS DATEN UND 1 BYT CHECKSUM = TOTAL 69 BYTES
+PRG_OK				EQU		0x00		;PROGRAMMIERUNG BLOCK FERTIG
+CHECKSUM_ERROR		EQU		0xFE
 ;**********************************************************************************************"""""""""""""
 ; Start at the reset vector
 Reset_Vector code 0x000 
@@ -130,9 +132,70 @@ INT_HANDLER
 	CPFSEQ	GO_INT				;SKIP WENN JA
 	RETFIE
 	GOTO	EXTERN_INTERRUPTS	;REGISTER SICHERN UND STARTEN
+
+;BLOCK PROGRAMMIEREN **********************************************************************************************"""""""""""""
+PB	CODE 	0x0080
+PROGRAMM_BLOCK 
+	LFSR	1,RX_BUFFER			;BYT COUNTER AUF RX BUFFER
+	MOVFF 	POSTINC1,TBLPTRU	;TABLE POINTER SETZEN
+	MOVFF 	POSTINC1,TBLPTRH	;TABLE POINTER SETZEN
+	MOVFF 	POSTINC1,TBLPTRL	;TABLE POINTER SETZEN 
+;EREASE BLOCK
+	BCF		INTCON,GIE			; DISABLE INTTERUPT
+	BSF 	EECON1,EEPGD	 	; point to Flash program memory
+	BCF		EECON1,CFGS 		; access Flash program memory
+	BSF 	EECON1,WREN	 		; enable write to memory
+	BSF 	EECON1,FREE 		; enable Row Erase operation
+	MOVLW 	55h
+	MOVWF 	EECON2 				; write 55h
+	MOVLW 	0AAh				; write 0AAh
+	MOVWF 	EECON2 
+	BSF 	EECON1,WR 			; start erase (CPU stall)
+	BSF		INTCON,GIE			; ENABLE INTERRUPT
+	TBLRD*-						; POINTER DUMMY DECREMENT
+; BLOCK WRITE 1.HÄLFTE
+	MOVLW	23h					; 67 BYT 3 BYT ADR + 64 BYT DATEN 
+WRITE_WORD_TO_HREG1
+	MOVFF 	POSTINC1,TABLAT		; get byte of buffer data
+	TBLWT+* 					; write data, perform a short write to internal TBLWT holding register.
+	CPFSEQ	FSR1L				; SCHON BEI 32 BYTES?
+	BRA 	WRITE_WORD_TO_HREG1	;NEIN->LOOP
+; PROGRAMM BLOCK
+	BSF 	EECON1,EEPGD 		; point to Flash program memory
+	BCF 	EECON1,CFGS 		; access Flash program memory
+	BSF 	EECON1,WREN 		; enable write to memory
+	BCF		INTCON,GIE			; DISABLE INTTERUPT
+	MOVLW 	55h
+	MOVWF 	EECON2 				; write 55h
+	MOVLW 	0AAh
+	MOVWF 	EECON2 				; write 0AAh
+	BSF 	EECON1,WR 			; start program (CPU stall)
+	BCF 	EECON1,WREN 		; disable write to memory
+; BLOCK WRITE 2. HÄLFTE
+	MOVLW	43h					; 67 BYT 3 BYT ADR + 64 BYT DATEN 
+WRITE_WORD_TO_HREG2
+	MOVFF 	POSTINC1,TABLAT		; get byte of buffer data
+	TBLWT+* 					; write data, perform a short write to internal TBLWT holding register.
+	CPFSEQ	FSR1L				; SCHON BEI 64 BYTES?
+	BRA 	WRITE_WORD_TO_HREG2	;NEIN->LOOP
+; PROGRAMM BLOCK
+	BSF 	EECON1,EEPGD 		; point to Flash program memory
+	BCF 	EECON1,CFGS 		; access Flash program memory
+	BSF 	EECON1,WREN 		; enable write to memory
+	MOVLW 	55h
+	MOVWF 	EECON2 				; write 55h
+	MOVLW 	0AAh
+	MOVWF 	EECON2 				; write 0AAh
+	BSF 	EECON1,WR 			; start program (CPU stall)
+	BCF 	EECON1,WREN 		; disable write to memory
+	BSF		INTCON,GIE			; ENABLE INTERRUPT
+	MOVLW	PRG_OK				; OK senden
+	MOVWF	TXREG
+	CLRF	RX_STATUS			; FERTIG
+	RETFIE
 ;**********************************************************************************************"""""""""""""
 	; Start application beyond vector area
-	CODE	0x0100
+STD	CODE	0x0100
 KALT_START
 ;RESET MODE
 	CLRF	BSR					;BANK 0
@@ -154,8 +217,9 @@ KALT_START
    	MOVWF	OSCCON
 	; div init
 ;SET PORT A: **7:#master/0.409*5V0 **6:PIC_AMKB_RX **5:PIC_SWTICH **4:HIGH_CHARGE_CURRENT **3:2V5 *2:3V3/2 **1:1V25 **0:POWER_IN/11
-	CLRF	PORTA				;#master(7)=0, REST=0
-	MOVLW	B'11111111'			;DIRECTION: alles auf Input 
+	MOVLW	B'01000000'			;RA6 auf high 
+	MOVWF	PORTA				;#master(7)=0, REST=0
+	MOVLW	B'11111111'			;alles auf Input  
 	MOVWF	TRISA
 ;SET PORT B: **7:PGD **6:PGC **5:PGM **4:PIN_INT,1V5 **3:GAME PORT PIN10 **2:GAME PORT PIN11 **1:GAME PORT PIN6 **0: GAME PORT PIN5
 	CLRF	PORTB				;ALLES AUF 0
@@ -168,9 +232,9 @@ KALT_START
 	CLRF	PORTD				;ALLES AUF 0
 	MOVWF	TRISD				;ALLES AUF INPUT
 ;SET PORT E: **3:#MCLR **2:#PCI_RESET **1:PCI 3V3 **0:PIC LED (0=ON)
-	MOVLW	B'00000001'			;LED OFF
 	CLRF	PORTE				;ALLES AUF 0
-	MOVWF	TRISE				;ALLES AUF INPUT
+	MOVLW	B'00000111'			;tri: PCI RESET; PCI3V3; LED
+	MOVWF	TRISE				;direction setzen
 ;--------------------------
 ;  set OVERvoltage detekt 
 	MOVLW	B'10011011'			;INT WENN ÜBER 3.9V
@@ -201,9 +265,17 @@ KALT_START
 	MOVWF	MONTHS
 	MOVLW	.42
 	MOVWF	YEARS				;MONTAG 19.7.2010 12:00:00 (JAHR-1968)
+	MOVLW	0x27				;32kHz TEILER=64
+	MOVWF	REGA
+	MOVLW	B'00000011'			;24H, SOMMERZEIT
+	MOVWF	REGB
+	CLRF	REGC
+	CLRF	REGD
 	CLRF	TASTE_ON_TIME
 	CLRF	TASTE_OFF_TIME
 	CLRF	POWER_ON_TIME
+	CLRF	RX_STATUS
+	CLRF	TX_STATUS
 	BSF 	PIE1,TMR1IE 		;Enable Timer1 interrupt
 ;AD WANDLER INITIALISIEREN
 	CLRF	AD_KANAL			;BEI 0 BEGINNEN
@@ -263,12 +335,14 @@ POWER_EIN
 	BCF		TRISD,RD7			;#RSTI AKTIVIEREN = LOW
 	BCF		TRISB,RB4			;PIC_INT AKTIVIEREN
 	BCF		TRISD,RD0			;POWER ON
+	BCF		TRISA,RA6			;PIC_AMKB_RX auf output
 	BRA		LS_ON_POWER			;LADESTROM EINSTELLEN
 POWER_AUS
 ;CLOCK
    	MOVLW	CLK_SLEEP
    	MOVWF	OSCCON
 
+	BSF		TRISA,RA6			;PIC_AMKB_RX auf input
 	BSF		TRISD,RD0			;POWER OFF
 	BSF		TRISD,RD7			;#RSTI DEAKTIVIEREN
 	BSF		TRISB,RB4			;PIC INT DEAKTIVIEREN
@@ -360,8 +434,8 @@ TG_END
 	INCF	TASTE_ON_TIME		;ERHÖHEN 
 	RETURN
 RESETEN
-	BCF		TRISD,RD7			;NEIN-> #RSTI AKTIVIEREN =LOW  -->>>RESET
 	CALL	SERIAL_OFF			;SERIELL DEAKTIVIEREN
+	BCF		TRISD,RD7			;NEIN-> #RSTI AKTIVIEREN =LOW  -->>>RESET
 	BRA		TG_ON_POWER3
 ;**********************************************************************************************"""""""""""""
 ;----------------------------------------- INTERRUPTS 
@@ -388,7 +462,7 @@ TX_ISR1
 	BRA		TX_ISR2				;NEIN->
 	MOVFF	POSTINC0,TXREG		;BYT SENDEN
 	MOVLW	0xC3				;SCHON LETZTES BYTS?
-	CPFSGT	FSR0L				;SKIP WENN FERTIG
+	CPFSEQ	FSR0L				;SKIP WENN FERTIG
 	RETFIE						;NEIN WEITERE SENDEN
 TX_ISR2
 	BRA 	TX_ISR_FERTIG
@@ -400,28 +474,33 @@ RX_ISR							; BYT RECEIVED
 	MOVLW	SYNC4				;IM SYNC STATUS?
 	CPFSLT	RX_STATUS			;SKIP WENN NEIN
 	BRA		RX_SYNC_START		;JA -> ZUERST SYNC EMPFANGEN
-;---------------
+;RTC DATEN EMPFANGEN?  -----------------------------------------------------------------------------------
 	MOVLW	RTCD_FROM_MCF		; DATEN VOM MCF CODE 0x82? 
 	CPFSEQ	RX_STATUS			; WENN JA-> SKIP
 	BRA		RX_ISR1				; NEIN->
 ;64 BYT EMPFANGEN -------------------------------------
 	MOVFF	RX_B,POSTINC1		;HOLEN -> (CNT+)
-	MOVLW	0x3F				;64 BYT ÜBERTRAGEN?
+	MOVLW	0x40				;64 BYT ÜBERTRAGEN?
 	CPFSLT	FSR1L				;NEIN ->SKIP
 	CLRF	RX_STATUS			;JA FERTIG
 	RETFIE	
-;-------------------------------------------------------------------------------------
+; SETZEN? ---------------------------------------------------
 RX_ISR1
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR2				;JA ->
 	CPFSEQ	RX_B				;BLOCK HEADER 0X82?
 	BRA		RX_ISR2				;NEIN->
 	MOVWF	RX_STATUS			;STATUS SETZEN = EMPFANGENES BYT
 	LFSR	1,.0				;BYT COUNTER AUF O
 	RETFIE
+; RTC DATEN SENDEN? -------------------------------------------------------------------------------------
 RX_ISR2
 	MOVLW	REQ_RTCD_FROM_PIC	;DATEN SENDEN?
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR3				;JA ->
 	CPFSEQ	RX_B				;SKIP WENN JA
 	BRA		RX_ISR3				;SONST NEXT
-;BLOCK HEADER UND 64 BYT SENDEN -----------------------------------------
+;BLOCK HEADER UND 64 BYT SENDEN -----------
 	LFSR	0,.0
 	BCF		PIR1,TXIF			;INTERRUPT FLAG LÖSCHEN
 	BSF 	PIE1,TXIE 			;Enable interrupt
@@ -430,9 +509,11 @@ RX_ISR2
 	MOVWF	TXREG				;BLOCK HEADER = 0X81
 	CLRF	RX_STATUS			;STATUS RÜCKSETZEN
 	RETFIE						;UND WEG
-;-------------------------------------------------------------------------------------
+;EXT SUB INT STARTEN?-------------------------------------------------------------------------------------
 RX_ISR3
 	MOVLW	EXT_SUB_GO			;EXT SUB FREIGEBEN?
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR4				;JA ->
 	CPFSEQ	RX_B
 	BRA		RX_ISR4				;NEIN->	
 ;EXT SUBS FREIGEBEN --------------------------------------------------------------			
@@ -454,9 +535,11 @@ RX_ISR3
 	MOVFF	TABLAT,GO_SUB		;EXTERNE SUBROUTINES AKTIVIEREN WENN OK
 	CLRF	RX_STATUS			;STATUS RÜCKSETZEN
 	RETFIE						;UND WEG
-;-------------------------------------------------------------------------------------
+;EXT SUB INT STOPPEN? -------------------------------------------------------------------------------------
 RX_ISR4
 	MOVLW	EXT_SUB_STOP		;EXT SUB STOPPEN?
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR5				;JA ->
 	CPFSEQ	RX_B
 	BRA		RX_ISR5				;NEIN->	
 ;EXT SUBS STOPPEN --------------------------------------------------------------
@@ -464,36 +547,36 @@ RX_ISR4
 	CLRF	GO_SUB				;STOPPEN			
 	CLRF	RX_STATUS			;STATUS RÜCKSETZEN
 	RETFIE						;UND WEG
-;-------------------------------------------------------------------------------------
+;REQ BLOCK? -------------------------------------------------------------------------------------
 RX_ISR5
 	MOVLW	REQ_BLOCK			;REQ BLOCK?
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG? SKIP NON
+	BRA		RX_ISR6				;JA ->
 	CPFSEQ	RX_B
 	BRA		RX_ISR6				;NEIN->
-;REQ BLOCK ----------------------------------------------------------------
+;REQ BLOCK SETZEN
 	MOVWF	RX_STATUS			;STATUS SETZEN = EMPFANGENES BYT
 	LFSR	1,TX_BUFFER			;BYT COUNTER AUF TX_BUFFER -> GLEICH EINTRAGEN
 	RETFIE
 RX_ISR6
 	CPFSEQ	RX_STATUS			;REQ BLOCK ADRESSE EMPFANGFEN?
 	BRA		RX_ISR7				;NEIN->
-;3 BYT EMPFANGEN -------------------------------------
+;3 BYT EMPFANGEN ---------------------------
 	MOVFF	RX_B,POSTINC1		;HOLEN -> (CNT+)
-	MOVLW	0x82				;3 BYT ÜBERTRAGEN? (BUFFER BEGINNT BEI 0x180
-	CPFSLT	FSR1L				;NEIN ->SKIP
-	BRA		RX_RB3BOK
-	RETFIE	
-RX_RB3BOK
+	MOVLW	0x83				;3 BYT ÜBERTRAGEN? (BUFFER BEGINNT BEI 0x180
+	CPFSEQ	FSR1L				;NEIN ->SKIP
+	RETFIE						;NEXT ->
 	LFSR	1,TX_BUFFER			;BYT RX COUNTER AUF TX_BUFFER 
 	MOVFF	POSTINC1,TBLPTRU	;ADRESSE EINTRAGEN
 	MOVFF	POSTINC1,TBLPTRH
 	MOVFF	POSTINC1,TBLPTRL
-	MOVLW	0xC2				;67 BYT ÜBERTRAGEN?  (BUFFER BEGINNT BEI 0x180
+	MOVLW	0xC3				;67 BYT ÜBERTRAGEN?  (BUFFER BEGINNT BEI 0x180
 RX_RB3B2
 	TBLRD	*+					;LESEN UND NEXT
 	MOVFF	TABLAT,POSTINC1		;UND EINTRAGEN
 	CPFSEQ	FSR1L				;WENN FERTIG ->SKIP
 	BRA		RX_RB3B2			;SONST LOOP
-;BLOCK HEADER  3 BYTS ADRESSE UND 64 BYT SENDEN STARTEN -----------------------------------------
+;BLOCK HEADER  3 BYTS ADRESSE UND 64 BYT SENDEN STARTEN 
 	LFSR	0,TX_BUFFER			;TX COUNTER AUF TX_BUFFER 
 	BCF		PIR1,TXIF			;INTERRUPT FLAG LÖSCHEN
 	BSF 	PIE1,TXIE 			;Enable interrupt
@@ -502,66 +585,129 @@ RX_RB3B2
 	MOVWF	TXREG				;BLOCK HEADER = 0XA1
 	CLRF	RX_STATUS			;STATUS RÜCKSETZEN
 	RETFIE						;UND WEG
-;-------------------------------------------------------------------------------------
+;PROGRAMM BLOCK? -------------------------------------------------------------------------------------
 RX_ISR7	
 	MOVLW	WRITE_BLOCK			;WRITE BLOCK 0xA2 BYT EMPFANGEN?
 	CPFSEQ	RX_STATUS			;WENN JA-> SKIP
 	BRA		RX_ISR8				;NEIN->
-;WRITE BLOCK ----------------------------------------------------------------------------
-;67 BYT EMPFANGEN -------------------------------------
+;WRITE BLOCK ------------------------
+;68 BYT EMPFANGEN: 3 BYT ADRESSE; 64 BYT DATEN; 1 BYT CHECKSUM -------------------
 	MOVFF	RX_B,POSTINC1		;HOLEN -> (CNT+)
-	MOVLW	0x42				;67 BYT ÜBERTRAGEN?
-	CPFSLT	FSR1L				;WENN FERTIG ->SKIP
+	MOVLW	0x44				;68 BYT ÜBERTRAGEN?
+	CPFSEQ	FSR1L				;WENN FERTIG ->SKIP
 	RETFIE
-; ADRESSE UND DATEN SIND DA -> PROGRAMMING FLASH
+; ADRESSE UND DATEN und CHECKSUM SIND DA -> PROGRAMMING FLASH
+; TEST CHECKSUM
 	LFSR	1,RX_BUFFER			;BYT COUNTER AUF RX BUFFER
-	MOVFF 	POSTINC1,TBLPTRU	;TABLE POINTER SETZEN
-	MOVLW	(EXTERN_INT_ADR & 0xFF0000)>>16
-	CPFSLT	TBLPTRU				;TEST OB WENIGER ALS ERLAUBT
-	BRA		NO_PROG				;JA->
-	MOVFF 	POSTINC1,TBLPTRH	;TABLE POINTER SETZEN
-	MOVLW	(EXTERN_INT_ADR & 0x00FF00)>>8
-	CPFSLT	TBLPTRU				;TEST OB WENIGER ALS ERLAUBT
-	BRA		NO_PROG				;JA->
-	MOVFF 	POSTINC1,TBLPTRL	;TABLE POINTER SETZEN 
-;EREASE BLOCK
-	BSF 	EECON1,EEPGD	 	; point to Flash program memory
-	BCF		EECON1,CFGS 		; access Flash program memory
-	BSF 	EECON1,WREN	 		; enable write to memory
-	BSF 	EECON1,FREE 		; enable Row Erase operation
-	MOVLW 	55h
-	MOVWF 	EECON2 				; write 55h
-	MOVLW 	0AAh				; write 0AAh
-	MOVWF 	EECON2 
-	BSF 	EECON1,WR 			; start erase (CPU stall)
-	MOVLW	0x42				;67 BYT 
-WRITE_WORD_TO_HREGS
-	MOVFF 	POSTINC1,TABLAT 	; get byte of buffer data
-	TBLWT+* 					; write data, perform a short write to internal TBLWT holding register.
-	CPFSLT	FSR1L				;SCHON BEI 67 BYTES?
-	BRA 	WRITE_WORD_TO_HREGS	;NEIN->LOOP
-PROGRAM_MEMORY
-	BSF 	EECON1,EEPGD 		; point to Flash program memory
-	BCF 	EECON1,CFGS 		; access Flash program memory
-	BSF 	EECON1,WREN 		; enable write to memory
-	MOVLW 	55h
-	MOVWF 	EECON2 				; write 55h
-	MOVLW 	0AAh
-	MOVWF 	EECON2 				; write 0AAh
-	BSF 	EECON1,WR 			; start program (CPU stall)
-	BCF 	EECON1,WREN 		; disable write to memory
-NO_PROG
-	CLRF	RX_STATUS			;AUF NORMLA SCHALTEN
-	RETFIE						;UND FERTIG
+	MOVLW	43h					;67 BYTES
+	MOVWF	RX_B				;COUNTER
+	MOVLW	0h					;SUM CLEAR
+LOOP_TEST_CHECKSUM
+	ADDWF	POSTINC1,0			;ADD TO WREG
+	DECFSZ	RX_B				;-1 SKIP WENN 0
+	BRA		LOOP_TEST_CHECKSUM
+	CPFSEQ	POSTINC1			;SUM = CHECKESUM? SKIP JA  
+	BRA		CHK_ERR				;NEIN CHECKSUM ERROR
+	BRA		PROGRAMM_BLOCK		; OK-> PROGRAMMIEREN
+CHK_ERR
+	MOVLW	CHECKSUM_ERROR		; ERROR senden
+	MOVWF	TXREG;
+	CLRF	RX_STATUS			; FERTIG
+	RETFIE
 ;WRITE BLOCK SETZEN?
 RX_ISR8	
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR9				;JA ->
 	CPFSEQ	RX_B				;BLOCK HEADER COMMANDOE 0XA2?
 	BRA		RX_ISR9				;NEIN->
 	MOVWF	RX_STATUS			;STATUS SETZEN = EMPFANGENES BYT
 	LFSR	1,RX_BUFFER			;BYT COUNTER AUF RX BUFFER
 	RETFIE
-;-------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------
 RX_ISR9
+	MOVLW	CMD_FROM_MCF		;CMD HEADER 0x0C EMPFANGEN?
+	CPFSEQ	RX_STATUS			;WENN JA-> SKIP
+	BRA		RX_ISR15			;NEIN->
+;COMMAND BYT EMPFANGEN
+;3 BYT EMPFANGEN -------------------------------------
+	MOVFF	RX_B,POSTINC1		;HOLEN -> (CNT+)
+	MOVLW	0x3					;3 BYT ÜBERTRAGEN?
+	CPFSEQ	FSR1L				;NEIN ->SKIP
+	RETFIE	
+CMD_AUSWERTEN
+;RESET?
+	LFSR	1,RX_BUFFER			;ZEIGER AUF RX BUFFER
+	MOVLW	'R'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC2					;NEIN->
+	MOVLW	'S'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC2					;NEIN->
+	MOVLW	'T'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC2					;NEIN->
+;RESET MCF
+	CALL	SERIAL_OFF			;SERIELL DEAKTIVIEREN
+	BCF		TRISD,RD7			;NEIN-> #RSTI AKTIVIEREN =LOW  -->>>RESET
+	MOVLW	0FFh
+LC1_WAIT
+	NOP
+	NOP
+	NOP
+	DECFSZ	WREG
+	BRA		LC1_WAIT
+	BSF		TRISD,RD7			;JA -> #RSTI DEAKTIVIEREN =HIGH
+	CALL	SERIAL_ON			;SERIELL EINSCHALTEN
+	CLRF	RX_STATUS			;JA FERTIG
+	RETFIE
+LC2:
+;POWER AUS?
+	LFSR	1,RX_BUFFER			;ZEIGER AUF RX BUFFER
+	MOVLW	'O'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC4					;NEIN->
+	MOVLW	'F'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC4					;NEIN->
+	MOVLW	'F'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC4					;NEIN->
+;POWER OFF
+	CALL	POWER_AUS
+	CLRF	RX_STATUS			;JA FERTIG
+	RETFIE
+LC4:
+;RESET PIC?
+	LFSR	1,RX_BUFFER			;ZEIGER AUF RX BUFFER
+	MOVLW	'R'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC6					;NEIN->
+	MOVLW	'P'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC6					;NEIN->
+	MOVLW	'I'
+	CPFSEQ	POSTINC1			;=? SIKP JA
+	BRA		LC6					;NEIN->
+;RESET PIC
+	RESET
+;HIER SOLLTE ER NICHT HINKOMMEN	
+	BRA		KALT_START
+LC6
+;NO REAL CMA
+	CLRF	RX_STATUS			;JA FERTIG
+	RETFIE
+;END CDM AUSWERTEN
+RX_ISR15
+	TSTFSZ	RX_STATUS			;TASK HÄNGIG?
+	BRA		RX_ISR20			;JA ->
+	CPFSEQ	RX_B				;CMD?
+	BRA		RX_ISR20			;NEIN->
+;CMD SETZEN
+	MOVWF	RX_STATUS			;STATUS SETZEN = EMPFANGENES BYT
+	LFSR	1,RX_BUFFER			;ZEIGER AUF RX BUFFER
+	RETFIE
+RX_ISR20
+RX_ISR_END
 	CLRF	RX_STATUS
 	RETFIE
 ;-------------------------------------------------------------------------------------
@@ -612,24 +758,24 @@ RX_WAIT1
 	BTFSS	TXSTA,TRMT
 	BRA		RX_WAIT1
 	MOVLW	'O'					;SENDE OK!
-	MOVWF	TXREG;
+	MOVWF	TXREG
 RX_WAIT2
 	BTFSS	TXSTA,TRMT
 	BRA		RX_WAIT2
 	MOVLW	'K'					;SENDE OK!
-	MOVWF	TXREG;
+	MOVWF	TXREG
 RX_WAIT3
 	BTFSS	TXSTA,TRMT
 	BRA		RX_WAIT3
 	MOVLW	'!'
-	MOVWF	TXREG;
+	MOVWF	TXREG
 	CLRF	RX_STATUS			;OK START NORMAL
 	RETFIE
 ;**********************************************************************************************"""""""""""""
 ;SPANNUNGSÜBERWACHUNGS INTERRUPT
 HLVD_ISR
 	BTFSS	U_ERR,1				;WARTEN AUF GELADEN?
-	BRA	HLVD_LE				;NEIN UNTERSPANNUNG DETEKT->
+	BRA	HLVD_LE					;NEIN UNTERSPANNUNG DETEKT->
 	BCF		U_ERR,0				;SPANNUNGSFEHLER AUS
 	BCF		U_ERR,1				;WARTEN AUF GELADEN=AUS
 	MOVLW	U_ERR_PW_AUS+2		;POWER AUS ÜBERSPRINGEN
@@ -682,15 +828,15 @@ POWER_OFF_I
 	BNZ		PINGS			;NICHT MODULO4 ->
 	MOVLW	.7
 	CPFSEQ	TICKS			;7. TICK?
-	BRA	POWER_OFF_I2	;NEIN->
+	BRA	POWER_OFF_I2		;NEIN->
 	BCF		TRISE,RE0		;JA->LED=ON
 POWER_OFF_I2
 	MOVLW	.30				; WENIGER ALS 30 SEC SEIT LETZTEM SPANNUNGSFEHLER?
 	CPFSLT	U_ERR_TIME
-	BRA	PINGS			;NEIN->
+	BRA	PINGS				;NEIN->
 	MOVLW	.5
 	CPFSEQ	TICKS			;5. TICK?
-	BRA	PINGS			;NEIN->
+	BRA	PINGS				;NEIN->
 	BCF		TRISE,RE0		;JA->LED=ON
 PINGS
 	CALL	TASTE			;UP TASTE
@@ -763,6 +909,20 @@ SEK_3
 SEK_4
 	CLRF	TICKS
 	INCF 	SECS	 		; Increment seconds
+
+;?????????????????????????????????????????????????????
+;test pic ps2 keyboard
+;	MOVLW	0f9h		;2 
+;	CALL	send
+;	nop
+;	nop
+;	MOVLW	.10
+;	CALL	send
+;	nop
+;	nop
+;	MOVLW	.10
+;	CALL	send
+;--------------------------------------------------------------
 	MOVLW 	.59 			; 60 seconds elapsed?
 	CPFSGT 	SECS
 	RETFIE	 				;RETURN
@@ -840,6 +1000,61 @@ NOT_SEP
 ; ENDE MAIN 
 ;**********************************************************************************************"""""""""""""
 ;**********************************************************************************************"""""""""""""
-; EXTERN_SUBOUTINES FOGEN AB 0x1000 DIE SPÄTER EINPROGRAMMIERT WERDEN
+; EXTERN_SUBOUTINES FOGEN AB 0x2000 DIE SPÄTER EINPROGRAMMIERT WERDEN
 ;**********************************************************************************************"""""""""""""
+EXT_INT	CODE	0x2000
+EXT_INT_MAGIC	DB 0	
+EXT_INT_START
+
+EXT_SUB	CODE	0x2010
+EXT_SUB_MAGIC	DB 0
+EXT_SUT_START	
+
+clockrate equ .8000000 ;Xtal value (8Mhz in this case)
+fclk equ clockrate/4
+;baudrate equ ((fclk/.7812.5)/3-2) ;7812.5 is the baud rate
+baudrate equ .83 ;7812.5 is the baud rate
+
+txreg 	equ 10
+delay 	equ 11
+count 	equ 12
+txchar 	equ 13
+
+send
+	movwf txreg
+	movlw baudrate
+	movwf delay
+	movlw .9
+	movwf count
+	bcf PORTA,6 ;send start bit
+	nop ;even out bit times
+next 
+	decfsz delay,f
+	goto next
+	movlw baudrate ;rest of program is 9 instructions
+	movwf delay
+	decfsz count,f
+	goto sendnextbit
+	bcf PORTA,6 ;send stop bit
+	movlw baudrate ;Delay for line to settle
+	movwf delay ;Delay for line to settle
+p1 
+	decfsz delay,f ;Delay for line to settle
+	goto p1 ;Delay for line to settle
+	bsf PORTA,6
+p2 	
+	decfsz delay,f
+	goto p2
+	return
+sendnextbit
+	rrcf txreg,F
+	btfss STATUS,C ;check next bit to tx
+	goto setlo
+	bsf PORTA,6 ;send a high bit
+	goto next
+setlo 
+	bcf PORTA,6 ;send a low bit
+	goto next
+
+
 	end
