@@ -34,7 +34,7 @@ file_000=no
 file_001=no
 [FILE_INFO]
 file_000=firebee1.asm
-file_001=C:\Program Files (x86)\Microchip\MPASM Suite\LKR\18f4520_g.lkr
+file_001=firebee1.lkr
 [SUITE_INFO]
 suite_guid={6B3DAA78-59C1-46DD-B6AA-DBDAE4E06484}
 suite_state=
