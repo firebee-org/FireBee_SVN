@@ -21,7 +21,7 @@ static cookie_fun old_vector = NULL;
 
 static long cookieptr (void)
 {
-	return *((long *)0x5a0L);
+	return * (uint32_t *) 0x5a0L;
 }
 
 static int getcookie(uint32_t cookie, uint32_t *p_value)
