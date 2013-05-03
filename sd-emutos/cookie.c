@@ -15,7 +15,7 @@ static uint32_t cookieptr(void)
 
 int getcookie(uint32_t cookie, uint32_t *p_value)
 {
-	uint32_t *cookiejar = (long *) Supexec(cookieptr);
+	uint32_t *cookiejar = (uint32_t *) Supexec(cookieptr);
 
 	if (!cookiejar) return 0;
 
