@@ -19,47 +19,6 @@ typedef uint32_t (*cookie_fun)(uint16_t opcode,...);
 
 static cookie_fun old_vector = NULL;
 
-static long cookieptr (void)
-{
-	return * (uint32_t *) 0x5a0L;
-}
-
-static int getcookie(uint32_t cookie, uint32_t *p_value)
-{
-	long *cookiejar = (long *) Supexec (cookieptr);
-
-	if (!cookiejar) return 0;
-
-	do
-	{
-		if (cookiejar[0] == cookie)
-		{
-			if (p_value) *p_value = cookiejar[1];
-			return 1;
-		}
-		else
-			cookiejar = &(cookiejar[2]);
-	} while (cookiejar[-2]);
-
-	return 0;
-}
-
-static void setcookie(uint32_t cookie, uint32_t value)
-{
-	long *cookiejar = (long *) Supexec(cookieptr);
-
-	do
-	{
-		if (cookiejar[0] == cookie)
-		{
-			cookiejar[1] = value;
-			return;
-		}
-		else
-			cookiejar = &(cookiejar[2]);
-	} while (cookiejar[-2]);
-}
-
 static cookie_fun get_fun_ptr(void)
 {
 	static cookie_fun XHDI = NULL;
