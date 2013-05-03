@@ -14,11 +14,13 @@ APP=$(EMUSD).prg
 
 all: $(APP)
 
-SOURCES=$(EMUSD).c
+SOURCES=$(EMUSD).c \
+		xhdi.c
+		
 OBJECTS=$(SOURCES:.c=.o)
 
 $(APP): $(OBJECTS)
-	$(CC) $(CFLAGS) $< -o $(APP)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(APP)
 	
 .PHONY clean:
 	- rm -rf *.o $(APP)
