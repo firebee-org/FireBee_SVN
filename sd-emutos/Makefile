@@ -6,8 +6,9 @@
 TOOLCHAIN_PREFIX=m68k-atari-mint-
 CC=$(TOOLCHAIN_PREFIX)gcc
 
-CFLAGS=-mcpu=68000 \
+CFLAGS=-mcpu=547x \
 	-Os \
+	-fomit-frame-pointer \
 	-g \
 	-Wno-multichar\
 	-Wall

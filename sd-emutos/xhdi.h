@@ -58,8 +58,9 @@
 
 extern long xhdi_entrypoint;
 
+#define CLOBBER_REGISTERS	__CLOBBER_RETURN("d0") "d1", "d2", "d3", "d4", "d5", "d6", "a0", "a1", "a2", "a3", "a4", "a5", "a6"
 /* XHDI #0 */
-#define xhdi_version(xhdi_entry)								\
+#define XHGetVersion(xhdi_entry)								\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
@@ -71,7 +72,7 @@ __extension__													\
 				"addq.l			#2,sp\n\t"						\
 				: [retvalue]"=r"(retvalue)		/* outputs */	\
 				: [entry] "m" (xhdi_entry)		/* inputs */ 	\
-				: __CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 		);														\
 		retvalue;												\
@@ -101,7 +102,7 @@ __extension__													\
 				  [block_size]"g"(block_size),					\
 				  [flags]"g"(flags),							\
 				  [product_name]"g"(product_name)				\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -128,7 +129,7 @@ __extension__													\
  				  [minor]"g"(minor),							\
  				  [do_reserve]"g"(do_reserve),					\
  				  [key]"g"(key),								\
- 				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+ 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
  				  AND_MEMORY									\
  	);															\
  	retvalue;													\
@@ -155,7 +156,7 @@ __extension__													\
 				  [minor]"g"(minor),							\
 				  [do_lock]"g"(do_lock),						\
 				  [key]"g"(key),								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -182,7 +183,7 @@ __extension__													\
 				  [minor]"g"(minor),							\
 				  [do_stop]"g"(do_stop),						\
 				  [key]"g"(key),								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -209,14 +210,14 @@ __extension__													\
 				  [minor]"g"(minor),							\
 				  [do_stop]"g"(do_eject),						\
 				  [key]"g"(key),								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 });
 
  /* XHDI #6 */
- #define xhdi_drivemap(xhdi_entry)								\
+ #define XHDrvMap(xhdi_entry)									\
  __extension__													\
  	({															\
  		register long retvalue __asm__("d0");					\
@@ -227,8 +228,8 @@ __extension__													\
 				"jsr			(a0)\n\t"						\
 				"addq.l			#2,sp\n\t"						\
  				: [retvalue] "=r" (retvalue)/* outputs */		\
- 				: [entry] "a" (xhdi_entry)	/* inputs */ 		\
- 				: __CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+ 				: [entry] "m" (xhdi_entry)	/* inputs */ 		\
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
  				  AND_MEMORY									\
  		);														\
  		retvalue;												\
@@ -236,27 +237,29 @@ __extension__													\
  #define e_xhdi_drivemap	xhdi_drivemap(xhdi_entrypoint)
 
 /* XHDI #7 */
-#define xhdi_inquire_device(xhdi_entry, major, minor, start_sector, bpb)	\
+#define XHInqDev(xhdi_entry, bios_device, major, minor, start_sector, bpb)	\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_INQUIRE_DEVICE,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w 		[minor],-(sp)\n\t"				\
-				"lea			[start_sector],-(sp)\n\t"		\
-				"lea			[bpb],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.w			#7,-(sp)\n\t"					\
+				"move.w			%[a_bios_device],-(sp)\n\t"		\
+				"move.l			%[a_major],-(sp)\n\t"			\
+				"move.l	 		%[a_minor],-(sp)\n\t"			\
+				"move.l			%[a_start_sector],-(sp)\n\t"	\
+				"move.l			%[a_bpb],-(sp)\n\t"				\
+				"move.l			%[a_entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
-				"lea			14(sp),sp\n\t"					\
-				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [start_sector]"g"(start_sector),				\
-				  [bpb]"g"(bpb),								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				"lea			20(sp),sp\n\t"					\
+				: [retvalue]"=r"(retvalue)	/* outputs */		\
+				: [a_entry]"g"(xhdi_entry),						\
+				  [a_bios_device]"g"(bios_device),				\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_start_sector]"g"(start_sector),			\
+				  [a_bpb]"g"(bpb)								\
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -286,7 +289,7 @@ __extension__													\
 				  [company]"g"(company),						\
 				  [ahdi_version]"g"(ahdi_version),				\
 				  [max_ipl]"g"(max_ipl),						\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -306,7 +309,7 @@ __extension__													\
 				"addq.l			#6,sp\n\t"						\
 				: "=r"(retvalue)	/* outputs */				\
 				: [newcookie]"g"(newcookie)	/* inputs */ 	\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 		);														\
 		retvalue;												\
@@ -338,7 +341,7 @@ __extension__													\
 				  [recno]"g"(recno),							\
 				  [count]"g"(count),							\
 				  [buf]"g"(buf)									\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -370,7 +373,7 @@ __extension__													\
 				  [device_flags]"g"(device_flags),				\
 				  [product_name]"g"(product_name),				\
 				  [stringlen]"g"(stringlen)						\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -403,7 +406,7 @@ __extension__													\
 				  [bpb]"g"(bpb),								\
 				  [blocks]"g"(blocks),							\
 				  [partid]"g"(partid)							\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -430,7 +433,7 @@ __extension__													\
 				  [key2]"g"(key2),								\
 				  [subopcode]"g"(subopcode),					\
 				  [data]"g"(data)								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -457,7 +460,7 @@ __extension__													\
 				  [minor]"g"(minor),							\
 				  [blocks]"g"(blocks),							\
 				  [bs]"g"(bs)									\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -480,7 +483,7 @@ __extension__													\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -503,7 +506,7 @@ __extension__													\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [opcode]"g"(opcode),							\
 				  [data]"g"(data),								\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -526,7 +529,7 @@ __extension__													\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [which]"g"(which),							\
 				  [limit]"g"(limit),							\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -551,7 +554,7 @@ __extension__													\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
 				  [ms]"g"(ms)									\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
@@ -574,7 +577,7 @@ __extension__													\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
