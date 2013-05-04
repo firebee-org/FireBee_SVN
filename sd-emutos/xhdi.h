@@ -55,6 +55,7 @@
 #include <features.h>
 #endif	/* _FEATURES_H */
 
+
 extern long xhdi_entrypoint;
 
 /* XHDI #0 */
@@ -64,16 +65,17 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w 		#XHDI_VERSION,-(sp)\n\t"		\
-				"jsr			[xhdi_entry]\n\t"				\
+				"move.w 		#0,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
 				"addq.l			#2,sp\n\t"						\
-				: ="r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry)	/* inputs */ 	\
-				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+				: [retvalue]"=r"(retvalue)		/* outputs */	\
+				: [entry] "m" (xhdi_entry)		/* inputs */ 	\
+				: __CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
 				  AND_MEMORY									\
 		);														\
 		retvalue;												\
-});
+})
 #define e_xhdi_version	xhdi_version(xhdi_entrypoint)
 
 /* XHDI #1 */
@@ -89,10 +91,11 @@ __extension__													\
 				"lea			[block_size],-(sp)\n\t"			\
 				"move.l			[flags],-(sp)\n\t"				\
 				"lea			[product_name],-(sp)\n\t"		\
-				"jsr			[xhdi_entry]\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
 				"lea			18(sp),sp\n\t"					\
-				: ="r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"a"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
 				  [block_size]"g"(block_size),					\
@@ -116,9 +119,10 @@ __extension__													\
  				"move.w 		[minor],-(sp)\n\t"				\
  				"move.w			[do_reserve],-(sp)\n\t"			\
  				"move.w			[key],-(sp)\n\t"				\
- 				"jsr			[xhdi_entry]\n\t"				\
+ 				"lea			[xhdi_entry],a0\n\t"			\
+ 				"jsr			(a0)\n\t"				\
  				"lea			10(sp),sp\n\t"					\
- 				: ="r"(retvalue)	/* outputs */				\
+ 				: "=r"(retvalue)	/* outputs */				\
  				: [xhdi_entry]"g"(xhdi_entry),					\
  				  [major]"g"(major),							\
  				  [minor]"g"(minor),							\
@@ -137,14 +141,15 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_DO_LOCK,-(sp)\n\t"		\
+				"move.w			#XHDI_LOCK,-(sp)\n\t"		\
 				"move.w			[major],-(sp)\n\t"				\
 				"move.w 		[minor],-(sp)\n\t"				\
 				"move.w			[do_lock],-(sp)\n\t"			\
 				"move.w			[key],-(sp)\n\t"				\
-				"jsr			[xhdi_entry]\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
-				: ="r"(retvalue)	/* outputs */				\
+				: "=r"(retvalue)	/* outputs */				\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
@@ -163,14 +168,15 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_DO_STOP,-(sp)\n\t"		\
+				"move.w			#XHDI_STOP,-(sp)\n\t"		\
 				"move.w			[major],-(sp)\n\t"				\
 				"move.w 		[minor],-(sp)\n\t"				\
 				"move.w			[do_stop],-(sp)\n\t"			\
 				"move.w			[key],-(sp)\n\t"				\
-				"jsr			[xhdi_entry]\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
-				: ="r"(retvalue)	/* outputs */				\
+				: "=r"(retvalue)	/* outputs */				\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
@@ -189,14 +195,15 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_DO_STOP,-(sp)\n\t"		\
+				"move.w			#XHDI_EJECT,-(sp)\n\t"		\
 				"move.w			[major],-(sp)\n\t"				\
 				"move.w 		[minor],-(sp)\n\t"				\
 				"move.w			[do_eject],-(sp)\n\t"			\
 				"move.w			[key],-(sp)\n\t"				\
-				"jsr			[xhdi_entry]\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
-				: ="r"(retvalue)	/* outputs */				\
+				: "=r"(retvalue)	/* outputs */				\
 				: [xhdi_entry]"g"(xhdi_entry),					\
 				  [major]"g"(major),							\
 				  [minor]"g"(minor),							\
@@ -215,51 +222,362 @@ __extension__													\
  		register long retvalue __asm__("d0");					\
  																\
  		__asm__ volatile(										\
- 				"move.w 		#XHDI_DRIVEMAP,-(sp)\n\t"		\
- 				"jsr			[xhdi_entry]\n\t"				\
- 				"addq.l			#2,sp\n\t"						\
- 				: ="r"(retvalue)	/* outputs */				\
- 				: [xhdi_entry]"g"(xhdi_entry)	/* inputs */ 	\
- 				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+ 				"move.w 		#6,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"addq.l			#2,sp\n\t"						\
+ 				: [retvalue] "=r" (retvalue)/* outputs */		\
+ 				: [entry] "a" (xhdi_entry)	/* inputs */ 		\
+ 				: __CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
  				  AND_MEMORY									\
  		);														\
  		retvalue;												\
- });
+ })
  #define e_xhdi_drivemap	xhdi_drivemap(xhdi_entrypoint)
 
-#ifdef _NOT_USED_
-extern uint32_t xhdi_inquire_device(UINT16_T bios_device, UINT16_T *major, UINT16_T *minor,
-        uint32_t *start_sector, /* BPB */ void *bpb);	/* XHDI 7 */
+/* XHDI #7 */
+#define xhdi_inquire_device(xhdi_entry, major, minor, start_sector, bpb)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_INQUIRE_DEVICE,-(sp)\n\t"	\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w 		[minor],-(sp)\n\t"				\
+				"lea			[start_sector],-(sp)\n\t"		\
+				"lea			[bpb],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			14(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [start_sector]"g"(start_sector),				\
+				  [bpb]"g"(bpb),								\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_inquire_driver(UINT16_T bios_device, char *name, char *version,
-		char *company, UINT16_T *ahdi_version, UINT16_T *maxIPL);	/* XHDI 8 */
+/* XHDI #8 */
+#define xhdi_inquire_driver(xhdi_entry, bios_device, name, version, company, ahdi_version, max_ipl)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_INQUIRE_DRIVER,-(sp)\n\t"	\
+				"move.w			[bios_device],-(sp)\n\t"		\
+				"lea 			[name],-(sp)\n\t"				\
+				"lea			[version],-(sp)\n\t"			\
+				"move.w			[ahdi_version],-(sp)\n\t"		\
+				"move.w			[max_ipl],-(sp)\n\t"			\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			16(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [bios_device]"g"(bios_device),				\
+				  [name]"g"(name),								\
+				  [version]"g"(version),						\
+				  [company]"g"(company),						\
+				  [ahdi_version]"g"(ahdi_version),				\
+				  [max_ipl]"g"(max_ipl),						\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_new_cookie(void *newcookie);	/* XHDI 9 */
+/* XHDI #9 */
+#define xhdi_new_cookie(xhdi_entry, newcookie)					\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w 		#XHDI_NEW_COOKIE,-(sp)\n\t"		\
+				"lea			[newcookie],-(sp)\n\t"			\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"addq.l			#6,sp\n\t"						\
+				: "=r"(retvalue)	/* outputs */				\
+				: [newcookie]"g"(newcookie)	/* inputs */ 	\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2"	/* clobbered regs */ \
+				  AND_MEMORY									\
+		);														\
+		retvalue;												\
+})
+#define e_xhdi_new_cookie	xhdi_newcookie(xhdi_entrypoint)
 
-extern uint32_t xhdi_read_write(UINT16_T major, UINT16_T minor, UINT16_T rwflag,
-        uint32_t recno, UINT16_T count, void *buf);	/* XHDI 10 */
+/* XHDI #10 */
+#define xhdi_read_write(xhdi_entry, major, minor, rwflag, recno, count, buf)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_READ_WRITE,-(sp)\n\t"		\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w 		[minor],-(sp)\n\t"				\
+				"move.w			[rwflag],-(sp)\n\t"				\
+				"lea			[recno],-(sp)\n\t"				\
+				"move.w			[count],-(sp)\n\t"				\
+				"lea			[buf],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			18(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [rwflag]"g"(rwflag)							\
+				  [recno]"g"(recno),							\
+				  [count]"g"(count),							\
+				  [buf]"g"(buf)									\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_inquire_target2(UINT16_T major, UINT16_T minor, uint32_t *block_size,
-        uint32_t *device_flags, char *product_name, UINT16_T stringlen);	/* XHDI 11 */
+/* XHDI #11 */
+#define xhdi_inquire_target2(xhdi_entry, major, minor, block_size, device_flags, product_name, stringlen)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_INQUIRE_TARGET2,-(sp)\n\t"\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w 		[minor],-(sp)\n\t"				\
+				"lea			[block_size],-(sp)\n\t"			\
+				"lea			[recno],-(sp)\n\t"				\
+				"lea			[device_flags],-(sp)\n\t"		\
+				"lea			[product_name],-(sp)\n\t"		\
+				"move.w			[stringlen],-(sp)\n\t"			\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			24(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [blocksize]"g"(blocksize)						\
+				  [device_flags]"g"(device_flags),				\
+				  [product_name]"g"(product_name),				\
+				  [stringlen]"g"(stringlen)						\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_inquire_device2(UINT16_T bios_device, UINT16_T *major, UINT16_T *minor,
-        UINT16_T *start_sector, /* BPB */ void *bpb, uint32_t *blocks, char *partid); /* XHDI 12 */
+/* XHDI #12 */
+#define xhdi_inquire_device2(xhdi_entry, bios_device, major, minor, start_sector, bpb, blocks, partid)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_DEVICE2,-(sp)\n\t"		\
+				"move.w			[bios_device],-(sp)\n\t"		\
+				"lea			[major],-(sp)\n\t"				\
+				"lea	 		[minor],-(sp)\n\t"				\
+				"lea			[start_sector],-(sp)\n\t"		\
+				"lea			[bpb],-(sp)\n\t"				\
+				"lea			[blocks],-(sp)\n\t"				\
+				"lea			[part_id],-(sp)\n\t"			\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			28(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [bios_device]"g"(bios_device),				\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [start_sector]"g"(start_sector)				\
+				  [bpb]"g"(bpb),								\
+				  [blocks]"g"(blocks),							\
+				  [partid]"g"(partid)							\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_driver_special(uint32_t key1, uint32_t key2, UINT16_T subopcode, void *data); /* XHDI 13 */
+/* XHDI #13 */
+#define xhdi_driver_special(xhdi_entry, key1, key2, subopcode, data)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_DRIVER_SPECIAL,-(sp)\n\t"	\
+				"move.l			[key1],-(sp)\n\t"				\
+				"move.l			[key2],-(sp)\n\t"				\
+				"move.w	 		[subopcode],-(sp)\n\t"			\
+				"lea			[data],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			16(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [key1]"g"(key1),								\
+				  [key2]"g"(key2),								\
+				  [subopcode]"g"(subopcode),					\
+				  [data]"g"(data)								\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_get_capacity(UINT16_T major, UINT16_T minor, uint32_t *blocks, uint32_t *bs); /* XHDI 14 */
+/* XHDI #14 */
+#define xhdi_get_capacyty(xhdi_entry, major, minor, blocks, bs)	\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_GET_CAPACITY,-(sp)\n\t"	\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w			[minor],-(sp)\n\t"				\
+				"lea	 		[blocks],-(sp)\n\t"				\
+				"lea			[bs],-(sp)\n\t"					\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			12(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [blocks]"g"(blocks),							\
+				  [bs]"g"(bs)									\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_medium_changed(UINT16_T major, UINT16_T minor);	/* XHDI 15 */
+/* XHDI #15 */
+#define xhdi_medium_changed(xhdi_entry, major, minor)			\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_MEDIUM_CHANGED,-(sp)\n\t"	\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w			[minor],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			12(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_mint_info(UINT16_T opcode, void *data);			/* XHDI 16 */
+/* XHDI #16 */
+#define xhdi_mint_info(xhdi_entry, opcode, data)				\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_MINT_INFO,-(sp)\n\t"	\
+				"move.w			[opcode],-(sp)\n\t"				\
+				"lea			[data],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			8(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [opcode]"g"(opcode),							\
+				  [data]"g"(data),								\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_dos_limits(UINT16_T which, uint32_t limit);		/* XHDI 17 */
+/* XHDI #17 */
+#define xhdi_dos_limits(xhdi_entry, which, limit)				\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_DOS_LIMITS,-(sp)\n\t"		\
+				"move.w			[which],-(sp)\n\t"				\
+				"move.l			[limit],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			8(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [which]"g"(which),							\
+				  [limit]"g"(limit),							\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_last_access(UINT16_T major, UINT16_T minor, uint32_t *ms);	/* XHDI 18 */
+/* XHDI #18 */
+#define xhdi_last_access(xhdi_entry, major, minor, ms)			\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_LAST_ACCESS,-(sp)\n\t"	\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w			[minor],-(sp)\n\t"				\
+				"lea			[ms],-(sp)\n\t"					\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			10(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				  [ms]"g"(ms)									\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
-extern uint32_t xhdi_reaccess(UINT16_T major, UINT16_T minor);	/* XHDI 19 */
-
-#endif /* _NOT_USED_ */
-
+/* XHDI #18 */
+#define xhdi_last_reaccess(xhdi_entry, major, minor)			\
+__extension__													\
+	({															\
+		register long retvalue __asm__("d0");					\
+																\
+		__asm__ volatile(										\
+				"move.w			#XHDI_LAST_ACCESS,-(sp)\n\t"	\
+				"move.w			[major],-(sp)\n\t"				\
+				"move.w			[minor],-(sp)\n\t"				\
+				"lea			%[entry],a0\n\t"				\
+				"jsr			(a0)\n\t"						\
+				"lea			6(sp),sp\n\t"					\
+				: "=r"(retvalue)	/* outputs */				\
+				: [xhdi_entry]"g"(xhdi_entry),					\
+				  [major]"g"(major),							\
+				  [minor]"g"(minor),							\
+				: CLOBBER_RETURN("d0") "d1", "d2", "a0", "a1", "a2" /* clobbered regs */ \
+				  AND_MEMORY									\
+	);															\
+	retvalue;													\
+})
 
 #endif /* XHDI_H_ */

@@ -6,7 +6,9 @@
 TOOLCHAIN_PREFIX=m68k-atari-mint-
 CC=$(TOOLCHAIN_PREFIX)gcc
 
-CFLAGS=-mcpu=5475 \
+CFLAGS=-mcpu=68000 \
+	-Os \
+	-g \
 	-Wno-multichar\
 	-Wall
 EMUSD=emusd
@@ -22,6 +24,9 @@ OBJECTS=$(SOURCES:.c=.o)
 
 $(APP): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(APP)
-	
+
+test: xhdi_test.c
+	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhdi_test.prg
+		
 .PHONY clean:
 	- rm -rf *.o $(APP)
