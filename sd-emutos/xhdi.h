@@ -58,7 +58,8 @@
 
 extern long xhdi_entrypoint;
 
-#define CLOBBER_REGISTERS	__CLOBBER_RETURN("d0") "d1", "d2", "d3", "d4", "d5", "d6", "a0", "a1", "a2", "a3", "a4", "a5", "a6"
+#define CLOBBER_REGISTERS "memory" /* */
+
 /* XHDI #0 */
 #define XHGetVersion(xhdi_entry)								\
 __extension__													\
@@ -71,9 +72,8 @@ __extension__													\
 				"jsr			(a0)\n\t"						\
 				"addq.l			#2,sp\n\t"						\
 				: [retvalue]"=r"(retvalue)		/* outputs */	\
-				: [entry] "m" (xhdi_entry)		/* inputs */ 	\
+				: [entry] "g" (xhdi_entry)		/* inputs */ 	\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 		);														\
 		retvalue;												\
 })
@@ -157,7 +157,6 @@ __extension__													\
 				  [do_lock]"g"(do_lock),						\
 				  [key]"g"(key),								\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 });
@@ -230,7 +229,6 @@ __extension__													\
  				: [retvalue] "=r" (retvalue)/* outputs */		\
  				: [entry] "m" (xhdi_entry)	/* inputs */ 		\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
- 				  AND_MEMORY									\
  		);														\
  		retvalue;												\
  })
@@ -243,12 +241,12 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#7,-(sp)\n\t"					\
-				"move.w			%[a_bios_device],-(sp)\n\t"		\
-				"move.l			%[a_major],-(sp)\n\t"			\
-				"move.l	 		%[a_minor],-(sp)\n\t"			\
-				"move.l			%[a_start_sector],-(sp)\n\t"	\
 				"move.l			%[a_bpb],-(sp)\n\t"				\
+				"move.l			%[a_start_sector],-(sp)\n\t"	\
+				"move.l	 		%[a_minor],-(sp)\n\t"			\
+				"move.l			%[a_major],-(sp)\n\t"			\
+				"move.w			%[a_bios_device],-(sp)\n\t"		\
+				"move.w			#7,-(sp)\n\t"					\
 				"move.l			%[a_entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			20(sp),sp\n\t"					\
@@ -260,7 +258,6 @@ __extension__													\
 				  [a_start_sector]"g"(start_sector),			\
 				  [a_bpb]"g"(bpb)								\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })

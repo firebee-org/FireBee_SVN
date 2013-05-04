@@ -6,7 +6,7 @@
 TOOLCHAIN_PREFIX=m68k-atari-mint-
 CC=$(TOOLCHAIN_PREFIX)gcc
 
-CFLAGS=-mcpu=547x \
+CFLAGS=-mcpu=68030 \
 	-Os \
 	-fomit-frame-pointer \
 	-g \
@@ -27,7 +27,7 @@ $(APP): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(APP)
 
 test: xhdi_test.c
-	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhdi_test.prg
+	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhditest.prg
 		
 .PHONY clean:
 	- rm -rf *.o $(APP)
