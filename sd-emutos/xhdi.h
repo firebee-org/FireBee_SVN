@@ -80,33 +80,33 @@ __extension__													\
 #define e_xhdi_version	xhdi_version(xhdi_entrypoint)
 
 /* XHDI #1 */
-#define xhdi_inquire_target(xhdi_entry, major, minor, block_size, flags, product_name)	\
+#define XHInqTarget(xhdi_entry, major, minor, block_size, flags, product_name)	\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_INQUIRE_TARGET,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w 		[minor],-(sp)\n\t"				\
-				"lea			[block_size],-(sp)\n\t"			\
-				"move.l			[flags],-(sp)\n\t"				\
-				"lea			[product_name],-(sp)\n\t"		\
+				"move.l			%[a_product_name],-(sp)\n\t"	\
+				"move.l			%[a_flags],-(sp)\n\t"			\
+				"move.l			%[a_block_size],-(sp)\n\t"		\
+				"move.w 		%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#1,-(sp)\n\t"					\
 				"lea			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			18(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"a"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [block_size]"g"(block_size),					\
-				  [flags]"g"(flags),							\
-				  [product_name]"g"(product_name)				\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_block_size]"g"(block_size),				\
+				  [a_flags]"g"(flags),							\
+				  [a_product_name]"g"(product_name)				\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 				  AND_MEMORY									\
 	);															\
 	retvalue;													\
-});
+})
 
  /* XHDI #2 */
  #define xhdi_reserve(xhdi_entry, major, minor, do_reserve, key)	\

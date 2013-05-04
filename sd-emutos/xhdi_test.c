@@ -75,13 +75,24 @@ void xhdi_test(void)
 			ret = XHInqDev(xhdi, i, &major, &minor, &start_sector, &bpb);
 			if (ret == E_OK || ret == EDRVNR)
 			{
+				long block_size;
+				long flags;
+				char *product_name;
+
 				printf("drive %d returned %d:\r\n", i, ret);
 				printf("\tmajor = %x, minor = %x, start_sector = %lx, bpb = %p\r\n", major, minor, start_sector, bpb);
-				/* if (bpb != NULL)
-					print_bpb(bpb); */
+				if (bpb != NULL)
+					print_bpb(bpb);
 
-				printf("trying to eject device major = %u, minor = %u. result = %ld\r\n", major, minor, XHEject(xhdi, major, minor, 1, 1));
-				printf("trying to lock device major = %u, minor = %u. result = %ld\r\n", major, minor, XHLock(xhdi, major, minor, 1, 1));
+				printf("trying to eject device major = %u, minor = %u. result = %ld\r\n",
+							major, minor, XHEject(xhdi, major, minor, 1, 1));
+				printf("trying to lock device major = %u, minor = %u. result = %ld\r\n",
+							major, minor, XHLock(xhdi, major, minor, 1, 1));
+
+				printf("inquire target major = %u, minor = %u. result = %ld\r\n", major, minor,
+							XHInqTarget(xhdi, major, minor, &block_size, &flags, &product_name));
+				printf("block_size = %ld, flags = %ld, product_name = \"%s\"", block_size, flags, product_name);
+
 			}
 		}
 		bpb = NULL;
