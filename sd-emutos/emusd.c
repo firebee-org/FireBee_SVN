@@ -47,13 +47,13 @@ cookie_fun bas_sd_vector(cookie_fun old_vector)
 {
 	register long retvalue __asm__("d0");
 
-	__asm__ __volatile(
+	__asm__ __volatile__(
 			"move.l	%[retvalue],-(sp)\n\t"
 			"trap   #0\n\t"
 			"addq.l	#4,sp\n\t"
 			: [retvalue]"=r"(retvalue)
 			: "g"(old_vector)
-			:
+			: "d1","d2","d3","a0","a1","a2"
 	);
 	return retvalue;
 }

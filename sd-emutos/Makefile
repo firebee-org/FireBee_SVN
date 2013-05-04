@@ -18,8 +18,7 @@ APP=$(EMUSD).prg
 all: $(APP)
 
 SOURCES=$(EMUSD).c \
-		cookie.c \
-		xhdi.c
+		cookie.c 
 		
 OBJECTS=$(SOURCES:.c=.o)
 
