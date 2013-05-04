@@ -40,14 +40,14 @@ int getcookie(uint32_t cookie, uint32_t *p_value)
 
 void print_bpb(_BPB *bpb)
 {
-	printf("\t\trecsiz = %d\r\n", bpb->recsiz);
-	printf("\t\tclsiz  = %d\r\n", bpb->clsiz);
-	printf("\t\tclsizb = %d\r\n", bpb->clsizb);
-	printf("\t\trdlen  = %d\r\n", bpb->rdlen);
-	printf("\t\tfsiz   = %d\r\n", bpb->fsiz);
-	printf("\t\tfatrec = %d\r\n", bpb->fatrec);
-	printf("\t\tdatrec = %d\r\n", bpb->datrec);
-	printf("\t\tnumcl  = %d\r\n", bpb->numcl);
+	printf("\t\trecsiz = %u\r\n", bpb->recsiz);
+	printf("\t\tclsiz  = %u\r\n", bpb->clsiz);
+	printf("\t\tclsizb = %u\r\n", bpb->clsizb);
+	printf("\t\trdlen  = %u\r\n", bpb->rdlen);
+	printf("\t\tfsiz   = %u\r\n", bpb->fsiz);
+	printf("\t\tfatrec = %u\r\n", bpb->fatrec);
+	printf("\t\tdatrec = %u\r\n", bpb->datrec);
+	printf("\t\tnumcl  = %u\r\n", bpb->numcl);
 	printf("\t\tbflags = %x\r\n", bpb->bflags);
 }
 void xhdi_test(void)
@@ -76,11 +76,15 @@ void xhdi_test(void)
 			if (ret == E_OK || ret == EDRVNR)
 			{
 				printf("drive %d returned %d:\r\n", i, ret);
-				printf("\tmajor = %d, minor = %d, start_sector = %lx, bpb = %p\r\n", major & 0xff, minor & 0xff, start_sector, bpb);
-				if (bpb != NULL)
-					print_bpb(bpb);
+				printf("\tmajor = %x, minor = %x, start_sector = %lx, bpb = %p\r\n", major, minor, start_sector, bpb);
+				/* if (bpb != NULL)
+					print_bpb(bpb); */
+
+				printf("trying to eject device major = %u, minor = %u. result = %ld\r\n", major, minor, XHEject(xhdi, major, minor, 1, 1));
+				printf("trying to lock device major = %u, minor = %u. result = %ld\r\n", major, minor, XHLock(xhdi, major, minor, 1, 1));
 			}
 		}
+		bpb = NULL;
 	}
 }
 int main(int argc, char *argv[])

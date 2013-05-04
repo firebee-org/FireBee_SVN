@@ -136,33 +136,33 @@ __extension__													\
  });
 
 /* XHDI #3 */
-#define xhdi_lock(xhdi_entry, major, minor, do_lock, key)	\
+#define XHLock(xhdi_entry, major, minor, do_lock, key)	\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_LOCK,-(sp)\n\t"		\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w 		[minor],-(sp)\n\t"				\
-				"move.w			[do_lock],-(sp)\n\t"			\
-				"move.w			[key],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.w			%[a_key],-(sp)\n\t"				\
+				"move.w			%[a_do_lock],-(sp)\n\t"			\
+				"move.w 		%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#3,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [do_lock]"g"(do_lock),						\
-				  [key]"g"(key),								\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_do_lock]"g"(do_lock),						\
+				  [a_key]"g"(key)								\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 	);															\
 	retvalue;													\
-});
+})
 
 /* XHDI #4 */
-#define xhdi_stop(xhdi_entry, major, minor, do_stop, key)		\
+#define XHStop(xhdi_entry, major, minor, do_stop, key)			\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
@@ -189,31 +189,30 @@ __extension__													\
 });
 
 /* XHDI #5 */
-#define xhdi_eject(xhdi_entry, major, minor, do_eject, key)		\
+#define XHEject(xhdi_entry, major, minor, do_eject, key)		\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_EJECT,-(sp)\n\t"		\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w 		[minor],-(sp)\n\t"				\
-				"move.w			[do_eject],-(sp)\n\t"			\
-				"move.w			[key],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.w			%[a_key],-(sp)\n\t"				\
+				"move.w			%[a_do_eject],-(sp)\n\t"		\
+				"move.w 		%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#5,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [do_stop]"g"(do_eject),						\
-				  [key]"g"(key),								\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_do_eject]"g"(do_eject),					\
+				  [a_key]"g"(key)								\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
-});
+})
 
  /* XHDI #6 */
  #define XHDrvMap(xhdi_entry)									\
