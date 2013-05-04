@@ -30,4 +30,4 @@ test: xhdi_test.c
 	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhditest.prg
 		
 .PHONY clean:
-	- rm -rf *.o $(APP)
+	- rm -rf *.o xhditest.prg
