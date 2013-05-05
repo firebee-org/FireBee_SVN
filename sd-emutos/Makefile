@@ -6,10 +6,9 @@
 TOOLCHAIN_PREFIX=m68k-atari-mint-
 CC=$(TOOLCHAIN_PREFIX)gcc
 
-CFLAGS=-mcpu=68030 \
+CFLAGS=-mcpu=547x \
 	-Os \
 	-fomit-frame-pointer \
-	-g \
 	-Wno-multichar\
 	-Wall
 EMUSD=emusd
@@ -27,7 +26,7 @@ $(APP): $(OBJECTS) depend
 
 test: xhditest.prg
 xhditest.prg: xhdi_test.c depend
-	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhditest.prg
+	$(CC) $(CFLAGS) xhdi_test.c -o xhditest.prg
 		
 .PHONY clean:
 	- rm -rf *.o depend xhditest.prg

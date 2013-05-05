@@ -14,6 +14,7 @@
 #include <osbind.h>
 
 #include "cookie.h"
+#include "xhdi.h"
 
 #define XHDIMAGIC 0x27011992L
 
