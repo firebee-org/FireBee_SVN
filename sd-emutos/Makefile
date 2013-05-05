@@ -29,4 +29,12 @@ test: xhdi_test.c
 	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhditest.prg
 		
 .PHONY clean:
-	- rm -rf *.o xhditest.prg
+	- rm -rf *.o depend xhditest.prg
+
+depend: $(SOURCES)
+		$(CC) $(CFLAGS) $(INCLUDE) -M $(SOURCES) | sed -e 's/^\(.*\).o:/$(OBJDIR)\/\1.o:/' > depend
+
+	
+ifneq (clean,$(MAKECMDGOALS))
+-include depend
+endif

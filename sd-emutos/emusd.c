@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <osbind.h>
 
-//#include "cookie.h"
+#include "cookie.h"
 
 #define XHDIMAGIC 0x27011992L
 
@@ -55,7 +55,7 @@ cookie_fun bas_sd_vector(cookie_fun old_vector)
 			: "g"(old_vector)
 			: "d1","d2","d3","a0","a1","a2"
 	);
-	return retvalue;
+	return (cookie_fun) retvalue;
 }
 
 int main(int argc, char *argv[])
