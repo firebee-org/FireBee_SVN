@@ -1,0 +1,45 @@
+emusd.o: emusd.c \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/stdint.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/features.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/compiler.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/linker.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/sys/cdefs.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/include/stddef.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/stdio.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/include/stdarg.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/types.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/stdio_lim.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/mint_stdio.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/ostruct.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/basepage.h \
+ cookie.h
+cookie.o: cookie.c \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/stdint.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/features.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/compiler.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/linker.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/sys/cdefs.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/include/stddef.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/ostruct.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/basepage.h
+xhdi_test.o: xhdi_test.c \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/stdio.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/features.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/compiler.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/linker.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/sys/cdefs.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/include/stddef.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/include/stdarg.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/types.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/stdio_lim.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/bits/mint_stdio.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/stdint.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/osbind.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/ostruct.h \
+ /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.3/../../../../m68k-atari-mint/include/mint/basepage.h \
+ xhdi.h

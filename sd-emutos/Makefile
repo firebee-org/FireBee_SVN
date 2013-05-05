@@ -15,24 +15,25 @@ CFLAGS=-mcpu=68030 \
 EMUSD=emusd
 APP=$(EMUSD).prg
 
-all: $(APP)
+all: $(APP) xhditest.prg
 
 SOURCES=$(EMUSD).c \
 		cookie.c 
 		
 OBJECTS=$(SOURCES:.c=.o)
 
-$(APP): $(OBJECTS)
+$(APP): $(OBJECTS) depend
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(APP)
 
-test: xhdi_test.c
+test: xhditest.prg
+xhditest.prg: xhdi_test.c depend
 	$(CC) $(CFLAGS)	-Wl,-traditional-format xhdi_test.c -o xhditest.prg
 		
 .PHONY clean:
 	- rm -rf *.o depend xhditest.prg
 
 depend: $(SOURCES)
-		$(CC) $(CFLAGS) $(INCLUDE) -M $(SOURCES) | sed -e 's/^\(.*\).o:/$(OBJDIR)\/\1.o:/' > depend
+		$(CC) $(CFLAGS) $(INCLUDE) -M $(SOURCES) xhdi_test.c > depend
 
 	
 ifneq (clean,$(MAKECMDGOALS))
