@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
 
 	bas_vector = bas_sd_vector(old_vector);
 	printf("got vector from BaS: %p\r\n", bas_vector);
-	setcookie('XHDI', (uint32_t) bas_vector);
-
+	//setcookie('XHDI', (uint32_t) bas_vector);
+	XHNewCookie(old_vector, bas_vector);
 	printf("vector to BaS driver set\r\n");
 
 	return 0;

@@ -51,6 +51,22 @@
 #define XH_TARGET_STOPPED	(1 << 30)
 #define XH_TARGET_RESERVED	(1 << 31)
 
+/* XHDI DOS limits */
+
+#define XH_DL_SECSIZ (0) 	/* Maximum sector size (BIOS level) */
+#define XH_DL_MINFAT (1) 	/* Minimum number of FATs */
+#define XH_DL_MAXFAT (2) 	/* Maximal number of FATs */
+#define XH_DL_MINSPC (3) 	/* Minimum sectors per cluster */
+#define XH_DL_MAXSPC (4) 	/* Maximum sectors per cluster */
+#define XH_DL_CLUSTS (5) 	/* Maximum number of clusters of a 16-bit FAT */
+#define XH_DL_MAXSEC (6) 	/* Maximum number of sectors */
+#define XH_DL_DRIVES (7) 	/* Maximum number of BIOS drives supported by the DOS */
+#define XH_DL_CLSIZB (8) 	/* Maximum cluster size */
+#define XH_DL_RDLEN (9) 	/* Max. (bpb->rdlen * bpb->recsiz/32) */
+#define XH_DL_CLUSTS12 (12) 	/* Max. number of clusters of a 12-bit FAT */
+#define XH_DL_CLUSTS32 (13) 	/* Max. number of clusters of a 32 bit FAT */
+#define XH_DL_BFLAGS (14) 	/* Supported bits in bpb->bflags  */
+
 #ifndef _FEATURES_H
 #include <features.h>
 #endif	/* _FEATURES_H */
@@ -121,8 +137,8 @@ __extension__													\
  				"move.l			%[entry],a0\n\t"				\
  				"jsr			(a0)\n\t"						\
  				"lea			10(sp),sp\n\t"					\
- 				: "=r"(retvalue)	/* outputs */				\
- 				: [a_xhdi_entry]"g"(xhdi_entry),				\
+ 				: "=r"(retvalue)		/* outputs */			\
+ 				: [entry]"g"(xhdi_entry),						\
  				  [a_major]"g"(major),							\
  				  [a_minor]"g"(minor),							\
  				  [a_do_reserve]"g"(do_reserve),				\
@@ -211,8 +227,8 @@ __extension__													\
 })
 
  /* XHDI #6 */
- #define XHDrvMap(xhdi_entry)									\
- __extension__													\
+#define XHDrvMap(xhdi_entry)									\
+__extension__													\
  	({															\
  		register long retvalue __asm__("d0");					\
  																\
@@ -226,8 +242,7 @@ __extension__													\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
  		);														\
  		retvalue;												\
- })
- #define e_xhdi_drivemap	xhdi_drivemap(xhdi_entrypoint)
+})
 
 /* XHDI #7 */
 #define XHInqDev(xhdi_entry, bios_device, major, minor, start_sector, bpb)	\
@@ -281,7 +296,7 @@ __extension__													\
 				  [a_version]"g"(version),						\
 				  [a_company]"g"(company),						\
 				  [a_ahdi_version]"g"(ahdi_version),			\
-				  [a_max_ipl]"g"(max_ipl),						\
+				  [a_max_ipl]"g"(max_ipl)						\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 	);															\
 	retvalue;													\
@@ -328,7 +343,7 @@ __extension__													\
 				: [entry]"g"(xhdi_entry),						\
 				  [a_major]"g"(major),							\
 				  [a_minor]"g"(minor),							\
-				  [a_rwflag]"g"(rwflag)							\
+				  [a_rwflag]"g"(rwflag),						\
 				  [a_recno]"g"(recno),							\
 				  [a_count]"g"(count),							\
 				  [a_buf]"g"(buf)								\
@@ -347,7 +362,6 @@ __extension__													\
 				"move.w			%[a_stringlen],-(sp)\n\t"		\
 				"move.l			%[a_product_name],-(sp)\n\t"	\
 				"move.l			%[a_device_flags],-(sp)\n\t"	\
-				"move.l			%[a_recno],-(sp)\n\t"			\
 				"move.l			%[a_block_size],-(sp)\n\t"		\
 				"move.w 		%[a_minor],-(sp)\n\t"			\
 				"move.w			%[a_major],-(sp)\n\t"			\
@@ -357,12 +371,12 @@ __extension__													\
 				"lea			24(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
 				: [entry]"g"(xhdi_entry),						\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [blocksize]"g"(blocksize)						\
-				  [device_flags]"g"(device_flags),				\
-				  [product_name]"g"(product_name),				\
-				  [stringlen]"g"(stringlen)						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_block_size]"g"(block_size),				\
+				  [a_device_flags]"g"(device_flags),			\
+				  [a_product_name]"g"(product_name),			\
+				  [a_stringlen]"g"(stringlen)					\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 	);															\
 	retvalue;													\
@@ -375,7 +389,7 @@ __extension__													\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.l			%[a_part_id],-(sp)\n\t"			\
+				"move.l			%[a_partid],-(sp)\n\t"			\
 				"move.l			%[a_blocks],-(sp)\n\t"			\
 				"move.l			%[a_bpb],-(sp)\n\t"				\
 				"move.l			%[a_start_sector],-(sp)\n\t"	\
@@ -391,7 +405,7 @@ __extension__													\
 				  [a_bios_device]"g"(bios_device),				\
 				  [a_major]"g"(major),							\
 				  [a_minor]"g"(minor),							\
-				  [a_start_sector]"g"(start_sector)				\
+				  [a_start_sector]"g"(start_sector),			\
 				  [a_bpb]"g"(bpb),								\
 				  [a_blocks]"g"(blocks),						\
 				  [a_partid]"g"(partid)							\
@@ -468,7 +482,7 @@ __extension__													\
 				: "=r"(retvalue)	/* outputs */				\
 				: [entry]"g"(xhdi_entry),						\
 				  [a_major]"g"(major),							\
-				  [a_minor]"g"(minor),							\
+				  [a_minor]"g"(minor)							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 	);															\
 	retvalue;													\
@@ -490,14 +504,14 @@ __extension__													\
 				: "=r"(retvalue)	/* outputs */				\
 				: [entry]"g"(xhdi_entry),						\
 				  [a_opcode]"g"(opcode),						\
-				  [a_data]"g"(data),							\
+				  [a_data]"g"(data)							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #17 */
-#define XHDosLimits(xhdi_entry, which, limit)					\
+#define XHDOSLimits(xhdi_entry, which, limit)					\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
@@ -543,7 +557,7 @@ __extension__													\
 })
 
 /* XHDI #19 */
-#define xhdi_last_reaccess(xhdi_entry, major, minor)			\
+#define XHReaccess(xhdi_entry, major, minor)				\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
