@@ -91,7 +91,7 @@ __extension__													\
 				"move.w 		%[a_minor],-(sp)\n\t"			\
 				"move.w			%[a_major],-(sp)\n\t"			\
 				"move.w			#1,-(sp)\n\t"					\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			18(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
@@ -170,7 +170,7 @@ __extension__													\
 				"move.w 		%[a_minor],-(sp)\n\t"			\
 				"move.w			%[a_major],-(sp)\n\t"			\
 				"move.w			#4,-(sp)\n\t"					\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
@@ -401,172 +401,165 @@ __extension__													\
 })
 
 /* XHDI #13 */
-#define xhdi_driver_special(xhdi_entry, key1, key2, subopcode, data)	\
+#define XHDriverSpecial(xhdi_entry, key1, key2, subopcode, data)	\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_DRIVER_SPECIAL,-(sp)\n\t"	\
-				"move.l			[key1],-(sp)\n\t"				\
-				"move.l			[key2],-(sp)\n\t"				\
-				"move.w	 		[subopcode],-(sp)\n\t"			\
-				"lea			[data],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[a_data],-(sp)\n\t"			\
+				"move.w	 		%[a_subopcode],-(sp)\n\t"		\
+				"move.l			%[a_key2],-(sp)\n\t"			\
+				"move.l			%[a_key1],-(sp)\n\t"			\
+				"move.w			#13,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			16(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [key1]"g"(key1),								\
-				  [key2]"g"(key2),								\
-				  [subopcode]"g"(subopcode),					\
-				  [data]"g"(data)								\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_key1]"g"(key1),							\
+				  [a_key2]"g"(key2),							\
+				  [a_subopcode]"g"(subopcode),					\
+				  [a_data]"g"(data)								\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #14 */
-#define xhdi_get_capacyty(xhdi_entry, major, minor, blocks, bs)	\
+#define XHGetCapacity(xhdi_entry, major, minor, blocks, bs)		\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_GET_CAPACITY,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w			[minor],-(sp)\n\t"				\
-				"lea	 		[blocks],-(sp)\n\t"				\
-				"lea			[bs],-(sp)\n\t"					\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[a_bs],-(sp)\n\t"				\
+				"move.l	 		%[a_blocks],-(sp)\n\t"			\
+				"move.w			%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#14,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
-				"lea			12(sp),sp\n\t"					\
+				"lea			14(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [blocks]"g"(blocks),							\
-				  [bs]"g"(bs)									\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_blocks]"g"(blocks),						\
+				  [a_bs]"g"(bs)									\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #15 */
-#define xhdi_medium_changed(xhdi_entry, major, minor)			\
+#define XHMediumChanged(xhdi_entry, major, minor)				\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_MEDIUM_CHANGED,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w			[minor],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.w			%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#15,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
-				"lea			12(sp),sp\n\t"					\
+				"addq.l			#6,sp\n\t"						\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #16 */
-#define xhdi_mint_info(xhdi_entry, opcode, data)				\
+#define XHMintInfo(xhdi_entry, opcode, data)					\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_MINT_INFO,-(sp)\n\t"	\
-				"move.w			[opcode],-(sp)\n\t"				\
-				"lea			[data],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[a_data],-(sp)\n\t"			\
+				"move.w			%[a_opcode],-(sp)\n\t"			\
+				"move.w			#16,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			8(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [opcode]"g"(opcode),							\
-				  [data]"g"(data),								\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_opcode]"g"(opcode),						\
+				  [a_data]"g"(data),							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #17 */
-#define xhdi_dos_limits(xhdi_entry, which, limit)				\
+#define XHDosLimits(xhdi_entry, which, limit)					\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_DOS_LIMITS,-(sp)\n\t"		\
-				"move.w			[which],-(sp)\n\t"				\
-				"move.l			[limit],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[a_limit],-(sp)\n\t"			\
+				"move.w			%[a_which],-(sp)\n\t"			\
+				"move.w			#17,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			8(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [which]"g"(which),							\
-				  [limit]"g"(limit),							\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_which]"g"(which),							\
+				  [a_limit]"g"(limit)							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
 /* XHDI #18 */
-#define xhdi_last_access(xhdi_entry, major, minor, ms)			\
+#define XHLastAccess(xhdi_entry, major, minor, ms)				\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_LAST_ACCESS,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w			[minor],-(sp)\n\t"				\
-				"lea			[ms],-(sp)\n\t"					\
-				"lea			%[entry],a0\n\t"				\
+				"move.l			%[a_ms],-(sp)\n\t"				\
+				"move.w			%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#18,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
 				"lea			10(sp),sp\n\t"					\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
-				  [ms]"g"(ms)									\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor),							\
+				  [a_ms]"g"(ms)									\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
 
-/* XHDI #18 */
+/* XHDI #19 */
 #define xhdi_last_reaccess(xhdi_entry, major, minor)			\
 __extension__													\
 	({															\
 		register long retvalue __asm__("d0");					\
 																\
 		__asm__ volatile(										\
-				"move.w			#XHDI_LAST_ACCESS,-(sp)\n\t"	\
-				"move.w			[major],-(sp)\n\t"				\
-				"move.w			[minor],-(sp)\n\t"				\
-				"lea			%[entry],a0\n\t"				\
+				"move.w			%[a_minor],-(sp)\n\t"			\
+				"move.w			%[a_major],-(sp)\n\t"			\
+				"move.w			#19,-(sp)\n\t"					\
+				"move.l			%[entry],a0\n\t"				\
 				"jsr			(a0)\n\t"						\
-				"lea			6(sp),sp\n\t"					\
+				"addq.l			#6,sp\n\t"						\
 				: "=r"(retvalue)	/* outputs */				\
-				: [xhdi_entry]"g"(xhdi_entry),					\
-				  [major]"g"(major),							\
-				  [minor]"g"(minor),							\
+				: [entry]"g"(xhdi_entry),						\
+				  [a_major]"g"(major),							\
+				  [a_minor]"g"(minor)							\
 				: CLOBBER_REGISTERS		/* clobbered regs */ 	\
-				  AND_MEMORY									\
 	);															\
 	retvalue;													\
 })
