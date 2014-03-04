@@ -140,7 +140,11 @@ wire	COLOR4;
 wire	COLOR8;
 wire	[4:0] DDR_FB;
 reg	DDR_WR;
-reg	[1:0] DDRWR_D_SEL;
+
+//GE reg	[1:0] DDRWR_D_SEL;
+wire DDRWR_D_SEL1;
+reg DDRWR_D_SEL0;
+
 wire	DOP_FIFO_CLR;
 wire	FALCON_CLUT_RDH;
 wire	FALCON_CLUT_RDL;
@@ -388,7 +392,7 @@ DDR_CTR	b2v_DDR_CTR(
 	.SR_DDRWR_D_SEL(SR_DDRWR_D_SEL),
 	.VIDEO_DDR_TA(VIDEO_DDR_TA),
 	.SR_BLITTER_DACK(SR_BLITTER_DACK),
-	.DDRWR_D_SEL1(DDRWR_D_SEL[1]),
+	.DDRWR_D_SEL1(DDRWR_D_SEL1),
 	.BA(BA),
 	
 	.FB_LE(FB_LE),
@@ -623,7 +627,7 @@ lpm_mux5	b2v_inst22(
 	.data1x(FB_DDR[63:0]),
 	.data2x(BLITTER_DOUT[127:64]),
 	.data3x(BLITTER_DOUT[63:0]),
-	.sel(DDRWR_D_SEL),
+	.sel({DDRWR_D_SEL1, DDRWR_D_SEL0}),
 	.result(VDP_OUT));
 
 
@@ -983,7 +987,7 @@ assign	VDQS[0] = DDR_WR ? DDRCLK[0] : 1'bz;
 always@(posedge DDRCLK[3])
 begin
 	begin
-	DDRWR_D_SEL[0] = SR_DDRWR_D_SEL;
+	DDRWR_D_SEL0 = SR_DDRWR_D_SEL;
 	end
 end
 
