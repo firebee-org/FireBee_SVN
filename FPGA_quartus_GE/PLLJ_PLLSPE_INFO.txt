@@ -13,7 +13,7 @@ PLLJITTER	NA
 PLLSPEmax	84
 PLLSPEmin	-53
 
-PLL_Name	altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|pll1
+PLL_Name	altpll4:b2v_inst22|altpll:altpll_component|altpll_qfk2:auto_generated|pll1
 PLLJITTER	31
 PLLSPEmax	84
 PLLSPEmin	-53

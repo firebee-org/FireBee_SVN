@@ -222,7 +222,7 @@ module interrupt_handler(MAIN_CLK, nFB_WR, nFB_CS1, nFB_CS2, FB_SIZE0,
 
 
 // Sub Module Section
-   lpm_bustri_BYT  u0 (.data(u0_data), .enabledt(u0_enabledt),
+   /*lpm_bustri_BYT  u0 (.data(u0_data), .enabledt(u0_enabledt),
 	 .tridata(u0_tridata));
 
    lpm_bustri_BYT  u1 (.data(u1_data), .enabledt(u1_enabledt),
@@ -232,7 +232,11 @@ module interrupt_handler(MAIN_CLK, nFB_WR, nFB_CS1, nFB_CS2, FB_SIZE0,
 	 .tridata(u2_tridata));
 
    lpm_bustri_BYT  u3 (.data(u3_data), .enabledt(u3_enabledt),
-	 .tridata(u3_tridata));
+	 .tridata(u3_tridata));*/
+	 assign u0_tridata = (u0_enabledt) ? u0_data : 8'hzz;
+	 assign u1_tridata = (u1_enabledt) ? u1_data : 8'hzz;
+	 assign u2_tridata = (u2_enabledt) ? u2_data : 8'hzz;
+	 assign u3_tridata = (u3_enabledt) ? u3_data : 8'hzz;
 
 
    assign ACP_CONF[31:24] = ACP_CONF_q[31:24];

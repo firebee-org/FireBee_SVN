@@ -81,7 +81,7 @@ set_false_path -from [get_registers {*dcfifo*delayed_wrptr_g[*]}] -to [get_regis
 set_false_path -from [get_registers {*dcfifo*rdptr_g[*]}] -to [get_registers {*dcfifo*ws_dgrp*}]
 
 set_clock_groups -asynchronous -group { \
-altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0] \
+altpll4:b2v_inst22|altpll:altpll_component|altpll_qfk2:auto_generated|clk[0] \
 } \
 -group { \
 altpll3:b2v_inst13|altpll:altpll_component|altpll_jvs2:auto_generated|clk[3] \
@@ -112,53 +112,23 @@ altpll1:b2v_inst|altpll:altpll_component|altpll_8tp2:auto_generated|clk[0] \
 } \
 
 
-#set_multicycle_path -from [get_clocks {altpll3:b2v_inst13|altpll:altpll_component|altpll_jvs2:auto_generated|clk[2]}] -to [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll3:b2v_inst13|altpll:altpll_component|altpll_jvs2:auto_generated|clk[2]}] -to [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}] -hold -end 1
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[0]}] -setup -end 2
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[0]}] -hold -end 1
 
-#set_multicycle_path -from [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}] -to [get_clocks {altpll3:b2v_inst13|altpll:altpll_component|altpll_jvs2:auto_generated|clk[2]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}] -to [get_clocks {altpll3:b2v_inst13|altpll:altpll_component|altpll_jvs2:auto_generated|clk[2]}] -hold -end 1
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -to [get_clocks {CLK33M}] -setup -end 2
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -to [get_clocks {CLK33M}] -hold -end 1
 
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[0]}] -to [get_clocks {CLK33M}] -setup -end 2
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[0]}] -to [get_clocks {CLK33M}] -hold -end 1
 
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[3]}] -to [get_clocks {CLK33M}] -setup -end 2
+set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[3]}] -to [get_clocks {CLK33M}] -hold -end 1
 
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[2]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[2]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -hold -end 1
+set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -setup -end 2
+set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[4]}] -hold -end 1
 
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -hold -end 1
-
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[1]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[1]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -hold -end 1
-
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -setup -end 2
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -hold -end 1
-
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[2]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[2]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -hold -end 1
-
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -hold -end 1
-
-
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -to [get_clocks {CLK33M}] -setup -end 2
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -to [get_clocks {CLK33M}] -hold -end 1
-
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -to [get_clocks {CLK33M}] -setup -end 2
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -to [get_clocks {CLK33M}] -hold -end 1
-
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {CLK33M}] -setup -end 2
-set_multicycle_path -from [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[3]}] -to [get_clocks {CLK33M}] -hold -end 1
-
-set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -setup -end 2
-set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[4]}] -hold -end 1
-
-set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[1]}] -setup -end 2
-set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[1]}] -hold -end 1
-
-#set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -setup -end 2
-#set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_1r33:auto_generated|clk[0]}] -hold -end 1
-
-#set_false_path -from [get_clocks {CLK33M}] -to   [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}]
-#set_false_path -to   [get_clocks {CLK33M}] -from [get_clocks {altpll4:b2v_inst22|altpll:altpll_component|altpll_r4n2:auto_generated|clk[0]}]
+set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[1]}] -setup -end 2
+set_multicycle_path -from [get_clocks {CLK33M}] -to [get_clocks {altpll2:b2v_inst12|altpll:altpll_component|altpll_*:auto_generated|clk[1]}] -hold -end 1
 
 # ---------------------------------------------
 

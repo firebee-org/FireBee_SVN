@@ -304,7 +304,10 @@ wire	DMA_DRQ;
 wire	DSP_INT;
 wire	DSP_TA;
 wire	FALCON_IO_TA;
-wire	[31:0] FB_ADR;
+
+//GE wire	[31:0] FB_ADR;
+reg 	[31:0] FB_ADR;
+
 wire	FDC_CLK;
 wire	HSYNC;
 wire	INT_HANDLER_TA;
@@ -403,11 +406,17 @@ altpll1	b2v_inst(
 	.locked(SYNTHESIZED_WIRE_5));
 
 
-lpm_ff0	b2v_inst1(
+/*lpm_ff0	b2v_inst1(
 	.clock(DDR_SYNC_66M),
 	.enable(FB_ALE),
 	.data(FB_AD),
-	.q(FB_ADR));
+	.q(FB_ADR));*/
+always @(posedge DDR_SYNC_66M)
+begin
+	if (FB_ALE)
+		FB_ADR <= FB_AD;
+end
+
 
 
 

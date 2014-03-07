@@ -510,18 +510,20 @@ assign	CLUT_ADR[2] = CLUT_ADR2A & SYNTHESIZED_WIRE_61;
 assign	SYNTHESIZED_WIRE_16 = COLOR4 | COLOR8 | COLOR2;
 
 
-lpm_bustri_LONG	b2v_inst108(
+/*lpm_bustri_LONG	b2v_inst108(
 	.enabledt(FB_VDOE[0]),
 	.data(VDR),
 	.tridata(FB_AD)
-	);
+	);*/
+assign FB_AD = (FB_VDOE[0]) ? VDR : 32'hzzzzzzzz;
 
 
-lpm_bustri_LONG	b2v_inst109(
+/*lpm_bustri_LONG	b2v_inst109(
 	.enabledt(FB_VDOE[1]),
 	.data(SYNTHESIZED_WIRE_11),
 	.tridata(FB_AD)
-	);
+	);*/
+assign FB_AD = (FB_VDOE[1]) ? SYNTHESIZED_WIRE_11 : 32'hzzzzzzzz;
 
 
 lpm_ff5	b2v_inst11(
@@ -530,18 +532,20 @@ lpm_ff5	b2v_inst11(
 	.q(ZR_C8));
 
 
-lpm_bustri_LONG	b2v_inst110(
+/*lpm_bustri_LONG	b2v_inst110(
 	.enabledt(FB_VDOE[2]),
 	.data(SYNTHESIZED_WIRE_13),
 	.tridata(FB_AD)
-	);
+	);*/
+assign FB_AD = (FB_VDOE[2]) ? SYNTHESIZED_WIRE_13 : 32'hzzzzzzzz;
 
 
-lpm_bustri_LONG	b2v_inst119(
+/*lpm_bustri_LONG	b2v_inst119(
 	.enabledt(FB_VDOE[3]),
 	.data(SYNTHESIZED_WIRE_14),
 	.tridata(FB_AD)
-	);
+	);*/
+assign FB_AD = (FB_VDOE[3]) ? SYNTHESIZED_WIRE_14 : 32'hzzzzzzzz;
 
 
 lpm_ff1	b2v_inst12(
@@ -677,10 +681,19 @@ lpm_shiftreg4	b2v_inst26(
 	.shiftout(FIFO_WRE));
 
 
-lpm_latch0	b2v_inst27(
+/*lpm_latch0	b2v_inst27(
 	.gate(DDR_SYNC_66M),
 	.data(SYNTHESIZED_WIRE_15),
-	.q(VDR));
+	.q(VDR));*/
+reg	[31:0] VDR_q = 32'd0;
+assign VDR = VDR_q;
+always @(DDR_SYNC_66M or SYNTHESIZED_WIRE_15) begin
+	if (DDR_SYNC_66M) begin
+		VDR_q <= SYNTHESIZED_WIRE_15;
+	end else begin
+		VDR_q <= VDR_q;
+	end
+end
 
 
 assign	CLUT_ADR[1] = CLUT_ADR1A & SYNTHESIZED_WIRE_16;
@@ -815,11 +828,12 @@ altddio_out2	b2v_inst5(
 
 
 
-lpm_bustri1	b2v_inst51(
+/*lpm_bustri1	b2v_inst51(
 	.enabledt(ST_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_29),
 	.tridata(FB_AD[26:24])
-	);
+	);*/
+assign FB_AD[26:24] = (ST_CLUT_RD) ? SYNTHESIZED_WIRE_29 : 3'bzzz; 
 
 
 lpm_ff3	b2v_inst52(
@@ -828,11 +842,12 @@ lpm_ff3	b2v_inst52(
 	.q(SYNTHESIZED_WIRE_26));
 
 
-lpm_bustri_BYT	b2v_inst53(
+/*lpm_bustri_BYT	b2v_inst53(
 	.enabledt(ACP_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_30),
 	.tridata(FB_AD[7:0])
-	);
+	);*/
+assign FB_AD[7:0] = (ACP_CLUT_RD) ? SYNTHESIZED_WIRE_30 : 8'hzz;
 
 
 lpm_constant0	b2v_inst54(
@@ -840,25 +855,27 @@ lpm_constant0	b2v_inst54(
 
 
 
-lpm_bustri1	b2v_inst56(
+/*lpm_bustri1	b2v_inst56(
 	.enabledt(ST_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_31),
 	.tridata(FB_AD[22:20])
-	);
+	);*/
+assign FB_AD[22:20] = (ST_CLUT_RD) ? SYNTHESIZED_WIRE_31 : 3'bzzz; 
 
 
-lpm_bustri_BYT	b2v_inst57(
+/*lpm_bustri_BYT	b2v_inst57(
 	.enabledt(ACP_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_32),
 	.tridata(FB_AD[15:8])
-	);
+	);*/
+assign FB_AD[15:8] = (ACP_CLUT_RD) ? SYNTHESIZED_WIRE_32 : 8'hzz;
 
-
-lpm_bustri_BYT	b2v_inst58(
+/*lpm_bustri_BYT	b2v_inst58(
 	.enabledt(ACP_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_33),
 	.tridata(FB_AD[23:16])
-	);
+	);*/
+assign FB_AD[23:16] = (ACP_CLUT_RD) ? SYNTHESIZED_WIRE_33 : 8'hzz;
 
 
 lpm_constant0	b2v_inst59(
@@ -867,11 +884,12 @@ lpm_constant0	b2v_inst59(
 
 
 
-lpm_bustri1	b2v_inst61(
+/*lpm_bustri1	b2v_inst61(
 	.enabledt(ST_CLUT_RD),
 	.data(SYNTHESIZED_WIRE_34),
 	.tridata(FB_AD[18:16])
-	);
+	);*/
+assign FB_AD[18:16] = (ST_CLUT_RD) ? SYNTHESIZED_WIRE_34 : 3'bzzz;
 
 
 lpm_muxDZ	b2v_inst62(
@@ -898,11 +916,12 @@ lpm_constant0	b2v_inst64(
 assign	SYNTHESIZED_WIRE_60 = FIFO_RDE & SYNTHESIZED_WIRE_40;
 
 
-lpm_bustri3	b2v_inst66(
+/*lpm_bustri3	b2v_inst66(
 	.enabledt(FALCON_CLUT_RDH),
 	.data(SYNTHESIZED_WIRE_41),
 	.tridata(FB_AD[31:26])
-	);
+	);*/
+assign FB_AD[31:26] = (FALCON_CLUT_RDH) ? SYNTHESIZED_WIRE_41 : 6'bzzzzzz; 
 
 assign	SYNTHESIZED_WIRE_38 = FIFO_RDE & INTER_ZEI;
 
@@ -924,11 +943,12 @@ lpm_mux6	b2v_inst7(
 	.result(SYNTHESIZED_WIRE_62));
 
 
-lpm_bustri3	b2v_inst70(
+/*lpm_bustri3	b2v_inst70(
 	.enabledt(FALCON_CLUT_RDH),
 	.data(SYNTHESIZED_WIRE_44),
 	.tridata(FB_AD[23:18])
-	);
+	);*/
+assign FB_AD[23:18] = (FALCON_CLUT_RDH) ? SYNTHESIZED_WIRE_44 : 6'bzzzzzz; 
 
 
 lpm_ff6	b2v_inst71(
@@ -940,11 +960,12 @@ lpm_ff6	b2v_inst71(
 
 
 
-lpm_bustri3	b2v_inst74(
+/*lpm_bustri3	b2v_inst74(
 	.enabledt(FALCON_CLUT_RDL),
 	.data(SYNTHESIZED_WIRE_45),
 	.tridata(FB_AD[23:18])
-	);
+	);*/
+assign FB_AD[23:18] = (FALCON_CLUT_RDL) ? SYNTHESIZED_WIRE_45 : 6'bzzzzzz; 
 
 
 

@@ -161,11 +161,13 @@ module DDR_CTR(FB_ADR, nFB_CS1, nFB_CS2, nFB_CS3, nFB_OE, FB_SIZE0, FB_SIZE1,
 
 
 // Sub Module Section
-   lpm_bustri_BYT  u0 (.data(u0_data), .enabledt(u0_enabledt),
+   /*lpm_bustri_BYT  u0 (.data(u0_data), .enabledt(u0_enabledt),
 	 .tridata(u0_tridata));
 
    lpm_bustri_BYT  u1 (.data(u1_data), .enabledt(u1_enabledt),
-	 .tridata(u1_tridata));
+	 .tridata(u1_tridata));*/
+	 assign u0_tridata = (u0_enabledt) ? u0_data : 8'hzz;
+	 assign u1_tridata = (u1_enabledt) ? u1_data : 8'hzz;
 
 
    assign SR_FIFO_WRE = SR_FIFO_WRE_q;
