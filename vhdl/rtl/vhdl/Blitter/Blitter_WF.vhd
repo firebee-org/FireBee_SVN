@@ -50,44 +50,43 @@ use ieee.numeric_std.all;
 
 entity FBEE_BLITTER is
 	port(
-        RESETn          : in std_logic;
-        CLK_MAIN        : in std_logic;
-        CLK_DDR0        : in std_logic;
-        FB_ADR          : in std_logic_vector(31 downto 0);
-        FB_ALE          : in std_logic;
-        FB_SIZE1        : in std_logic;
-        FB_SIZE0        : in std_logic;
-        FB_CSn          : in std_logic_vector(3 downto 1);
-        FB_OEn          : in std_logic;
-        FB_WRn          : in std_logic;
-        DATA_IN         : in std_logic_vector(31 downto 0);
-        DATA_OUT        : out std_logic_vector(31 downto 0);
-        DATA_EN         : out std_logic;
-        BLITTER_ON      : in std_logic;
-        BLITTER_DIN     : in std_logic_vector(127 downto 0);
-        BLITTER_DACK_SR : in std_logic;
-        BLITTER_RUN     : out std_logic;
-        BLITTER_DOUT    : out std_logic_vector(127 downto 0);
-        BLITTER_ADR     : out std_logic_vector(31 downto 0);
-        BLITTER_SIG     : out std_logic;
-        BLITTER_WR      : out std_logic;
-        BLITTER_TA      : out std_logic
+		RESETn          : in std_logic;
+		CLK_MAIN        : in std_logic;
+		CLK_DDR0        : in std_logic;
+		FB_ADR          : in std_logic_vector(31 downto 0);
+		FB_ALE          : in std_logic;
+		FB_SIZE1        : in std_logic;
+		FB_SIZE0        : in std_logic;
+		FB_CSn          : in std_logic_vector(3 downto 1);
+		FB_OEn          : in std_logic;
+		FB_WRn          : in std_logic;
+		DATA_IN         : in std_logic_vector(31 downto 0);
+		DATA_OUT        : out std_logic_vector(31 downto 0);
+		DATA_EN         : out std_logic;
+		BLITTER_ON      : in std_logic;
+		BLITTER_DIN     : in std_logic_vector(127 downto 0);
+		BLITTER_DACK_SR : in std_logic;
+		BLITTER_RUN     : out std_logic;
+		BLITTER_DOUT    : out std_logic_vector(127 downto 0);
+		BLITTER_ADR     : out std_logic_vector(31 downto 0);
+		BLITTER_SIG     : out std_logic;
+		BLITTER_WR      : out std_logic;
+		BLITTER_TA      : out std_logic
 	);
 end entity FBEE_BLITTER;
 
 architecture BEHAVIOUR of FBEE_BLITTER is
-signal BLITTER_DACK     : std_logic_vector(4 downto 0);
-signal BLITTER_DIN_I    : std_logic_vector(127 downto 0);
+	signal BLITTER_DACK     : std_logic_vector(4 downto 0);
+	signal BLITTER_DIN_I    : std_logic_vector(127 downto 0);
 begin
-
-    P_BLITTER_DACK: process
-    begin
-        wait until CLK_DDR0 = '1' and CLK_DDR0' event;
-        BLITTER_DACK <= BLITTER_DACK_SR & BLITTER_DACK(4 downto 1);
-        if BLITTER_DACK(0) = '1' then
-           BLITTER_DIN_I <= BLITTER_DIN;
-        end if;
-    end process P_BLITTER_DACK;
+	P_BLITTER_DACK: process
+	begin
+		wait until CLK_DDR0 = '1' and CLK_DDR0' event;
+		BLITTER_DACK <= BLITTER_DACK_SR & BLITTER_DACK(4 downto 1);
+		if BLITTER_DACK(0) = '1' then
+			BLITTER_DIN_I <= BLITTER_DIN;
+		end if;
+	end process P_BLITTER_DACK;
 
 
 	BLITTER_RUN <= '0';
