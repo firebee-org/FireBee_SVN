@@ -41,14 +41,14 @@ set_global_assignment -name DEVICE EP3C40F484C6
 set_global_assignment -name TOP_LEVEL_ENTITY firebee
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:04:08  MAY 31, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name LAST_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 set_global_assignment -name DEVICE_FILTER_PIN_COUNT 484
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
-set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE BALANCED
+set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -380,8 +380,8 @@ set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
 set_global_assignment -name ENABLE_DRC_SETTINGS ON
 set_global_assignment -name ENABLE_SIGNALTAP OFF
 
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA OFF
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA ON
 set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
 set_global_assignment -name MUX_RESTRUCTURE ON
 set_global_assignment -name STATE_MACHINE_PROCESSING "MINIMAL BITS"
@@ -401,7 +401,7 @@ set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
 set_global_assignment -name ALLOW_ANY_ROM_SIZE_FOR_RECOGNITION ON
 set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
 set_global_assignment -name ALLOW_ANY_SHIFT_REGISTER_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA OFF
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON
 set_global_assignment -name AUTO_RAM_RECOGNITION OFF
 set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
 set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
@@ -582,16 +582,16 @@ set_location_assignment PIN_H2 -to SCSI_MSGn
 set_location_assignment PIN_J3 -to SCSI_IOn
 set_location_assignment PIN_U1 -to SCSI_DRQn
 set_location_assignment PIN_H1 -to SCSI_CDn
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING OFF
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
 set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON
 set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
 set_global_assignment -name AUTO_PACKED_REGISTERS_STRATIXII NORMAL
 
 set_global_assignment -name EDA_TEST_BENCH_NAME ddr_ctlr_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 us" -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddr_ctrl_tb -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ms" -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddr_ctlr_tb -section_id ddr_ctlr_tb
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[1]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[2]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[3]"
@@ -669,11 +669,6 @@ set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.vhd
 set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.cmp
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_pkg.vhd
 set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.qip
-set_global_assignment -name FITTER_EARLY_TIMING_ESTIMATE_MODE OPTIMISTIC
-set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT NORMAL
-set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll4.qip
-set_global_assignment -name EDA_MAP_ILLEGAL_CHARACTERS ON -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_PORTABLE_FILE_PATHS ON -section_id eda_simulation
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb -library work
+set_global_assignment -name FITTER_AUTO_EFFORT_DESIRED_SLACK_MARGIN "100 ns"
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
