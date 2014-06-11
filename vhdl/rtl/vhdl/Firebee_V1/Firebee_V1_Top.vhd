@@ -765,7 +765,8 @@ begin
 		VDP_OUT <= BLITTER_DOUT(63 downto 0) when "11",
 						BLITTER_DOUT(127 downto 64) when "10",
 						FB_DDR(63 downto 0) when "01",
-						FB_DDR(127 downto 64) when "00";
+						FB_DDR(127 downto 64) when "00",
+						(others => 'Z') when others;
 
 	VD_EN_I <= SR_DDR_WR or DDR_WR;
 

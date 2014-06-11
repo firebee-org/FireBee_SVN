@@ -737,7 +737,7 @@ DATA_IN(18) and not FB_WRn and not FB_SIZE0 and not FB_SIZE1 when DDR_STATE = DS
     BLITTER_COL_ADR <= BLITTER_ADR(11 downto 2);
 
     FIFO_ROW_ADR <= std_logic_vector(VIDEO_ADR_CNT(22 downto 10));
-    FIFO_BA <= std_logic_vector(VIDEO_ADR_CNT)(9 downto 8);
+    FIFO_BA <= std_logic_vector(VIDEO_ADR_CNT(9 downto 8));
     FIFO_COL_ADR <= VIDEO_ADR_CNT(7 downto 0) & "00";
 
     VIDEO_BASE_ADR(22 downto 20) <= VIDEO_BASE_X_D;

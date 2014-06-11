@@ -1,3 +1,6 @@
+library work;
+use work.firebee_pkg.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -10,8 +13,45 @@ architecture beh of ddr_ctlr_tb is
 	signal clock_33	: std_logic := '0';	-- 33 MHz clock	
 	signal ddr_clk 	: std_logic := '0';	-- ddr clock
 	
-	signal vec		: std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
-	signal o			: std_logic_vector(31 downto 0);
+	signal FB_ADR		: std_logic_vector(31 downto 0);
+	signal DDR_SYNC_66M : std_logic;
+	signal FB_CS1n		: std_logic;
+	signal FB_OEn		: std_logic;
+	signal FB_SIZE0	: std_logic;
+	signal FB_SIZE1	: std_logic;
+	signal FB_ALE		: std_logic;
+	signal FB_WRn		: std_logic;
+	signal FIFO_CLR	: std_logic;
+	signal VIDEO_RAM_CTR : std_logic_vector(15 downto 0);
+	signal BLITTER_ADR	: std_logic_vector(31 downto 0);
+	signal BLITTER_SIG	: std_logic;
+	signal BLITTER_WR		: std_logic;
+	signal DDRCLK0			: std_logic;
+	signal CLK_33M			: std_logic;
+	signal FIFO_MW			: std_logic_vector(8 downto 0);
+	signal VA				: std_logic_vector(12 downto 0);
+	signal VWEn				: std_logic;
+	signal VRASn			: std_logic;
+	signal VCSn				: std_logic;
+	signal VCKE				: std_logic;
+	signal VCASn			: std_logic;
+	signal FB_LE			: std_logic_vector(3 downto 0);
+	signal FB_VDOE			: std_logic_vector(3 downto 0);
+	signal SR_FIFO_WRE	: std_logic;
+	signal SR_DDR_FB		: std_logic;
+	signal SR_DDR_WR		: std_logic;
+	signal SR_DDRWR_D_SEL: std_logic;
+	signal SR_VDMP			: std_logic_vector(7 downto 0);
+	signal VIDEO_DDR_TA	: std_logic;
+	signal SR_BLITTER_DACK	: std_logic;
+	signal BA				: std_logic_vector(1 downto 0);
+	signal DDRWR_D_SEL1	: std_logic;
+	signal VDM_SEL			: std_logic_vector(3 downto 0);
+	signal DATA_IN			: std_logic_vector(31 downto 0);
+	signal DATA_OUT		: std_logic_vector(31 downto 16);
+	signal DATA_EN_H		: std_logic;
+	signal DATA_EN_L		: std_logic;
+
 	component DDR_CTRL_V1
 		port(
         CLK_MAIN        : in std_logic;
@@ -60,8 +100,44 @@ begin
 	port map
 	(
 		CLK_MAIN => clock,
-		vec_in => vec,
-		vec_out => o
+		DDR_SYNC_66M => DDR_SYNC_66M,
+		FB_ADR => FB_ADR,
+		FB_CS1n => FB_CS1n,
+		FB_OEn => FB_OEn,
+		FB_SIZE0 => FB_SIZE0,
+		FB_SIZE1 => FB_SIZE1,
+		FB_ALE => FB_ALE,
+		FB_WRn => FB_WRn,
+		FIFO_CLR => FIFO_CLR,
+		VIDEO_RAM_CTR => VIDEO_RAM_CTR,
+		BLITTER_ADR => BLITTER_ADR,
+		BLITTER_SIG => BLITTER_SIG,
+		BLITTER_WR => BLITTER_WR,
+		DDRCLK0 => DDRCLK0,
+		CLK_33M => CLK_33M,
+		FIFO_MW => FIFO_MW,
+		VA => VA,
+		VWEn => VWEn,
+		VRASn => VRASn,
+		VCSn => VCSn,
+		VCKE => VCKE,
+		VCASn => VCASn,
+		FB_LE => FB_LE,
+		FB_VDOE => FB_VDOE,
+		SR_FIFO_WRE => SR_FIFO_WRE,
+		SR_DDR_FB => SR_DDR_FB,
+		SR_DDR_WR => SR_DDR_WR,
+		SR_DDRWR_D_SEL => SR_DDRWR_D_SEL,
+		SR_VDMP => SR_VDMP,
+		VIDEO_DDR_TA => VIDEO_DDR_TA,
+		SR_BLITTER_DACK => SR_BLITTER_DACK,
+		BA => BA,
+		DDRWR_D_SEL1 => DDRWR_D_SEL1,
+		VDM_SEL => VDM_SEL,
+		DATA_IN => DATA_IN,
+		DATA_OUT => DATA_OUT,
+		DATA_EN_H => DATA_EN_H,
+		DATA_EN_L => DATA_EN_L
 	);
 	
 	stimulate_clock : process
@@ -72,11 +148,11 @@ begin
 	
 	stimulate : process
 	begin
-		vec <= "00000000000000000000000000000001";
+		FB_ADR <= "00000000000000000000000000000001";
 		wait for 20 ps;
-		vec <= "10000000000000000000000000000000";
+		FB_ADR <= "10000000000000000000000000000000";
 		wait for 20 ps;
-		vec <= "00000000000000000000000000000101";
+		FB_ADR <= "00000000000000000000000000000101";
 		wait for 20 ps;
 	end process;
 end beh;

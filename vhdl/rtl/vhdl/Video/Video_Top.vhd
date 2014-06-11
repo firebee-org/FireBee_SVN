@@ -48,7 +48,7 @@ use work.firebee_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity VIDEO_SYSTEM is
     port(
@@ -108,162 +108,178 @@ entity VIDEO_SYSTEM is
 end entity VIDEO_SYSTEM;
         
 architecture BEHAVIOUR of VIDEO_SYSTEM is
-component lpm_fifo_dc0
-	port(
-		aclr		: in std_logic  := '0';
-		data		: in std_logic_vector (127 downto 0);
-		rdclk		: in std_logic ;
-		rdreq		: in std_logic ;
-		wrclk		: in std_logic ;
-		wrreq		: in std_logic ;
-		q		    : out std_logic_vector (127 downto 0);
-		rdempty		: out STD_LOGIC ;
-		wrusedw		: out std_logic_vector (8 downto 0)
-	);
-end component;
-
-component lpm_fifoDZ is
-	port(
-		aclr		: in std_logic ;
-		clock		: in std_logic ;
-		data		: in std_logic_vector (127 downto 0);
-		rdreq		: in std_logic ;
-		wrreq		: in std_logic ;
-		q		    : out std_logic_vector (127 downto 0)
-	);
-end component;
-
-type CLUT_SHIFTREG_TYPE is array(0 to 7) of std_logic_vector(15 downto 0);
-type CLUT_ST_TYPE is array(0 to 15) of std_logic_vector(11 downto 0);
-type CLUT_FA_TYPE is array(0 to 255) of std_logic_vector(17 downto 0);
-type CLUT_FBEE_TYPE is array(0 to 255) of std_logic_vector(23 downto 0);
-
-signal CLUT_FA              : CLUT_FA_TYPE;
-signal CLUT_FI              : CLUT_FBEE_TYPE;
-signal CLUT_ST              : CLUT_ST_TYPE;
-
-signal CLUT_FA_R            : std_logic_vector(5 downto 0);  
-signal CLUT_FA_G            : std_logic_vector(5 downto 0);
-signal CLUT_FA_B            : std_logic_vector(5 downto 0);
-signal CLUT_FBEE_R          : std_logic_vector(7 downto 0);  
-signal CLUT_FBEE_G          : std_logic_vector(7 downto 0);
-signal CLUT_FBEE_B          : std_logic_vector(7 downto 0);
-signal CLUT_ST_R            : std_logic_vector(3 downto 0);  
-signal CLUT_ST_G            : std_logic_vector(3 downto 0);
-signal CLUT_ST_B            : std_logic_vector(3 downto 0);
-
-signal CLUT_FA_OUT          : std_logic_vector(17 downto 0);
-signal CLUT_FBEE_OUT        : std_logic_vector(23 downto 0);
-signal CLUT_ST_OUT          : std_logic_vector(11 downto 0);
-
-signal CLUT_ADR             : std_logic_vector(7 downto 0);        
-signal CLUT_ADR_A           : std_logic_vector(7 downto 0);
-signal CLUT_ADR_MUX         : std_logic_vector(3 downto 0);
-
-signal CLUT_SHIFT_IN        : std_logic_vector(5 downto 0);
-
-signal CLUT_SHIFT_LOAD      : std_logic;
-signal CLUT_OFF             : std_logic_vector(3 downto 0);
-signal CLUT_FBEE_RD         : std_logic;
-signal CLUT_FBEE_WR         : std_logic_vector(3 downto 0);
-signal CLUT_FA_RDH          : std_logic;
-signal CLUT_FA_RDL          : std_logic;
-signal CLUT_FA_WR           : std_logic_vector(3 downto 0);
-signal CLUT_ST_RD           : std_logic;
-signal CLUT_ST_WR           : std_logic_vector(1 downto 0);
-
-signal DATA_OUT_VIDEO_CTRL  : std_logic_vector(31 downto 0);
-signal DATA_EN_H_VIDEO_CTRL : std_logic;
-signal DATA_EN_L_VIDEO_CTRL : std_logic;
-
-signal COLOR1               : std_logic;
-signal COLOR2               : std_logic;
-signal COLOR4               : std_logic;
-signal COLOR8               : std_logic;
-signal CCR                  : std_logic_vector(23 downto 0);
-signal CC_SEL               : std_logic_vector(2 downto 0);
-
-signal FIFO_CLR_I           : std_logic;
-signal DOP_FIFO_CLR         : std_logic;
-signal FIFO_WRE             : std_logic;
-
-signal FIFO_RD_REQ_128      : std_logic;
-signal FIFO_RD_REQ_512      : std_logic;
-signal FIFO_RDE             : std_logic;
-signal INTER_ZEI            : std_logic;
-signal FIFO_D_OUT_128       : std_logic_vector(127 downto 0);
-signal FIFO_D_OUT_512       : std_logic_vector(127 downto 0);
-signal FIFO_D_IN_512        : std_logic_vector(127 downto 0);
-signal FIFO_D               : std_logic_vector(127 downto 0);
-
-signal VD_VZ_I              : std_logic_vector(127 downto 0);
-signal VDM_A                : std_logic_vector(127 downto 0);
-signal VDM_B                : std_logic_vector(127 downto 0);
-signal VDM_C                : std_logic_vector(127 downto 0);
-signal V_DMA_SEL            : std_logic_vector(3 downto 0);
-signal VDMP                 : std_logic_vector(7 downto 0);
-signal VDMP_I               : std_logic_vector(7 downto 0);
-signal CC_24                : std_logic_vector(31 downto 0);
-signal CC_16                : std_logic_vector(23 downto 0);
-signal CLK_PIXEL_I          : std_logic;
-signal VD_OUT_I             : std_logic_vector(31 downto 0);
-signal ZR_C8                : std_logic_vector(7 downto 0);
+	component lpm_fifo_dc0
+		port(
+			aclr		: in std_logic  := '0';
+			data		: in std_logic_vector (127 downto 0);
+			rdclk		: in std_logic ;
+			rdreq		: in std_logic ;
+			wrclk		: in std_logic ;
+			wrreq		: in std_logic ;
+			q		    : out std_logic_vector (127 downto 0);
+			rdempty		: out STD_LOGIC ;
+			wrusedw		: out std_logic_vector (8 downto 0)
+		);
+	end component;
+	
+	component lpm_fifoDZ is
+		port(
+			aclr		: in std_logic ;
+			clock		: in std_logic ;
+			data		: in std_logic_vector (127 downto 0);
+			rdreq		: in std_logic ;
+			wrreq		: in std_logic ;
+			q		    : out std_logic_vector (127 downto 0)
+		);
+	end component;
+	
+	type CLUT_SHIFTREG_TYPE is array(0 to 7) of std_logic_vector(15 downto 0);
+	type CLUT_ST_TYPE is array(0 to 15) of std_logic_vector(11 downto 0);
+	type CLUT_FA_TYPE is array(0 to 255) of std_logic_vector(17 downto 0);
+	type CLUT_FBEE_TYPE is array(0 to 255) of std_logic_vector(23 downto 0);
+	
+	signal CLUT_FA              : CLUT_FA_TYPE;
+	signal CLUT_FI              : CLUT_FBEE_TYPE;
+	signal CLUT_ST              : CLUT_ST_TYPE;
+	
+	signal CLUT_FA_R            : std_logic_vector(5 downto 0);  
+	signal CLUT_FA_G            : std_logic_vector(5 downto 0);
+	signal CLUT_FA_B            : std_logic_vector(5 downto 0);
+	signal CLUT_FBEE_R          : std_logic_vector(7 downto 0);  
+	signal CLUT_FBEE_G          : std_logic_vector(7 downto 0);
+	signal CLUT_FBEE_B          : std_logic_vector(7 downto 0);
+	signal CLUT_ST_R            : std_logic_vector(3 downto 0);  
+	signal CLUT_ST_G            : std_logic_vector(3 downto 0);
+	signal CLUT_ST_B            : std_logic_vector(3 downto 0);
+	
+	signal CLUT_FA_OUT          : std_logic_vector(17 downto 0);
+	signal CLUT_FBEE_OUT        : std_logic_vector(23 downto 0);
+	signal CLUT_ST_OUT          : std_logic_vector(11 downto 0);
+	
+	signal CLUT_ADR             : std_logic_vector(7 downto 0);        
+	signal CLUT_ADR_A           : std_logic_vector(7 downto 0);
+	signal CLUT_ADR_MUX         : std_logic_vector(3 downto 0);
+	signal CLUT_SHIFT_IN        : std_logic_vector(5 downto 0);
+	
+	signal CLUT_SHIFT_LOAD      : std_logic;
+	signal CLUT_OFF             : std_logic_vector(3 downto 0);
+	signal CLUT_FBEE_RD         : std_logic;
+	signal CLUT_FBEE_WR         : std_logic_vector(3 downto 0);
+	signal CLUT_FA_RDH          : std_logic;
+	signal CLUT_FA_RDL          : std_logic;
+	signal CLUT_FA_WR           : std_logic_vector(3 downto 0);
+	signal CLUT_ST_RD           : std_logic;
+	signal CLUT_ST_WR           : std_logic_vector(1 downto 0);
+	
+	signal DATA_OUT_VIDEO_CTRL  : std_logic_vector(31 downto 0);
+	signal DATA_EN_H_VIDEO_CTRL : std_logic;
+	signal DATA_EN_L_VIDEO_CTRL : std_logic;
+	
+	signal COLOR1               : std_logic;
+	signal COLOR2               : std_logic;
+	signal COLOR4               : std_logic;
+	signal COLOR8               : std_logic;
+	signal CCR                  : std_logic_vector(23 downto 0);
+	signal CC_SEL               : std_logic_vector(2 downto 0);
+	
+	signal FIFO_CLR_I           : std_logic;
+	signal DOP_FIFO_CLR         : std_logic;
+	signal FIFO_WRE             : std_logic;
+	
+	signal FIFO_RD_REQ_128      : std_logic;
+	signal FIFO_RD_REQ_512      : std_logic;
+	signal FIFO_RDE             : std_logic;
+	signal INTER_ZEI            : std_logic;
+	signal FIFO_D_OUT_128       : std_logic_vector(127 downto 0);
+	signal FIFO_D_OUT_512       : std_logic_vector(127 downto 0);
+	signal FIFO_D_IN_512        : std_logic_vector(127 downto 0);
+	signal FIFO_D               : std_logic_vector(127 downto 0);
+	
+	signal VD_VZ_I              : std_logic_vector(127 downto 0);
+	signal VDM_A                : std_logic_vector(127 downto 0);
+	signal VDM_B                : std_logic_vector(127 downto 0);
+	signal VDM_C                : std_logic_vector(127 downto 0);
+	signal V_DMA_SEL            : std_logic_vector(3 downto 0);
+	signal VDMP                 : std_logic_vector(7 downto 0);
+	signal VDMP_I               : std_logic_vector(7 downto 0);
+	signal CC_24                : std_logic_vector(31 downto 0);
+	signal CC_16                : std_logic_vector(23 downto 0);
+	signal CLK_PIXEL_I          : std_logic;
+	signal VD_OUT_I             : std_logic_vector(31 downto 0);
+	signal ZR_C8                : std_logic_vector(7 downto 0);
+	
 begin
     CLK_PIXEL <= CLK_PIXEL_I;
     
     FIFO_CLR <= FIFO_CLR_I;
-
+		
     P_CLUT_ST_MC: process
-
     -- This is the dual ported ram for the ST colour lookup tables.
-    begin
-        wait until CLK_MAIN = '1' and CLK_MAIN' event;
-        if CLUT_ST_WR(0) = '1' then
-            CLUT_ST(conv_integer(FB_ADR(4 downto 1)))(11 downto 8) <= FB_AD_IN(27 downto 24);
-        end if;
-        if CLUT_ST_WR(1) = '1' then
-            CLUT_ST(conv_integer(FB_ADR(4 downto 1)))(7 downto 0) <= FB_AD_IN(23 downto 16);
-        end if;
+	 	variable clut_fa_index			: integer;
+		variable clut_st_index			: integer;
+		variable clut_fi_index			: integer;
+	begin
+		clut_st_index := to_integer(unsigned(FB_ADR(4 downto 1)));
+		clut_fa_index := to_integer(unsigned(FB_ADR(9 downto 2)));
+		clut_fi_index := to_integer(unsigned(FB_ADR(9 downto 2)));
+
+		wait until CLK_MAIN = '1' and CLK_MAIN' event;
+		if CLUT_ST_WR(0) = '1' then
+			CLUT_ST(clut_st_index)(11 downto 8) <= FB_AD_IN(27 downto 24);
+		end if;
+		if CLUT_ST_WR(1) = '1' then
+			CLUT_ST(clut_st_index)(7 downto 0) <= FB_AD_IN(23 downto 16);
+		end if;
+
+		if CLUT_FA_WR(0) = '1' then
+			CLUT_FA(clut_fa_index)(17 downto 12) <= FB_AD_IN(31 downto 26);
+		end if;
+		if CLUT_FA_WR(1) = '1' then
+			CLUT_FA(clut_fa_index)(11 downto 6) <= FB_AD_IN(23 downto 18);
+		end if;
+		if CLUT_FA_WR(3) = '1' then
+			CLUT_FA(clut_fa_index)(5 downto 0) <= FB_AD_IN(23 downto 18);
+		end if;
+
+		if CLUT_FBEE_WR(1) = '1' then
+			CLUT_FI(clut_fi_index)(23 downto 16) <= FB_AD_IN(23 downto 16);
+		end if;
+		if CLUT_FBEE_WR(2) = '1' then
+			CLUT_FI(clut_fi_index)(15 downto 8) <= FB_AD_IN(15 downto 8);
+		end if;
+		if CLUT_FBEE_WR(3) = '1' then
+			CLUT_FI(clut_fi_index)(7 downto 0) <= FB_AD_IN(7 downto 0);
+		end if;
         --
-        if CLUT_FA_WR(0) = '1' then
-            CLUT_FA(conv_integer(FB_ADR(9 downto 2)))(17 downto 12) <= FB_AD_IN(31 downto 26);
-        end if;
-        if CLUT_FA_WR(1) = '1' then
-            CLUT_FA(conv_integer(FB_ADR(9 downto 2)))(11 downto 6) <= FB_AD_IN(23 downto 18);
-        end if;
-        if CLUT_FA_WR(3) = '1' then
-            CLUT_FA(conv_integer(FB_ADR(9 downto 2)))(5 downto 0) <= FB_AD_IN(23 downto 18);
-        end if;
-        --
-        if CLUT_FBEE_WR(1) = '1' then
-            CLUT_FI(conv_integer(FB_ADR(9 downto 2)))(23 downto 16) <= FB_AD_IN(23 downto 16);
-        end if;
-        if CLUT_FBEE_WR(2) = '1' then
-            CLUT_FI(conv_integer(FB_ADR(9 downto 2)))(15 downto 8) <= FB_AD_IN(15 downto 8);
-        end if;
-        if CLUT_FBEE_WR(3) = '1' then
-            CLUT_FI(conv_integer(FB_ADR(9 downto 2)))(7 downto 0) <= FB_AD_IN(7 downto 0);
-        end if;
-        --
-        CLUT_ST_OUT <= CLUT_ST(conv_integer(FB_ADR(4 downto 1)));
-        CLUT_FA_OUT <= CLUT_FA(conv_integer(FB_ADR(9 downto 2)));
-        CLUT_FBEE_OUT <= CLUT_FI(conv_integer(FB_ADR(9 downto 2)));
+		CLUT_ST_OUT <= CLUT_ST(clut_st_index);
+		CLUT_FA_OUT <= CLUT_FA(clut_fa_index);
+		CLUT_FBEE_OUT <= CLUT_FI(clut_fi_index);
     end process P_CLUT_ST_MC;
 
     P_CLUT_ST_PX: process
+	 	variable clut_fa_index			: integer;
+		variable clut_st_index			: integer;
+		variable clut_fi_index			: integer;
     -- This is the dual ported ram for the ST colour lookup tables.
     begin
-        wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-        CLUT_ST_R <= CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(8) & CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(11 downto 9);
-        CLUT_ST_G <= CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(4) & CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(7 downto 5);
-        CLUT_ST_B <= CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(0) & CLUT_ST(conv_integer(CLUT_ADR(3 downto 0)))(3 downto 1);
-        CLUT_FA_R <= CLUT_FA(conv_integer(CLUT_ADR))(17 downto 12);
-        CLUT_FA_G <= CLUT_FA(conv_integer(CLUT_ADR))(11 downto 6);
-        CLUT_FA_B <= CLUT_FA(conv_integer(CLUT_ADR))(5 downto 0);
-        CLUT_FBEE_R <= CLUT_FI(conv_integer(ZR_C8))(23 downto 16);
-        CLUT_FBEE_G <= CLUT_FI(conv_integer(ZR_C8))(15 downto 8);
-        CLUT_FBEE_B <= CLUT_FI(conv_integer(ZR_C8))(7 downto 0);
-    end process P_CLUT_ST_PX;
+		clut_st_index := to_integer(unsigned(CLUT_ADR(3 downto 0)));
+		clut_fa_index := to_integer(unsigned(CLUT_ADR));
+		clut_fi_index := to_integer(unsigned(ZR_C8));
+		
+		wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
+
+		CLUT_ST_R <= CLUT_ST(clut_st_index)(8) & CLUT_ST(clut_st_index)(11 downto 9);
+		CLUT_ST_G <= CLUT_ST(clut_st_index)(4) & CLUT_ST(clut_st_index)(7 downto 5);
+		CLUT_ST_B <= CLUT_ST(clut_st_index)(0) & CLUT_ST(clut_st_index)(3 downto 1);
+		
+		CLUT_FA_R <= CLUT_FA(clut_fa_index)(17 downto 12);
+		CLUT_FA_G <= CLUT_FA(clut_fa_index)(11 downto 6);
+		CLUT_FA_B <= CLUT_FA(clut_fa_index)(5 downto 0);
+		
+		CLUT_FBEE_R <= CLUT_FI(clut_fi_index)(23 downto 16);
+		CLUT_FBEE_G <= CLUT_FI(clut_fi_index)(15 downto 8);
+		CLUT_FBEE_B <= CLUT_FI(clut_fi_index)(7 downto 0);
+	end process P_CLUT_ST_PX;
 
     P_VIDEO_OUT: process
     variable VIDEO_OUT  : std_logic_vector(23 downto 0);
@@ -283,58 +299,61 @@ begin
         BLUE <= VIDEO_OUT(7 downto 0);
     end process P_VIDEO_OUT;
 
-    P_CC: process
-    variable CC24_I : std_logic_vector(31 downto 0);
-    variable CC_I   : std_logic_vector(15 downto 0);
-    variable ZR_C8_I   : std_logic_vector(7 downto 0);
-    begin
-        wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-            case CLUT_ADR_MUX(1 downto 0) is
-                when "11" => CC24_I := FIFO_D(31 downto 0);
-                when "10" => CC24_I := FIFO_D(63 downto 32);
-                when "01" => CC24_I := FIFO_D(95 downto 64);
-                when "00" => CC24_I := FIFO_D(127 downto 96);
-            end case;
-            --
-            CC_24 <= CC24_I;
-            --
-            case CLUT_ADR_MUX(2 downto 0) is
-                when "111" => CC_I := FIFO_D(15 downto 0);
-                when "110" => CC_I := FIFO_D(31 downto 16);
-                when "101" => CC_I := FIFO_D(47 downto 32);
-                when "100" => CC_I := FIFO_D(63 downto 48);
-                when "011" => CC_I := FIFO_D(79 downto 64);
-                when "010" => CC_I := FIFO_D(95 downto 80);
-                when "001" => CC_I := FIFO_D(111 downto 96);
-                when "000" => CC_I := FIFO_D(127 downto 112);
-            end case;
-            --
-            CC_16 <= CC_I(15 downto 11) & "000" & CC_I(10 downto 5) & "00" & CC_I(4 downto 0) & "000";
-            --
-            case CLUT_ADR_MUX(3 downto 0) is
-                when x"F" => ZR_C8_I := FIFO_D(7 downto 0);
-                when x"E" => ZR_C8_I := FIFO_D(15 downto 8);
-                when x"D" => ZR_C8_I := FIFO_D(23 downto 16);
-                when x"C" => ZR_C8_I := FIFO_D(31 downto 24);
-                when x"B" => ZR_C8_I := FIFO_D(39 downto 32);
-                when x"A" => ZR_C8_I := FIFO_D(47 downto 40);
-                when x"9" => ZR_C8_I := FIFO_D(55 downto 48);
-                when x"8" => ZR_C8_I := FIFO_D(63 downto 56);
-                when x"7" => ZR_C8_I := FIFO_D(71 downto 64);
-                when x"6" => ZR_C8_I := FIFO_D(79 downto 72);
-                when x"5" => ZR_C8_I := FIFO_D(87 downto 80);
-                when x"4" => ZR_C8_I := FIFO_D(95 downto 88);
-                when x"3" => ZR_C8_I := FIFO_D(103 downto 96);
-                when x"2" => ZR_C8_I := FIFO_D(111 downto 104);
-                when x"1" => ZR_C8_I := FIFO_D(119 downto 112);
-                when x"0" => ZR_C8_I := FIFO_D(127 downto 120);
-            end case;
-            --
-            case COLOR1 is
-                when '1' => ZR_C8 <= ZR_C8_I;
-                when others => ZR_C8 <= "0000000" & ZR_C8_I(0); 
-            end case;
-    end process P_CC;
+	P_CC: process
+		variable CC24_I : std_logic_vector(31 downto 0);
+      variable CC_I   : std_logic_vector(15 downto 0);
+      variable ZR_C8_I   : std_logic_vector(7 downto 0);
+	begin
+		wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
+		case CLUT_ADR_MUX(1 downto 0) is
+			when "11" => CC24_I := FIFO_D(31 downto 0);
+           when "10" => CC24_I := FIFO_D(63 downto 32);
+           when "01" => CC24_I := FIFO_D(95 downto 64);
+           when "00" => CC24_I := FIFO_D(127 downto 96);
+           when others => CC24_I := (others => 'Z');
+		end case;
+           --
+		CC_24 <= CC24_I;
+           --
+		case CLUT_ADR_MUX(2 downto 0) is
+			when "111" => CC_I := FIFO_D(15 downto 0);
+			when "110" => CC_I := FIFO_D(31 downto 16);
+			when "101" => CC_I := FIFO_D(47 downto 32);
+			when "100" => CC_I := FIFO_D(63 downto 48);
+			when "011" => CC_I := FIFO_D(79 downto 64);
+			when "010" => CC_I := FIFO_D(95 downto 80);
+			when "001" => CC_I := FIFO_D(111 downto 96);
+			when "000" => CC_I := FIFO_D(127 downto 112);
+			when others => CC_I := (others => 'X');
+		end case;
+           --
+		CC_16 <= CC_I(15 downto 11) & "000" & CC_I(10 downto 5) & "00" & CC_I(4 downto 0) & "000";
+           --
+		case CLUT_ADR_MUX(3 downto 0) is
+			when x"F" => ZR_C8_I := FIFO_D(7 downto 0);
+			when x"E" => ZR_C8_I := FIFO_D(15 downto 8);
+			when x"D" => ZR_C8_I := FIFO_D(23 downto 16);
+			when x"C" => ZR_C8_I := FIFO_D(31 downto 24);
+			when x"B" => ZR_C8_I := FIFO_D(39 downto 32);
+			when x"A" => ZR_C8_I := FIFO_D(47 downto 40);
+			when x"9" => ZR_C8_I := FIFO_D(55 downto 48);
+			when x"8" => ZR_C8_I := FIFO_D(63 downto 56);
+			when x"7" => ZR_C8_I := FIFO_D(71 downto 64);
+			when x"6" => ZR_C8_I := FIFO_D(79 downto 72);
+			when x"5" => ZR_C8_I := FIFO_D(87 downto 80);
+			when x"4" => ZR_C8_I := FIFO_D(95 downto 88);
+			when x"3" => ZR_C8_I := FIFO_D(103 downto 96);
+			when x"2" => ZR_C8_I := FIFO_D(111 downto 104);
+			when x"1" => ZR_C8_I := FIFO_D(119 downto 112);
+			when x"0" => ZR_C8_I := FIFO_D(127 downto 120);
+			when others => ZR_C8_I := (others => 'X');
+		end case;
+			--
+		case COLOR1 is
+			when '1' => ZR_C8 <= ZR_C8_I;
+			when others => ZR_C8 <= "0000000" & ZR_C8_I(0); 
+		end case;
+	end process P_CC;
 
     CLUT_SHIFT_IN <= CLUT_ADR_A(6 downto 1) when COLOR4 = '0' and COLOR2 = '0' else
                      CLUT_ADR_A(7 downto 2) when COLOR4 = '0' and COLOR2 = '1' else
@@ -453,7 +472,8 @@ begin
                     VDM_B(31 downto 0) & VDM_A(127 downto 32) when x"C",
                     VDM_B(23 downto 0) & VDM_A(127 downto 24) when x"D",
                     VDM_B(15 downto 0) & VDM_A(127 downto 16) when x"E",
-                    VDM_B(7 downto 0) & VDM_A(127 downto 8) when x"F";
+                    VDM_B(7 downto 0) & VDM_A(127 downto 8) when x"F",
+                    (others => 'X') when others;
 
     I_FIFO_DC0: lpm_fifo_dc0
         port map(
