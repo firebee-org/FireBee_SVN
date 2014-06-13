@@ -5,6 +5,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use std.textio.all;
+
 entity ddr_ctlr_tb is
 end ddr_ctlr_tb;
 
@@ -14,7 +16,7 @@ architecture beh of ddr_ctlr_tb is
 	signal ddr_clk 		: std_logic := '0';	-- ddr clock
 			
 	signal FB_ADR		: std_logic_vector(31 downto 0);
-	signal DDR_SYNC_66M : std_logic;
+	signal DDR_SYNC_66M : std_logic := '0';
 	signal FB_CS1n		: std_logic;
 	signal FB_OEn		: std_logic;
 	signal FB_SIZE0		: std_logic := '1';
@@ -52,8 +54,8 @@ architecture beh of ddr_ctlr_tb is
 	signal DATA_EN_H		: std_logic;
 	signal DATA_EN_L		: std_logic;
 	
-	signal bus_state_type is (S0, S1, S2, S3); 		-- according to state machine description on p 17-14 of the MCF ref manual
-	signal bus_state 		: bus_state_type;
+	type bus_state_type is (S0, S1, S2, S3); 		-- according to state machine description on p 17-14 of the MCF ref manual
+	signal bus_state 		: bus_state_type := S0;
 	
 	component DDR_CTRL_V1
 		port(
@@ -162,14 +164,32 @@ begin
 	end process;
 	
 	stimulate : process
+	 variable adr : std_logic_vector(31 downto 0) := x"00000000";
 	begin
-		wait for rising_edge(clock) and clock = '1';
-		-- begin Coldfire bus transaction
-		FB_ADR <= "00000000000000000000000000000001";
-		wait for 20 ns;
-		FB_ADR <= "10000000000000000000000000000000";
-		wait for 20 ns;
-		FB_ADR <= "00000000000000000000000000000101";
-		wait for 20 ns;
+		wait until rising_edge(clock) and clock = '1';
+		case bus_state is
+			when S0 =>
+			  -- address phase
+				report("State S0");
+				FB_ADR <= adr;
+				FB_ALE <= '1';
+				FB_WRn <= '0';
+				bus_state <= S1;
+			when S1 =>
+				report("State S1");
+				-- data phase
+				FB_ALE <= '0';
+				FB_CS1n <= '0';
+				FB_ADR <= x"47114711";
+				if (VIDEO_DDR_TA = '1') then
+					bus_state <= S2;
+				end if;
+			when S2 =>
+				report("State S2");
+			when S3 =>
+			 report("State S3");
+			when others =>
+				report("bus_state: ");
+		end case;
 	end process;
 end beh;
