@@ -10,16 +10,16 @@ end ddr_ctlr_tb;
 
 architecture beh of ddr_ctlr_tb is
 	signal clock		: std_logic := '0';	-- main clock
-	signal clock_33	: std_logic := '0';	-- 33 MHz clock	
-	signal ddr_clk 	: std_logic := '0';	-- ddr clock
-	
+	signal clock_33		: std_logic := '0';	-- 33 MHz clock	
+	signal ddr_clk 		: std_logic := '0';	-- ddr clock
+			
 	signal FB_ADR		: std_logic_vector(31 downto 0);
 	signal DDR_SYNC_66M : std_logic;
 	signal FB_CS1n		: std_logic;
 	signal FB_OEn		: std_logic;
-	signal FB_SIZE0	: std_logic;
-	signal FB_SIZE1	: std_logic;
-	signal FB_ALE		: std_logic;
+	signal FB_SIZE0		: std_logic := '1';
+	signal FB_SIZE1		: std_logic := '1';	-- long word access
+	signal FB_ALE		: std_logic := 'Z';	-- defined reset state
 	signal FB_WRn		: std_logic;
 	signal FIFO_CLR	: std_logic;
 	signal VIDEO_RAM_CTR : std_logic_vector(15 downto 0);
@@ -51,7 +51,10 @@ architecture beh of ddr_ctlr_tb is
 	signal DATA_OUT		: std_logic_vector(31 downto 16);
 	signal DATA_EN_H		: std_logic;
 	signal DATA_EN_L		: std_logic;
-
+	
+	signal bus_state_type is (S0, S1, S2, S3); 		-- according to state machine description on p 17-14 of the MCF ref manual
+	signal bus_state 		: bus_state_type;
+	
 	component DDR_CTRL_V1
 		port(
 			CLK_MAIN        : in std_logic;
@@ -160,6 +163,8 @@ begin
 	
 	stimulate : process
 	begin
+		wait for rising_edge(clock) and clock = '1';
+		-- begin Coldfire bus transaction
 		FB_ADR <= "00000000000000000000000000000001";
 		wait for 20 ns;
 		FB_ADR <= "10000000000000000000000000000000";
