@@ -11,25 +11,24 @@ entity ddr_ctlr_tb is
 end ddr_ctlr_tb;
 
 architecture beh of ddr_ctlr_tb is
-	signal clock		: std_logic := '0';	-- main clock
-	signal clock_33		: std_logic := '0';	-- 33 MHz clock	
+	signal clock			: std_logic := '0';	-- main clock
 	signal ddr_clk 		: std_logic := '0';	-- ddr clock
 			
-	signal FB_ADR		: std_logic_vector(31 downto 0);
-	signal DDR_SYNC_66M : std_logic := '0';
-	signal FB_CS1n		: std_logic;
-	signal FB_OEn		: std_logic;
+	signal FB_ADR			: std_logic_vector(31 downto 0);
+	signal DDR_SYNC_66M	: std_logic := '0';
+	signal FB_CS1n			: std_logic;
+	signal FB_OEn			: std_logic := '1';	-- only write cycles for now
 	signal FB_SIZE0		: std_logic := '1';
 	signal FB_SIZE1		: std_logic := '1';	-- long word access
-	signal FB_ALE		: std_logic := 'Z';	-- defined reset state
-	signal FB_WRn		: std_logic;
-	signal FIFO_CLR	: std_logic;
+	signal FB_ALE			: std_logic := 'Z';	-- defined reset state
+	signal FB_WRn			: std_logic;
+	signal FIFO_CLR		: std_logic;
 	signal VIDEO_RAM_CTR : std_logic_vector(15 downto 0);
 	signal BLITTER_ADR	: std_logic_vector(31 downto 0);
 	signal BLITTER_SIG	: std_logic;
 	signal BLITTER_WR		: std_logic;
 	signal DDRCLK0			: std_logic;
-	signal CLK_33M			: std_logic;
+	signal CLK_33M			: std_logic := '0';
 	signal FIFO_MW			: std_logic_vector(8 downto 0);
 	signal VA				: std_logic_vector(12 downto 0);
 	signal VWEn				: std_logic;
@@ -154,29 +153,28 @@ begin
 	stimulate_33mHz_clock : process
 	begin
 		wait for 30.3 ns;
-		clock_33 <= not clock_33;
+		CLK_33M <= not CLK_33M;
 	end process;
 	
 	stimulate_66MHz_clock : process
 	begin
 		wait for 66.6 ns;
 		DDR_SYNC_66M <= not DDR_SYNC_66M;
+		DDRCLK0 <= DDR_SYNC_66M;
 	end process;
 	
 	stimulate : process
-	 variable adr : std_logic_vector(31 downto 0) := x"00000000";
+		variable adr : std_logic_vector(31 downto 0) := x"00000000";
 	begin
 		wait until rising_edge(clock) and clock = '1';
 		case bus_state is
 			when S0 =>
 			  -- address phase
-				report("State S0");
 				FB_ADR <= adr;
 				FB_ALE <= '1';
 				FB_WRn <= '0';
 				bus_state <= S1;
 			when S1 =>
-				report("State S1");
 				-- data phase
 				FB_ALE <= '0';
 				FB_CS1n <= '0';
@@ -185,9 +183,12 @@ begin
 					bus_state <= S2;
 				end if;
 			when S2 =>
-				report("State S2");
+				FB_CS1n <= '0';
+				bus_state <= S3;
 			when S3 =>
-			 report("State S3");
+				FB_ADR <= std_logic_vector(unsigned(FB_ADR) + 4);
+				bus_state <= S0;
+				FB_WRn <= 'Z';
 			when others =>
 				report("bus_state: ");
 		end case;

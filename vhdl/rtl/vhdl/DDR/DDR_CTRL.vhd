@@ -47,47 +47,47 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity DDR_CTRL_V1 is
-    port(
-        CLK_MAIN        : in std_logic;
-        DDR_SYNC_66M    : in std_logic;
-        FB_ADR          : in std_logic_vector(31 downto 0);
-        FB_CS1n         : in std_logic;
-        FB_OEn          : in std_logic;
-        FB_SIZE0        : in std_logic;
-        FB_SIZE1        : in std_logic;
-        FB_ALE          : in std_logic;
-        FB_WRn          : in std_logic;
-        FIFO_CLR        : in std_logic;
-        VIDEO_RAM_CTR   : in std_logic_vector(15 downto 0);
-        BLITTER_ADR     : in std_logic_vector(31 downto 0);
-        BLITTER_SIG     : in std_logic;
-        BLITTER_WR      : in std_logic;
-        DDRCLK0         : in std_logic;
-        CLK_33M         : in std_logic;
-        FIFO_MW         : in std_logic_vector(8 downto 0);
-        VA              : out std_logic_vector(12 downto 0);
-        VWEn            : out std_logic;
-        VRASn           : out std_logic;
-        VCSn            : out std_logic;
-        VCKE            : out std_logic;
-        VCASn           : out std_logic;
-        FB_LE           : out std_logic_vector(3 downto 0);
-        FB_VDOE         : out std_logic_vector(3 downto 0);
-        SR_FIFO_WRE     : out std_logic;
-        SR_DDR_FB       : out std_logic;
-        SR_DDR_WR       : out std_logic;
-        SR_DDRWR_D_SEL  : out std_logic;
-        SR_VDMP         : out std_logic_vector(7 downto 0);
-        VIDEO_DDR_TA    : out std_logic;
-        SR_BLITTER_DACK : out std_logic;
-        BA              : out std_logic_vector(1 downto 0);
-        DDRWR_D_SEL1    : out std_logic;
-        VDM_SEL         : out std_logic_vector(3 downto 0);
-        DATA_IN         : in std_logic_vector(31 downto 0);
-        DATA_OUT        : out std_logic_vector(31 downto 16);
-        DATA_EN_H       : out std_logic;
-        DATA_EN_L       : out std_logic
-    );
+	port(
+		CLK_MAIN        : in std_logic;
+		DDR_SYNC_66M    : in std_logic;
+		FB_ADR          : in std_logic_vector(31 downto 0);
+		FB_CS1n         : in std_logic;
+		FB_OEn          : in std_logic;
+		FB_SIZE0        : in std_logic;
+		FB_SIZE1        : in std_logic;
+		FB_ALE          : in std_logic;
+		FB_WRn          : in std_logic;
+		FIFO_CLR        : in std_logic;
+		VIDEO_RAM_CTR   : in std_logic_vector(15 downto 0);
+		BLITTER_ADR     : in std_logic_vector(31 downto 0);
+		BLITTER_SIG     : in std_logic;
+		BLITTER_WR      : in std_logic;
+		DDRCLK0         : in std_logic;
+		CLK_33M         : in std_logic;
+		FIFO_MW         : in std_logic_vector(8 downto 0);
+		VA              : out std_logic_vector(12 downto 0);
+		VWEn            : out std_logic;
+		VRASn           : out std_logic;
+		VCSn            : out std_logic;
+		VCKE            : out std_logic;
+		VCASn           : out std_logic;
+		FB_LE           : out std_logic_vector(3 downto 0);
+		FB_VDOE         : out std_logic_vector(3 downto 0);
+		SR_FIFO_WRE     : out std_logic;
+		SR_DDR_FB       : out std_logic;
+		SR_DDR_WR       : out std_logic;
+		SR_DDRWR_D_SEL  : out std_logic;
+		SR_VDMP         : out std_logic_vector(7 downto 0);
+		VIDEO_DDR_TA    : out std_logic;
+		SR_BLITTER_DACK : out std_logic;
+		BA              : out std_logic_vector(1 downto 0);
+		DDRWR_D_SEL1    : out std_logic;
+		VDM_SEL         : out std_logic_vector(3 downto 0);
+		DATA_IN         : in std_logic_vector(31 downto 0);
+		DATA_OUT        : out std_logic_vector(31 downto 16);
+		DATA_EN_H       : out std_logic;
+		DATA_EN_L       : out std_logic
+	);
 end entity DDR_CTRL_V1;
 
 architecture BEHAVIOUR of DDR_CTRL_V1 is
@@ -96,16 +96,16 @@ architecture BEHAVIOUR of DDR_CTRL_V1 is
 	constant FIFO_MWM : std_logic_vector(8 downto 0) := "011001000"; -- 200.
 	constant FIFO_HWM : std_logic_vector(8 downto 0) := "111110100"; -- 500.
 	
-	type ACCESS_WIDTH_TYPE is(LONG, WORD, BYTE);
-	type DDR_ACCESS_TYPE is(CPU, FIFO, BLITTER, NONE);
-	type FB_REGDDR_TYPE is(FR_WAIT,FR_S0,FR_S1,FR_S2,FR_S3);    
-	type DDR_SM_TYPE is(DS_T1, DS_T2A, DS_T2B, DS_T3, DS_N5, DS_N6, DS_N7, DS_N8,   -- Start (normal 8 cycles total = 60ns).
-							  DS_C2, DS_C3, DS_C4, DS_C5, DS_C6, DS_C7,                   -- Configuration. 
-							  DS_T4R, DS_T5R,                                             -- Read CPU or BLITTER.
-							  DS_T4W, DS_T5W, DS_T6W, DS_T7W, DS_T8W, DS_T9W,             -- Write CPU or BLITTER.
-							  DS_T4F, DS_T5F, DS_T6F, DS_T7F, DS_T8F, DS_T9F, DS_T10F,    -- Read FIFO.
-							  DS_CB6, DS_CB8,                                             -- Close FIFO bank.
-							  DS_R2, DS_R3, DS_R4, DS_R5, DS_R6);                         -- Refresh: 10 x 7.5ns = 75ns.
+	type ACCESS_WIDTH_TYPE is (LONG, WORD, BYTE);
+	type DDR_ACCESS_TYPE is (CPU, FIFO, BLITTER, NONE);
+	type FB_REGDDR_TYPE is (FR_WAIT, FR_S0, FR_S1, FR_S2, FR_S3);    
+	type DDR_SM_TYPE is (DS_T1, DS_T2A, DS_T2B, DS_T3, DS_N5, DS_N6, DS_N7, DS_N8,   -- Start (normal 8 cycles total = 60ns).
+							   DS_C2, DS_C3, DS_C4, DS_C5, DS_C6, DS_C7,                   -- Configuration. 
+							   DS_T4R, DS_T5R,                                             -- Read CPU or BLITTER.
+							   DS_T4W, DS_T5W, DS_T6W, DS_T7W, DS_T8W, DS_T9W,             -- Write CPU or BLITTER.
+							   DS_T4F, DS_T5F, DS_T6F, DS_T7F, DS_T8F, DS_T9F, DS_T10F,    -- Read FIFO.
+							   DS_CB6, DS_CB8,                                             -- Close FIFO bank.
+							   DS_R2, DS_R3, DS_R4, DS_R5, DS_R6);                         -- Refresh: 10 x 7.5ns = 75ns.
 	
 	signal ACCESS_WIDTH     : ACCESS_WIDTH_TYPE;
 	signal FB_REGDDR        : FB_REGDDR_TYPE;
@@ -178,33 +178,33 @@ begin
                         WORD when "00",
                         BYTE when others;
 
-    -- Byte selectors:
-    BYTE_SEL(0) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when FB_ADR(1 downto 0) = "00" else '0'; -- Byte 0.
+	-- Byte selectors:
+	BYTE_SEL(0) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
+						'1' when FB_ADR(1 downto 0) = "00" else '0'; -- Byte 0.
 
-    BYTE_SEL(1) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '0' else -- High word.
-                   '1' when FB_ADR(1 downto 0) = "01" else '0'; -- Byte 1.
+	BYTE_SEL(1) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
+						'1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '0' else -- High word.
+						'1' when FB_ADR(1 downto 0) = "01" else '0'; -- Byte 1.
              
-    BYTE_SEL(2) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when FB_ADR(1 downto 0) = "10" else '0'; -- Byte 2.
+	BYTE_SEL(2) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
+						'1' when FB_ADR(1 downto 0) = "10" else '0'; -- Byte 2.
              
-    BYTE_SEL(3) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '1' else -- Low word.
-                   '1' when FB_ADR(1 downto 0) = "11" else '0'; -- Byte 3.
+	BYTE_SEL(3) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
+						'1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '1' else -- Low word.
+						'1' when FB_ADR(1 downto 0) = "11" else '0'; -- Byte 3.
              
-    ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ------------------------------------ CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR) ---------------------------------------------------------------------
-    FBCTRL_REG: process
-    begin
-        wait until CLK_MAIN = '1' and CLK_MAIN' event;
-        FB_REGDDR <= FB_REGDDR_NEXT;
-    end process FBCTRL_REG;
+	---------------------------------------------------------------------------------------------------------------------------------------------------------------
+	------------------------------------ CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR) ---------------------------------------------------------------------
+	FBCTRL_REG: process
+	begin
+		wait until CLK_MAIN = '1' and CLK_MAIN' event;
+		FB_REGDDR <= FB_REGDDR_NEXT;
+	end process FBCTRL_REG;
     
-    FBCTRL_DEC: process(FB_REGDDR, BUS_CYC, DDR_SEL, ACCESS_WIDTH, FB_WRn, DDR_CS)
-    begin
-        case FB_REGDDR is
-            when FR_WAIT => 
+	FBCTRL_DEC: process(FB_REGDDR, BUS_CYC, DDR_SEL, ACCESS_WIDTH, FB_WRn, DDR_CS)
+	begin
+	case FB_REGDDR is
+		when FR_WAIT => 
                 if BUS_CYC = '1' then
                     FB_REGDDR_NEXT <= FR_S0;
                 elsif DDR_SEL = '1' and ACCESS_WIDTH = LONG and FB_WRn = '0' then
