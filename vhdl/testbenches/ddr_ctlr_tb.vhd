@@ -7,8 +7,10 @@ use ieee.numeric_std.all;
 
 use std.textio.all;
 
+
 entity ddr_ctlr_tb is
 end ddr_ctlr_tb;
+
 
 architecture beh of ddr_ctlr_tb is
 	signal clock			: std_logic := '0';	-- main clock
@@ -99,6 +101,24 @@ architecture beh of ddr_ctlr_tb is
 			DATA_EN_L       : out std_logic
 		);
 	end component;
+	
+	component ddr_ram_model
+	port (
+		signal CK		: in std_logic;
+		signal CKE		: in std_logic;
+		signal CSn		: in std_logic;
+		signal RASn		: in std_logic;
+		signal CASn		: in std_logic;
+		signal WEn		: in std_logic;
+		signal LDM		: in std_logic;
+		signal UDM		: in std_logic;
+		signal BA		: in std_logic_vector(1 downto 0);
+		signal A			: in std_logic_vector(12 downto 0);
+		signal DQ		: inout std_logic_vector(7 downto 0);
+		signal LDQS		: inout std_logic;
+		signal UDQS		: inout std_logic
+	);
+	end component;
 begin
 	t : DDR_CTRL_V1
 	port map
@@ -142,6 +162,24 @@ begin
 		DATA_OUT => DATA_OUT,
 		DATA_EN_H => DATA_EN_H,
 		DATA_EN_L => DATA_EN_L
+	);
+	
+	d : ddr_ram_model
+	port map
+	(
+		CK		=> DDRCLK0,
+		CKE	=> VCKE,
+		CSn	=> VCSn,
+		RASn	=> VRASn,
+		CASn	=> VCASn,
+		WEn	=> VWEn,
+		LDM	=> DATA_EN_L,
+		UDM	=> DATA_EN_H,
+		BA		=> BA,
+		A		=> VA,
+		DQ		=> SR_VDMP,
+		LDQS	=> DATA_EN_L,
+		UDQS	=> DATA_EN_H
 	);
 	
 	stimulate_main_clock : process
@@ -194,3 +232,4 @@ begin
 		end case;
 	end process;
 end beh;
+

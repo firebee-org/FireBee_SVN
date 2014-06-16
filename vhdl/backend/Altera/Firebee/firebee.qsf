@@ -41,7 +41,7 @@ set_global_assignment -name DEVICE EP3C40F484C6
 set_global_assignment -name TOP_LEVEL_ENTITY firebee
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:04:08  MAY 31, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 13.1
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -670,5 +670,7 @@ set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.cmp
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_pkg.vhd
 set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.qip
 set_global_assignment -name FITTER_AUTO_EFFORT_DESIRED_SLACK_MARGIN "100 ns"
+set_global_assignment -name VHDL_FILE ../../../testbenches/ddr_ram_model.vhd
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
