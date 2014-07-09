@@ -45,7 +45,7 @@
 --       Replaced the graphical top level by a VHDL model.
 --       The new toplevel is now FIREBEE_V1.
 --       Replaced the graphical Video Top Level by a VHDL model
---       The DDR_CTR is no DDR_CTRL.
+--       The DDR_CTR is now DDR_CTRL.
 --       Rewritten the DDR_CTR in VHDL.
 --       Moved the DDR_CTRL to the FIREBEE_V1 top level.
 --       Moved the BLITTER to the FIREBEE_V1 top level.

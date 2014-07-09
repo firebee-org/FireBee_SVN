@@ -27,44 +27,42 @@ USE ieee.std_logic_1164.all;
 --  Entity Declaration
 
 ENTITY DSP IS
-    port(
-        CLK_33M         : in std_logic;
-        CLK_MAIN        : in std_logic;
-        FB_OEn          : in std_logic;
-        FB_WRn          : in std_logic;
-        FB_CS1n         : in std_logic;
-        FB_CS2n         : in std_logic;
-        FB_SIZE0        : in std_logic;
-        FB_SIZE1        : in std_logic;
-        FB_BURSTn       : in std_logic;
-        FB_ADR          : in std_logic_vector(31 downto 0);
-        RESETn          : in std_logic;
-        FB_CS3n         : in std_logic;
-SRCSn           : buffer std_logic;
-        SRBLEn          : out std_logic;
-        SRBHEn          : out std_logic;
-        SRWEn           : out std_logic;
-        SROEn           : out std_logic;
-        DSP_INT         : out std_logic;
-        DSP_TA          : out std_logic;
-        FB_AD_IN        : in std_logic_vector(31 downto 0);
-        FB_AD_OUT       : out std_logic_vector(31 downto 0);
-        FB_AD_EN        : out std_logic;
-        IO_IN           : in std_logic_vector(17 downto 0);
-        IO_OUT          : out std_logic_vector(17 downto 0);
-        IO_EN           : out std_logic;
-        SRD_IN          : in std_logic_vector(15 downto 0);
-        SRD_OUT         : out std_logic_vector(15 downto 0);
-        SRD_EN          : out std_logic
-    );
+	port(
+		CLK_33M         : in std_logic;
+		CLK_MAIN        : in std_logic;
+		FB_OEn          : in std_logic;
+		FB_WRn          : in std_logic;
+		FB_CS1n         : in std_logic;
+		FB_CS2n         : in std_logic;
+		FB_SIZE0        : in std_logic;
+		FB_SIZE1        : in std_logic;
+		FB_BURSTn       : in std_logic;
+		FB_ADR          : in std_logic_vector(31 downto 0);
+		RESETn          : in std_logic;
+		FB_CS3n         : in std_logic;
+		SRCSn           : buffer std_logic;
+		SRBLEn          : out std_logic;
+		SRBHEn          : out std_logic;
+		SRWEn           : out std_logic;
+		SROEn           : out std_logic;
+		DSP_INT         : out std_logic;
+		DSP_TA          : out std_logic;
+		FB_AD_IN        : in std_logic_vector(31 downto 0);
+		FB_AD_OUT       : out std_logic_vector(31 downto 0);
+		FB_AD_EN        : out std_logic;
+		IO_IN           : in std_logic_vector(17 downto 0);
+		IO_OUT          : out std_logic_vector(17 downto 0);
+		IO_EN           : out std_logic;
+		SRD_IN          : in std_logic_vector(15 downto 0);
+		SRD_OUT         : out std_logic_vector(15 downto 0);
+		SRD_EN          : out std_logic
+	);
 END DSP;
 
 
 --  Architecture Body
 
 ARCHITECTURE DSP_architecture OF DSP IS
-
-	
 BEGIN
 	SRCSn  <= '0' when FB_CS2n = '0' and FB_ADR(27 downto 24) = x"4" else '1';	--FB_CS3n;
 	SRBHEn <= '0' when FB_ADR(0 downto 0) = "0" else '1';
@@ -74,10 +72,10 @@ BEGIN
 	DSP_INT <= '0';
 	DSP_TA <= '0';
 	IO_OUT(17 downto 0) <= FB_ADR(18 downto 1);
-    IO_EN <= '1';
+	IO_EN <= '1';
 	SRD_OUT(15 downto 0) <= FB_AD_IN(31 downto 16) when FB_WRn = '0' and SRCSn = '0' else x"0000";
-    SRD_EN <= '1' when FB_WRn = '0' and SRCSn = '0' else '0';
+	SRD_EN <= '1' when FB_WRn = '0' and SRCSn = '0' else '0';
 	FB_AD_OUT(31 downto 16) <= SRD_IN(15 downto 0) when FB_OEn = '0' and SRCSn = '0' else x"0000";
-    FB_AD_OUT(15 downto 0) <= SRD_IN(15 downto 0) when FB_OEn = '0' and SRCSn = '0' else x"0000";
-    FB_AD_EN <= '1' when FB_OEn = '0' and SRCSn = '0' else '0';
+	FB_AD_OUT(15 downto 0) <= SRD_IN(15 downto 0) when FB_OEn = '0' and SRCSn = '0' else x"0000";
+	FB_AD_EN <= '1' when FB_OEn = '0' and SRCSn = '0' else '0';
 END DSP_architecture;
