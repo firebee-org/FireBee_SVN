@@ -233,9 +233,9 @@ architecture BEHAVIOUR of VIDEO_CTRL is
     signal VIDEO_MOD_TA_I           : std_logic;
     signal VR_RD_I                  : std_logic;
     signal CLK_PIXEL_I              : std_logic;
-    signal MUL1                     : std_logic_vector(16 downto 0);
-    signal MUL2                     : std_logic_vector(16 downto 0);
-    signal MUL3                     : std_logic_vector(16 downto 0);
+    signal MUL1                     : unsigned (16 downto 0);
+    signal MUL2                     : unsigned(16 downto 0);
+    signal MUL3                     : unsigned(16 downto 0);
 begin
     VR_WR <= VR_WR_I;
     VIDEO_RECONFIG <= VIDEO_RECONFIG_I;
@@ -740,22 +740,22 @@ begin
     end process P_DOUBLE_LINE_2;
 
     -- The following multiplications change every time the video resolution is changed.
-    MUL1 <= std_logic_vector(unsigned(VDL_HBE) * unsigned(MULF(5 downto 1)));
-    MUL2 <= std_logic_vector(unsigned(VDL_HHT) + 1 + unsigned(VDL_HSS) * unsigned(MULF(5 downto 1)));
-    MUL3 <= std_logic_vector(unsigned(VDL_HHT) + 10 * unsigned(MULF(5 downto 1)));
+    MUL1 <= unsigned(VDL_HBE) * unsigned(MULF(5 downto 1));
+    MUL2 <= unsigned(VDL_HHT) + 1 + unsigned(VDL_HSS) * unsigned(MULF(5 downto 1));
+    MUL3 <= resize(unsigned(VDL_HHT) + 10 * unsigned(MULF(5 downto 1)), MUL3'length);
 
     BORDER_LEFT <= VDL_HBE when FBEE_VIDEO_ON = '1' else 
                   x"015" when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
-                  x"02A" when ATARI_SYNC = '1' else MUL1(16 downto 5);
+                  x"02A" when ATARI_SYNC = '1' else std_logic_vector(MUL1(16 downto 5));
     HDIS_START <= VDL_HDB when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(BORDER_LEFT) + 1);
     HDIS_END <= VDL_HDE when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(BORDER_LEFT) + unsigned(HDIS_LEN));
     BORDER_RIGHT <= VDL_HBB when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(HDIS_END) + 1);
     HS_START <= VDL_HSS when FBEE_VIDEO_ON = '1' else
                 ATARI_HL(11 downto 0) when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
-                ATARI_HH(11 downto 0) when VDL_VMD(2) = '1' else MUL2(16 downto 5);
+                ATARI_HH(11 downto 0) when VDL_VMD(2) = '1' else std_logic_vector(MUL2(16 downto 5));
     H_TOTAL <= VDL_HHT when FBEE_VIDEO_ON = '1' else
                ATARI_HL(27 downto 16) when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
-               ATARI_HH(27 downto 16) when ATARI_SYNC = '1' else MUL3(16 downto 5);                    
+               ATARI_HH(27 downto 16) when ATARI_SYNC = '1' else std_logic_vector(MUL3(16 downto 5));
     BORDER_TOP <= VDL_VBE when FBEE_VIDEO_ON = '1' else
                  "00000011111" when ATARI_SYNC = '1' else '0' & VDL_VBE(10 downto 1);
     VDIS_START <= VDL_VDB when FBEE_VIDEO_ON = '1' else
