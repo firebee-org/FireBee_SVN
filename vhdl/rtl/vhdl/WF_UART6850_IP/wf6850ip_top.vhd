@@ -56,57 +56,57 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF6850IP_TOP is
   port (
-		CLK					: in bit;
-        RESETn				: in bit;
+		CLK					: in std_logic;
+        RESETn				: in std_logic;
 
-        CS2n, CS1, CS0		: in bit;
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
+        CS2n, CS1, CS0		: in std_logic;
+        E		       		: in std_logic;   
+        RWn              	: in std_logic;
+        RS					: in std_logic;
 
         DATA		        : inout std_logic_vector(7 downto 0);   
 
-        TXCLK				: in bit;
-        RXCLK				: in bit;
-        RXDATA				: in bit;
-        CTSn				: in bit;
-        DCDn				: in bit;
+        TXCLK				: in std_logic;
+        RXCLK				: in std_logic;
+        RXDATA				: in std_logic;
+        CTSn				: in std_logic;
+        DCDn				: in std_logic;
         
         IRQn				: out std_logic;
-        TXDATA				: out bit;   
-        RTSn				: out bit
+        TXDATA				: out std_logic;   
+        RTSn				: out std_logic
        );                                              
 end entity WF6850IP_TOP;
 
 architecture STRUCTURE of WF6850IP_TOP is
 component WF6850IP_TOP_SOC
   port (
-		CLK					: in bit;
-        RESETn				: in bit;
-        CS2n, CS1, CS0		: in bit;
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
+		CLK					: in std_logic;
+        RESETn				: in std_logic;
+        CS2n, CS1, CS0		: in std_logic;
+        E		       		: in std_logic;   
+        RWn              	: in std_logic;
+        RS					: in std_logic;
         DATA_IN		        : in std_logic_vector(7 downto 0);   
         DATA_OUT	        : out std_logic_vector(7 downto 0);   
-		DATA_EN				: out bit;
-        TXCLK				: in bit;
-        RXCLK				: in bit;
-        RXDATA				: in bit;
-        CTSn				: in bit;
-        DCDn				: in bit;
-        IRQn				: out bit;
-        TXDATA				: out bit;   
-        RTSn				: out bit
+		DATA_EN				: out std_logic;
+        TXCLK				: in std_logic;
+        RXCLK				: in std_logic;
+        RXDATA				: in std_logic;
+        CTSn				: in std_logic;
+        DCDn				: in std_logic;
+        IRQn				: out std_logic;
+        TXDATA				: out std_logic;   
+        RTSn				: out std_logic
        );                                              
 end component;
 signal DATA_OUT     : std_logic_vector(7 downto 0);
-signal DATA_EN      : bit;
-signal IRQ_In       : bit;
+signal DATA_EN      : std_logic;
+signal IRQ_In       : std_logic;
 begin
     DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
     IRQn <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.

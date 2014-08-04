@@ -73,82 +73,82 @@ use work.WF1772IP_PKG.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_TOP_SOC is
 	port (
-		CLK			: in bit; -- 16MHz clock!
-		RESETn		: in bit;
-		CSn			: in bit;
-		RWn			: in bit;
-		A1, A0		: in bit;
+		CLK			: in std_logic; -- 16MHz clock!
+		RESETn		: in std_logic;
+		CSn			: in std_logic;
+		RWn			: in std_logic;
+		A1, A0		: in std_logic;
 		DATA_IN		: in std_logic_vector(7 downto 0);
 		DATA_OUT	: out std_logic_vector(7 downto 0);
-		DATA_EN		: out bit;
-		RDn			: in bit;
-		TR00n		: in bit;
-		IPn			: in bit;
-		WPRTn		: in bit;
-		DDEn		: in bit;
-		HDTYPE		: in bit; -- '0' = DD disks, '1' = HD disks.
-		MO			: out bit;
-		WG			: out bit;
-		WD			: out bit;
-		STEP		: out bit;
-		DIRC		: out bit;
-		DRQ			: out bit;
-		INTRQ		: out bit
+		DATA_EN		: out std_logic;
+		RDn			: in std_logic;
+		TR00n		: in std_logic;
+		IPn			: in std_logic;
+		WPRTn		: in std_logic;
+		DDEn		: in std_logic;
+		HDTYPE		: in std_logic; -- '0' = DD disks, '1' = HD disks.
+		MO			: out std_logic;
+		WG			: out std_logic;
+		WD			: out std_logic;
+		STEP		: out std_logic;
+		DIRC		: out std_logic;
+		DRQ			: out std_logic;
+		INTRQ		: out std_logic
 	);
 end entity WF1772IP_TOP_SOC;
 	
 architecture STRUCTURE of WF1772IP_TOP_SOC is
 signal DATA_OUT_REG		: std_logic_vector(7 downto 0);
-signal DATA_EN_REG		: bit;
+signal DATA_EN_REG		: std_logic;
 signal CMD_I			: std_logic_vector(7 downto 0);
-signal DR_I				: bit_vector(7 downto 0);
+signal DR_I				: std_logic_vector(7 downto 0);
 signal DSR_I			: std_logic_vector(7 downto 0);
 signal TR_I				: std_logic_vector(7 downto 0);
 signal SR_I				: std_logic_vector(7 downto 0);
-signal ID_AM_I			: bit;
-signal DATA_AM_I		: bit;
-signal DDATA_AM_I		: bit;
-signal AM_TYPE_I		: bit;
-signal AM_2_DISK_I		: bit;
-signal DATA_STRB_I		: bit;
-signal BUSY_I			: bit;
-signal DRQ_I			: bit;
-signal DRQ_IPn_I		: bit;
-signal LD_TR00_I		: bit;
-signal SP_RT_I			: bit;
-signal SEEK_RNF_I		: bit;
-signal WR_PR_I			: bit;
-signal MO_I				: bit;
-signal PLL_DSTRB_I		: bit;
-signal PLL_D_I			: bit;
-signal CRC_SD_I			: bit;
-signal CRC_ERR_I		: bit;
-signal CRC_PRES_I		: bit;
-signal CRC_ERRFLAG_I	: bit;
-signal SD_R_I			: bit;
-signal CRC_SDOUT_I		: bit;
-signal SHFT_LOAD_SD_I	: bit;
-signal SHFT_LOAD_ND_I	: bit;
-signal WR_In			: bit;
-signal TR_PRES_I		: bit;
-signal TR_CLR_I			: bit;
-signal TR_INC_I			: bit;
-signal TR_DEC_I			: bit;
-signal SR_LOAD_I		: bit;
-signal SR_INC_I			: bit;
-signal DR_CLR_I			: bit;
-signal DR_LOAD_I		: bit;
+signal ID_AM_I			: std_logic;
+signal DATA_AM_I		: std_logic;
+signal DDATA_AM_I		: std_logic;
+signal AM_TYPE_I		: std_logic;
+signal AM_2_DISK_I		: std_logic;
+signal DATA_STRB_I		: std_logic;
+signal BUSY_I			: std_logic;
+signal DRQ_I			: std_logic;
+signal DRQ_IPn_I		: std_logic;
+signal LD_TR00_I		: std_logic;
+signal SP_RT_I			: std_logic;
+signal SEEK_RNF_I		: std_logic;
+signal WR_PR_I			: std_logic;
+signal MO_I				: std_logic;
+signal PLL_DSTRB_I		: std_logic;
+signal PLL_D_I			: std_logic;
+signal CRC_SD_I			: std_logic;
+signal CRC_ERR_I		: std_logic;
+signal CRC_PRES_I		: std_logic;
+signal CRC_ERRFLAG_I	: std_logic;
+signal SD_R_I			: std_logic;
+signal CRC_SDOUT_I		: std_logic;
+signal SHFT_LOAD_SD_I	: std_logic;
+signal SHFT_LOAD_ND_I	: std_logic;
+signal WR_In			: std_logic;
+signal TR_PRES_I		: std_logic;
+signal TR_CLR_I			: std_logic;
+signal TR_INC_I			: std_logic;
+signal TR_DEC_I			: std_logic;
+signal SR_LOAD_I		: std_logic;
+signal SR_INC_I			: std_logic;
+signal DR_CLR_I			: std_logic;
+signal DR_LOAD_I		: std_logic;
 signal TRACK_NR_I		: std_logic_vector(7 downto 0);
-signal CRC_2_DISK_I		: bit;
-signal DSR_2_DISK_I		: bit;
-signal FF_2_DISK_I		: bit;
-signal PRECOMP_EN_I		: bit;
-signal DISK_RWn_I		: bit;
-signal WDATA_I			: bit;
+signal CRC_2_DISK_I		: std_logic;
+signal DSR_2_DISK_I		: std_logic;
+signal FF_2_DISK_I		: std_logic;
+signal PRECOMP_EN_I		: std_logic;
+signal DISK_RWn_I		: std_logic;
+signal WDATA_I			: std_logic;
 begin
 	-- Three state data bus:
 	DATA_OUT <= DATA_OUT_REG when DATA_EN_REG = '1' else (others => '0');
@@ -160,7 +160,7 @@ begin
 	DRQ <= DRQ_I;
 
 	-- Write deleted data address mark in MFM mode in 'Write Sector' command in
-	-- case of asserted command bit 0.
+	-- case of asserted command std_logic 0.
 	AM_TYPE_I <= '0' when CMD_I(7 downto 5) = "101" and CMD_I(0) = '1' else '1';
 
 	-- The CRC unit is used during read from disk and write to disk.

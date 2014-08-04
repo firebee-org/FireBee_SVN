@@ -58,48 +58,48 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_INTERRUPTS is
 	port (  -- System control:
-			CLK			: in bit;
-			RESETn		: in bit;
+			CLK			: in std_logic;
+			RESETn		: in std_logic;
 			
 			-- Asynchronous bus control:
-			DSn			: in bit;
-			CSn			: in bit;
-			RWn			: in bit;
+			DSn			: in std_logic;
+			CSn			: in std_logic;
+			RWn			: in std_logic;
 			
 			-- Data and Adresses:
-			RS			: in bit_vector(5 downto 1);
-			DATA_IN		: in bit_vector(7 downto 0);
-			DATA_OUT	: out bit_vector(7 downto 0);
-			DATA_OUT_EN	: out bit;
+			RS			: in std_logic_vector(5 downto 1);
+			DATA_IN		: in std_logic_vector(7 downto 0);
+			DATA_OUT	: out std_logic_vector(7 downto 0);
+			DATA_OUT_EN	: out std_logic;
 
 			-- Interrupt control:
-			IACKn		: in bit;
-			IEIn		: in bit;
-			IEOn		: out bit;
-			IRQn		: out bit;
+			IACKn		: in std_logic;
+			IEIn		: in std_logic;
+			IEOn		: out std_logic;
+			IRQn		: out std_logic;
 			
 			-- Interrupt sources:
-			GP_INT		: in bit_vector(7 downto 0);
+			GP_INT		: in std_logic_vector(7 downto 0);
 
-			AER_4		: in bit;
-			AER_3		: in bit;
-			TAI			: in bit;
-			TBI			: in bit;
-			TA_PWM		: in bit;
-			TB_PWM		: in bit;
-			TIMER_A_INT	: in bit;
-			TIMER_B_INT	: in bit;
-			TIMER_C_INT	: in bit;
-			TIMER_D_INT	: in bit;
+			AER_4		: in std_logic;
+			AER_3		: in std_logic;
+			TAI			: in std_logic;
+			TBI			: in std_logic;
+			TA_PWM		: in std_logic;
+			TB_PWM		: in std_logic;
+			TIMER_A_INT	: in std_logic;
+			TIMER_B_INT	: in std_logic;
+			TIMER_C_INT	: in std_logic;
+			TIMER_D_INT	: in std_logic;
 
-			RCV_ERR		: in bit;
-			TRM_ERR		: in bit;
-			RCV_BUF_F	: in bit;
-			TRM_BUF_E	: in bit
+			RCV_ERR		: in std_logic;
+			TRM_ERR		: in std_logic;
+			RCV_BUF_F	: in std_logic;
+			TRM_BUF_E	: in std_logic
 	);
 end entity WF68901IP_INTERRUPTS;
 
@@ -108,27 +108,27 @@ architecture BEHAVIOR of WF68901IP_INTERRUPTS is
 type INT_STATES is (SCAN, REQUEST, VECTOR_OUT);
 signal INT_STATE : INT_STATES;
 -- The registers:
-signal IERA			: bit_vector(7 downto 0);
-signal IERB			: bit_vector(7 downto 0);
-signal IPRA			: bit_vector(7 downto 0);
-signal IPRB			: bit_vector(7 downto 0);
-signal ISRA			: bit_vector(7 downto 0);
-signal ISRB			: bit_vector(7 downto 0);
-signal IMRA			: bit_vector(7 downto 0);
-signal IMRB			: bit_vector(7 downto 0);
-signal VR			: bit_vector(7 downto 3);
+signal IERA			: std_logic_vector(7 downto 0);
+signal IERB			: std_logic_vector(7 downto 0);
+signal IPRA			: std_logic_vector(7 downto 0);
+signal IPRB			: std_logic_vector(7 downto 0);
+signal ISRA			: std_logic_vector(7 downto 0);
+signal ISRB			: std_logic_vector(7 downto 0);
+signal IMRA			: std_logic_vector(7 downto 0);
+signal IMRB			: std_logic_vector(7 downto 0);
+signal VR			: std_logic_vector(7 downto 3);
 -- Interconnect:
-signal VECT_NUMBER	: bit_vector(7 downto 0);
-signal INT_SRC		: bit_vector(15 downto 0);
-signal INT_SRC_EDGE	: bit_vector(15 downto 0);
-signal INT_ENA		: bit_vector(15 downto 0);
-signal INT_MASK		: bit_vector(15 downto 0);
-signal INT_PENDING	: bit_vector(15 downto 0);
-signal INT_SERVICE	: bit_vector(15 downto 0);
-signal INT_PASS		: bit_vector(15 downto 0);
-signal INT_OUT		: bit_vector(15 downto 0);
-signal GP_INT_4		: bit;
-signal GP_INT_3		: bit;
+signal VECT_NUMBER	: std_logic_vector(7 downto 0);
+signal INT_SRC		: std_logic_vector(15 downto 0);
+signal INT_SRC_EDGE	: std_logic_vector(15 downto 0);
+signal INT_ENA		: std_logic_vector(15 downto 0);
+signal INT_MASK		: std_logic_vector(15 downto 0);
+signal INT_PENDING	: std_logic_vector(15 downto 0);
+signal INT_SERVICE	: std_logic_vector(15 downto 0);
+signal INT_PASS		: std_logic_vector(15 downto 0);
+signal INT_OUT		: std_logic_vector(15 downto 0);
+signal GP_INT_4		: std_logic;
+signal GP_INT_3		: std_logic;
 begin
 	-- Interrupt source for the GPI_4 and GPI_3 is normally the respective port pin.
 	-- But when the timers operate in their PWM modes, the GPI_4 and GPI_3 are associated
@@ -162,7 +162,7 @@ begin
 	EDGE_ENA: process(RESETn, CLK)
 	-- These are the 16 edge detectors of the 16 interrupt input sources. This
 	-- process also provides the disabling or enabling via the IERA and IERB registers.
-	variable LOCK : bit_vector(15 downto 0);
+	variable LOCK : std_logic_vector(15 downto 0);
 	begin
 		if RESETn = '0' then
 			INT_SRC_EDGE <= x"0000";
@@ -234,7 +234,7 @@ begin
 			end if;
 
 			-- Pending register:
-			-- set and clear bit logic.
+			-- set and clear std_logic logic.
 			for i in 15 downto 8 loop
 				if INT_SRC_EDGE(i) = '1' then
 					IPRA(i-8) <= '1';
@@ -255,7 +255,7 @@ begin
 			end loop;
 
 			-- In-Service register:
-			-- Set bit logic, VR(3) is the service register enable.
+			-- Set std_logic logic, VR(3) is the service register enable.
 			for i in 15 downto 8 loop
 				if INT_OUT(i) = '1' and INT_PASS(i) = '1' and VR(3) = '1' then
 					ISRA(i-8) <= '1';

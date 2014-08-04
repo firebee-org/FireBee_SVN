@@ -58,76 +58,76 @@ use work.wf68901ip_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_USART_TOP is
 	port (  -- System control:
-			CLK			: in bit;
-			RESETn		: in bit;
+			CLK			: in std_logic;
+			RESETn		: in std_logic;
 			
 			-- Asynchronous bus control:
-			DSn			: in bit;
-			CSn			: in bit;
-			RWn			: in bit;
+			DSn			: in std_logic;
+			CSn			: in std_logic;
+			RWn			: in std_logic;
 			
 			-- Data and Adresses:
-			RS			: in bit_vector(5 downto 1);
-			DATA_IN		: in bit_vector(7 downto 0);
-			DATA_OUT	: out bit_vector(7 downto 0);
-			DATA_OUT_EN	: out bit;
+			RS			: in std_logic_vector(5 downto 1);
+			DATA_IN		: in std_logic_vector(7 downto 0);
+			DATA_OUT	: out std_logic_vector(7 downto 0);
+			DATA_OUT_EN	: out std_logic;
 
 			-- Serial I/O control:
-			RC			: in bit; -- Receiver clock.
-			TC			: in bit; -- Transmitter clock.
-			SI			: in bit; -- Serial input.
-			SO			: out bit; -- Serial output.
-			SO_EN		: out bit; -- Serial output enable.
+			RC			: in std_logic; -- Receiver clock.
+			TC			: in std_logic; -- Transmitter clock.
+			SI			: in std_logic; -- Serial input.
+			SO			: out std_logic; -- Serial output.
+			SO_EN		: out std_logic; -- Serial output enable.
 			
 			-- Interrupt channels:
-			RX_ERR_INT	: out bit; -- Receiver errors.
-			RX_BUFF_INT	: out bit; -- Receiver buffer full.
-			TX_ERR_INT	: out bit; -- Transmitter errors.
-			TX_BUFF_INT	: out bit; -- Transmitter buffer empty.
+			RX_ERR_INT	: out std_logic; -- Receiver errors.
+			RX_BUFF_INT	: out std_logic; -- Receiver buffer full.
+			TX_ERR_INT	: out std_logic; -- Transmitter errors.
+			TX_BUFF_INT	: out std_logic; -- Transmitter buffer empty.
 
 			-- DMA control:
-			RRn			: out bit;
-			TRn			: out bit			
+			RRn			: out std_logic;
+			TRn			: out std_logic			
 	);
 end entity WF68901IP_USART_TOP;
 
 architecture STRUCTURE of WF68901IP_USART_TOP is
-	signal BF_I				: bit;
-	signal BE_I				: bit;
-	signal FE_I				: bit;
-	signal OE_I				: bit;
-	signal UE_I				: bit;
-	signal PE_I				: bit;
-	signal LOOPBACK_I		: bit;
-	signal SD_LEVEL_I		: bit;
-	signal SDATA_IN_I		: bit;
-	signal SDATA_OUT_I		: bit;
-	signal RXCLK_I			: bit;
-	signal CLK_MODE_I		: bit;
-	signal SCR_I			: bit_vector(7 downto 0);
-	signal RX_SAMPLE_I		: bit;
-	signal RX_DATA_I		: bit_vector(7 downto 0);
-	signal TX_DATA_I		: bit_vector(7 downto 0);
-	signal CL_I				: bit_vector(1 downto 0);
-	signal ST_I				: bit_vector(1 downto 0);
-	signal P_ENA_I			: bit;
-	signal P_EOn_I			: bit;
-	signal RE_I				: bit;
-	signal TE_I				: bit;
-	signal FS_CLR_I			: bit;
-	signal SS_I				: bit;
-	signal M_CIP_I			: bit;
-	signal FS_B_I			: bit;
-	signal BR_I				: bit;
-	signal UDR_READ_I		: bit;
-	signal UDR_WRITE_I		: bit;
-	signal RSR_READ_I		: bit;
-	signal TSR_READ_I		: bit;
-	signal TX_END_I			: bit;
+	signal BF_I				: std_logic;
+	signal BE_I				: std_logic;
+	signal FE_I				: std_logic;
+	signal OE_I				: std_logic;
+	signal UE_I				: std_logic;
+	signal PE_I				: std_logic;
+	signal LOOPBACK_I		: std_logic;
+	signal SD_LEVEL_I		: std_logic;
+	signal SDATA_IN_I		: std_logic;
+	signal SDATA_OUT_I		: std_logic;
+	signal RXCLK_I			: std_logic;
+	signal CLK_MODE_I		: std_logic;
+	signal SCR_I			: std_logic_vector(7 downto 0);
+	signal RX_SAMPLE_I		: std_logic;
+	signal RX_DATA_I		: std_logic_vector(7 downto 0);
+	signal TX_DATA_I		: std_logic_vector(7 downto 0);
+	signal CL_I				: std_logic_vector(1 downto 0);
+	signal ST_I				: std_logic_vector(1 downto 0);
+	signal P_ENA_I			: std_logic;
+	signal P_EOn_I			: std_logic;
+	signal RE_I				: std_logic;
+	signal TE_I				: std_logic;
+	signal FS_CLR_I			: std_logic;
+	signal SS_I				: std_logic;
+	signal M_CIP_I			: std_logic;
+	signal FS_B_I			: std_logic;
+	signal BR_I				: std_logic;
+	signal UDR_READ_I		: std_logic;
+	signal UDR_WRITE_I		: std_logic;
+	signal RSR_READ_I		: std_logic;
+	signal TSR_READ_I		: std_logic;
+	signal TX_END_I			: std_logic;
 begin
 	SO <= SDATA_OUT_I when TE_I = '1' else SD_LEVEL_I;
 	-- Loopback mode:

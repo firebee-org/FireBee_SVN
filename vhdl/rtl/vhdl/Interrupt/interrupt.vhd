@@ -44,8 +44,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
-use ieee.std_logic_arith.all;
+use ieee.numeric_std.all;
+-- use ieee.std_logic_arith.all;
 
 entity INTHANDLER is
     port(
@@ -216,9 +216,9 @@ begin
             if INT_ENA(i) = '1' and RESETn = '1' then
                 INT_LA(i) <= x"0";
             elsif INT_L(i) = '1' and INT_LA(i) < x"7" then
-                INT_LA(i) <= INT_LA(i) + '1';
+                INT_LA(i) <= std_logic_vector(unsigned(INT_LA(i)) + 1);
             elsif INT_L(i) = '0' and INT_LA(i) > x"8" then
-                INT_LA(i) <= INT_LA(i) - '1';
+                INT_LA(i) <= std_logic_vector(unsigned(INT_LA(i)) - 1);
             elsif INT_L(i) = '1' and INT_LA(i) > x"6" then
                 INT_LA(i) <= x"F";
             elsif INT_L(i) = '0' and INT_LA(i) > x"9" then

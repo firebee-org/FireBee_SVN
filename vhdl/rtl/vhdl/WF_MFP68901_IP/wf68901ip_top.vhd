@@ -62,103 +62,103 @@ use work.wf68901ip_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_TOP is
 	port (  -- System control:
-			CLK			: in bit;
-			RESETn		: in bit;
+			CLK			: in std_logic;
+			RESETn		: in std_logic;
 			
 			-- Asynchronous bus control:
-			DSn			: in bit;
-			CSn			: in bit;
-			RWn			: in bit;
+			DSn			: in std_logic;
+			CSn			: in std_logic;
+			RWn			: in std_logic;
 			DTACKn		: out std_logic;
 			
 			-- Data and Adresses:
-			RS			: in bit_vector(5 downto 1);
+			RS			: in std_logic_vector(5 downto 1);
 			DATA		: inout std_logic_vector(7 downto 0);
 			GPIP		: inout std_logic_vector(7 downto 0);
 			
 			-- Interrupt control:
-			IACKn		: in bit;
-			IEIn		: in bit;
-			IEOn		: out bit;
+			IACKn		: in std_logic;
+			IEIn		: in std_logic;
+			IEOn		: out std_logic;
 			IRQn		: out std_logic;
 			
 			-- Timers and timer control:
-			XTAL1		: in bit; -- Use an oszillator instead of a quartz.
-			TAI			: in bit;
-			TBI			: in bit;
-			TAO			: out bit;			
-			TBO			: out bit;			
-			TCO			: out bit;			
-			TDO			: out bit;			
+			XTAL1		: in std_logic; -- Use an oszillator instead of a quartz.
+			TAI			: in std_logic;
+			TBI			: in std_logic;
+			TAO			: out std_logic;			
+			TBO			: out std_logic;			
+			TCO			: out std_logic;			
+			TDO			: out std_logic;			
 			
 			-- Serial I/O control:
-			RC			: in bit;
-			TC			: in bit;
-			SI			: in bit;
+			RC			: in std_logic;
+			TC			: in std_logic;
+			SI			: in std_logic;
 			SO			: out std_logic;
 			
 			-- DMA control:
-			RRn			: out bit;
-			TRn			: out bit			
+			RRn			: out std_logic;
+			TRn			: out std_logic			
 	);
 end entity WF68901IP_TOP;
 
 architecture STRUCTURE of WF68901IP_TOP is
 component WF68901IP_TOP_SOC
-	port(CLK			: in bit;
-         RESETn		    : in bit;
-         DSn			: in bit;
-         CSn			: in bit;
-         RWn			: in bit;
-         DTACKn		    : out bit;
-         RS			    : in bit_vector(5 downto 1);
+	port(CLK			: in std_logic;
+         RESETn		    : in std_logic;
+         DSn			: in std_logic;
+         CSn			: in std_logic;
+         RWn			: in std_logic;
+         DTACKn		    : out std_logic;
+         RS			    : in std_logic_vector(5 downto 1);
          DATA_IN		: in std_logic_vector(7 downto 0);
          DATA_OUT	    : out std_logic_vector(7 downto 0);
-         DATA_EN		: out bit;
-         GPIP_IN		: in bit_vector(7 downto 0);
-         GPIP_OUT	    : out bit_vector(7 downto 0);
-         GPIP_EN		: out bit_vector(7 downto 0);
-         IACKn		    : in bit;
-         IEIn		    : in bit;
-         IEOn		    : out bit;
-         IRQn		    : out bit;
-         XTAL1		    : in bit;
-         TAI			: in bit;
-         TBI			: in bit;
-         TAO			: out bit;			
-         TBO			: out bit;			
-         TCO			: out bit;			
-         TDO			: out bit;			
-         RC			    : in bit;
-         TC			    : in bit;
-         SI			    : in bit;
-         SO			    : out bit;
-         SO_EN		    : out bit;
-         RRn			: out bit;
-         TRn			: out bit			
+         DATA_EN		: out std_logic;
+         GPIP_IN		: in std_logic_vector(7 downto 0);
+         GPIP_OUT	    : out std_logic_vector(7 downto 0);
+         GPIP_EN		: out std_logic_vector(7 downto 0);
+         IACKn		    : in std_logic;
+         IEIn		    : in std_logic;
+         IEOn		    : out std_logic;
+         IRQn		    : out std_logic;
+         XTAL1		    : in std_logic;
+         TAI			: in std_logic;
+         TBI			: in std_logic;
+         TAO			: out std_logic;			
+         TBO			: out std_logic;			
+         TCO			: out std_logic;			
+         TDO			: out std_logic;			
+         RC			    : in std_logic;
+         TC			    : in std_logic;
+         SI			    : in std_logic;
+         SO			    : out std_logic;
+         SO_EN		    : out std_logic;
+         RRn			: out std_logic;
+         TRn			: out std_logic			
 	);
 end component;
 --
-signal DTACK_In         : bit;
-signal IRQ_In           : bit;
+signal DTACK_In         : std_logic;
+signal IRQ_In           : std_logic;
 signal DATA_OUT         : std_logic_vector(7 downto 0);
-signal DATA_EN          : bit;
-signal GPIP_IN          : bit_vector(7 downto 0);
-signal GPIP_OUT         : bit_vector(7 downto 0);
-signal GPIP_EN          : bit_vector(7 downto 0);
-signal SO_I             : bit;
-signal SO_EN            : bit;
+signal DATA_EN          : std_logic;
+signal GPIP_IN          : std_logic_vector(7 downto 0);
+signal GPIP_OUT         : std_logic_vector(7 downto 0);
+signal GPIP_EN          : std_logic_vector(7 downto 0);
+signal SO_I             : std_logic;
+signal SO_EN            : std_logic;
 begin
     DTACKn <= '0' when DTACK_In = '0' else 'Z'; -- Open drain.
     IRQn <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.
 
     DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
 
-    GPIP_IN <= To_BitVector(GPIP);
+    GPIP_IN <= GPIP;
 
 	P_GPIP_OUT: process(GPIP_OUT, GPIP_EN)
 	begin

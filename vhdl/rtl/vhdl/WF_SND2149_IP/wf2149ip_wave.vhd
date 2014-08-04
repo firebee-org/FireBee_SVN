@@ -60,32 +60,32 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 use work.wf2149ip_pkg.all;
 
 entity WF2149IP_WAVE is
 	port(
-		RESETn		: in bit;
-		SYS_CLK		: in bit;
+		RESETn		: in std_logic;
+		SYS_CLK		: in std_logic;
 
-		WAV_STRB	: in bit;
+		WAV_STRB	: in std_logic;
 
-		ADR			: in bit_vector(3 downto 0);
+		ADR			: in std_logic_vector(3 downto 0);
 		DATA_IN		: in std_logic_vector(7 downto 0);
 		DATA_OUT	: out std_logic_vector(7 downto 0);
-		DATA_EN		: out bit;
+		DATA_EN		: out std_logic;
 		
 		BUSCYCLE	: in BUSCYCLES;
-		CTRL_REG	: in bit_vector(5 downto 0);
+		CTRL_REG	: in std_logic_vector(5 downto 0);
 
-		OUT_A		: out bit;
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		OUT_A		: out std_logic;
+		OUT_B		: out std_logic;
+		OUT_C		: out std_logic
 	);
 end entity WF2149IP_WAVE;
 
 architecture BEHAVIOR of WF2149IP_WAVE is
-signal FREQUENCY_A	: std_logic_vector(11 downto 0);
+signal FREQUENCY_A	: unsigned (11 downto 0);
 signal FREQUENCY_B	: std_logic_vector(11 downto 0);
 signal FREQUENCY_C	: std_logic_vector(11 downto 0);
 signal NOISE_FREQ	: std_logic_vector(4 downto 0);
@@ -95,14 +95,14 @@ signal LEVEL_C		: std_logic_vector(4 downto 0);
 signal ENV_FREQ		: std_logic_vector(15 downto 0);
 signal ENV_SHAPE	: std_logic_vector(3 downto 0);
 signal ENV_RESET	: boolean;
-signal ENV_STRB		: bit;
-signal OSC_A_OUT	: bit;
-signal OSC_B_OUT	: bit;
-signal OSC_C_OUT	: bit;
-signal NOISE_OUT	: bit;
-signal AUDIO_A		: bit;
-signal AUDIO_B		: bit;
-signal AUDIO_C		: bit;
+signal ENV_STRB		: std_logic;
+signal OSC_A_OUT	: std_logic;
+signal OSC_B_OUT	: std_logic;
+signal OSC_C_OUT	: std_logic;
+signal NOISE_OUT	: std_logic;
+signal AUDIO_A		: std_logic;
+signal AUDIO_B		: std_logic;
+signal AUDIO_C		: std_logic;
 signal VOL_ENV		: std_logic_vector(4 downto 0);
 signal AMPLITUDE_A	: std_logic_vector(4 downto 0);
 signal AMPLITUDE_B	: std_logic_vector(4 downto 0);
@@ -130,8 +130,8 @@ begin
 			ENV_RESET <= false; -- Initialize signal.
 			if BUSCYCLE = R_WRITE then
 				case ADR is
-					when x"0" => FREQUENCY_A(7 downto 0) <= DATA_IN;
-					when x"1" => FREQUENCY_A(11 downto 8) <= DATA_IN(3 downto 0);
+					when x"0" => FREQUENCY_A(7 downto 0) <= unsigned(DATA_IN);
+					when x"1" => FREQUENCY_A(11 downto 8) <= unsigned(DATA_IN(3 downto 0));
 					when x"2" => FREQUENCY_B(7 downto 0) <= DATA_IN;
 					when x"3" => FREQUENCY_B(11 downto 8) <= DATA_IN(3 downto 0);
 					when x"4" => FREQUENCY_C(7 downto 0) <= DATA_IN;
@@ -151,8 +151,8 @@ begin
 	end process REGISTERS;
 
 	-- Read back the configuration registers:
-	DATA_OUT <=	FREQUENCY_A(7 downto 0) when BUSCYCLE = R_READ and ADR = x"0" else
-				"0000" & FREQUENCY_A(11 downto 8) when BUSCYCLE = R_READ and ADR = x"1" else
+	DATA_OUT <=	std_logic_vector(FREQUENCY_A(7 downto 0)) when BUSCYCLE = R_READ and ADR = x"0" else
+				"0000" & std_logic_vector(FREQUENCY_A(11 downto 8)) when BUSCYCLE = R_READ and ADR = x"1" else
 				FREQUENCY_B(7 downto 0) when BUSCYCLE = R_READ and ADR = x"2" else
 				"0000" & FREQUENCY_B(11 downto 8) when BUSCYCLE = R_READ and ADR = x"3" else
 				FREQUENCY_C(7 downto 0) when BUSCYCLE = R_READ and ADR = x"4" else
@@ -168,10 +168,10 @@ begin
 				'1' when BUSCYCLE = R_READ and ADR >= x"8" and ADR <= x"D" else '0';
 
 	MUSICGENERATOR: process(RESETn, SYS_CLK)
-	variable CLK_DIV	: std_logic_vector(2 downto 0);
-	variable CNT_CH_A 	: std_logic_vector(11 downto 0);
-	variable CNT_CH_B 	: std_logic_vector(11 downto 0);
-	variable CNT_CH_C 	: std_logic_vector(11 downto 0);
+	variable CLK_DIV	: unsigned (2 downto 0);
+	variable CNT_CH_A 	: unsigned (11 downto 0);
+	variable CNT_CH_B 	: unsigned (11 downto 0);
+	variable CNT_CH_C 	: unsigned (11 downto 0);
 	begin
 		if RESETn = '0' then
 			CLK_DIV := "000";
@@ -186,37 +186,37 @@ begin
 				-- Divider by 8 for the oscillators brings in connection 
 				-- with the toggle flip flops CH_x_OUT the required divider
 				-- ratio of 16.
-				CLK_DIV := CLK_DIV + '1';
+				CLK_DIV := CLK_DIV + 1;
 
 				if CLK_DIV = "000" then
 					if FREQUENCY_A = x"000" then
 						CNT_CH_A := (others => '0');
 						OSC_A_OUT <= '0';
 					elsif CNT_CH_A = x"000" then
-						CNT_CH_A := FREQUENCY_A - '1' ;
+						CNT_CH_A := FREQUENCY_A - 1 ;
 						OSC_A_OUT <= not OSC_A_OUT;
 					else
-						CNT_CH_A := CNT_CH_A - '1';
+						CNT_CH_A := CNT_CH_A - 1;
 					end if;
 
 					if FREQUENCY_B = x"000" then
 						CNT_CH_B := (others => '0');
 						OSC_B_OUT <= '0';
 					elsif CNT_CH_B = x"000" then
-						CNT_CH_B := FREQUENCY_B - '1' ;
+						CNT_CH_B := unsigned(FREQUENCY_B) - 1 ;
 						OSC_B_OUT <= not OSC_B_OUT;
 					else
-						CNT_CH_B := CNT_CH_B - '1';
+						CNT_CH_B := CNT_CH_B - 1;
 					end if;
 
 					if FREQUENCY_C = x"000" then
 						CNT_CH_C := (others => '0');
 						OSC_C_OUT <= '0';
 					elsif CNT_CH_C = x"000" then
-						CNT_CH_C := FREQUENCY_C - '1' ;
+						CNT_CH_C := unsigned(FREQUENCY_C) - 1 ;
 						OSC_C_OUT <= not OSC_C_OUT;
 					else
-						CNT_CH_C := CNT_CH_C - '1';
+						CNT_CH_C := CNT_CH_C - 1;
 					end if;
 				end if;
 			end if;
@@ -228,8 +228,8 @@ begin
 	-- (ESE Artists' factory) approach for a 2149 equivalent. But the implementation
 	-- is done in another way.
 	-- LFSR (linear feedback shift register polynomial: f(x) = x^17 + x^14 + 1.
-	variable CLK_DIV	: std_logic_vector(3 downto 0);
-	variable CNT_NOISE 	: std_logic_vector(4 downto 0);
+	variable CLK_DIV	: unsigned (3 downto 0);
+	variable CNT_NOISE 	: unsigned (4 downto 0);
 	variable N_SHFT 	: std_logic_vector(16 downto 0);
 	begin
 		wait until SYS_CLK = '1' and SYS_CLK' event;
@@ -239,43 +239,43 @@ begin
 			NOISE_OUT <= '1';
 		elsif WAV_STRB = '1' then
 			-- Divider by 16 for the noise generator.
-			CLK_DIV := CLK_DIV + '1';
+			CLK_DIV := CLK_DIV + 1;
 			if CLK_DIV = x"0" then
 				-- Noise frequency counter.
 				if NOISE_FREQ = "00000" then
 					CNT_NOISE := (others => '0');
 				elsif CNT_NOISE = "00000" then
-					CNT_NOISE := NOISE_FREQ - '1' ;
+					CNT_NOISE := unsigned(NOISE_FREQ) - 1 ;
 					N_SHFT := N_SHFT(15 downto 14) & not(N_SHFT(16) xor N_SHFT(13)) & 
 													N_SHFT(12 downto 0) & not N_SHFT(16);
 				else
-					CNT_NOISE := CNT_NOISE - '1';
+					CNT_NOISE := CNT_NOISE - 1;
 				end if;
 			end if;
 		end if;
-		NOISE_OUT <= To_Bit(N_SHFT(16));
+		NOISE_OUT <= N_SHFT(16);
 	end process NOISEGENERATOR;
 
 	ENVELOPE_PERIOD: process(RESETn, SYS_CLK)
 	-- The envelope period is controlled by the Envelope Frequency and the divider ratio which is
 	-- 256/32 = 8. For further information see the original data sheet.
-	variable ENV_CLK : std_logic_vector(18 downto 0);
+	variable ENVELOPE_CLK : std_logic_vector(18 downto 0);
 	variable LOCK : boolean;
 	begin
 		if RESETn = '0' then
 			ENV_STRB <= '0';
-			ENV_CLK := (others => '0');
+			ENVELOPE_CLK := (others => '0');
 			LOCK := false;
 		elsif SYS_CLK = '1' and SYS_CLK' event then
 			if WAV_STRB = '1' and LOCK = false then
 				LOCK := true;
 				if ENV_FREQ = x"0000" then
 					ENV_STRB <= '0';
-				elsif ENV_CLK = x"0000" & "000" then
-					ENV_CLK := (ENV_FREQ & "111") - '1' ;
+				elsif ENVELOPE_CLK = x"0000" & "000" then
+					ENVELOPE_CLK := std_logic_vector(((unsigned(ENV_FREQ) & unsigned'("111"))) - 1);
 					ENV_STRB <= '1';
 				else
-					ENV_CLK := ENV_CLK - '1';
+					ENVELOPE_CLK := std_logic_vector(unsigned(ENVELOPE_CLK) - 1);
 					ENV_STRB <= '0';
 				end if;
 			elsif WAV_STRB = '0' then
@@ -312,7 +312,7 @@ begin
 	-- 1 1 1 1  /|___
 	--
 	variable ENV_STOP	: boolean;
-	variable ENV_UP_DNn	: bit;
+	variable ENV_UP_DNn	: std_logic;
 	begin
 		if RESETn = '0' then
 			VOL_ENV <= (others => '0');
@@ -333,22 +333,22 @@ begin
 				case ENV_SHAPE is
 					when "1001" | "0011" | "0010" | "0001" | "0000"  =>
 						if VOL_ENV > "00000" then
-							VOL_ENV <= VOL_ENV - '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) - 1);
 						end if;
 					when "1111" | "0111" | "0110" | "0101" | "0100"  =>
 						if VOL_ENV < "11111" and ENV_STOP = false then
-							VOL_ENV <= VOL_ENV + '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) + 1);
 						else
 							VOL_ENV <= "00000";
 							ENV_STOP := true;
 						end if;
 					when "1000" =>
-						VOL_ENV <= VOL_ENV - '1';
+						VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) - 1);
 					when "1110" | "1010" =>
 						if ENV_UP_DNn = '0' then
-							VOL_ENV <= VOL_ENV - '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) - 1);
 						else
-							VOL_ENV <= VOL_ENV + '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) + 1);
 						end if;
 						--
                         if VOL_ENV = "00001" then
@@ -358,16 +358,16 @@ begin
 						end if;
 					when "1011" =>
 						if VOL_ENV > "00000" and ENV_STOP = false then
-							VOL_ENV <= VOL_ENV - '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) - 1);
 						else
 							VOL_ENV <= "11111";
 							ENV_STOP := true;
 						end if;
 					when "1100" =>
-						VOL_ENV <= VOL_ENV + '1';
+						VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) + 1);
 					when "1101" =>
 						if VOL_ENV < "11111" then
-							VOL_ENV <= VOL_ENV + '1';
+							VOL_ENV <= std_logic_vector(unsigned(VOL_ENV) + 1);
 						end if;
 					when others => null; -- Covers U, X, Z, W, H, L, -.
 				end case;
@@ -508,7 +508,7 @@ begin
 	-- a PWM frequency of 16MHz).
 	begin
 		wait until SYS_CLK = '1' and SYS_CLK' event;
-		PWM_RAMP <= PWM_RAMP + '1';
+		PWM_RAMP <= std_logic_vector(unsigned(PWM_RAMP) + 1);
 	end process DA_CONVERSION;
 	OUT_A <= '0' when VOLUME_A = x"00" else '1' when PWM_RAMP < VOLUME_A else '0';
 	OUT_B <= '0' when VOLUME_B = x"00" else '1' when PWM_RAMP < VOLUME_B else '0';

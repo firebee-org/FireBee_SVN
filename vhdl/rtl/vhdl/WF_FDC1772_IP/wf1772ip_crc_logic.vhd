@@ -84,33 +84,33 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_CRC_LOGIC is
 	port(
 		-- System control
-		CLK				: in bit;
-		RESETn			: in bit;
-		DISK_RWn		: in bit;
+		CLK				: in std_logic;
+		RESETn			: in std_logic;
+		DISK_RWn		: in std_logic;
 
 		-- Preset controls:
-		DDEn		: in bit;
-		ID_AM		: in bit;
+		DDEn		: in std_logic;
+		ID_AM		: in std_logic;
 		DATA_AM		: in Bit;
 		DDATA_AM	: in Bit;
 		
 		-- CRC unit:
-		SD			: in bit; -- Serial data input.
-		CRC_STRB	: in bit; -- Data strobe.
-		CRC_2_DISK	: in bit; -- Forces the unit to flush the CRC remainder.
-		CRC_PRES	: in bit; -- Presets the CRC unit during write to disk.
-		CRC_SDOUT	: out bit; -- Serial data output.
-		CRC_ERR		: out bit -- Indicates CRC error.
+		SD			: in std_logic; -- Serial data input.
+		CRC_STRB	: in std_logic; -- Data strobe.
+		CRC_2_DISK	: in std_logic; -- Forces the unit to flush the CRC remainder.
+		CRC_PRES	: in std_logic; -- Presets the CRC unit during write to disk.
+		CRC_SDOUT	: out std_logic; -- Serial data output.
+		CRC_ERR		: out std_logic -- Indicates CRC error.
 	);
 end WF1772IP_CRC_LOGIC;
 
 architecture BEHAVIOR of WF1772IP_CRC_LOGIC is
-signal CRC_SHIFT	: bit_vector(15 downto 0);
+signal CRC_SHIFT	: std_logic_vector(15 downto 0);
 begin
 	P_CRC: process
 	-- The shift register is initialised with appropriate values in HD or DD mode.
@@ -148,7 +148,7 @@ begin
 			-- In this mode the CRC is encoded. In read from disk mode, the encoding works as CRC
 			-- verification. In this operating condition the ID or the data field is compared 
 			-- against the CRC checksum. if there are no errors, the shift register's value is 
-			-- x"0000" after the last bit of the checksum is shifted in. In write to disk mode the
+			-- x"0000" after the last std_logic of the checksum is shifted in. In write to disk mode the
 			-- CRC linear feedback shift register (lfsr) works to generate the CRC remainder of the
 			-- ID or data field.
 			CRC_SHIFT <= CRC_SHIFT(14 downto 12) & (CRC_SHIFT(15) xor CRC_SHIFT(11) xor SD) &

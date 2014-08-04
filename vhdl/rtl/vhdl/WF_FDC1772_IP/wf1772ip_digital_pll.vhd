@@ -80,7 +80,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_DIGITAL_PLL is
 	generic(
@@ -94,37 +94,37 @@ entity WF1772IP_DIGITAL_PLL is
         -- may not drop below zero.
         TOP			: integer range 0 to 255 := 152; -- +18.0%
         BOTTOM		: integer range 0 to 255 := 104; -- -18.0%
-        PHASE_CORR	: integer range 0 to 128 := 75
+        PHASE_CORR	: unsigned (7 downto 0) := to_unsigned(75, 8)
 	);
 	port(
 		-- System control
-		CLK		: in bit; -- 16MHz clock.
-		RESETn	: in bit;
+		CLK		: in std_logic; -- 16MHz clock.
+		RESETn	: in std_logic;
 
 		-- Controls
-		DDEn		: in bit; -- Double density enable.
-		HDTYPE		: in bit; -- This control is '1' when HD disks are inserted.
-		DISK_RWn	: in bit; -- Read write control.
+		DDEn		: in std_logic; -- Double density enable.
+		HDTYPE		: in std_logic; -- This control is '1' when HD disks are inserted.
+		DISK_RWn	: in std_logic; -- Read write control.
 
 		-- Data and clock lines
-		RDn			: in bit; -- Read signal from the disk.
-		PLL_D		: out bit; -- Synchronous read signal.
-		PLL_DSTRB	: out bit -- Read strobe.
+		RDn			: in std_logic; -- Read signal from the disk.
+		PLL_D		: out std_logic; -- Synchronous read signal.
+		PLL_DSTRB	: out std_logic -- Read strobe.
 	);
 end WF1772IP_DIGITAL_PLL;
 
 architecture BEHAVIOR of WF1772IP_DIGITAL_PLL is
-signal RD_In				: bit;
-signal UP, DOWN				: bit;
-signal PHASE_DECREASE		: bit;
-signal PHASE_INCREASE		: bit;
-signal HI_STOP, LOW_STOP	: bit;
-signal PER_CNT				: std_logic_vector(7 downto 0);
-signal ADDER_IN				: std_logic_vector(7 downto 0);
-signal ADDER_MSBs			: bit_vector(2 downto 0);
-signal RD_PULSE				: bit;
-signal ROLL_OVER			: bit;
-signal HISTORY_REG			: bit_vector(1 downto 0);
+signal RD_In				: std_logic;
+signal UP, DOWN				: std_logic;
+signal PHASE_DECREASE		: std_logic;
+signal PHASE_INCREASE		: std_logic;
+signal HI_STOP, LOW_STOP	: std_logic;
+signal PER_CNT				: unsigned (7 downto 0);
+signal ADDER_IN				: unsigned (7 downto 0);
+signal ADDER_MSBs			: std_logic_vector(2 downto 0);
+signal RD_PULSE				: std_logic;
+signal ROLL_OVER			: std_logic;
+signal HISTORY_REG			: std_logic_vector(1 downto 0);
 signal ERROR_HISTORY		: integer range 0 to 2;
 begin
 	INPORT: process
@@ -172,9 +172,9 @@ begin
 			PER_CNT <= "10000000"; -- Initial value is 128.
 		elsif CLK = '1' and CLK' event then
             if UP = '1' then
-                PER_CNT <= PER_CNT + '1';
+                PER_CNT <= PER_CNT + 1;
             elsif DOWN = '1' then
-                PER_CNT <= PER_CNT - '1';
+                PER_CNT <= PER_CNT - 1;
 			end if;
 		end if;
 	end process PERIOD_CNT;
@@ -186,9 +186,9 @@ begin
 				-- of the PLL in read from disk mode. It should be a good solution concer-
 				-- ning alternative read write cycles.
 				"10000000" when DISK_RWn = '0' else -- Nominal value for write to disk. 
-                PER_CNT + PHASE_CORR when PHASE_INCREASE = '1' else -- Phase lags.
-                PER_CNT - PHASE_CORR when PHASE_DECREASE = '1' else -- Phase leeds.
-				PER_CNT; -- No phase correction;
+                (PER_CNT + PHASE_CORR) when PHASE_INCREASE = '1' else -- Phase lags.
+                (PER_CNT - PHASE_CORR) when PHASE_DECREASE = '1' else -- Phase leeds.
+					(PER_CNT); -- No phase correction;
 
 	ADDER: process(RESETn, CLK, DDEn, HDTYPE)
 	-- Clock adjustment: The clock cycle is 62.5ns for the 16MHz system clock. 
@@ -200,7 +200,8 @@ begin
 	-- The adder rolls over every 2us for DDEn = 0 and HDTYPE = 0.
 	-- The adder rolls over every 1us for DDEn = 0 and HDTYPE = 1.
 	-- The given times are the half of a data period time in MFM or FM.
-	variable ADDER_DATA	: std_logic_vector(12 downto 0);
+		variable ADDER_DATA	: unsigned (12 downto 0);
+		variable cat : std_logic_vector(1 downto 0) := "00";
 	begin
 		if RESETn = '0' then
 			ADDER_DATA := (others => '0');
@@ -208,15 +209,16 @@ begin
 			ADDER_DATA := ADDER_DATA + ADDER_IN;
 		end if;
 		--
-		case DDEn & HDTYPE is
+		cat := DDEn & HDTYPE;
+		case cat is
 			when "01" => -- MFM mode using HD disks, results in 1us inspection period:
-				ADDER_MSBs <= To_BitVector(ADDER_DATA(10 downto 8));
+				ADDER_MSBs <= std_logic_vector(ADDER_DATA(10 downto 8));
 			when "00" => -- MFM mode using DD disks, results in 2us inspection period:
-				ADDER_MSBs <= To_BitVector(ADDER_DATA(11 downto 9));
+				ADDER_MSBs <= std_logic_vector(ADDER_DATA(11 downto 9));
 			when "11" => -- FM mode using HD disks, results in 2us inspection period:
-				ADDER_MSBs <= To_BitVector(ADDER_DATA(11 downto 9));
+				ADDER_MSBs <= std_logic_vector(ADDER_DATA(11 downto 9));
 			when "10" => -- FM mode using DD disks, results in 4us inspection period:
-				ADDER_MSBs <= To_BitVector(ADDER_DATA(12 downto 10));
+				ADDER_MSBs <= std_logic_vector(ADDER_DATA(12 downto 10));
 		end case;
 	end process ADDER;
 
@@ -285,7 +287,7 @@ begin
 
 	FREQUENCY_DECODER: process(RESETn, CLK, HI_STOP, LOW_STOP)
 	-- The frequency decoder controls the period of the data inspection window respective to the
-	-- ERROR_HISTORY for the 11 bit adder is as follows:
+	-- ERROR_HISTORY for the 11 std_logic adder is as follows:
 	-- ERROR_HISTORY = 0: 
 	--						-> no correction necessary <-
 	-- ERROR_HISTORY = 1:
@@ -294,9 +296,9 @@ begin
 	-- ERROR_HISTORY = 2:
 	-- MSBs input:			7	6	5	4	3	2	1	0
 	-- Correction output:  -4  -3  -2  -1  +1  +2  +3  +4
-	-- The most significant bit of the FREQ_AMOUNT controls incrementation or decrementation
+	-- The most significant std_logic of the FREQ_AMOUNT controls incrementation or decrementation
 	-- of the adder (0 is up).
-	variable FREQ_AMOUNT: std_logic_vector(3 downto 0);
+	variable FREQ_AMOUNT: unsigned (3 downto 0);
 	begin
 		if RESETn = '0' then
 			FREQ_AMOUNT := "0000";
@@ -329,7 +331,7 @@ begin
 						FREQ_AMOUNT := "0000";
 				end case;
             elsif FREQ_AMOUNT(2 downto 0) > "000" then
-				FREQ_AMOUNT := FREQ_AMOUNT - '1'; -- Modify the frequency amount register.
+				FREQ_AMOUNT := FREQ_AMOUNT - 1; -- Modify the frequency amount register.
 			end if;
 		end if;
 		--
@@ -348,13 +350,13 @@ begin
 	end process FREQUENCY_DECODER;
 
 	PHASE_DECODER: process(RESETn, CLK)
-	-- The phase decoder depends on the value of ADDER_MSBs. If the phase leeds, the most significant bit
+	-- The phase decoder depends on the value of ADDER_MSBs. If the phase leeds, the most significant std_logic
 	-- of PHASE_AMOUNT indicates with a '0', that the next rollover should appear earlier. In case of a
-	-- phase lag, the next rollover should come later (indicated by a '1' of the most significant bit of
+	-- phase lag, the next rollover should come later (indicated by a '1' of the most significant std_logic of
 	-- PHASE_AMOUNT).
 	-- This implementation gives the freedom to adjust the phase amount individually for every mode
 	-- depending on DDEn and HDTYPE.
-	variable PHASE_AMOUNT: std_logic_vector(5 downto 0);
+	variable PHASE_AMOUNT: unsigned (5 downto 0);
 	begin
 		if RESETn = '0' then
 			PHASE_AMOUNT := "000000";

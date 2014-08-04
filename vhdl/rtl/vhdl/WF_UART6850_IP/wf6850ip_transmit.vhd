@@ -59,42 +59,42 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF6850IP_TRANSMIT is
   port (
 		CLK					: in std_logic;
-        RESETn				: in bit;
-		MCLR				: in bit;
+        RESETn				: in std_logic;
+		MCLR				: in std_logic;
 
-        CS					: in bit_vector(2 downto 0);
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
+        CS					: in std_logic_vector(2 downto 0);
+        E		       		: in std_logic;   
+        RWn              	: in std_logic;
+        RS					: in std_logic;
 
-        DATA_IN		        : in bit_vector(7 downto 0);   
+        DATA_IN		        : in std_logic_vector(7 downto 0);   
 
-		CTSn				: in bit;
+		CTSn				: in std_logic;
 
-		TC					: in bit_vector(1 downto 0);
-		WS					: in bit_vector(2 downto 0);
-		CDS					: in bit_vector(1 downto 0);
+		TC					: in std_logic_vector(1 downto 0);
+		WS					: in std_logic_vector(2 downto 0);
+		CDS					: in std_logic_vector(1 downto 0);
 
-        TXCLK				: in bit;
+        TXCLK				: in std_logic;
 
-		TDRE				: buffer bit;
-        TXDATA				: out bit
+		TDRE				: buffer std_logic;
+        TXDATA				: out std_logic
        );                                              
 end entity WF6850IP_TRANSMIT;
 
 architecture BEHAVIOR of WF6850IP_TRANSMIT is
-type TR_STATES is (IDLE, LOAD_SHFT, START, SHIFTOUT, PARITY, STOP1, STOP2);
-signal TR_STATE, TR_NEXT_STATE	: TR_STATES;
-signal CLK_STRB		: bit;
-signal DATA_REG		: bit_vector(7 downto 0);
-signal SHIFT_REG	: bit_vector(7 downto 0);
-signal BITCNT		: std_logic_vector(2 downto 0);
-signal PARITY_I		: bit;
+	type TR_STATES is (IDLE, LOAD_SHFT, START, SHIFTOUT, PARITY, STOP1, STOP2);
+	signal TR_STATE, TR_NEXT_STATE	: TR_STATES;
+	signal CLK_STRB		: std_logic;
+	signal DATA_REG		: std_logic_vector(7 downto 0);
+	signal SHIFT_REG	: std_logic_vector(7 downto 0);
+	signal BITCNT		: unsigned(2 downto 0);
+	signal PARITY_I		: std_logic;
 begin
 	-- The default condition in this statement is to ensure
 	-- to cover all possibilities for example if there is a
@@ -111,7 +111,7 @@ begin
 	CLKDIV: process(CLK)
 	variable CLK_LOCK	: boolean;
 	variable STRB_LOCK	: boolean;
-	variable CLK_DIVCNT	: std_logic_vector(6 downto 0);
+	variable CLK_DIVCNT	: unsigned (6 downto 0);
 	begin
 		if rising_edge(CLK) then
 			if CDS = "00" then -- divider off
@@ -135,7 +135,7 @@ begin
 			else
 				-- Works on negative TXCLK edge:
 				if CLK_DIVCNT > "0000000" and TXCLK = '0' and CLK_LOCK = false then
-					CLK_DIVCNT := CLK_DIVCNT - '1';
+					CLK_DIVCNT := CLK_DIVCNT - 1;
 					CLK_STRB <= '0';
 					CLK_LOCK := true;
 				elsif CDS = "01" and CLK_DIVCNT = "0000000" then
@@ -173,9 +173,9 @@ begin
 			if MCLR = '1' then
 				DATA_REG <= x"00";
 			elsif WS(2) = '0' and CS = "011" and RWn = '0' and RS = '1' and E = '1' then
-				DATA_REG <= '0' & DATA_IN(6 downto 0); -- 7 bit data mode.
+				DATA_REG <= '0' & DATA_IN(6 downto 0); -- 7 std_logic data mode.
 			elsif WS(2) = '1' and CS = "011" and RWn = '0' and RS = '1' and E = '1' then
-				DATA_REG <= DATA_IN; -- 8 bit data mode.
+				DATA_REG <= DATA_IN; -- 8 std_logic data mode.
 			end if;
 		end if;
 	end process DATAREG;	
@@ -191,7 +191,7 @@ begin
 				-- If during LOAD_SHIFT the transmitter data register
 				-- is empty (TDRE = '1') the shift register will not
 				-- be loaded. When additionally TC = "11", the break
-				-- character (zero data and no stop bits) is sent.
+				-- character (zero data and no stop std_logics) is sent.
 				SHIFT_REG <= DATA_REG;
 			elsif TR_STATE = SHIFTOUT and CLK_STRB = '1' then
 				SHIFT_REG <= '0' & SHIFT_REG(7 downto 1); -- Shift right.
@@ -200,11 +200,11 @@ begin
 	end process SHIFTREG;	
 
 	P_BITCNT: process(CLK)
-	-- Counter for the data bits transmitted.
+	-- Counter for the data std_logics transmitted.
 	begin
 		if rising_edge(CLK) then
 			if TR_STATE = SHIFTOUT and CLK_STRB = '1' then
-				BITCNT <= BITCNT + '1';
+				BITCNT <= BITCNT + 1;
 			elsif TR_STATE /= SHIFTOUT then
 				BITCNT <= "000";
 			end if;
@@ -232,7 +232,7 @@ begin
 	end process P_TDRE;
 
 	PARITY_GEN: process(CLK)
-	variable PAR_TMP	: bit;
+	variable PAR_TMP	: std_logic;
 	begin
 		if rising_edge(CLK) then
 		if TR_STATE = START then -- Calculate the parity during the start phase.
@@ -291,12 +291,12 @@ begin
 			when SHIFTOUT =>
 				if CLK_STRB = '1' then
 					if BITCNT < "110" and WS(2) = '0' then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 7 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 7 data std_logics.
 					elsif BITCNT < "111" and WS(2) = '1' then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 8 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 8 data std_logics.
 					elsif WS = "100" or WS = "101" then
 						if TDRE = '1' and TC = "11" then
-							-- Break condition, do not send a stop bit.
+							-- Break condition, do not send a stop std_logic.
 							TR_NEXT_STATE <= IDLE;
 						else
 							TR_NEXT_STATE <= STOP1; -- No parity check enabled.
@@ -310,7 +310,7 @@ begin
 			when PARITY =>
 				if CLK_STRB = '1' then
 					if TDRE = '1' and TC = "11" then
-						-- Break condition, do not send a stop bit.
+						-- Break condition, do not send a stop std_logic.
 						TR_NEXT_STATE <= IDLE;
 					else
 						TR_NEXT_STATE <= STOP1; -- No parity check enabled.
@@ -320,9 +320,9 @@ begin
 				end if;				
 			when STOP1 =>
 				if CLK_STRB = '1' and (WS = "000" or WS = "001" or WS = "100") then
-					TR_NEXT_STATE <= STOP2; -- Two stop bits selected.
+					TR_NEXT_STATE <= STOP2; -- Two stop std_logics selected.
 				elsif CLK_STRB = '1' then
-					TR_NEXT_STATE <= IDLE; -- One stop bits selected.
+					TR_NEXT_STATE <= IDLE; -- One stop std_logics selected.
 				else
 					TR_NEXT_STATE <= STOP1;
 				end if;				

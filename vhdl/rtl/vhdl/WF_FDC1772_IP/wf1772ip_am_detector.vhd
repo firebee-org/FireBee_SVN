@@ -22,9 +22,9 @@
 ---- 2. every second pulse is a data.                                        ----
 ---- 3. a logic 1 is represented by two consecutive pulses (clock and data). ----
 ---- 4. a logic 0 is represented by one clock pulse and no data pulse.       ----
----- 5. Hence there are a maximum of two pulses per data bit.                ----
----- 6. one clock and one data pulse come together in one bit cell.          ----
----- 7. the duration of a bit cell in FM is 4 microseconds.                  ----
+---- 5. Hence there are a maximum of two pulses per data std_logic.                ----
+---- 6. one clock and one data pulse come together in one std_logic cell.          ----
+---- 7. the duration of a std_logic cell in FM is 4 microseconds.                  ----
 ---- 8. an ID address mark is represented as data FE with clock C7.          ----
 ---- 9. a DATA address mark is represented as data FB with clock C7.         ----
 ---- Examples:                                                               ----
@@ -52,11 +52,11 @@
 ---- 4. a logic 0 is represented by a clock pulse and no data pulse if       ---- 
 ---- following a 0.                                                          ----
 ---- 5. a logic 0 is represented by no pulse if following a 1.               ----
----- 6. Hence there are a maximum of one pulse per data bit.                 ----
----- 7. one clock and one data pulse form together one bit cell.             ----
----- 8. the duration of a bit cell in MFM is 2 microseconds.                 ----
+---- 6. Hence there are a maximum of one pulse per data std_logic.                 ----
+---- 7. one clock and one data pulse form together one std_logic cell.             ----
+---- 8. the duration of a std_logic cell in MFM is 2 microseconds.                 ----
 ---- 9. an address mark sync is represented as data A1 with missing clock    ----
----- pulse between bit 4 and 5.                                              ----
+---- pulse between std_logic 4 and 5.                                              ----
 ---- Examples:                                                               ----
 ---- Binary data FE 1 1 1 1 1 1 1 0 is represented in MFM as follows:        ----
 ----               0101010101010100 this is the ID address mark.             ----
@@ -66,11 +66,11 @@
 ----               0101010101001010 this is the deleted DATA address mark.   ----
 ---- the A1 data           1 0 1 0 0 0 0 1 is represented as follows:        ----
 ----                      0100010010101001                                   ----
----- with the missing clock pulse between bits 4 and 5 there results:        ----
+---- with the missing clock pulse between std_logics 4 and 5 there results:        ----
 ---- results:             0100010010001001 this is the address mark sync.    ----
 ----                                                                         ----
 ---- Both MFM and FM are during read and write shifted with most significant ----
----- bit (MSB) first. During the FM address marks are written without a      ----
+---- std_logic (MSB) first. During the FM address marks are written without a      ----
 ---- SYNC pulse the MFM coded data requires a synchronisation (A1 with       ----
 ---- missing clock pulse because at the beginning of the data stream it is   ----
 ---- not defined wether a clock pulse or a data pulse appears first. In FM   ----
@@ -122,34 +122,34 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_AM_DETECTOR is
 	port(
 		-- System control
-		CLK				: in bit;
-		RESETn			: in bit;
+		CLK				: in std_logic;
+		RESETn			: in std_logic;
 
 		-- Controls:
-		DDEn		    : in bit;
+		DDEn		    : in std_logic;
 		
 		-- Serial data and clock:
-		DATA			: in bit;
-		DATA_STRB		: in bit;
+		DATA			: in std_logic;
+		DATA_STRB		: in std_logic;
 
 		-- Address mark detector:
-		ID_AM		: out bit; -- ID address mark strobe.
-		DATA_AM		: out bit; -- Data address mark strobe.
-		DDATA_AM	: out bit -- Deleted data address mark strobe.
+		ID_AM		: out std_logic; -- ID address mark strobe.
+		DATA_AM		: out std_logic; -- Data address mark strobe.
+		DDATA_AM	: out std_logic -- Deleted data address mark strobe.
 	);
 end WF1772IP_AM_DETECTOR;
 
 architecture BEHAVIOR of WF1772IP_AM_DETECTOR is
-signal SHIFT		: bit_vector(15 downto 0);
+signal SHIFT		: std_logic_vector(15 downto 0);
 signal SYNC			: boolean;
-signal ID_AM_I		: bit;
-signal DATA_AM_I	: bit;
-signal DDATA_AM_I	: bit;
+signal ID_AM_I		: std_logic;
+signal DATA_AM_I	: std_logic;
+signal DDATA_AM_I	: std_logic;
 begin
 	SHIFTREG: process(RESETn, CLK)
 	begin
@@ -176,7 +176,7 @@ begin
 	-- SYNC  goes low again. This mechanism is used to detect the correct address 
 	-- marks in the MFM data stream during the type III read track command. 
 	-- This is an improvement over the original WD1772 chip.
-	variable TMP : std_logic_vector(4 downto 0);
+	variable TMP : unsigned (4 downto 0);
 	begin
 		if RESETn = '0' then
 			TMP := "00000";
@@ -184,7 +184,7 @@ begin
 			if SHIFT = "0100010010001001" and DDEn = '0' then
                 TMP := "10001"; -- Load sync time counter.
 			elsif DATA_STRB = '1' and TMP > "00000" then
-				TMP := TMP - '1';
+				TMP := TMP - 1;
 			end if;
 		end if;
 		case TMP is

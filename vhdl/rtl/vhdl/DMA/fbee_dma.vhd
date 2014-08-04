@@ -44,7 +44,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity FBEE_DMA is
     port(
@@ -392,8 +392,8 @@ begin
 
     DMA_REQ <= '1' when ((DMA_DRQ_IN = '1' and DMA_MODE(7) = '1') or (SCSI_DRQ = '1' and DMA_MODE(7) = '0')) and DMA_STATUS(1) = '1' and DMA_MODE(6) = '0' and CLR_FIFO = '0' else '0';
     DMA_DRQ_OUT <= '1' when DMA_DRQ_REG = "11" and DMA_MODE(6) = '0' else '0';
-    DMA_DRQQ <= '1' when DMA_STATUS(1) = '1' and DMA_MODE(8) = '0' and RDF_AZ > 15 and DMA_MODE(6) = '0' else
-                '1' when DMA_STATUS(1) = '1' and DMA_MODE(8) = '1' and WRF_AZ < 512 and DMA_MODE(6) = '0' else '0';
+    DMA_DRQQ <= '1' when DMA_STATUS(1) = '1' and DMA_MODE(8) = '0' and unsigned(RDF_AZ) > 15 and DMA_MODE(6) = '0' else
+                '1' when DMA_STATUS(1) = '1' and DMA_MODE(8) = '1' and unsigned(WRF_AZ) < 512 and DMA_MODE(6) = '0' else '0';
     DMA_DRQ11_I <= '1' when DMA_DRQ_REG = "11" and DMA_MODE(6) = '0' else '0';
     DMA_DRQ11 <= DMA_DRQ11_I;
     

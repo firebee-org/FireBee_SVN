@@ -58,52 +58,52 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_USART_RX is
   port (
-		CLK			: in bit;
-        RESETn		: in bit;
+		CLK			: in std_logic;
+        RESETn		: in std_logic;
 
-		SCR			: in bit_vector(7 downto 0); -- Synchronous character. 
-		RX_SAMPLE	: buffer bit; -- Flag indicating valid shift register data.
-        RX_DATA		: out bit_vector(7 downto 0); -- Received data.
+		SCR			: in std_logic_vector(7 downto 0); -- Synchronous character. 
+		RX_SAMPLE	: buffer std_logic; -- Flag indicating valid shift register data.
+        RX_DATA		: out std_logic_vector(7 downto 0); -- Received data.
 
-        RXCLK		: in bit; -- Receiver clock.
-        SDATA_IN	: in bit; -- Serial data input.
+        RXCLK		: in std_logic; -- Receiver clock.
+        SDATA_IN	: in std_logic; -- Serial data input.
 
-		CL			: in bit_vector(1 downto 0); -- Character length.
-		ST			: in bit_vector(1 downto 0); -- Start and stop bit configuration.
-		P_ENA		: in bit; -- Parity enable.
-		P_EOn		: in bit; -- Even or odd parity.
-		CLK_MODE	: in bit; -- Clock mode configuration bit.
-		RE			: in bit; -- Receiver enable.
-		FS_CLR		: in bit; -- Clear the Found/Search flag for resynchronisation purpose.
-		SS			: in bit; -- Synchronous strip enable.
-		UDR_READ	: in bit; -- Flag indicating reading the data register.
-		RSR_READ	: in bit; -- Flag indicating reading the receiver status register.
+		CL			: in std_logic_vector(1 downto 0); -- Character length.
+		ST			: in std_logic_vector(1 downto 0); -- Start and stop std_logic configuration.
+		P_ENA		: in std_logic; -- Parity enable.
+		P_EOn		: in std_logic; -- Even or odd parity.
+		CLK_MODE	: in std_logic; -- Clock mode configuration std_logic.
+		RE			: in std_logic; -- Receiver enable.
+		FS_CLR		: in std_logic; -- Clear the Found/Search flag for resynchronisation purpose.
+		SS			: in std_logic; -- Synchronous strip enable.
+		UDR_READ	: in std_logic; -- Flag indicating reading the data register.
+		RSR_READ	: in std_logic; -- Flag indicating reading the receiver status register.
 
-		M_CIP		: out bit; -- Match/Character in progress.
-		FS_B		: buffer bit; -- Find/Search or Break detect flag.
-		BF			: out bit; -- Buffer full.
-		OE			: out bit; -- Overrun error.
-		PE			: out bit; -- Parity error.
-		FE			: out bit  -- Framing error.
+		M_CIP		: out std_logic; -- Match/Character in progress.
+		FS_B		: buffer std_logic; -- Find/Search or Break detect flag.
+		BF			: out std_logic; -- Buffer full.
+		OE			: out std_logic; -- Overrun error.
+		PE			: out std_logic; -- Parity error.
+		FE			: out std_logic  -- Framing error.
        );                                              
 end entity WF68901IP_USART_RX;
 
 architecture BEHAVIOR of WF68901IP_USART_RX is
 type RCV_STATES is (IDLE, WAIT_START, SAMPLE, PARITY, STOP1, STOP2, SYNC);
 signal RCV_STATE, RCV_NEXT_STATE	: RCV_STATES;
-signal SDATA_DIV16					: bit;
-signal SDATA_IN_I					: bit;
-signal SDATA_EDGE					: bit;
-signal SHIFT_REG					: bit_vector(7 downto 0);
-signal CLK_STRB						: bit;
-signal CLK_2_STRB					: bit;
-signal BITCNT						: std_logic_vector(2 downto 0);
+signal SDATA_DIV16					: std_logic;
+signal SDATA_IN_I					: std_logic;
+signal SDATA_EDGE					: std_logic;
+signal SHIFT_REG					: std_logic_vector(7 downto 0);
+signal CLK_STRB						: std_logic;
+signal CLK_2_STRB					: std_logic;
+signal BITCNT						: unsigned (2 downto 0);
 signal BREAK						: boolean;
-signal RDRF							: bit;
+signal RDRF							: std_logic;
 signal STARTBIT						: boolean;
 begin
 	BF <= RDRF; -- Buffer full = Receiver Data Register Full.
@@ -113,21 +113,21 @@ begin
 			     '1' when RCV_STATE = SYNC and ST = "00" and SS = '1' and SHIFT_REG /= SCR else '0';
 
 	-- Data multiplexer for the received data:
-	RX_DATA <= 	"000" & SHIFT_REG(7 downto 3) when RX_SAMPLE = '1' and CL = "11" else -- 5 databits.
-				"00" & SHIFT_REG(7 downto 2) when RX_SAMPLE = '1' and CL = "10" else -- 6 databits.
-				'0' & SHIFT_REG(7 downto 1) when RX_SAMPLE = '1' and CL = "01" else -- 6 databits.
-				SHIFT_REG when RX_SAMPLE = '1' and CL = "00" else x"00"; -- 8 databits.
+	RX_DATA <= 	"000" & SHIFT_REG(7 downto 3) when RX_SAMPLE = '1' and CL = "11" else -- 5 datastd_logics.
+				"00" & SHIFT_REG(7 downto 2) when RX_SAMPLE = '1' and CL = "10" else -- 6 datastd_logics.
+				'0' & SHIFT_REG(7 downto 1) when RX_SAMPLE = '1' and CL = "01" else -- 6 datastd_logics.
+				SHIFT_REG when RX_SAMPLE = '1' and CL = "00" else x"00"; -- 8 datastd_logics.
 
 	P_SAMPLE: process
 	-- This process provides the 'valid transition logic' of the originally MC68901. For further
 	-- details see the 'M68000 FAMILY REFERENCE MANUAL'.
-	variable LOW_FLT		: std_logic_vector(1 downto 0);
-	variable HI_FLT			: std_logic_vector(1 downto 0);
+	variable LOW_FLT		: unsigned (1 downto 0);
+	variable HI_FLT			: unsigned (1 downto 0);
 	variable CLK_LOCK		: boolean;
 	variable EDGE_LOCK		: boolean;
-	variable TIMER			: std_logic_vector(2 downto 0);
+	variable TIMER			: unsigned (2 downto 0);
 	variable TIMER_LOCK		: boolean;
-	variable NEW_SDATA 		: bit;
+	variable NEW_SDATA 		: std_logic;
 	begin
 		wait until CLK = '1' and CLK' event;
 		if RESETn = '0' or RE = '0' then
@@ -141,18 +141,18 @@ begin
 			NEW_SDATA := '1';
 		-- Positive or negative edge detector for the incoming data.
 		-- Any transition must be valid for at least three receiver clock
-		-- cycles. The TIMER locking inhibits detecting four receiver
+		-- cycles. The TIMER locking inhistd_logics detecting four receiver
 		-- clock cycles after a valid transition.
 		elsif RXCLK = '1' and SDATA_IN = '0' and CLK_LOCK = false and LOW_FLT > "00" then
 			CLK_LOCK := true;
 			EDGE_LOCK := false;
 			HI_FLT := "00";
-			LOW_FLT := LOW_FLT - '1';
+			LOW_FLT := LOW_FLT - 1;
 		elsif RXCLK = '1' and SDATA_IN = '1' and CLK_LOCK = false and HI_FLT < "11" then
 			CLK_LOCK := true;
 			EDGE_LOCK := false;
 			LOW_FLT := "11";
-			HI_FLT := HI_FLT + '1';
+			HI_FLT := HI_FLT + 1;
 		elsif RXCLK = '1' and EDGE_LOCK = false and LOW_FLT = "00" then
 			EDGE_LOCK := true;
 			SDATA_EDGE <= '1'; -- Falling edge detected.
@@ -183,26 +183,26 @@ begin
 		elsif RXCLK = '1' and TIMER = "011" and TIMER_LOCK = false then
 			TIMER_LOCK := true;
 			SDATA_DIV16 <= NEW_SDATA; -- Scan the new data.
-			TIMER := TIMER + '1'; -- Timing is active.
+			TIMER := TIMER + 1; -- Timing is active.
 		elsif RXCLK = '1' and TIMER < "111" and TIMER_LOCK = false then
 			TIMER_LOCK := true;
-			TIMER := TIMER + '1'; -- Timing is active.
+			TIMER := TIMER + 1; -- Timing is active.
 		elsif RXCLK = '0' then
 			TIMER_LOCK := false;
 		end if;
 	end process P_SAMPLE;
 
 	P_START_BIT: process(CLK)
-	-- This is the valid start bit logic of the original MC68901 multi function
+	-- This is the valid start std_logic logic of the original MC68901 multi function
 	-- port's USART receiver.
-	variable TMP	: std_logic_vector(2 downto 0);
+	variable TMP	: unsigned (2 downto 0);
 	variable LOCK 	: boolean;
 	begin
 		if CLK = '1' and CLK' event then
 			if RESETn = '0' then
 				TMP := "000";
 				LOCK := true;
-			elsif RE = '0' or RCV_STATE /= IDLE then -- Start bit logic disabled.
+			elsif RE = '0' or RCV_STATE /= IDLE then -- Start std_logic logic disabled.
 				TMP := "000";
 				LOCK := true;
 			elsif SDATA_EDGE = '1' then
@@ -210,7 +210,7 @@ begin
 				LOCK := false; -- Start counting.
 			elsif RXCLK = '1' and SDATA_IN = '0' and TMP < "111" and LOCK = false then
 				LOCK := true;
-				TMP := TMP + '1'; -- Count 8 low bits to declare start condition valid.
+				TMP := TMP + 1; -- Count 8 low std_logics to declare start condition valid.
 			elsif RXCLK = '0' then
 				LOCK := false;
 			end if;
@@ -228,7 +228,7 @@ begin
 	CLKDIV: process
 	variable CLK_LOCK	: boolean;
 	variable STRB_LOCK	: boolean;
-	variable CLK_DIVCNT	: std_logic_vector(4 downto 0);
+	variable CLK_DIVCNT	: unsigned (4 downto 0);
 	begin
 		wait until CLK = '1' and CLK' event;
 		if CLK_MODE = '0' then -- Divider off.
@@ -241,7 +241,7 @@ begin
 			else
 				CLK_STRB <= '0';
 			end if;
-			CLK_2_STRB <= '0'; -- No 1 1/2 stop bits in no div by 16 mode.
+			CLK_2_STRB <= '0'; -- No 1 1/2 stop std_logics in no div by 16 mode.
 		elsif SDATA_EDGE = '1' then
 CLK_DIVCNT := "01100"; -- Div by 16 mode.
 			CLK_STRB <= '0'; -- Default.
@@ -250,11 +250,11 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 			CLK_STRB <= '0'; -- Default.
 			CLK_2_STRB <= '0'; -- Default.
 			if CLK_DIVCNT > "00000" and RXCLK = '1' and CLK_LOCK = false then
-				CLK_DIVCNT := CLK_DIVCNT - '1';
+				CLK_DIVCNT := CLK_DIVCNT - 1;
 				CLK_LOCK := true;
 				if CLK_DIVCNT = "01000" then
 					-- This strobe is asserted at half of the clock cycle.
-					-- It is used for the stop bit timing.
+					-- It is used for the stop std_logic timing.
 					CLK_2_STRB <= '1';
 				end if;
 			elsif CLK_DIVCNT = "00000" then
@@ -309,7 +309,7 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 	end process P_M_CIP;
 
 	BREAK_DETECT: process(RESETn, CLK)
-	-- A break condition occurs, if there is no  STOP1 bit and the
+	-- A break condition occurs, if there is no  STOP1 std_logic and the
 	-- shift register contains zero data.
 	begin
 		if RESETn = '0' then
@@ -319,7 +319,7 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 				BREAK <= false;
 			elsif CLK_STRB = '1' then
 				if RCV_STATE = STOP1 and SDATA_IN_I = '0' and SHIFT_REG = x"00" then
-					BREAK <= true; -- Break detected (empty shift register and no stop bit).
+					BREAK <= true; -- Break detected (empty shift register and no stop std_logic).
 				elsif RCV_STATE = STOP1 and SDATA_IN_I = '1' then
 					BREAK <= false; -- UPDATE.
 				elsif RCV_STATE = STOP1 and SDATA_IN_I = '0' and SHIFT_REG /= x"00" then
@@ -332,7 +332,7 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 	P_FS_B: process(RESETn, CLK)
 	-- In the synchronous mode, this process provides the flag detecting the synchronous 
 	-- character. In the asynchronous mode, the flag indicates a break condition.
-	variable FS_B_I		: bit;
+	variable FS_B_I		: std_logic;
 	variable FIRST_READ	: boolean;
 	begin
 		if RESETn = '0' then
@@ -378,9 +378,9 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 	begin
 		wait until CLK = '1' and CLK' event;
 		if RCV_STATE = SAMPLE and CLK_STRB = '1' and ST /= "00" then -- Asynchronous mode.
-			BITCNT <= BITCNT + '1';
+			BITCNT <= BITCNT + 1;
 		elsif RCV_STATE = SAMPLE and CLK_STRB = '1' and ST = "00" and FS_B = '1' then -- Synchronous mode.
-			BITCNT <= BITCNT + '1'; -- Count, if matched data found (FS_B = '1').
+			BITCNT <= BITCNT + 1; -- Count, if matched data found (FS_B = '1').
 		elsif RCV_STATE /= SAMPLE then
 			BITCNT <= (others => '0');
 		end if;
@@ -403,7 +403,7 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 	end process BUFFER_FULL;
 	
 	OVERRUN: process(RESETn, CLK)
-	variable OE_I		: bit;
+	variable OE_I		: std_logic;
 	variable FIRST_READ	: boolean;
 	begin
 		if RESETn = '0' then
@@ -438,8 +438,8 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 	end process OVERRUN;
 	
 	PARITY_TEST: process(RESETn, CLK)
-	variable PAR_TMP	: bit;
-	variable P_ERR		: bit;
+	variable PAR_TMP	: std_logic;
+	variable P_ERR		: std_logic;
 	begin
 		if RESETn = '0' then
 			PE <= '0';
@@ -472,8 +472,8 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 
 	FRAME_ERR: process(RESETn, CLK)
 	-- This module detects a framing error
-	-- during stop bit 1 and stop bit 2.
-	variable FE_I: bit;
+	-- during stop std_logic 1 and stop std_logic 2.
+	variable FE_I: std_logic;
 	begin
 		if RESETn = '0' then
 			FE_I := '0';
@@ -518,15 +518,15 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 				if ST = "00" then
 					RCV_NEXT_STATE <= SAMPLE; -- Synchronous mode.
 				elsif SDATA_IN_I = '0' and CLK_MODE = '0' then
-					RCV_NEXT_STATE <= SAMPLE; -- Startbit detected in div by 1 mode.
+					RCV_NEXT_STATE <= SAMPLE; -- Startstd_logic detected in div by 1 mode.
 				elsif STARTBIT = true and CLK_MODE = '1' then
-					RCV_NEXT_STATE <= WAIT_START; -- Startbit detected in div by 16 mode.
+					RCV_NEXT_STATE <= WAIT_START; -- Startstd_logic detected in div by 16 mode.
 				else
-					RCV_NEXT_STATE <= IDLE; -- No startbit; sleep well :-)
+					RCV_NEXT_STATE <= IDLE; -- No startstd_logic; sleep well :-)
 				end if;
 			when WAIT_START =>
 				-- This state delays the sample process by one CLK_STRB pulse
-				-- to eliminate the start bit.
+				-- to eliminate the start std_logic.
 				if CLK_STRB = '1' then
 					RCV_NEXT_STATE <= SAMPLE;
 				else
@@ -535,14 +535,14 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 			when SAMPLE =>
 				if CLK_STRB = '1' then
 					if CL = "11"  and BITCNT < "100" then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 5 data bits.
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 5 data std_logics.
 					elsif CL = "10" and BITCNT < "101" then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 6 data bits.
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 6 data std_logics.
 					elsif CL = "01" and BITCNT < "110" then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 7 data bits.
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 7 data std_logics.
 					elsif CL = "00" and BITCNT < "111" then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 8 data bits.
-					elsif ST = "00" and P_ENA = '0' then -- Synchronous mode (no stop bits).
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 8 data std_logics.
+					elsif ST = "00" and P_ENA = '0' then -- Synchronous mode (no stop std_logics).
 						RCV_NEXT_STATE <= IDLE; -- No parity check enabled.
 					elsif P_ENA = '0' then
 						RCV_NEXT_STATE <= STOP1; -- No parity check enabled.
@@ -554,7 +554,7 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 				end if;
 			when PARITY =>
 				if CLK_STRB = '1' then
-					if ST = "00" then -- Synchronous mode (no stop bits).
+					if ST = "00" then -- Synchronous mode (no stop std_logics).
 						RCV_NEXT_STATE <= IDLE;
 					else
 						RCV_NEXT_STATE <= STOP1;
@@ -564,21 +564,21 @@ CLK_DIVCNT := "01100"; -- Div by 16 mode.
 				end if;				
 			when STOP1 =>
 				if CLK_STRB = '1' then
-					if SHIFT_REG > x"00" and SDATA_IN_I = '0' then -- No Stop bit after non zero data.
+					if SHIFT_REG > x"00" and SDATA_IN_I = '0' then -- No Stop std_logic after non zero data.
 						RCV_NEXT_STATE <= SYNC; -- Framing error detected.
 					elsif ST = "11" or ST = "10" then
-						RCV_NEXT_STATE <= STOP2; -- More than one stop bits selected.
+						RCV_NEXT_STATE <= STOP2; -- More than one stop std_logics selected.
 					else
-						RCV_NEXT_STATE <= SYNC; -- One stop bit selected.
+						RCV_NEXT_STATE <= SYNC; -- One stop std_logic selected.
 					end if;
 				else
 					RCV_NEXT_STATE <= STOP1;
 				end if;				
 			when STOP2 =>
 				if CLK_2_STRB = '1'  and ST = "10" then
-					RCV_NEXT_STATE <= SYNC; -- One and a half stop bits selected.
+					RCV_NEXT_STATE <= SYNC; -- One and a half stop std_logics selected.
 				elsif CLK_STRB = '1' then
-					RCV_NEXT_STATE <= SYNC; -- Two stop bits selected.
+					RCV_NEXT_STATE <= SYNC; -- Two stop std_logics selected.
 				else
 					RCV_NEXT_STATE <= STOP2;
 				end if;				

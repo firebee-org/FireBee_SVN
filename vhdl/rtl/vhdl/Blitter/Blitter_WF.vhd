@@ -4,7 +4,7 @@
 ---- http://acp.atari.org                                         ----
 ----                                                              ----
 ---- Description:                                                 ----
----- This design unit provides the bit block transfer processor   ----
+---- This design unit provides the std_logic block transfer processor   ----
 ---- (BLITTER) of the 'Firebee' computer.                         ----
 ---- It is optimized for the use of an Altera Cyclone             ----
 ---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----

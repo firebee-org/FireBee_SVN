@@ -21,7 +21,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright © 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
+---- Copyright ï¿½ 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
 ---- All rights reserved. No portion of this sourcecode may be    ----
 ---- reproduced or transmitted in any form by any means, whether  ----
 ---- by electronic, mechanical, photocopying, recording or        ----
@@ -45,104 +45,104 @@ use ieee.std_logic_unsigned.all;
 entity WF5380_TOP_SOC is
 	port (
         -- System controls:
-		CLK			: in bit; -- Use a 16MHz Clock.
-		RESETn	    : in bit;
+		CLK			: in std_logic; -- Use a 16MHz Clock.
+		RESETn		: in std_logic;
 		
 		-- Address and data:
-		ADR			: in bit_vector(2 downto 0);
-		DATA_IN		: in bit_vector(7 downto 0);
-		DATA_OUT	: out bit_vector(7 downto 0);
-		DATA_EN		: out bit;
+		ADR			: in std_logic_vector(2 downto 0);
+		DATA_IN		: in std_logic_vector(7 downto 0);
+		DATA_OUT		: out std_logic_vector(7 downto 0);
+		DATA_EN		: out std_logic;
 
 		-- Bus and DMA controls:
-		CSn			: in bit;
-		RDn		    : in bit;
-		WRn	        : in bit;
-		EOPn        : in bit;
-		DACKn	    : in bit;
-		DRQ		    : out bit;
-		INT		    : out bit;
-		READY       : out bit;
+		CSn			: in std_logic;
+		RDn			: in std_logic;
+		WRn			: in std_logic;
+		EOPn        : in std_logic;
+		DACKn	    : in std_logic;
+		DRQ		    : out std_logic;
+		INT		    : out std_logic;
+		READY       : out std_logic;
 		
 		-- SCSI bus:
-		DB_INn		: in bit_vector(7 downto 0);
-		DB_OUTn		: out bit_vector(7 downto 0);
-		DB_EN       : out bit;
-		DBP_INn		: in bit;
-		DBP_OUTn	: out bit;
-		DBP_EN      : out bit;
-		RST_INn     : in bit;
-		RST_OUTn    : out bit;
-		RST_EN      : out bit;
-		BSY_INn     : in bit;
-		BSY_OUTn    : out bit;
-		BSY_EN      : out bit;
-		SEL_INn     : in bit;
-		SEL_OUTn    : out bit;
-		SEL_EN      : out bit;
-		ACK_INn     : in bit;
-		ACK_OUTn    : out bit;
-		ACK_EN      : out bit;
-		ATN_INn     : in bit;
-		ATN_OUTn    : out bit;
-		ATN_EN      : out bit;
-		REQ_INn     : in bit;
-		REQ_OUTn    : out bit;
-		REQ_EN      : out bit;
-		IOn_IN      : in bit;
-		IOn_OUT     : out bit;
-		IO_EN       : out bit;
-		CDn_IN      : in bit;
-		CDn_OUT     : out bit;
-		CD_EN       : out bit;
-		MSG_INn     : in bit;
-		MSG_OUTn    : out bit;
-		MSG_EN      : out bit
+		DB_INn		: in std_logic_vector(7 downto 0);
+		DB_OUTn		: out std_logic_vector(7 downto 0);
+		DB_EN       : out std_logic;
+		DBP_INn		: in std_logic;
+		DBP_OUTn	: out std_logic;
+		DBP_EN      : out std_logic;
+		RST_INn     : in std_logic;
+		RST_OUTn    : out std_logic;
+		RST_EN      : out std_logic;
+		BSY_INn     : in std_logic;
+		BSY_OUTn    : out std_logic;
+		BSY_EN      : out std_logic;
+		SEL_INn     : in std_logic;
+		SEL_OUTn    : out std_logic;
+		SEL_EN      : out std_logic;
+		ACK_INn     : in std_logic;
+		ACK_OUTn    : out std_logic;
+		ACK_EN      : out std_logic;
+		ATN_INn     : in std_logic;
+		ATN_OUTn    : out std_logic;
+		ATN_EN      : out std_logic;
+		REQ_INn     : in std_logic;
+		REQ_OUTn    : out std_logic;
+		REQ_EN      : out std_logic;
+		IOn_IN      : in std_logic;
+		IOn_OUT     : out std_logic;
+		IO_EN       : out std_logic;
+		CDn_IN      : in std_logic;
+		CDn_OUT     : out std_logic;
+		CD_EN       : out std_logic;
+		MSG_INn     : in std_logic;
+		MSG_OUTn    : out std_logic;
+		MSG_EN      : out std_logic
 	);
 end entity WF5380_TOP_SOC;
 	
 architecture STRUCTURE of WF5380_TOP_SOC is
-signal ACK_OUT_CTRLn    : bit;
-signal AIP              : bit;
-signal ARB              : bit;
-signal ARB_EN           : bit;
-signal BLK              : bit;
-signal BSR              : bit_vector(7 downto 0);
-signal BSY_DISn         : bit;
-signal BSY_ERR          : bit;
-signal BSY_OUT_CTRLn    : bit;
-signal CHK_PAR          : bit;
-signal CSD              : bit_vector(7 downto 0);
-signal CSB              : bit_vector(7 downto 0);
-signal DATA_EN_CTRL     : bit;
-signal DB_EN_I          : bit;
-signal DMA_ACTIVE       : bit;
-signal DMA_EN           : bit;
-signal DMA_DIS          : bit;
-signal DMA_SND          : bit;
-signal DRQ_I            : bit;
-signal EDMA             : bit;
-signal EOP_EN           : bit;
-signal ICR              : bit_vector(7 downto 0);
-signal IDR_WR           : bit;
-signal INT_I            : bit;
-signal LA               : bit;
-signal ODR              : bit_vector(7 downto 0);
-signal ODR_WR           : bit;
-signal PCHK             : bit;
-signal PHSM             : bit;
-signal PINT_EN          : bit;
-signal REQ_OUT_CTRLn    : bit;
-signal RPI              : bit;
-signal RST              : bit;
-signal SDI              : bit;
-signal SDS              : bit;
-signal SDT              : bit;
-signal SER              : bit_vector(7 downto 0);
-signal SER_ID           : bit;
-signal SPER             : bit;
-signal TARG             : bit;
-signal TCR              : bit_vector(3 downto 0);
+signal ACK_OUT_CTRLn    : std_logic;
+signal AIP              : std_logic;
+signal ARB              : std_logic;
+signal ARB_EN           : std_logic;
+signal BLK              : std_logic;
+signal BSR              : std_logic_vector(7 downto 0);
+signal BSY_DISn         : std_logic;
+signal BSY_ERR          : std_logic;
+signal BSY_OUT_CTRLn    : std_logic;
+signal CHK_PAR          : std_logic;
+signal CSD              : std_logic_vector(7 downto 0);
+signal CSB              : std_logic_vector(7 downto 0);
+signal DATA_EN_CTRL     : std_logic;
+signal DB_EN_I          : std_logic;
+signal DMA_ACTIVE       : std_logic;
+signal DMA_EN           : std_logic;
+signal DMA_DIS          : std_logic;
+signal DMA_SND          : std_logic;
+signal DRQ_I            : std_logic;
+signal EDMA             : std_logic;
+signal EOP_EN           : std_logic;
+signal ICR              : std_logic_vector(7 downto 0);
+signal IDR_WR           : std_logic;
+signal INT_I            : std_logic;
+signal LA               : std_logic;
+signal ODR              : std_logic_vector(7 downto 0);
+signal ODR_WR           : std_logic;
+signal PCHK             : std_logic;
+signal PHSM             : std_logic;
+signal PINT_EN          : std_logic;
+signal REQ_OUT_CTRLn    : std_logic;
+signal RPI              : std_logic;
+signal RST              : std_logic;
+signal SDI              : std_logic;
+signal SDS              : std_logic;
+signal SDT              : std_logic;
+signal SER              : std_logic_vector(7 downto 0);
+signal SER_ID           : std_logic;
+signal SPER             : std_logic;
+signal TARG             : std_logic;
+signal TCR              : std_logic_vector(3 downto 0);
 begin
     EDMA <= '1' when EOPn = '0' and DACKn = '0' and RDn = '0' else
             '1' when EOPn = '0' and DACKn = '0' and WRn = '0' else '0';
@@ -188,7 +188,7 @@ begin
     RST_EN <= '1' when RST = '1' else '0'; -- Open drain control.
     
     -- Data enables:
-    DB_EN_I <= '1' when DATA_EN_CTRL = '1' else -- During Arbitration.
+    DB_EN_I <= '1' when DATA_EN_CTRL = '1' else -- During Arstd_logicration.
                '1' when ICR(0) = '1' and TARG = '1' and DMA_SND = '1' else -- Target 'Send' mode.
                '1' when ICR(0) = '1' and TARG = '0' and IOn_IN = '0' and PHSM = '1' else 
                '1' when ICR(6) = '1' else '0'; -- Test mode enable.
@@ -281,3 +281,7 @@ begin
             DMA_ACTIVE  => DMA_ACTIVE
         );
 end STRUCTURE;
+
+architecture LIGHT of WF5380_TOP_SOC is
+begin
+end LIGHT;

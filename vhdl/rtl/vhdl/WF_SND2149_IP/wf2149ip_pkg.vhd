@@ -63,22 +63,22 @@ type BUSCYCLES is (INACTIVE, R_READ, R_WRITE, ADDRESS);
 
 component WF2149IP_WAVE
 	port(
-		RESETn		: in bit;
-		SYS_CLK		: in bit;
+		RESETn		: in std_logic;
+		SYS_CLK		: in std_logic;
 
-		WAV_STRB	: in bit;
+		WAV_STRB	: in std_logic;
 
-		ADR			: in bit_vector(3 downto 0);
+		ADR			: in std_logic_vector(3 downto 0);
 		DATA_IN		: in std_logic_vector(7 downto 0);
 		DATA_OUT	: out std_logic_vector(7 downto 0);
-		DATA_EN		: out bit;
+		DATA_EN		: out std_logic;
 		
 		BUSCYCLE	: in BUSCYCLES;
-		CTRL_REG	: in bit_vector(5 downto 0);
+		CTRL_REG	: in std_logic_vector(5 downto 0);
 
-		OUT_A		: out bit;
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		OUT_A		: out std_logic;
+		OUT_B		: out std_logic;
+		OUT_C		: out std_logic
 	);
 end component;
 end WF2149IP_PKG;

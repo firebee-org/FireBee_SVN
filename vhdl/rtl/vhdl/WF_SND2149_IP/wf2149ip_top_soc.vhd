@@ -78,51 +78,52 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use work.wf2149ip_pkg.all;
 
 entity WF2149IP_TOP_SOC is
 	port(
 		
-		SYS_CLK		: in bit; -- Read the inforation in the header!
-		RESETn   	: in bit;
+		SYS_CLK		: in std_logic; -- Read the inforation in the header!
+		RESETn   	: in std_logic;
 
-		WAV_CLK		: in bit; -- Read the inforation in the header!
-		SELn		: in bit;
+		WAV_CLK		: in std_logic; -- Read the inforation in the header!
+		SELn		: in std_logic;
 		
-		BDIR		: in bit;
-		BC2, BC1	: in bit;
+		BDIR		: in std_logic;
+		BC2, BC1	: in std_logic;
 
-		A9n, A8		: in bit;
+		A9n, A8		: in std_logic;
 		DA_IN		: in std_logic_vector(7 downto 0);
 		DA_OUT		: out std_logic_vector(7 downto 0);
-		DA_EN		: out bit;
+		DA_EN		: out std_logic;
 		
-		IO_A_IN		: in bit_vector(7 downto 0);
-		IO_A_OUT	: out bit_vector(7 downto 0);
-		IO_A_EN		: out bit;
-		IO_B_IN		: in bit_vector(7 downto 0);
-		IO_B_OUT	: out bit_vector(7 downto 0);
-		IO_B_EN		: out bit;
+		IO_A_IN		: in std_logic_vector(7 downto 0);
+		IO_A_OUT	: out std_logic_vector(7 downto 0);
+		IO_A_EN		: out std_logic;
+		IO_B_IN		: in std_logic_vector(7 downto 0);
+		IO_B_OUT	: out std_logic_vector(7 downto 0);
+		IO_B_EN		: out std_logic;
 
-		OUT_A		: out bit; -- Analog (PWM) outputs.
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		OUT_A		: out std_logic; -- Analog (PWM) outputs.
+		OUT_B		: out std_logic;
+		OUT_C		: out std_logic
 	);
 end WF2149IP_TOP_SOC;
 
 architecture STRUCTURE of WF2149IP_TOP_SOC is
 signal BUSCYCLE		: BUSCYCLES;
 signal DATA_OUT_I	: std_logic_vector(7 downto 0);
-signal DATA_EN_I	: bit;
-signal WAV_STRB		: bit;
-signal ADR_I		: bit_vector(3 downto 0);
-signal CTRL_REG		: bit_vector(7 downto 0);
-signal PORT_A		: bit_vector(7 downto 0);
-signal PORT_B		: bit_vector(7 downto 0);
+signal DATA_EN_I	: std_logic;
+signal WAV_STRB		: std_logic;
+signal ADR_I		: std_logic_vector(3 downto 0);
+signal CTRL_REG		: std_logic_vector(7 downto 0);
+signal PORT_A		: std_logic_vector(7 downto 0);
+signal PORT_B		: std_logic_vector(7 downto 0);
 begin
 	P_WAVSTRB: process(RESETn, SYS_CLK)
 	variable LOCK	: boolean;
-	variable TMP	: bit;
+	variable TMP	: std_logic;
 	begin
 		if RESETn = '0' then
 			LOCK := false;
@@ -144,7 +145,7 @@ begin
 		end if;
 	end process P_WAVSTRB;		
 
-	with BDIR & BC2 & BC1 select
+	with std_logic_vector(unsigned'(BDIR & BC2 & BC1)) select
 		BUSCYCLE <= INACTIVE	when "000" | "010" | "101",
 					ADDRESS 	when "001" | "100" | "111",
 					R_READ 		when "011",
@@ -159,7 +160,7 @@ begin
 			ADR_I <= (others => '0');
         elsif SYS_CLK = '1' and SYS_CLK' event then
 			if BUSCYCLE = ADDRESS and A9n = '0' and A8 = '1' and DA_IN(7 downto 4) = x"0" then
-				ADR_I <= To_BitVector(DA_IN(3 downto 0));
+				ADR_I <= (DA_IN(3 downto 0));
 			end if;
 		end if;
 	end process ADDRESSLATCH;	
@@ -171,7 +172,7 @@ begin
 			CTRL_REG <= x"00";
 		elsif SYS_CLK = '1' and SYS_CLK' event then
 			if BUSCYCLE = R_WRITE and ADR_I = x"7" then
-				CTRL_REG <= To_BitVector(DA_IN);
+				CTRL_REG <= (DA_IN);
 			end if;
 		end if;
 	end process P_CTRL_REG;
@@ -183,9 +184,9 @@ begin
 			PORT_B <= x"00";
 		elsif SYS_CLK = '1' and SYS_CLK' event then
 			if BUSCYCLE = R_WRITE and ADR_I = x"E" then
-				PORT_A <= To_BitVector(DA_IN);
+				PORT_A <= (DA_IN);
 			elsif BUSCYCLE = R_WRITE and ADR_I = x"F" then
-				PORT_B <= To_BitVector(DA_IN);
+				PORT_B <= (DA_IN);
 			end if;
 		end if;	
 	end process DIG_PORTS;
@@ -222,8 +223,8 @@ begin
 				'1' when BUSCYCLE = R_READ and ADR_I = x"F" else '0';
 				
 	DA_OUT <= 	DATA_OUT_I when DATA_EN_I = '1' else -- WAV stuff.
-				To_StdLogicVector(IO_A_IN) when BUSCYCLE = R_READ and ADR_I = x"E" else
-				To_StdLogicVector(IO_B_IN) when BUSCYCLE = R_READ and ADR_I = x"F" else
-				To_StdLogicVector(CTRL_REG) when BUSCYCLE = R_READ and ADR_I = x"7" else (others => '0');
+				(IO_A_IN) when BUSCYCLE = R_READ and ADR_I = x"E" else
+				(IO_B_IN) when BUSCYCLE = R_READ and ADR_I = x"F" else
+				(CTRL_REG) when BUSCYCLE = R_READ and ADR_I = x"7" else (others => '0');
 
 end STRUCTURE;

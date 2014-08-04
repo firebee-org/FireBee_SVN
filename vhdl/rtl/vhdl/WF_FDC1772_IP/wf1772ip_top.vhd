@@ -69,60 +69,60 @@ use work.WF1772IP_PKG.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_TOP is
 	port (
-		CLK			: in bit; -- 16MHz clock!
-		MRn			: in bit;
-		CSn			: in bit;
-		RWn			: in bit;
-		A1, A0		: in bit;
+		CLK			: in std_logic; -- 16MHz clock!
+		MRn			: in std_logic;
+		CSn			: in std_logic;
+		RWn			: in std_logic;
+		A1, A0		: in std_logic;
 		DATA		: inout std_logic_vector(7 downto 0);
-		RDn			: in bit;
-		TR00n		: in bit;
-		IPn			: in bit;
-		WPRTn		: in bit;
-		DDEn		: in bit;
-		HDTYPE		: in bit; -- '0' = DD disks, '1' = HD disks.
-		MO			: out bit;
-		WG			: out bit;
-		WD			: out bit;
-		STEP		: out bit;
-		DIRC		: out bit;
-		DRQ			: out bit;
-		INTRQ		: out bit
+		RDn			: in std_logic;
+		TR00n		: in std_logic;
+		IPn			: in std_logic;
+		WPRTn		: in std_logic;
+		DDEn		: in std_logic;
+		HDTYPE		: in std_logic; -- '0' = DD disks, '1' = HD disks.
+		MO			: out std_logic;
+		WG			: out std_logic;
+		WD			: out std_logic;
+		STEP		: out std_logic;
+		DIRC		: out std_logic;
+		DRQ			: out std_logic;
+		INTRQ		: out std_logic
 	);
 end entity WF1772IP_TOP;
 	
 architecture STRUCTURE of WF1772IP_TOP is
 component WF1772IP_TOP_SOC
 	port (
-		CLK			: in bit;
-		RESETn		: in bit;
-		CSn			: in bit;
-		RWn			: in bit;
-		A1, A0		: in bit;
+		CLK			: in std_logic;
+		RESETn		: in std_logic;
+		CSn			: in std_logic;
+		RWn			: in std_logic;
+		A1, A0		: in std_logic;
 		DATA_IN		: in std_logic_vector(7 downto 0);
 		DATA_OUT	: out std_logic_vector(7 downto 0);
-		DATA_EN		: out bit;
-		RDn			: in bit;
-		TR00n		: in bit;
-		IPn			: in bit;
-		WPRTn		: in bit;
-		DDEn		: in bit;
-		HDTYPE		: in bit;
-		MO			: out bit;
-		WG			: out bit;
-		WD			: out bit;
-		STEP		: out bit;
-		DIRC		: out bit;
-		DRQ			: out bit;
-		INTRQ		: out bit
+		DATA_EN		: out std_logic;
+		RDn			: in std_logic;
+		TR00n		: in std_logic;
+		IPn			: in std_logic;
+		WPRTn		: in std_logic;
+		DDEn		: in std_logic;
+		HDTYPE		: in std_logic;
+		MO			: out std_logic;
+		WG			: out std_logic;
+		WD			: out std_logic;
+		STEP		: out std_logic;
+		DIRC		: out std_logic;
+		DRQ			: out std_logic;
+		INTRQ		: out std_logic
 	);
 end component;
 signal DATA_OUT : std_logic_vector(7 downto 0);
-signal DATA_EN  : bit;
+signal DATA_EN  : std_logic;
 begin
     DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
 

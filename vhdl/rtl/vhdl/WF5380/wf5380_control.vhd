@@ -14,7 +14,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright © 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
+---- Copyright ï¿½ 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
 ---- All rights reserved. No portion of this sourcecode may be    ----
 ---- reproduced or transmitted in any form by any means, whether  ----
 ---- by electronic, mechanical, photocopying, recording or        ----
@@ -30,57 +30,57 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF5380_CONTROL is
 	port (
         -- System controls:
-		CLK			: in bit;
-		RESETn	    : in bit; -- System reset.
+		CLK			: in std_logic;
+		RESETn	    : in std_logic; -- System reset.
 		
         -- System controls:
-        BSY_INn     : in bit; -- SCSI BSY_INn bit.
-        BSY_OUTn    : out bit; -- SCSI BSY_INn bit.
-        DATA_EN     : out bit; -- Enable the SCSI data lines.
-        SEL_INn     : in bit; -- SCSI SEL_INn bit.
-        ARB_EN      : in bit; -- Arbitration enable.
-        BSY_DISn    : in bit; -- BSY monitoring enable.
-		RSTn	    : in bit; -- SCSI reset.
+        BSY_INn     : in std_logic; -- SCSI BSY_INn std_logic.
+        BSY_OUTn    : out std_logic; -- SCSI BSY_INn std_logic.
+        DATA_EN     : out std_logic; -- Enable the SCSI data lines.
+        SEL_INn     : in std_logic; -- SCSI SEL_INn std_logic.
+        ARB_EN      : in std_logic; -- Arstd_logicration enable.
+        BSY_DISn    : in std_logic; -- BSY monitoring enable.
+		RSTn	    : in std_logic; -- SCSI reset.
         
-        ARB         : out bit; -- Arbitration flag.
-        AIP         : out bit; -- Arbitration in progress flag.
-        LA          : out bit; -- Lost arbitration flag.
+        ARB         : out std_logic; -- Arstd_logicration flag.
+        AIP         : out std_logic; -- Arstd_logicration in progress flag.
+        LA          : out std_logic; -- Lost arstd_logicration flag.
 
-        ACK_INn     : in bit;
-        ACK_OUTn    : out bit;
-        REQ_INn     : in bit;
-        REQ_OUTn    : out bit;
+        ACK_INn     : in std_logic;
+        ACK_OUTn    : out std_logic;
+        REQ_INn     : in std_logic;
+        REQ_OUTn    : out std_logic;
 
-        DACKn       : in bit; -- Data acknowledge.
-        READY       : out bit;
-        DRQ         : out bit; -- Data request.
+        DACKn       : in std_logic; -- Data acknowledge.
+        READY       : out std_logic;
+        DRQ         : out std_logic; -- Data request.
 
-        TARG        : in bit; -- Target mode indicator.
-        BLK         : in bit; -- Block mode indicator.
-        PINT_EN     : in bit; -- Parity interrupt enable.
-        SPER        : in bit; -- Parity error.
-        SER_ID      : in bit; -- SER matches ODR bits.
-        RPI         : in bit; -- Reset interrupts.
-        DMA_EN      : in bit; -- DMA mode enable.
-		SDS         : in bit; -- Start DMA send, write only.
-		SDT         : in bit; -- Start DMA target receive, write only.
-		SDI         : in bit; -- Start DMA initiator receive, write only.
-        EOP_EN      : in bit; -- EOP interrupt enable.
-        EOPn        : in bit; -- End of process indicator.
-        PHSM        : in bit; -- Phase match flag.
+        TARG        : in std_logic; -- Target mode indicator.
+        BLK         : in std_logic; -- Block mode indicator.
+        PINT_EN     : in std_logic; -- Parity interrupt enable.
+        SPER        : in std_logic; -- Parity error.
+        SER_ID      : in std_logic; -- SER matches ODR std_logics.
+        RPI         : in std_logic; -- Reset interrupts.
+        DMA_EN      : in std_logic; -- DMA mode enable.
+		SDS         : in std_logic; -- Start DMA send, write only.
+		SDT         : in std_logic; -- Start DMA target receive, write only.
+		SDI         : in std_logic; -- Start DMA initiator receive, write only.
+        EOP_EN      : in std_logic; -- EOP interrupt enable.
+        EOPn        : in std_logic; -- End of process indicator.
+        PHSM        : in std_logic; -- Phase match flag.
 
-        INT         : out bit; -- Interrupt.
-        IDR_WR      : out bit; -- Write input data register during DMA.
-        ODR_WR      : out bit; -- Write output data register, during DMA.
-        CHK_PAR     : out bit; -- Check Parity during DMA operation.
-        BSY_ERR     : out bit; -- Busy monitoring error.
-        DMA_SND     : out bit; -- Indicates direction of target DMA.
-        DMA_ACTIVE  : out bit -- DMA is active.
+        INT         : out std_logic; -- Interrupt.
+        IDR_WR      : out std_logic; -- Write input data register during DMA.
+        ODR_WR      : out std_logic; -- Write output data register, during DMA.
+        CHK_PAR     : out std_logic; -- Check Parity during DMA operation.
+        BSY_ERR     : out std_logic; -- Busy monitoring error.
+        DMA_SND     : out std_logic; -- Indicates direction of target DMA.
+        DMA_ACTIVE  : out std_logic -- DMA is active.
     );
 end entity WF5380_CONTROL;
 	
@@ -91,11 +91,11 @@ signal CTRL_STATE       : CTRL_STATES;
 signal NEXT_CTRL_STATE  : CTRL_STATES;
 signal DMA_STATE        : DMA_STATES;
 signal NEXT_DMA_STATE   : DMA_STATES;
-signal BUS_FREE         : bit;
+signal BUS_FREE         : std_logic;
 signal DELAY_800ns      : boolean;
 signal DELAY_2200ns     : boolean;
-signal DMA_ACTIVE_I     : bit;
-signal EOP_In           : bit;
+signal DMA_ACTIVE_I     : std_logic;
+signal EOP_In           : std_logic;
 begin
     IN_BUFFER: process
     -- This buffer shall prevent some signals against
@@ -394,19 +394,19 @@ begin
         end if;
     end process P_DRQ;
 
-    P_BUSFREE: process(RESETn, CLK)
-    -- This is the logic for the bus free signal.
-    -- A bus free is valid if the BSY_INn signal is
-    -- at least 437.5ns inactive ans SEL_INn is inactive.
-    -- The delay are 7 clock cycles of 16MHz.
-    variable TMP    : std_logic_vector(2 downto 0);
+	P_BUSFREE: process(RESETn, CLK)
+		-- This is the logic for the bus free signal.
+		-- A bus free is valid if the BSY_INn signal is
+		-- at least 437.5ns inactive ans SEL_INn is inactive.
+		-- The delay are 7 clock cycles of 16MHz.
+		variable TMP : unsigned (2 downto 0);
     begin
         if RESETn = '0' then
             BUS_FREE <= '0';
             TMP := "000";
         elsif CLK = '1' and CLK' event then
             if BSY_INn = '1' and TMP < x"111" then
-                TMP := TMP + '1';
+                TMP := TMP + 1;
             elsif BSY_INn = '0' then
                 TMP := "000";
             end if;
@@ -424,7 +424,7 @@ begin
     DELAY_800: process(RESETn, CLK)
     -- This is the delay of 812.5ns.
     -- It is derived from 13 16MHz clock cycles.
-    variable TMP    : std_logic_vector(3 downto 0);
+		variable TMP    : unsigned (3 downto 0);
     begin
         if RESETn = '0' then
             DELAY_800ns <= false;
@@ -433,7 +433,7 @@ begin
             if CTRL_STATE /= WAIT_800ns then
                 TMP := x"0";
             elsif TMP <= x"D" then
-                TMP := TMP + '1';
+                TMP := TMP + 1;
             end if;
             --
             if TMP = x"D" then
@@ -505,7 +505,7 @@ begin
     
     P_LA: process(RESETn, CLK)
     -- This flip flop controls the LA
-    -- (lost arbitration) flag.
+    -- (lost arstd_logicration) flag.
     begin
         if RESETn = '0' then
             LA <= '0';
@@ -543,21 +543,21 @@ begin
         DMA_ACTIVE <= DMA_ACTIVE_I;
     end process P_DMA_ACTIVE;
 
-    INTERRUPTS: process(RESETn, CLK)
-    -- This is the logic for all DP5380's interrupt sources.
-    -- A busy interrupt occurs if the BSY_INn signal is at 
-    -- least 437.5ns inactive. The delay are 7 clock cycles
-    -- of 16MHz. This logic also provides the respective 
-    -- error flags for the BSR.
-    variable TMP    : std_logic_vector(2 downto 0);
-    begin
-        if RESETn = '0' then
-            INT <= '0';
-            BSY_ERR <= '0';
-            TMP := "000";
-        elsif CLK = '1' and CLK' event then
-            if SPER = '1' and PINT_EN = '1' then
-                INT <= '1'; -- Parity interrupt.
+	INTERRUPTS: process(RESETn, CLK)
+		-- This is the logic for all DP5380's interrupt sources.
+		-- A busy interrupt occurs if the BSY_INn signal is at 
+		-- least 437.5ns inactive. The delay are 7 clock cycles
+		-- of 16MHz. This logic also provides the respective 
+		-- error flags for the BSR.
+		variable TMP    : unsigned (2 downto 0);
+	begin
+		if RESETn = '0' then
+			INT <= '0';
+			BSY_ERR <= '0';
+			TMP := "000";
+		elsif CLK = '1' and CLK' event then
+			if SPER = '1' and PINT_EN = '1' then
+				INT <= '1'; -- Parity interrupt.
             elsif RPI = '0' then -- Reset interrupts.
                 INT <= '0';
             end if;
@@ -596,7 +596,7 @@ begin
             end if;
             --
             if BSY_INn = '1' and TMP < x"111" then
-                TMP := TMP + '1'; -- Bus settle delay.
+                TMP := TMP + 1; -- Bus settle delay.
             elsif BSY_INn = '0' then
                 TMP := "000";
             end if;
@@ -612,3 +612,7 @@ begin
         end if;
     end process INTERRUPTS;
 end BEHAVIOUR;
+
+architecture LIGHT of WF5380_CONTROL is
+begin
+end LIGHT;

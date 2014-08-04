@@ -58,44 +58,44 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF6850IP_RECEIVE is
   port (
-		CLK					: in bit;
-        RESETn				: in bit;
-		MCLR				: in bit;
+		CLK					: in std_logic;
+        RESETn				: in std_logic;
+		MCLR				: in std_logic;
 
-        CS					: in bit_vector(2 downto 0);
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
+        CS					: in std_logic_vector(2 downto 0);
+        E		       		: in std_logic;   
+        RWn              	: in std_logic;
+        RS					: in std_logic;
 
-        DATA_OUT	        : out bit_vector(7 downto 0);   
-		DATA_EN				: out bit;
+        DATA_OUT	        : out std_logic_vector(7 downto 0);   
+		DATA_EN				: out std_logic;
 		
-		WS					: in bit_vector(2 downto 0);
-		CDS					: in bit_vector(1 downto 0);
+		WS					: in std_logic_vector(2 downto 0);
+		CDS					: in std_logic_vector(1 downto 0);
 
-        RXCLK				: in bit;
-        RXDATA				: in bit;
+        RXCLK				: in std_logic;
+        RXDATA				: in std_logic;
 
-		RDRF				: buffer bit;
-		OVR					: out bit;
-		PE					: out bit;
-		FE					: out bit
+		RDRF				: buffer std_logic;
+		OVR					: out std_logic;
+		PE					: out std_logic;
+		FE					: out std_logic
        );                                              
 end entity WF6850IP_RECEIVE;
 
 architecture BEHAVIOR of WF6850IP_RECEIVE is
 type RCV_STATES is (IDLE, WAIT_START, SAMPLE, PARITY, STOP1, STOP2, SYNC);
 signal RCV_STATE, RCV_NEXT_STATE	: RCV_STATES;
-signal RXDATA_I		: bit;
-signal RXDATA_S		: bit;
-signal DATA_REG		: bit_vector(7 downto 0);
-signal SHIFT_REG	: bit_vector(7 downto 0);
-signal CLK_STRB		: bit;
-signal BITCNT		: std_logic_vector(2 downto 0);
+signal RXDATA_I		: std_logic;
+signal RXDATA_S		: std_logic;
+signal DATA_REG		: std_logic_vector(7 downto 0);
+signal SHIFT_REG	: std_logic_vector(7 downto 0);
+signal CLK_STRB		: std_logic;
+signal BITCNT		: unsigned (2 downto 0);
 begin
 	P_SAMPLE: process
 	-- This filter provides a synchronisation to the system
@@ -121,7 +121,7 @@ begin
 	CLKDIV: process
 	variable CLK_LOCK	: boolean;
 	variable STRB_LOCK	: boolean;
-	variable CLK_DIVCNT	: std_logic_vector(6 downto 0);
+	variable CLK_DIVCNT	: unsigned (6 downto 0);
 	begin
 		wait until CLK = '1' and CLK' event;
 		if CDS = "00" then -- Divider off.
@@ -144,7 +144,7 @@ begin
 	 		CLK_STRB <= '0';
 		else
 			if CLK_DIVCNT > "0000000" and RXCLK = '1' and CLK_LOCK = false then
-				CLK_DIVCNT := CLK_DIVCNT - '1';
+				CLK_DIVCNT := CLK_DIVCNT - 1;
 				CLK_STRB <= '0';
 				CLK_LOCK := true;
 			elsif CDS = "01" and CLK_DIVCNT = "0000000" then
@@ -181,11 +181,11 @@ begin
   		elsif CLK = '1' and CLK' event then
 			if MCLR = '1' then
 				DATA_REG <= x"00";
-			elsif RCV_STATE = SYNC and WS(2) = '0' and RDRF = '0' then -- 7 bit data.
+			elsif RCV_STATE = SYNC and WS(2) = '0' and RDRF = '0' then -- 7 std_logic data.
 				-- Transfer from shift- to data register only if
 				-- data register is empty (RDRF = '0').
 				DATA_REG <= '0' & SHIFT_REG(7 downto 1);
-			elsif RCV_STATE = SYNC and WS(2) = '1' and RDRF = '0' then -- 8 bit data.
+			elsif RCV_STATE = SYNC and WS(2) = '1' and RDRF = '0' then -- 8 std_logic data.
 				-- Transfer from shift- to data register only if
 				-- data register is empty (RDRF = '0').
 				DATA_REG <= SHIFT_REG;
@@ -212,7 +212,7 @@ begin
 	begin
 		wait until CLK = '1' and CLK' event;
 		if RCV_STATE = SAMPLE and CLK_STRB = '1' then
-			BITCNT <= BITCNT + '1';
+			BITCNT <= BITCNT + 1;
 		elsif RCV_STATE /= SAMPLE then
 			BITCNT <= (others => '0');
 		end if;
@@ -220,8 +220,8 @@ begin
 
 	FRAME_ERR: process(RESETn, CLK)
 	-- This module detects a framing error
-	-- during stop bit 1 and stop bit 2.
-	variable FE_I: bit;
+	-- during stop std_logic 1 and stop std_logic 2.
+	variable FE_I: std_logic;
 	begin
 		if RESETn = '0' then
 			FE_I := '0';
@@ -246,7 +246,7 @@ begin
 	end process FRAME_ERR;
 
 	OVERRUN: process(RESETn, CLK)
-	variable OVR_I		: bit;
+	variable OVR_I		: std_logic;
 	variable FIRST_READ	: boolean;
 	begin
 		if RESETn = '0' then
@@ -280,8 +280,8 @@ begin
 	end process OVERRUN;
 	
 	PARITY_TEST: process(RESETn, CLK)
-	variable PAR_TMP	: bit;
-	variable PE_I		: bit;
+	variable PAR_TMP	: std_logic;
+	variable PE_I		: std_logic;
 	begin
 		if RESETn = '0' then
 			PE <= '0';
@@ -309,7 +309,7 @@ begin
 			end if;
             -- Transmit the parity flag together with the data
             -- In other words: no parity to the status register
-            -- when RDRF inhibits the data transfer to the
+            -- when RDRF inhistd_logics the data transfer to the
             -- receiver data register.
             if RCV_STATE = SYNC and RDRF = '0' then
                 PE <= PE_I;
@@ -353,13 +353,13 @@ begin
 		case RCV_STATE is
 			when IDLE =>
 				if RXDATA_S = '0' and CDS = "00" then
-					RCV_NEXT_STATE <= SAMPLE; -- Startbit detected in div by 1 mode.
+					RCV_NEXT_STATE <= SAMPLE; -- Startstd_logic detected in div by 1 mode.
 				elsif RXDATA_S = '0' and CDS = "01" then
-					RCV_NEXT_STATE <= WAIT_START; -- Startbit detected in div by 16 mode.
+					RCV_NEXT_STATE <= WAIT_START; -- Startstd_logic detected in div by 16 mode.
 				elsif RXDATA_S = '0' and CDS = "10" then
-					RCV_NEXT_STATE <= WAIT_START; -- Startbit detected in div by 64 mode.
+					RCV_NEXT_STATE <= WAIT_START; -- Startstd_logic detected in div by 64 mode.
 				else
-					RCV_NEXT_STATE <= IDLE; -- No startbit; sleep well :-)
+					RCV_NEXT_STATE <= IDLE; -- No startstd_logic; sleep well :-)
 				end if;
 			when WAIT_START =>
 				if CLK_STRB = '1' then
@@ -374,9 +374,9 @@ begin
 			when SAMPLE =>
 				if CLK_STRB = '1' then
 					if BITCNT < "110" and WS(2) = '0' then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 7 data bits.
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 7 data std_logics.
 					elsif BITCNT < "111" and WS(2) = '1' then
-						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 8 data bits.
+						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 8 data std_logics.
 					elsif WS = "100" or WS = "101" then
 						RCV_NEXT_STATE <= STOP1; -- No parity check enabled.
 					else
@@ -396,9 +396,9 @@ begin
 					if RXDATA_S = '0' then
 						RCV_NEXT_STATE <= SYNC; -- Framing error detected.
 					elsif WS = "000" or WS = "001" or WS = "100" then
-						RCV_NEXT_STATE <= STOP2; -- Two stop bits selected.
+						RCV_NEXT_STATE <= STOP2; -- Two stop std_logics selected.
 					else
-						RCV_NEXT_STATE <= SYNC; -- One stop bit selected.
+						RCV_NEXT_STATE <= SYNC; -- One stop std_logic selected.
 					end if;
 				else
 					RCV_NEXT_STATE <= STOP1;

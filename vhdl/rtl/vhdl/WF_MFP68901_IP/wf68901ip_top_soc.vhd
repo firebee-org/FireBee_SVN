@@ -67,88 +67,88 @@ use work.wf68901ip_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_TOP_SOC is
 	port (  -- System control:
-			CLK			: in bit;
-			RESETn		: in bit;
+			CLK			: in std_logic;
+			RESETn		: in std_logic;
 			
 			-- Asynchronous bus control:
-			DSn			: in bit;
-			CSn			: in bit;
-			RWn			: in bit;
-			DTACKn		: out bit;
+			DSn			: in std_logic;
+			CSn			: in std_logic;
+			RWn			: in std_logic;
+			DTACKn		: out std_logic;
 			
 			-- Data and Adresses:
-			RS			: in bit_vector(5 downto 1);
+			RS			: in std_logic_vector(5 downto 1);
 			DATA_IN		: in std_logic_vector(7 downto 0);
 			DATA_OUT	: out std_logic_vector(7 downto 0);
-			DATA_EN		: out bit;
-			GPIP_IN		: in bit_vector(7 downto 0);
-			GPIP_OUT	: out bit_vector(7 downto 0);
-			GPIP_EN		: out bit_vector(7 downto 0);
+			DATA_EN		: out std_logic;
+			GPIP_IN		: in std_logic_vector(7 downto 0);
+			GPIP_OUT	: out std_logic_vector(7 downto 0);
+			GPIP_EN		: out std_logic_vector(7 downto 0);
 			
 			-- Interrupt control:
-			IACKn		: in bit;
-			IEIn		: in bit;
-			IEOn		: out bit;
-			IRQn		: out bit;
+			IACKn		: in std_logic;
+			IEIn		: in std_logic;
+			IEOn		: out std_logic;
+			IRQn		: out std_logic;
 			
 			-- Timers and timer control:
-			XTAL1		: in bit; -- Use an oszillator instead of a quartz.
-			TAI			: in bit;
-			TBI			: in bit;
-			TAO			: out bit;			
-			TBO			: out bit;			
-			TCO			: out bit;			
-			TDO			: out bit;			
+			XTAL1		: in std_logic; -- Use an oszillator instead of a quartz.
+			TAI			: in std_logic;
+			TBI			: in std_logic;
+			TAO			: out std_logic;			
+			TBO			: out std_logic;			
+			TCO			: out std_logic;			
+			TDO			: out std_logic;			
 			
 			-- Serial I/O control:
-			RC			: in bit;
-			TC			: in bit;
-			SI			: in bit;
-			SO			: out bit;
-			SO_EN		: out bit;
+			RC			: in std_logic;
+			TC			: in std_logic;
+			SI			: in std_logic;
+			SO			: out std_logic;
+			SO_EN		: out std_logic;
 			
 			-- DMA control:
-			RRn			: out bit;
-			TRn			: out bit			
+			RRn			: out std_logic;
+			TRn			: out std_logic			
 	);
 end entity WF68901IP_TOP_SOC;
 
 architecture STRUCTURE of WF68901IP_TOP_SOC is
-signal DATA_IN_I				: bit_vector(7 downto 0);
-signal DTACK_In					: bit;
+signal DATA_IN_I				: std_logic_vector(7 downto 0);
+signal DTACK_In					: std_logic;
 signal DTACK_LOCK				: boolean;
-signal DTACK_OUTn				: bit;
-signal RX_ERR_INT_I				: bit;
-signal TX_ERR_INT_I				: bit;
-signal RX_BUFF_INT_I			: bit;
-signal TX_BUFF_INT_I			: bit;
-signal DATA_OUT_USART_I			: bit_vector(7 downto 0);
-signal DATA_OUT_EN_USART_I		: bit;
-signal DATA_OUT_INT_I			: bit_vector(7 downto 0);
-signal DATA_OUT_EN_INT_I		: bit;
-signal DATA_OUT_GPIO_I			: bit_vector(7 downto 0);
-signal DATA_OUT_EN_GPIO_I		: bit;
-signal DATA_OUT_TIMERS_I		: bit_vector(7 downto 0);
-signal DATA_OUT_EN_TIMERS_I		: bit;
-signal SO_I						: bit;
-signal SO_EN_I					: bit;
-signal GPIP_IN_I				: bit_vector(7 downto 0);
-signal GPIP_OUT_I				: bit_vector(7 downto 0);
-signal GPIP_EN_I				: bit_vector(7 downto 0);
-signal GP_INT_I					: bit_vector(7 downto 0);
-signal TIMER_A_INT_I			: bit;
-signal TIMER_B_INT_I			: bit;
-signal TIMER_C_INT_I			: bit;
-signal TIMER_D_INT_I			: bit;
-signal IRQ_In					: bit;
-signal AER_4_I					: bit;
-signal AER_3_I					: bit;
-signal TA_PWM_I					: bit;
-signal TB_PWM_I					: bit;
+signal DTACK_OUTn				: std_logic;
+signal RX_ERR_INT_I				: std_logic;
+signal TX_ERR_INT_I				: std_logic;
+signal RX_BUFF_INT_I			: std_logic;
+signal TX_BUFF_INT_I			: std_logic;
+signal DATA_OUT_USART_I			: std_logic_vector(7 downto 0);
+signal DATA_OUT_EN_USART_I		: std_logic;
+signal DATA_OUT_INT_I			: std_logic_vector(7 downto 0);
+signal DATA_OUT_EN_INT_I		: std_logic;
+signal DATA_OUT_GPIO_I			: std_logic_vector(7 downto 0);
+signal DATA_OUT_EN_GPIO_I		: std_logic;
+signal DATA_OUT_TIMERS_I		: std_logic_vector(7 downto 0);
+signal DATA_OUT_EN_TIMERS_I		: std_logic;
+signal SO_I						: std_logic;
+signal SO_EN_I					: std_logic;
+signal GPIP_IN_I				: std_logic_vector(7 downto 0);
+signal GPIP_OUT_I				: std_logic_vector(7 downto 0);
+signal GPIP_EN_I				: std_logic_vector(7 downto 0);
+signal GP_INT_I					: std_logic_vector(7 downto 0);
+signal TIMER_A_INT_I			: std_logic;
+signal TIMER_B_INT_I			: std_logic;
+signal TIMER_C_INT_I			: std_logic;
+signal TIMER_D_INT_I			: std_logic;
+signal IRQ_In					: std_logic;
+signal AER_4_I					: std_logic;
+signal AER_3_I					: std_logic;
+signal TA_PWM_I					: std_logic;
+signal TB_PWM_I					: std_logic;
 begin
 	-- Interrupt request (open drain):
 	IRQn <= IRQ_In;
@@ -162,13 +162,13 @@ begin
 	GPIP_OUT <= GPIP_OUT_I;
 	GPIP_EN <= GPIP_EN_I;
 
-	DATA_IN_I <= To_BitVector(DATA_IN);
+	DATA_IN_I <= DATA_IN;
 	DATA_EN <= DATA_OUT_EN_USART_I or DATA_OUT_EN_INT_I or DATA_OUT_EN_GPIO_I or DATA_OUT_EN_TIMERS_I;
 	-- Output data multiplexer:
-	DATA_OUT <= To_StdLogicVector(DATA_OUT_USART_I) when DATA_OUT_EN_USART_I = '1' else
-				To_StdLogicVector(DATA_OUT_INT_I) when DATA_OUT_EN_INT_I = '1' else
-				To_StdLogicVector(DATA_OUT_GPIO_I) when DATA_OUT_EN_GPIO_I = '1' else
-				To_StdLogicVector(DATA_OUT_TIMERS_I) when DATA_OUT_EN_TIMERS_I = '1' else (others => '1');
+	DATA_OUT <= DATA_OUT_USART_I when DATA_OUT_EN_USART_I = '1' else
+				DATA_OUT_INT_I when DATA_OUT_EN_INT_I = '1' else
+				DATA_OUT_GPIO_I when DATA_OUT_EN_GPIO_I = '1' else
+				DATA_OUT_TIMERS_I when DATA_OUT_EN_TIMERS_I = '1' else (others => '1');
 
 	-- Data acknowledge handshake is provided by the following statement and the consecutive two
 	-- processes. For more information refer to the M68000 family reference manual.

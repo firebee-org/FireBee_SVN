@@ -65,69 +65,69 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_TRANSCEIVER is
 	port(
 		-- System control
-		CLK		: in bit; -- must be 16MHz
-		RESETn	: in bit;
+		CLK		: in std_logic; -- must be 16MHz
+		RESETn	: in std_logic;
 
 		-- Data and Control:
-		HDTYPE			: in bit; -- Floppy type HD or DD.
-		DDEn			: in bit; -- Double density select (FM or MFM).
-		ID_AM			: in bit; -- ID addressmark strobe.
+		HDTYPE			: in std_logic; -- Floppy type HD or DD.
+		DDEn			: in std_logic; -- Double density select (FM or MFM).
+		ID_AM			: in std_logic; -- ID addressmark strobe.
 		DATA_AM			: in Bit; -- Data addressmark strobe.
 		DDATA_AM		: in Bit; -- Deleted data addressmark strobe.
-		SHFT_LOAD_SD	: in bit; -- Indication for shift register load time.
-		DR				: in bit_vector(7 downto 0); -- Content of the data register.
+		SHFT_LOAD_SD	: in std_logic; -- Indication for shift register load time.
+		DR				: in std_logic_vector(7 downto 0); -- Content of the data register.
 
 		-- Data strobes:
-		PLL_DSTRB	: in bit; -- Clock strobe for RD serial data input.
-		DATA_STRB 	: buffer bit;
+		PLL_DSTRB	: in std_logic; -- Clock strobe for RD serial data input.
+		DATA_STRB 	: buffer std_logic;
 		
 		-- Data strobe and data for the CRC during write operation:
-		WDATA 		: buffer bit;
+		WDATA 		: buffer std_logic;
 
 		-- Encoder (logic to disk):
-		PRECOMP_EN	: in bit; -- control signal for MFM write precompensation.
-		AM_TYPE		: in bit; -- Write deleted address mark in MFM mode when 0.
-		AM_2_DISK	: in bit;
-		DSR_2_DISK	: in bit;
-		FF_2_DISK	: in bit;
-		CRC_2_DISK	: in bit;
+		PRECOMP_EN	: in std_logic; -- control signal for MFM write precompensation.
+		AM_TYPE		: in std_logic; -- Write deleted address mark in MFM mode when 0.
+		AM_2_DISK	: in std_logic;
+		DSR_2_DISK	: in std_logic;
+		FF_2_DISK	: in std_logic;
+		CRC_2_DISK	: in std_logic;
 		SR_SDOUT	: in std_logic; -- encoder's data input from the shift register (serial).
-		CRC_SDOUT	: in bit; -- encoder's data input from the CRC unit (serial).
-		WRn			: out bit; -- write output for the MFM drive containing clock and data.
+		CRC_SDOUT	: in std_logic; -- encoder's data input from the CRC unit (serial).
+		WRn			: out std_logic; -- write output for the MFM drive containing clock and data.
 
 		-- Decoder (disk to logic):
-		PLL_D		: in bit; -- Serial data input.
-		SD_R		: out bit -- Serial (decoded) data output.
+		PLL_D		: in std_logic; -- Serial data input.
+		SD_R		: out std_logic -- Serial (decoded) data output.
 	);
 end WF1772IP_TRANSCEIVER;
 
 architecture BEHAVIOR of WF1772IP_TRANSCEIVER is
-type MFM_STATES is (A_00, B_01, C_10);
-type PRECOMP_VALUES is (EARLY, NOMINAL, LATE);
-type DEC_STATES is (CLK_PHASE, DATA_PHASE);
+	type MFM_STATES is (A_00, B_01, C_10);
+	type PRECOMP_VALUES is (EARLY, NOMINAL, LATE);
+	type DEC_STATES is (CLK_PHASE, DATA_PHASE);
 
-signal MFM_STATE		: MFM_STATES;
-signal NEXT_MFM_STATE	: MFM_STATES;
-signal PRECOMP			: PRECOMP_VALUES;
-signal DEC_STATE		: DEC_STATES;
-signal NEXT_DEC_STATE	: DEC_STATES;
+	signal MFM_STATE		: MFM_STATES;
+	signal NEXT_MFM_STATE	: MFM_STATES;
+	signal PRECOMP			: PRECOMP_VALUES;
+	signal DEC_STATE		: DEC_STATES;
+	signal NEXT_DEC_STATE	: DEC_STATES;
 
-signal FM_In			: bit;
+	signal FM_In			: std_logic;
 
-signal CLKMASK 			: bit; -- Control for suppression of FM clock transitions.
+	signal CLKMASK 			: std_logic; -- Control for suppression of FM clock transitions.
 
-signal MFM_10_STRB		: bit;
-signal MFM_01_STRB		: bit;
+	signal MFM_10_STRB		: std_logic;
+	signal MFM_01_STRB		: std_logic;
 
-signal WR_CNT 			: std_logic_vector(3 downto 0);
-signal MFM_In			: bit;
+	signal WR_CNT 			: std_logic_vector(3 downto 0);
+	signal MFM_In			: std_logic;
 
-signal AM_SHFT			: bit_vector(31 downto 0);
+	signal AM_SHFT			: std_logic_vector(31 downto 0);
 
 begin
 	-- #######################  encoder stuff  ###########################
@@ -157,7 +157,7 @@ begin
 
 	-- Input multiplexer:
 	WDATA <= 	AM_SHFT(31) when AM_2_DISK = '1' else -- Address mark data data.
-				To_Bit(SR_SDOUT) when DSR_2_DISK = '1' else -- Shift register data.
+				(SR_SDOUT) when DSR_2_DISK = '1' else -- Shift register data.
 				CRC_SDOUT when CRC_2_DISK = '1' else -- CRC data.
 				'1' when FF_2_DISK = '1' else '0'; -- Write zeros is default.
 
@@ -168,10 +168,10 @@ begin
 	CLK_MASK: process(CLK)
 	-- This part of software controls the suppression of the clock pulses
 	-- during transmission of several FM special characters. During writing
-	-- 'normal' data to the disk, only 8 mask bits of the shift register are
-	-- used. During writing MFM sync and address mark bits, the register is
-	-- used with 32 mask bits.
-	variable MASK_SHFT	: bit_vector(23 downto 0);
+	-- 'normal' data to the disk, only 8 mask std_logics of the shift register are
+	-- used. During writing MFM sync and address mark std_logics, the register is
+	-- used with 32 mask std_logics.
+	variable MASK_SHFT	: std_logic_vector(23 downto 0);
 	variable LOCK		: boolean;
 	begin
 		if CLK = '1' and CLK' event then
@@ -189,8 +189,8 @@ begin
 				end case;
 			elsif SHFT_LOAD_SD = '1' and DDEn = '0' then -- MFM mode.
 				case DR is
-					when x"F5" => MASK_SHFT := x"FBFFFF"; -- Suppress clock pulse between bits 4 and 5.
-					when x"F6" => MASK_SHFT := x"F7FFFF"; -- Suppress clock pulse between bits 3 and 4.
+					when x"F5" => MASK_SHFT := x"FBFFFF"; -- Suppress clock pulse between std_logics 4 and 5.
+					when x"F6" => MASK_SHFT := x"F7FFFF"; -- Suppress clock pulse between std_logics 3 and 4.
 					when others => MASK_SHFT := x"FFFFFF"; -- Normal data.
 				end case;
 			elsif AM_2_DISK = '1' and DDEn = '1' and LOCK = false then -- FM mode.
@@ -212,14 +212,14 @@ begin
 
 	FM_ENCODER: process (RESETn, DATA_STRB, CLK)
 	-- For DD type floppies the data rate is 125kBps. Therefore there are 128 16-MHz clocks cycles
-	-- per FM bit. 
+	-- per FM std_logic. 
 	-- For HD type floppies the data rate is 250kBps. Therefore there are 64 16-MHz clocks cycles
-	-- per FM bit. 
+	-- per FM std_logic. 
 	-- The FM write pulse width is 1.375us for DD and 0.750us HD type floppies.
 	-- This process provides the FM encoded signal. The first pulse is in any case the clock
 	-- pulse and the second pulse is due to data. The FM encoding is very simple and therefore
 	-- self explaining.
-	variable CNT : std_logic_vector(7 downto 0);
+	variable CNT : unsigned (7 downto 0);
 	begin
 		if RESETn = '0' then
 			FM_In <= '1';
@@ -230,7 +230,7 @@ begin
 			if DATA_STRB = '1' then
 				CNT := x"00";
 			else
-				CNT := CNT + '1';
+				CNT := CNT + 1;
 			end if;
 			-- The flux reversal pulses are centered between the DATA_STRB pulses.
 			-- In detail: the clock pulse appears in the middle of the first half
@@ -318,7 +318,7 @@ begin
 	-- WRITEPATTERN(2) is the previous WDATA.
 	-- WRITEPATTERN(1) is the current WDATA to be sent.
 	-- WRITEPATTERN(0) is the next WDATA to be sent.
-	variable WRITEPATTERN : bit_vector(3 downto 0);
+	variable WRITEPATTERN : std_logic_vector(3 downto 0);
 	begin
 		if RESETn = '0' then
 			PRECOMP <= NOMINAL;
@@ -343,14 +343,14 @@ begin
 
 	MFM_STROBES: process (RESETn, DATA_STRB, CLK)
 	-- For the MFM frequency is 250 kBps for DD type floppies, there are 64 
-	-- 16 MHz clock cycles per MFM bit and for HD type floppies, which have
-	-- 500 kBps there are 32 16MHz clock pulses for one MFM bit.
+	-- 16 MHz clock cycles per MFM std_logic and for HD type floppies, which have
+	-- 500 kBps there are 32 16MHz clock pulses for one MFM std_logic.
 	-- The MFM state machine (Moore) switches on the DATA_STRB. 
 	-- During one cycle there are the two further strobes MFM_10_STRB and 
 	-- MFM_01_STRB which control the MFM output in the process MFM_WR_OUT.
 	-- The strobes are centered in the middle of the first half and in the
 	-- middle of the second half of the DATA_STRB cycle.
-	variable CNT : std_logic_vector(5 downto 0);
+	variable CNT : unsigned (5 downto 0);
 	begin
 		if RESETn = '0' then
 			CNT := "000000";
@@ -358,7 +358,7 @@ begin
 			if DATA_STRB = '1' then
 				CNT := (others => '0');
 			else
-				CNT := CNT + '1';
+				CNT := CNT + 1;
 			end if;
 			if HDTYPE = '1' then
 				case CNT is
@@ -397,7 +397,7 @@ begin
 	-- WD177x floppy disc controller.
 
 	MFM_WR_TIMING: process(RESETn, CLK)
-	variable CLKMASK_MFM	: bit;
+	variable CLKMASK_MFM	: std_logic;
 	begin
 		if RESETn = '0' then
 			WR_CNT <= x"F";
@@ -413,7 +413,7 @@ begin
 			elsif MFM_STATE =  B_01 and MFM_01_STRB = '1' then
 				WR_CNT <= x"0";
 			elsif WR_CNT < x"F" then
-				WR_CNT <= WR_CNT + '1';
+				WR_CNT <= std_logic_vector(unsigned(WR_CNT) + 1);
 			end if;
 		end if;
 	end process MFM_WR_TIMING;

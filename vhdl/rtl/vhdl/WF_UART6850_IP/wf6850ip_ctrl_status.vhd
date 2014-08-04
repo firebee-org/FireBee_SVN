@@ -63,48 +63,48 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF6850IP_CTRL_STATUS is
   port (
 		CLK			: in std_logic;
-        RESETn		: in bit;
+        RESETn		: in std_logic;
 
-        CS			: in bit_vector(2 downto 0); -- Active if "011".
-        E			: in bit;   
-        RWn     	: in bit;
-        RS			: in bit;
+        CS			: in std_logic_vector(2 downto 0); -- Active if "011".
+        E			: in std_logic;   
+        RWn     	: in std_logic;
+        RS			: in std_logic;
 
-        DATA_IN		: in bit_vector(7 downto 0);   
-        DATA_OUT	: out bit_vector(7 downto 0);   
-		DATA_EN		: out bit;
+        DATA_IN		: in std_logic_vector(7 downto 0);   
+        DATA_OUT	: out std_logic_vector(7 downto 0);   
+		DATA_EN		: out std_logic;
 		
 		-- Status register stuff:
-		RDRF		: in bit;	-- Receive data register full.
-		TDRE		: in bit;	-- Transmit data register empty.
-		DCDn		: in bit;	-- Data carrier detect.
-		CTSn		: in bit;	-- Clear to send.
-		FE			: in bit;	-- Framing error.
-		OVR			: in bit;	-- Overrun error.
-		PE			: in bit;	-- Parity error.
+		RDRF		: in std_logic;	-- Receive data register full.
+		TDRE		: in std_logic;	-- Transmit data register empty.
+		DCDn		: in std_logic;	-- Data carrier detect.
+		CTSn		: in std_logic;	-- Clear to send.
+		FE			: in std_logic;	-- Framing error.
+		OVR			: in std_logic;	-- Overrun error.
+		PE			: in std_logic;	-- Parity error.
 
 		-- Control register stuff:
-		MCLR		: buffer bit; -- Master clear (high active).
-		RTSn		: out bit; -- Request to send.
-		CDS			: out bit_vector(1 downto 0); -- Clock control.
-		WS			: out bit_vector(2 downto 0); -- Word select.
-		TC			: out bit_vector(1 downto 0); -- Transmit control.
-		IRQn		: buffer bit -- Interrupt request.
+		MCLR		: buffer std_logic; -- Master clear (high active).
+		RTSn		: out std_logic; -- Request to send.
+		CDS			: out std_logic_vector(1 downto 0); -- Clock control.
+		WS			: out std_logic_vector(2 downto 0); -- Word select.
+		TC			: out std_logic_vector(1 downto 0); -- Transmit control.
+		IRQn		: buffer std_logic -- Interrupt request.
        );                                              
 end entity WF6850IP_CTRL_STATUS;
 
 architecture BEHAVIOR of WF6850IP_CTRL_STATUS is
-signal CTRL_REG		: bit_vector(7 downto 0);
-signal STATUS_REG	: bit_vector(7 downto 0);
-signal RIE			: bit;
-signal CTS_In		: bit;
-signal DCD_In		: bit;
-signal DCD_FLAGn	: bit;
+signal CTRL_REG		: std_logic_vector(7 downto 0);
+signal STATUS_REG	: std_logic_vector(7 downto 0);
+signal RIE			: std_logic;
+signal CTS_In		: std_logic;
+signal DCD_In		: std_logic;
+signal DCD_FLAGn	: std_logic;
 begin
 	CTS_In <= CTSn;  
 	DCD_In <= DCDn;  -- immer 0

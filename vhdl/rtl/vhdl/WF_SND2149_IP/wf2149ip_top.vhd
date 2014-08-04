@@ -81,66 +81,66 @@ use work.wf2149ip_pkg.all;
 entity WF2149IP_TOP is
 	port(
 		
-		SYS_CLK		: in bit; -- Read the inforation in the header!
-		RESETn   	: in bit;
+		SYS_CLK		: in std_logic; -- Read the inforation in the header!
+		RESETn   	: in std_logic;
 
-		WAV_CLK		: in bit; -- Read the inforation in the header!
-		SELn		: in bit;
+		WAV_CLK		: in std_logic; -- Read the inforation in the header!
+		SELn		: in std_logic;
 		
-		BDIR		: in bit;
-		BC2, BC1	: in bit;
+		BDIR		: in std_logic;
+		BC2, BC1	: in std_logic;
 
-		A9n, A8		: in bit;
+		A9n, A8		: in std_logic;
 		DA			: inout std_logic_vector(7 downto 0);
 		
 		IO_A		: inout std_logic_vector(7 downto 0);
 		IO_B		: inout std_logic_vector(7 downto 0);
 		
-		OUT_A		: out bit; -- Analog (PWM) outputs.
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		OUT_A		: out std_logic; -- Analog (PWM) outputs.
+		OUT_B		: out std_logic;
+		OUT_C		: out std_logic
 	);
 end WF2149IP_TOP;
 
 architecture STRUCTURE of WF2149IP_TOP is
 component WF2149IP_TOP_SOC
 	port(
-		SYS_CLK		: in bit;
-		RESETn   	: in bit;
-		WAV_CLK		: in bit;
-		SELn		: in bit;
-		BDIR		: in bit;
-		BC2, BC1	: in bit;
-		A9n, A8		: in bit;
+		SYS_CLK		: in std_logic;
+		RESETn   	: in std_logic;
+		WAV_CLK		: in std_logic;
+		SELn		: in std_logic;
+		BDIR		: in std_logic;
+		BC2, BC1	: in std_logic;
+		A9n, A8		: in std_logic;
 		DA_IN		: in std_logic_vector(7 downto 0);
 		DA_OUT		: out std_logic_vector(7 downto 0);
-		DA_EN		: out bit;
-		IO_A_IN		: in bit_vector(7 downto 0);
-		IO_A_OUT	: out bit_vector(7 downto 0);
-		IO_A_EN		: out bit;
-		IO_B_IN		: in bit_vector(7 downto 0);
-		IO_B_OUT	: out bit_vector(7 downto 0);
-		IO_B_EN		: out bit;
-		OUT_A		: out bit;
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		DA_EN		: out std_logic;
+		IO_A_IN		: in std_logic_vector(7 downto 0);
+		IO_A_OUT	: out std_logic_vector(7 downto 0);
+		IO_A_EN		: out std_logic;
+		IO_B_IN		: in std_logic_vector(7 downto 0);
+		IO_B_OUT	: out std_logic_vector(7 downto 0);
+		IO_B_EN		: out std_logic;
+		OUT_A		: out std_logic;
+		OUT_B		: out std_logic;
+		OUT_C		: out std_logic
 	);
 end component;
 --
 signal DA_OUT       : std_logic_vector(7 downto 0);
-signal DA_EN        : bit;
-signal IO_A_IN      : bit_vector(7 downto 0);
-signal IO_A_OUT     : bit_vector(7 downto 0);
-signal IO_A_EN      : bit;
-signal IO_B_IN      : bit_vector(7 downto 0);
-signal IO_B_OUT     : bit_vector(7 downto 0);
-signal IO_B_EN      : bit;
+signal DA_EN        : std_logic;
+signal IO_A_IN      : std_logic_vector(7 downto 0);
+signal IO_A_OUT     : std_logic_vector(7 downto 0);
+signal IO_A_EN      : std_logic;
+signal IO_B_IN      : std_logic_vector(7 downto 0);
+signal IO_B_OUT     : std_logic_vector(7 downto 0);
+signal IO_B_EN      : std_logic;
 begin
-    IO_A_IN <= To_BitVector(IO_A);
-    IO_B_IN <= To_BitVector(IO_B);
+    IO_A_IN <= (IO_A);
+    IO_B_IN <= (IO_B);
 
-    IO_A <= To_StdLogicVector(IO_A_OUT) when IO_A_EN = '1' else (others => 'Z');
-    IO_B <= To_StdLogicVector(IO_B_OUT) when IO_B_EN = '1' else (others => 'Z');
+    IO_A <= (IO_A_OUT) when IO_A_EN = '1' else (others => 'Z');
+    IO_B <= (IO_B_OUT) when IO_B_EN = '1' else (others => 'Z');
 
     DA <= DA_OUT when DA_EN = '1' else (others => 'Z');
 

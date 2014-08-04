@@ -56,42 +56,42 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_GPIO is
 	port (  -- System control:
-			CLK			: in bit;
-			RESETn		: in bit;
+			CLK			: in std_logic;
+			RESETn		: in std_logic;
 			
 			-- Asynchronous bus control:
-			DSn			: in bit;
-			CSn			: in bit;
-			RWn			: in bit;
+			DSn			: in std_logic;
+			CSn			: in std_logic;
+			RWn			: in std_logic;
 			
 			-- Data and Adresses:
-			RS			: in bit_vector(5 downto 1);
-			DATA_IN		: in bit_vector(7 downto 0);
-			DATA_OUT	: out bit_vector(7 downto 0);
-			DATA_OUT_EN	: out bit;
+			RS			: in std_logic_vector(5 downto 1);
+			DATA_IN		: in std_logic_vector(7 downto 0);
+			DATA_OUT	: out std_logic_vector(7 downto 0);
+			DATA_OUT_EN	: out std_logic;
 
 			-- Timer controls:
-			AER_4		: out bit;
-			AER_3		: out bit;
+			AER_4		: out std_logic;
+			AER_3		: out std_logic;
 
-			GPIP_IN		: in bit_vector(7 downto 0);
-			GPIP_OUT	: out bit_vector(7 downto 0);
-			GPIP_OUT_EN	: buffer bit_vector(7 downto 0);
-			GP_INT		: out bit_vector(7 downto 0)
+			GPIP_IN		: in std_logic_vector(7 downto 0);
+			GPIP_OUT	: out std_logic_vector(7 downto 0);
+			GPIP_OUT_EN	: buffer std_logic_vector(7 downto 0);
+			GP_INT		: out std_logic_vector(7 downto 0)
 	);
 end entity WF68901IP_GPIO;
 
 architecture BEHAVIOR of WF68901IP_GPIO is
-signal GPDR		: bit_vector(7 downto 0);
-signal DDR		: bit_vector(7 downto 0);
-signal AER		: bit_vector(7 downto 0);
-signal GPDR_I	: bit_vector(7 downto 0);
+signal GPDR		: std_logic_vector(7 downto 0);
+signal DDR		: std_logic_vector(7 downto 0);
+signal AER		: std_logic_vector(7 downto 0);
+signal GPDR_I	: std_logic_vector(7 downto 0);
 begin
-	-- These two bits control the timers A and B pulse width operation and the
+	-- These two std_logics control the timers A and B pulse width operation and the
 	-- timers A and B event count operation.
 	AER_4 <= AER(4);
 	AER_3 <= AER(3);
@@ -120,7 +120,7 @@ begin
 		end if;
 	end process GPIO_REGISTERS;
 	GPIP_OUT <= GPDR; -- Port outputs.
-	GPIP_OUT_EN <= DDR; -- The DDR is capable to control bitwise the GPIP.
+	GPIP_OUT_EN <= DDR; -- The DDR is capable to control std_logicwise the GPIP.
 	DATA_OUT_EN <= '1' when CSn = '0' and DSn = '0' and RWn = '1' and RS <= "00010" else '0';
 	DATA_OUT <= DDR when CSn = '0' and DSn = '0' and RWn = '1' and RS = "00010" else
 				AER when CSn = '0' and DSn = '0' and RWn = '1' and RS = "00001" else
@@ -128,7 +128,7 @@ begin
 	
 	P_GPDR: process(GPIP_IN, GPIP_OUT_EN, GPDR)
 	-- Read back control: Read the port pins, if the data direction is configured as input.
-	-- Read the respective GPDR register bit, if the data direction is configured as output.
+	-- Read the respective GPDR register std_logic, if the data direction is configured as output.
 	begin
 		for i in 7 downto 0 loop
 			if GPIP_OUT_EN(i) = '1' then -- Port is configured output.

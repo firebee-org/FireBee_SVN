@@ -92,7 +92,7 @@ use work.firebee_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity firebee is
 	port(
@@ -119,51 +119,51 @@ entity firebee is
 		DREQ1n              : out std_logic;
 
 		MASTERn             : in std_logic; -- Not used so far.
-        TOUT0n              : in std_logic; -- Not used so far.
+		TOUT0n              : in std_logic; -- Not used so far.
 
-        LED_FPGA_OK         : out std_logic;
-        RESERVED_1          : out std_logic;
+		LED_FPGA_OK         : out std_logic;
+		RESERVED_1          : out std_logic;
 
-        VA                  : out std_logic_vector(12 downto 0);
-        BA                  : out std_logic_vector(1 downto 0);
-        VWEn                : out std_logic;
-        VCASn               : out std_logic;
-        VRASn               : out std_logic;
-        VCSn                : out std_logic;
+		VA                  : out std_logic_vector(12 downto 0);
+		BA                  : out std_logic_vector(1 downto 0);
+		VWEn                : out std_logic;
+		VCASn               : out std_logic;
+		VRASn               : out std_logic;
+		VCSn                : out std_logic;
 
-        CLK_PIXEL           : out std_logic;
-        SYNCn               : out std_logic;
-        VSYNC               : out std_logic;
-        HSYNC               : out std_logic;
-        BLANKn              : out std_logic;
+		CLK_PIXEL           : out std_logic;
+		SYNCn               : out std_logic;
+		VSYNC               : out std_logic;
+		HSYNC               : out std_logic;
+		BLANKn              : out std_logic;
         
-        VR                  : out std_logic_vector(7 downto 0);
-        VG                  : out std_logic_vector(7 downto 0);
-        VB                  : out std_logic_vector(7 downto 0);
+		VR                  : out std_logic_vector(7 downto 0);
+		VG                  : out std_logic_vector(7 downto 0);
+		VB                  : out std_logic_vector(7 downto 0);
 
-        VDM                 : out std_logic_vector(3 downto 0);
+		VDM                 : out std_logic_vector(3 downto 0);
 
-        VD                  : inout std_logic_vector(31 downto 0);
-        VD_QS               : out std_logic_vector(3 downto 0);
+		VD                  : inout std_logic_vector(31 downto 0);
+		VD_QS               : out std_logic_vector(3 downto 0);
 
-        PD_VGAn             : out std_logic;
-        VCKE                : out std_logic;
-        PIC_INT             : in std_logic;
-        E0_INT              : in std_logic;
-        DVI_INT             : in std_logic;
-        PCI_INTAn           : in std_logic;
-        PCI_INTBn           : in std_logic;
-        PCI_INTCn           : in std_logic;
-        PCI_INTDn           : in std_logic;
-        
-        IRQn                : out std_logic_vector(7 downto 2);
-        TIN0                : out std_logic;
+		PD_VGAn             : out std_logic;
+		VCKE                : out std_logic;
+		PIC_INT             : in std_logic;
+		E0_INT              : in std_logic;
+		DVI_INT             : in std_logic;
+		PCI_INTAn           : in std_logic;
+		PCI_INTBn           : in std_logic;
+		PCI_INTCn           : in std_logic;
+		PCI_INTDn           : in std_logic;
 
-        YM_QA               : out std_logic;
-        YM_QB               : out std_logic;
-        YM_QC               : out std_logic;
+		IRQn                : out std_logic_vector(7 downto 2);
+		TIN0                : out std_logic;
 
-        LP_D                : inout std_logic_vector(7 downto 0);
+		YM_QA               : out std_logic;
+		YM_QB               : out std_logic;
+		YM_QC               : out std_logic;
+
+		LP_D                : inout std_logic_vector(7 downto 0);
 		LP_DIR              : out std_logic;
 
 		DSA_D               : out std_logic;
@@ -180,36 +180,36 @@ entity firebee is
 		MIDI_OLR            : out std_logic;
 		MIDI_TLR            : out std_logic;
 		PIC_AMKB_RX         : in std_logic;
-        AMKB_RX             : in std_logic;
-        AMKB_TX             : out std_logic;
-        DACK0n              : in std_logic; -- Not used.
+		AMKB_RX             : in std_logic;
+		AMKB_TX             : out std_logic;
+		DACK0n              : in std_logic; -- Not used.
         
-        SCSI_DRQn           : in std_logic;
-        SCSI_MSGn           : in std_logic;
-        SCSI_CDn            : in std_logic;
-        SCSI_IOn            : in std_logic;
-        SCSI_ACKn           : out std_logic;
-        SCSI_ATNn           : out std_logic;
-        SCSI_SELn           : inout std_logic;
-        SCSI_BUSYn          : inout std_logic;
-        SCSI_RSTn           : inout std_logic;
-        SCSI_DIR            : out std_logic;
-        SCSI_D              : inout std_logic_vector(7 downto 0);
-        SCSI_PAR            : inout std_logic;
+		SCSI_DRQn           : in std_logic;
+		SCSI_MSGn           : in std_logic;
+		SCSI_CDn            : in std_logic;
+		SCSI_IOn            : in std_logic;
+		SCSI_ACKn           : out std_logic;
+		SCSI_ATNn           : out std_logic;
+		SCSI_SELn           : inout std_logic;
+		SCSI_BUSYn          : inout std_logic;
+		SCSI_RSTn           : inout std_logic;
+		SCSI_DIR            : out std_logic;
+		SCSI_D              : inout std_logic_vector(7 downto 0);
+		SCSI_PAR            : inout std_logic;
 
-        ACSI_DIR            : out std_logic;
-        ACSI_D              : inout std_logic_vector(7 downto 0);
-        ACSI_CSn            : out std_logic;
-        ACSI_A1             : out std_logic;
-        ACSI_RESETn         : out std_logic;
-        ACSI_ACKn           : out std_logic;
-        ACSI_DRQn           : in std_logic;
-        ACSI_INTn           : in std_logic;
+		ACSI_DIR            : out std_logic;
+		ACSI_D              : inout std_logic_vector(7 downto 0);
+		ACSI_CSn            : out std_logic;
+		ACSI_A1             : out std_logic;
+		ACSI_RESETn         : out std_logic;
+		ACSI_ACKn           : out std_logic;
+		ACSI_DRQn           : in std_logic;
+		ACSI_INTn           : in std_logic;
 
-        FDD_DCHGn           : in bit;
+		FDD_DCHGn           : in std_logic;
 		FDD_SDSELn          : out std_logic;
 		FDD_HD_DD           : in std_logic;
-        FDD_RDn             : in std_logic;
+		FDD_RDn             : in std_logic;
 		FDD_TRACK00         : in std_logic;
 		FDD_INDEXn          : in std_logic;
 		FDD_WPn             : in std_logic;
@@ -222,106 +222,106 @@ entity firebee is
 		ROM4n               : out std_logic;
 		ROM3n               : out std_logic;
 
-        RP_UDSn             : out std_logic;
-        RP_LDSn             : out std_logic;
-        SD_CLK              : out std_logic;
-        SD_D3               : inout std_logic;
-        SD_CMD_D1           : inout std_logic;
-        SD_D0               : in std_logic;
-        SD_D1               : in std_logic;
-        SD_D2               : in std_logic;
-        SD_CARD_DETECT      : in std_logic;
-        SD_WP               : in std_logic;
+		RP_UDSn             : out std_logic;
+		RP_LDSn             : out std_logic;
+		SD_CLK              : out std_logic;
+		SD_D3               : inout std_logic;
+		SD_CMD_D1           : inout std_logic;
+		SD_D0               : in std_logic;
+		SD_D1               : in std_logic;
+		SD_D2               : in std_logic;
+		SD_CARD_DETECT      : in std_logic;
+		SD_WP               : in std_logic;
 
-        CF_WP               : in bit;
-        CF_CSn              : out std_logic_vector(1 downto 0);
-        
-        DSP_IO              : inout std_logic_vector(17 downto 0);
-        DSP_SRD             : inout std_logic_vector(15 downto 0);
-        DSP_SRCSn           : out std_logic;
-        DSP_SRBLEn          : out std_logic;
-        DSP_SRBHEn          : out std_logic;
-        DSP_SRWEn           : out std_logic;
-        DSP_SROEn           : out std_logic;
+		CF_WP               : in std_logic;
+		CF_CSn              : out std_logic_vector(1 downto 0);
 
-        IDE_INT             : in std_logic;
-        IDE_RDY             : in std_logic;
+		DSP_IO              : inout std_logic_vector(17 downto 0);
+		DSP_SRD             : inout std_logic_vector(15 downto 0);
+		DSP_SRCSn           : out std_logic;
+		DSP_SRBLEn          : out std_logic;
+		DSP_SRBHEn          : out std_logic;
+		DSP_SRWEn           : out std_logic;
+		DSP_SROEn           : out std_logic;
+
+		IDE_INT             : in std_logic;
+		IDE_RDY             : in std_logic;
 		IDE_RES             : out std_logic;
-        IDE_WRn             : out std_logic;
-        IDE_RDn             : out std_logic;
-        IDE_CSn             : out std_logic_vector(1 downto 0)
-    );
+		IDE_WRn             : out std_logic;
+		IDE_RDn             : out std_logic;
+		IDE_CSn             : out std_logic_vector(1 downto 0)
+	);
 end entity firebee;
 
 architecture Structure of firebee is
-component altpll1
-    port(
-        inclk0      : in std_logic  := '0';
-        c0          : out std_logic ;
-        c1          : out std_logic ;
-        c2          : out std_logic ;
-        locked      : out std_logic 
-    );
-end component;
+	component altpll1
+		port(
+			inclk0      : in std_logic  := '0';
+			c0          : out std_logic ;
+			c1          : out std_logic ;
+			c2          : out std_logic ;
+			locked      : out std_logic 
+		);
+	end component;
 
-component altpll2
-    port(
-        inclk0      : in std_logic  := '0';
-        c0          : out std_logic ;
-        c1          : out std_logic ;
-        c2          : out std_logic ;
-        c3          : out std_logic ;
-        c4          : out std_logic 
-    );
-end component;
+	component altpll2
+		port(
+			inclk0      : in std_logic  := '0';
+			c0          : out std_logic ;
+			c1          : out std_logic ;
+			c2          : out std_logic ;
+			c3          : out std_logic ;
+			c4          : out std_logic 
+		);
+	end component;
 
-component altpll3
-    port(
-        inclk0      : in std_logic  := '0';
-        c0          : out std_logic ;
-        c1          : out std_logic ;
-        c2          : out std_logic ;
-        c3          : out std_logic 
-    );
-end component;
+	component altpll3
+		port(
+			inclk0      : in std_logic  := '0';
+			c0          : out std_logic ;
+			c1          : out std_logic ;
+			c2          : out std_logic ;
+			c3          : out std_logic 
+		);
+	end component;
 
-component altpll4
-    port(
-        areset          : in std_logic  := '0';
-        configupdate    : in std_logic  := '0';
-        inclk0          : in std_logic  := '0';
-        scanclk         : in std_logic  := '1';
-        scanclkena      : in std_logic  := '0';
-        scandata        : in std_logic  := '0';
-        c0              : out std_logic ;
-        locked          : out std_logic ;
-        scandataout     : out std_logic ;
-        scandone        : out std_logic 
-    );
-end component;
+	component altpll4
+		port(
+			areset          : in std_logic  := '0';
+			configupdate    : in std_logic  := '0';
+			inclk0          : in std_logic  := '0';
+			scanclk         : in std_logic  := '1';
+			scanclkena      : in std_logic  := '0';
+			scandata        : in std_logic  := '0';
+			c0              : out std_logic ;
+			locked          : out std_logic ;
+			scandataout     : out std_logic ;
+			scandone        : out std_logic 
+		);
+	end component;
 
-component altpll_reconfig1
-    port( 
-        busy               :   out  std_logic;
-        clock              :   in  std_logic;
-        counter_param      :   in  std_logic_VECTOR (2 DOWNTO 0) := (OTHERS => '0');
-        counter_type       :   in  std_logic_VECTOR (3 DOWNTO 0) := (OTHERS => '0');
-        data_in            :   in  std_logic_VECTOR (8 DOWNTO 0) := (OTHERS => '0');
-        data_out           :   out  std_logic_VECTOR (8 DOWNTO 0);
-        pll_areset         :   out  std_logic;
-        pll_areset_in      :   in  std_logic := '0';
-        pll_configupdate   :   out  std_logic;
-        pll_scanclk        :   out  std_logic;
-        pll_scanclkena     :   out  std_logic;
-        pll_scandata       :   out  std_logic;
-        pll_scandataout    :   in  std_logic := '0';
-        pll_scandone       :   in  std_logic := '0';
-        read_param         :   in  std_logic := '0';
-        reconfig           :   in  std_logic := '0';
-        reset              :   in  std_logic;
-        write_param        :   in  std_logic := '0'
-    ); 
- end component;
+	component altpll_reconfig1
+		port( 
+			busy               :   out  std_logic;
+			clock              :   in  std_logic;
+			counter_param      :   in  std_logic_VECTOR (2 downto 0) := (others => '0');
+			counter_type       :   in  std_logic_VECTOR (3 downto 0) := (others => '0');
+			data_in            :   in  std_logic_VECTOR (8 downto 0) := (others => '0');
+			data_out           :   out  std_logic_VECTOR (8 downto 0);
+			pll_areset         :   out  std_logic;
+			pll_areset_in      :   in  std_logic := '0';
+			pll_configupdate   :   out  std_logic;
+			pll_scanclk        :   out  std_logic;
+			pll_scanclkena     :   out  std_logic;
+			pll_scandata       :   out  std_logic;
+			pll_scandataout    :   in  std_logic := '0';
+			pll_scandone       :   in  std_logic := '0';
+			read_param         :   in  std_logic := '0';
+			reconfig           :   in  std_logic := '0';
+			reset              :   in  std_logic;
+			write_param        :   in  std_logic := '0'
+		); 
+	end component;
 
 	signal ACIA_CS		    	: std_logic;
 	signal ACIA_IRQn			: std_logic;
@@ -395,8 +395,8 @@ component altpll_reconfig1
 	signal FB_AD_OUT_RTC        : std_logic_vector(7 downto 0);
 	signal FB_AD_OUT_VIDEO      : std_logic_vector(31 downto 0);
 	signal FB_ADR               : std_logic_vector(31 downto 0);
-	signal FB_B0				: std_logic; -- UPPER Byte BEI 16 BIT BUS
-	signal FB_B1				: std_logic; -- LOWER Byte BEI 16 BIT BUS
+	signal FB_B0				: std_logic; -- UPPER Byte BEI 16 std_logic BUS
+	signal FB_B1				: std_logic; -- LOWER Byte BEI 16 std_logic BUS
 	signal FB_DDR               : std_logic_vector(127 downto 0);
 	signal FB_LE                : std_logic_vector(3 downto 0);
 	signal FB_VDOE              : std_logic_vector(3 downto 0);
@@ -459,7 +459,7 @@ component altpll_reconfig1
 	signal SR_FIFO_WRE          : std_logic;
 	signal SR_VDMP              : std_logic_vector(7 downto 0);
 	signal TDO					: std_logic;
-	signal TIMEBASE             : std_logic_vector(17 downto 0);
+	signal TIMEBASE             : unsigned (17 downto 0);
 	signal VD_EN                : std_logic;
 	signal VD_EN_I              : std_logic;
 	signal VD_OUT               : std_logic_vector(31 downto 0);
@@ -511,7 +511,7 @@ begin
 			c1          => CLK_FDC,
 			c2          => CLK_25M_I,
 			c3          => CLK_500K
-	);
+		);
     
 	I_PLL4: altpll4
 		port map(
@@ -527,7 +527,7 @@ begin
 			--locked        => -- Not used.
 		);
 
-		I_RECONFIG: altpll_reconfig1
+	I_RECONFIG: altpll_reconfig1
 		port map(
 			reconfig            => VIDEO_RECONFIG,
 			read_param          => VR_RD,
@@ -558,7 +558,7 @@ begin
 	P_TIMEBASE: process
 	begin
 		wait until CLK_500K = '1' and CLK_500K' event;
-		TIMEBASE <= TIMEBASE + '1';
+		TIMEBASE <= TIMEBASE + 1;
 	end process P_TIMEBASE;
 
 	RESETn <= RSTO_MCFn and LOCKED;
@@ -1211,83 +1211,83 @@ begin
             --RTSn				=> -- Not used.
 		);                                              
 
-    I_SCSI: WF5380_TOP_SOC
-        port map(
-            CLK					=> CLK_FDC,
-            RESETn				=> RESETn,
+	I_SCSI: WF5380_TOP_SOC
+		port map(
+			CLK					=> CLK_FDC,
+			RESETn				=> RESETn,
 			ADR			        => CA,
-            DATA_IN		        => DATA_IN_FDC_SCSI,
-            DATA_OUT			=> DATA_OUT_SCSI,
+			DATA_IN		        => DATA_IN_FDC_SCSI,
+			DATA_OUT			=> DATA_OUT_SCSI,
 			--DATA_EN			=>,
-            -- Bus and DMA controls:
-            CSn			        => SCSI_CSn,
-            RDn		            => not FDC_WRn or not SCSI_CS,
-            WRn	                => FDC_WRn  or not SCSI_CS,
-            EOPn                => '1',
-            DACKn	            => SCSI_DACKn,
-            DRQ		            => SCSI_DRQ,
-            INT		            => SCSI_INT,
-            -- READY            =>, 
-            -- SCSI bus:
-            DB_INn		        => SCSI_D,
-            DB_OUTn		        => SCSI_D_OUTn,
-            DB_EN               => SCSI_D_EN,
-            DBP_INn		        => SCSI_PAR,
-            DBP_OUTn	        => SCSI_DBP_OUTn,
-            DBP_EN              => SCSI_DBP_EN,				-- wenn 1 dann output
-            RST_INn             => SCSI_RSTn,
-            RST_OUTn            => SCSI_RST_OUTn,
-            RST_EN              => SCSI_RST_EN,
-            BSY_INn             => SCSI_BUSYn,
-            BSY_OUTn            => SCSI_BSY_OUTn,
-            BSY_EN              => SCSI_BSY_EN,
-            SEL_INn             => SCSI_SELn,
-            SEL_OUTn            => SCSI_SEL_OUTn,
-            SEL_EN              => SCSI_SEL_EN,
-            ACK_INn             => '1',
-            ACK_OUTn            => SCSI_ACKn,
-            -- ACK_EN           => ACK_EN,
-            ATN_INn             => '1',
-            ATN_OUTn            => SCSI_ATNn,
-            -- ATN_EN           => ATN_EN,
-            REQ_INn             => SCSI_DRQn,
-            -- REQ_OUTn         => REQ_OUTn,
-            -- REQ_EN           => REQ_EN,
-            IOn_IN              => SCSI_IOn,
-            -- IOn_OUT          => IOn_OUT,
-            -- IO_EN            => IO_EN,
-            CDn_IN              => SCSI_CDn,
-            -- CDn_OUT          => CDn_OUT,
-            -- CD_EN            => CD_EN,
-            MSG_INn             => SCSI_MSGn
-            -- MSG_OUTn         => MSG_OUTn,
-            -- MSG_EN           => MSG_EN
-        );              
+			-- Bus and DMA controls:
+			CSn			        => SCSI_CSn,
+			RDn		            => not FDC_WRn or not SCSI_CS,
+			WRn	                => FDC_WRn  or not SCSI_CS,
+			EOPn                => '1',
+			DACKn	            => SCSI_DACKn,
+			DRQ		            => SCSI_DRQ,
+			INT		            => SCSI_INT,
+			-- READY            =>, 
+			-- SCSI bus:
+			DB_INn		        => SCSI_D,
+			DB_OUTn		        => SCSI_D_OUTn,
+			DB_EN               => SCSI_D_EN,
+			DBP_INn		        => SCSI_PAR,
+			DBP_OUTn	        => SCSI_DBP_OUTn,
+			DBP_EN              => SCSI_DBP_EN,				-- wenn 1 dann output
+			RST_INn             => SCSI_RSTn,
+			RST_OUTn            => SCSI_RST_OUTn,
+			RST_EN              => SCSI_RST_EN,
+			BSY_INn             => SCSI_BUSYn,
+			BSY_OUTn            => SCSI_BSY_OUTn,
+			BSY_EN              => SCSI_BSY_EN,
+			SEL_INn             => SCSI_SELn,
+			SEL_OUTn            => SCSI_SEL_OUTn,
+			SEL_EN              => SCSI_SEL_EN,
+			ACK_INn             => '1',
+			ACK_OUTn            => SCSI_ACKn,
+			-- ACK_EN           => ACK_EN,
+			ATN_INn             => '1',
+			ATN_OUTn            => SCSI_ATNn,
+			-- ATN_EN           => ATN_EN,
+			REQ_INn             => SCSI_DRQn,
+			-- REQ_OUTn         => REQ_OUTn,
+			-- REQ_EN           => REQ_EN,
+			IOn_IN              => SCSI_IOn,
+			-- IOn_OUT          => IOn_OUT,
+			-- IO_EN            => IO_EN,
+			CDn_IN              => SCSI_CDn,
+			-- CDn_OUT          => CDn_OUT,
+			-- CD_EN            => CD_EN,
+			MSG_INn             => SCSI_MSGn
+			-- MSG_OUTn         => MSG_OUTn,
+			-- MSG_EN           => MSG_EN
+		);              
 
 	I_FDC: WF1772IP_TOP_SOC
 		port map(
-            CLK					=> CLK_FDC,
+			CLK					=> CLK_FDC,
 			RESETn				=> RESETn,
-            CSn					=> FDC_CSn,
-            RWn					=> FDC_WRn,
-            A1					=> CA(2),
-            A0					=> CA(1),
-            DATA_IN				=> DATA_IN_FDC_SCSI,
-            DATA_OUT			=> DATA_OUT_FDC,
-            -- DATA_EN			=> CD_EN_FDC,
-            RDn					=> FDD_RDn,
-            TR00n				=> FDD_TRACK00,
-            IPn					=> FDD_INDEXn,
-            WPRTn				=> FDD_WPn,
-            DDEn				=> '0', -- Fixed to MFM.
-            HDTYPE				=> HD_DD_OUT,  
-            MO					=> FDD_MOT_ON,
-            WG					=> FDD_WR_GATE,
-            WD					=> FDD_WDn,
-            STEP				=> FDD_STEP,
-            DIRC				=> FDD_STEP_DIR,
-            DRQ					=> DRQ_FDC,
-            INTRQ				=> FD_INT 
+			CSn					=> FDC_CSn,
+			RWn					=> FDC_WRn,
+			A1					=> CA(2),
+			A0					=> CA(1),
+			DATA_IN				=> DATA_IN_FDC_SCSI,
+			DATA_OUT			=> DATA_OUT_FDC,
+			-- DATA_EN			=> CD_EN_FDC,
+			RDn					=> FDD_RDn,
+			TR00n				=> FDD_TRACK00,
+			IPn					=> FDD_INDEXn,
+			WPRTn				=> FDD_WPn,
+			DDEn				=> '0', -- Fixed to MFM.
+			HDTYPE				=> HD_DD_OUT,  
+			MO					=> FDD_MOT_ON,
+			WG					=> FDD_WR_GATE,
+			WD					=> FDD_WDn,
+			STEP				=> FDD_STEP,
+			DIRC				=> FDD_STEP_DIR,
+			DRQ					=> DRQ_FDC,
+			INTRQ				=> FD_INT 
 		);
 
 	I_RTC: RTC
@@ -1305,3 +1305,17 @@ begin
 			PIC_INT             => PIC_INT
 		);
 end architecture;
+
+configuration NO_SCSI of firebee is
+	for Structure
+		for all:
+			WF5380_TOP_SOC use entity work.WF5380_TOP_SOC(LIGHT);
+		end for;
+	end for;	
+end configuration no_scsi;
+
+configuration FULL of firebee is
+	for Structure
+		-- default configuration
+	end for;
+end configuration FULL;

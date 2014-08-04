@@ -41,7 +41,7 @@ set_global_assignment -name DEVICE EP3C40F484C6
 set_global_assignment -name TOP_LEVEL_ENTITY firebee
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:04:08  MAY 31, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 13.1
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -406,7 +406,7 @@ set_global_assignment -name AUTO_RAM_RECOGNITION OFF
 set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
 set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
 set_location_assignment PIN_AB12 -to CLK_33M
-set_location_assignment PIN_G2 -to CLK_MAIN
+set_location_assignment PIN_G1 -to CLK_MAIN
 set_location_assignment PIN_AB10 -to CLK_24M576
 set_location_assignment PIN_J1 -to CLK_USB
 set_location_assignment PIN_T4 -to CLK_25M

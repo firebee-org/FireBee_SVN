@@ -71,10 +71,10 @@ create_generated_clock -name {altpll4:I_PLL4|altpll:altpll_component|altpll4_alt
 # Set Clock Uncertainty
 #**************************************************************
 
-set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_33M}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_33M}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_MAIN}]  0.040  
-set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_MAIN}]  0.040  
+set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_33M}]  0.080  
+set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_33M}]  0.080  
+set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_MAIN}]  0.080  
+set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_MAIN}]  0.080  
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.090  
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -hold 0.110  
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.090  
@@ -99,10 +99,10 @@ set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {al
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.100  
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -setup 0.070  
 set_clock_uncertainty -rise_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.100  
-set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_33M}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_33M}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_MAIN}]  0.040  
-set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_MAIN}]  0.040  
+set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_33M}]  0.080  
+set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_33M}]  0.080  
+set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {CLK_MAIN}]  0.080  
+set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {CLK_MAIN}]  0.080  
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.090  
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -hold 0.110  
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.090  
@@ -127,10 +127,10 @@ set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {al
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -rise_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.100  
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -setup 0.070  
 set_clock_uncertainty -fall_from [get_clocks {CLK_33M}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.100  
-set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_33M}]  0.040  
-set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_33M}]  0.040  
-set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_MAIN}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_MAIN}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_33M}]  0.10  
+set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_33M}]  0.10  
+set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_MAIN}]  0.10  
+set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_MAIN}]  0.10  
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.070  
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -hold 0.100  
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.070  
@@ -151,10 +151,10 @@ set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {a
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.090  
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -setup 0.060  
 set_clock_uncertainty -rise_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[1]}] -hold 0.090  
-set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_33M}]  0.040  
-set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_33M}]  0.040  
-set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_MAIN}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_MAIN}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_33M}]  0.10  
+set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_33M}]  0.10  
+set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {CLK_MAIN}]  0.10  
+set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {CLK_MAIN}]  0.10  
 set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.070  
 set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -rise_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -hold 0.100  
 set_clock_uncertainty -fall_from [get_clocks {CLK_MAIN}] -fall_to [get_clocks {altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}] -setup 0.070  

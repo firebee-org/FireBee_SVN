@@ -59,65 +59,65 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_REGISTERS is
 	port(
 		-- System control:
-		CLK			: in bit;
-		RESETn		: in bit;
+		CLK			: in std_logic;
+		RESETn		: in std_logic;
 
 		-- Bus interface:
-		CSn			: in bit;
-		ADR			: in bit_vector(1 downto 0);
-		RWn			: in bit;
+		CSn			: in std_logic;
+		ADR			: in std_logic_vector(1 downto 0);
+		RWn			: in std_logic;
 		DATA_IN		: in std_logic_vector (7 downto 0);
 		DATA_OUT	: out std_logic_vector (7 downto 0);
-		DATA_EN		: out bit;
+		DATA_EN		: out std_logic;
 
 		-- FDC data:
 		CMD			: out std_logic_vector(7 downto 0); -- Command register.
 		SR			: out std_logic_vector(7 downto 0); -- Sector register.
 		TR			: out std_logic_vector(7 downto 0); -- Track register.
 		DSR			: out std_logic_vector(7 downto 0); -- Data shift register.
-		DR			: out bit_vector(7 downto 0); -- Data register.
+		DR			: out std_logic_vector(7 downto 0); -- Data register.
 
 		-- Serial data and clock strobes (in and out):
-		DATA_STRB	: in bit; -- Strobe for the incoming data.
-		SD_R		: in bit; -- Serial data input.
+		DATA_STRB	: in std_logic; -- Strobe for the incoming data.
+		SD_R		: in std_logic; -- Serial data input.
 		
 		-- DATA register control:
-		DR_CLR		: in bit; -- Clear.
-		DR_LOAD		: in bit; -- LOAD.
+		DR_CLR		: in std_logic; -- Clear.
+		DR_LOAD		: in std_logic; -- LOAD.
 
 		-- Track register controls:
-		TR_PRES		: in bit;	-- Set x"FF".
-		TR_CLR		: in bit;	-- Clear.
-		TR_INC		: in bit;	-- Increment.
-		TR_DEC		: in bit;	-- Decrement.
+		TR_PRES		: in std_logic;	-- Set x"FF".
+		TR_CLR		: in std_logic;	-- Clear.
+		TR_INC		: in std_logic;	-- Increment.
+		TR_DEC		: in std_logic;	-- Decrement.
 
 		-- Sector register control:
 		TRACK_NR 	: in std_logic_vector(7 downto 0);
-		SR_LOAD		: in bit; -- Load.
-		SR_INC		: in bit; -- Increment.
+		SR_LOAD		: in std_logic; -- Load.
+		SR_INC		: in std_logic; -- Increment.
 
 		-- Shift register control:
-		SHFT_LOAD_SD	: in bit;
-		SHFT_LOAD_ND	: in bit;
+		SHFT_LOAD_SD	: in std_logic;
+		SHFT_LOAD_ND	: in std_logic;
 
 		-- Status register stuff
-		MOTOR_ON		: in bit;
-		WRITE_PROTECT	: in bit;
-		SPINUP_RECTYPE	: in bit; -- Disk is on speed / data mark status.
-		SEEK_RNF		: in bit; -- Seek error / record not found status flag.
-		CRC_ERRFLAG		: in bit; -- CRC status flag.
-		LOST_DATA_TR00	: in bit;
-		DRQ				: in bit;
-		DRQ_IPn			: in bit;
-		BUSY			: in bit;
+		MOTOR_ON		: in std_logic;
+		WRITE_PROTECT	: in std_logic;
+		SPINUP_RECTYPE	: in std_logic; -- Disk is on speed / data mark status.
+		SEEK_RNF		: in std_logic; -- Seek error / record not found status flag.
+		CRC_ERRFLAG		: in std_logic; -- CRC status flag.
+		LOST_DATA_TR00	: in std_logic;
+		DRQ				: in std_logic;
+		DRQ_IPn			: in std_logic;
+		BUSY			: in std_logic;
 
 		-- Others:
-		DDEn			: in bit
+		DDEn			: in std_logic
 	);
 end WF1772IP_REGISTERS;
 
@@ -131,7 +131,7 @@ signal DATA_REG		: std_logic_vector(7 downto 0);
 signal COMMAND_REG	: std_logic_vector(7 downto 0);
 signal SECTOR_REG	: std_logic_vector(7 downto 0);
 signal TRACK_REG	: std_logic_vector(7 downto 0);
-signal STATUS_REG	: bit_vector(7 downto 0);
+signal STATUS_REG	: std_logic_vector(7 downto 0);
 signal SD_R_I		: std_logic;
 begin
 	-- Type conversion To_Std_Logic:
@@ -176,7 +176,7 @@ begin
 		end if;
 	end process DATAREG;
 	-- Data register buffered for further data processing.
-	DR <= To_BitVector(DATA_REG);
+	DR <= (DATA_REG);
 
 	SECTORREG: process(RESETn, CLK)
 	begin
@@ -190,7 +190,7 @@ begin
 				-- 'Read Address'.
 				SECTOR_REG <= TRACK_NR;
 			elsif SR_INC = '1' then
-				SECTOR_REG <= SECTOR_REG + '1';
+				SECTOR_REG <= std_logic_vector(unsigned(SECTOR_REG) + 1);
 			end if;
 		end if;
 	end process SECTORREG;
@@ -208,9 +208,9 @@ begin
 			elsif TR_CLR = '1' then
 				TRACK_REG <= (others => '0'); -- Reset the track register.
 			elsif TR_INC = '1' then
-				TRACK_REG <= TRACK_REG + '1'; -- Increment register contents.
+				TRACK_REG <= std_logic_vector(unsigned(TRACK_REG) + 1); -- Increment register contents.
 			elsif TR_DEC = '1' then
-				TRACK_REG <= TRACK_REG - '1'; -- Decrement register contents.
+				TRACK_REG <= std_logic_vector(unsigned(TRACK_REG) - 1); -- Decrement register contents.
 			end if;
 		end if;
 	end process TRACKREG;
@@ -253,12 +253,12 @@ begin
 	-- The register data after writing to the track register is valid at least
 	-- after 32us in FM mode and after 16us in MFM mode.
 	-- Read from status register. This register is read only:
-	-- Be aware, that the status register data bits 7 to 1 after writing 
+	-- Be aware, that the status register data std_logics 7 to 1 after writing 
 	-- the command regsiter are valid at least after 64us in FM mode or 32us in MFM mode and
-	-- the bit 0 (BUSY) is valid after 48us in FM mode or 24us in MFM mode.
+	-- the std_logic 0 (BUSY) is valid after 48us in FM mode or 24us in MFM mode.
 	DATA_OUT <= TRACK_REG when CSn = '0' and ADR = "01" and RWn = '1' else
 				SECTOR_REG when CSn = '0' and ADR = "10" and RWn = '1' else
 				DATA_REG when CSn = '0' and ADR = "11" and RWn = '1' else
-				To_StdLogicVector(STATUS_REG) when CSn = '0' and ADR = "00" and RWn = '1' else (others => '0');
+				(STATUS_REG) when CSn = '0' and ADR = "00" and RWn = '1' else (others => '0');
 	DATA_EN <= '1' when CSn = '0' and RWn = '1' else '0';
 end architecture BEHAVIOR;

@@ -57,45 +57,45 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_USART_TX is
   port (
-		CLK			: in bit;
-        RESETn		: in bit;
+		CLK			: in std_logic;
+        RESETn		: in std_logic;
 
-		SCR			: in bit_vector(7 downto 0); -- Synchronous character.
-		TX_DATA		: in bit_vector(7 downto 0); -- Normal data.
+		SCR			: in std_logic_vector(7 downto 0); -- Synchronous character.
+		TX_DATA		: in std_logic_vector(7 downto 0); -- Normal data.
 
-        SDATA_OUT	: out bit; -- Serial data output.
-        TXCLK		: in bit;  -- Transmitter clock.
+        SDATA_OUT	: out std_logic; -- Serial data output.
+        TXCLK		: in std_logic;  -- Transmitter clock.
 
-		CL			: in bit_vector(1 downto 0); -- Character length.
-		ST			: in bit_vector(1 downto 0); -- Start and stop bit configuration.
-		TE			: in bit; -- Transmitter enable.
-		BR			: in bit; -- BREAK character send enable (all '0' without stop bit).
-		P_ENA		: in bit; -- Parity enable.
-		P_EOn		: in bit; -- Even or odd parity.
-		UDR_WRITE	: in bit; -- Flag indicating writing the data register.
-		TSR_READ	: in bit; -- Flag indicating reading the transmitter status register.
-		CLK_MODE	: in bit; -- Transmitter clock mode.
+		CL			: in std_logic_vector(1 downto 0); -- Character length.
+		ST			: in std_logic_vector(1 downto 0); -- Start and stop std_logic configuration.
+		TE			: in std_logic; -- Transmitter enable.
+		BR			: in std_logic; -- BREAK character send enable (all '0' without stop std_logic).
+		P_ENA		: in std_logic; -- Parity enable.
+		P_EOn		: in std_logic; -- Even or odd parity.
+		UDR_WRITE	: in std_logic; -- Flag indicating writing the data register.
+		TSR_READ	: in std_logic; -- Flag indicating reading the transmitter status register.
+		CLK_MODE	: in std_logic; -- Transmitter clock mode.
 
-		TX_END		: out bit; -- End of transmission flag.
-		UE			: out bit; -- Underrun Flag.
-		BE			: out bit  -- Buffer empty flag.
+		TX_END		: out std_logic; -- End of transmission flag.
+		UE			: out std_logic; -- Underrun Flag.
+		BE			: out std_logic  -- Buffer empty flag.
        );                                              
 end entity WF68901IP_USART_TX;
 
 architecture BEHAVIOR of WF68901IP_USART_TX is
 type TR_STATES is (IDLE, CHECK_BREAK, LOAD_SHFT, START, SHIFTOUT, PARITY, STOP1, STOP2);
 signal TR_STATE, TR_NEXT_STATE	: TR_STATES;
-signal CLK_STRB		: bit;
-signal CLK_2_STRB	: bit;
-signal SHIFT_REG	: bit_vector(7 downto 0);
-signal BITCNT		: std_logic_vector(2 downto 0);
-signal PARITY_I		: bit;
-signal TDRE			: bit;
-signal BREAK		: bit;
+signal CLK_STRB		: std_logic;
+signal CLK_2_STRB	: std_logic;
+signal SHIFT_REG	: std_logic_vector(7 downto 0);
+signal BITCNT		: unsigned (2 downto 0);
+signal PARITY_I		: std_logic;
+signal TDRE			: std_logic;
+signal BREAK		: std_logic;
 begin
 	BE <= TDRE; -- Buffer empty flag.
 	
@@ -140,7 +140,7 @@ begin
 	CLKDIV: process
 	variable CLK_LOCK	: boolean;
 	variable STRB_LOCK	: boolean;
-	variable CLK_DIVCNT	: std_logic_vector(4 downto 0);
+	variable CLK_DIVCNT	: unsigned (4 downto 0);
 	begin
 		wait until CLK = '1' and CLK' event;
 		if CLK_MODE = '0' then -- Divider off.
@@ -153,7 +153,7 @@ begin
 			else
 				CLK_STRB <= '0';
 			end if;
-			CLK_2_STRB <= '0'; -- No 1 1/2 stop bits in no div by 16 mode.
+			CLK_2_STRB <= '0'; -- No 1 1/2 stop std_logics in no div by 16 mode.
 		elsif TR_STATE = IDLE then
 			CLK_DIVCNT := "10000"; -- Div by 16 mode.
 			CLK_STRB <= '0';
@@ -162,11 +162,11 @@ begin
 			CLK_2_STRB <= '0'; -- Default.
 			-- Works on negative TXCLK edge:
 			if CLK_DIVCNT > "00000" and TXCLK = '0' and CLK_LOCK = false then
-				CLK_DIVCNT := CLK_DIVCNT - '1';
+				CLK_DIVCNT := CLK_DIVCNT - 1;
 				CLK_LOCK := true;
 				if CLK_DIVCNT = "01000" then
 					-- This strobe is asserted at half of the clock cycle.
-					-- It is used for the stop bit timing.
+					-- It is used for the stop std_logic timing.
 					CLK_2_STRB <= '1';
 				end if;
 			elsif CLK_DIVCNT = "00000" then
@@ -197,10 +197,10 @@ begin
 			elsif TR_STATE = LOAD_SHFT then
 				-- Load 'normal' data if there is no break condition:
 				case CL is
-					when "11" => SHIFT_REG <= "000" & TX_DATA(4 downto 0); -- 5 databits.
-					when "10" => SHIFT_REG <= "00" & TX_DATA(5 downto 0); -- 6 databits.
-					when "01" => SHIFT_REG <= '0' & TX_DATA(6 downto 0); -- 7 databits.
-					when "00" => SHIFT_REG <= TX_DATA; -- 8 databits.
+					when "11" => SHIFT_REG <= "000" & TX_DATA(4 downto 0); -- 5 datastd_logics.
+					when "10" => SHIFT_REG <= "00" & TX_DATA(5 downto 0); -- 6 datastd_logics.
+					when "01" => SHIFT_REG <= '0' & TX_DATA(6 downto 0); -- 7 datastd_logics.
+					when "00" => SHIFT_REG <= TX_DATA; -- 8 datastd_logics.
 				end case;
 			elsif TR_STATE = SHIFTOUT and CLK_STRB = '1' then
 				SHIFT_REG <= '0' & SHIFT_REG(7 downto 1); -- Shift right.
@@ -209,11 +209,11 @@ begin
 	end process SHIFTREG;	
 
 	P_BITCNT: process
-	-- Counter for the data bits transmitted.
+	-- Counter for the data std_logics transmitted.
 	begin
 		wait until CLK = '1' and CLK' event;
 		if TR_STATE = SHIFTOUT and CLK_STRB = '1' then
-			BITCNT <= BITCNT + '1';
+			BITCNT <= BITCNT + 1;
 		elsif TR_STATE /= SHIFTOUT then
 			BITCNT <= "000";
 		end if;
@@ -274,7 +274,7 @@ begin
 	end process P_TX_END;
 	
 	PARITY_GEN: process
-	variable PAR_TMP	: bit;
+	variable PAR_TMP	: std_logic;
 	begin
 		wait until CLK = '1' and CLK' event;
 		if TR_STATE = START then -- Calculate the parity during the start phase.
@@ -325,7 +325,7 @@ begin
 				end if;
 			when LOAD_SHFT =>
 				TR_NEXT_STATE <= START;
-			when START => -- Send the start bit.
+			when START => -- Send the start std_logic.
 				if CLK_STRB = '1' then
 					TR_NEXT_STATE <= SHIFTOUT;
 				else
@@ -334,15 +334,15 @@ begin
 			when SHIFTOUT =>
 				if CLK_STRB = '1' then
 					if BITCNT < "100" and CL = "11" then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 5 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 5 data std_logics.
 					elsif BITCNT < "101" and CL = "10" then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 6 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 6 data std_logics.
 					elsif BITCNT < "110" and CL = "01" then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 7 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 7 data std_logics.
 					elsif BITCNT < "111" and CL = "00" then
-						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 8 data bits.
+						TR_NEXT_STATE <= SHIFTOUT; -- Transmit 8 data std_logics.
 					elsif P_ENA = '0' and BREAK = '1' then
-						TR_NEXT_STATE <= IDLE; -- Break condition, no parity check enabled, no stop bits.
+						TR_NEXT_STATE <= IDLE; -- Break condition, no parity check enabled, no stop std_logics.
 					elsif P_ENA = '0' and ST = "00" then
 						TR_NEXT_STATE <= IDLE; -- Synchronous mode, no parity check enabled.
 					elsif P_ENA = '0' then
@@ -355,9 +355,9 @@ begin
 				end if;
 			when PARITY =>
 				if CLK_STRB = '1' then
-					if ST = "00" then -- Synchronous mode (no stop bits).
+					if ST = "00" then -- Synchronous mode (no stop std_logics).
 						TR_NEXT_STATE <= IDLE;
-					elsif BREAK = '1' then -- No stop bits during break condition.
+					elsif BREAK = '1' then -- No stop std_logics during break condition.
 						TR_NEXT_STATE <= IDLE;
 					else
 						TR_NEXT_STATE <= STOP1;
@@ -367,17 +367,17 @@ begin
 				end if;				
 			when STOP1 =>
 				if CLK_STRB = '1' and (ST = "11" or ST = "10") then
-					TR_NEXT_STATE <= STOP2; -- More than one stop bits selected.
+					TR_NEXT_STATE <= STOP2; -- More than one stop std_logics selected.
 				elsif CLK_STRB = '1' then
-					TR_NEXT_STATE <= IDLE; -- One stop bits selected.
+					TR_NEXT_STATE <= IDLE; -- One stop std_logics selected.
 				else
 					TR_NEXT_STATE <= STOP1;
 				end if;				
 			when STOP2 =>
 				if CLK_2_STRB = '1' and ST = "10" then
-					TR_NEXT_STATE <= IDLE; -- One and a half stop bits selected.
+					TR_NEXT_STATE <= IDLE; -- One and a half stop std_logics selected.
 				elsif CLK_STRB = '1' then
-					TR_NEXT_STATE <= IDLE; -- Two stop bits detected.
+					TR_NEXT_STATE <= IDLE; -- Two stop std_logics detected.
 				else
 					TR_NEXT_STATE <= STOP2;
 				end if;				

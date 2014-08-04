@@ -61,124 +61,124 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF6850IP_TOP_SOC is
 	port (
-		CLK					: in bit;
-		RESETn				: in bit;
+		CLK					: in std_logic;
+		RESETn				: in std_logic;
 
-		CS2n, CS1, CS0		: in bit;
-		E		       		: in bit;   
-		RWn              	: in bit;
-		RS						: in bit;
+		CS2n, CS1, CS0		: in std_logic;
+		E		       		: in std_logic;   
+		RWn              	: in std_logic;
+		RS						: in std_logic;
 
 		DATA_IN				: in std_logic_vector(7 downto 0);   
 		DATA_OUT				: out std_logic_vector(7 downto 0);   
-		DATA_EN				: out bit;
+		DATA_EN				: out std_logic;
 
-		TXCLK					: in bit;
-		RXCLK					: in bit;
-		RXDATA				: in bit;
-		CTSn					: in bit;
-		DCDn					: in bit;
+		TXCLK					: in std_logic;
+		RXCLK					: in std_logic;
+		RXDATA				: in std_logic;
+		CTSn					: in std_logic;
+		DCDn					: in std_logic;
         
-		IRQn					: out bit;
-		TXDATA				: out bit;   
-		RTSn					: out bit
+		IRQn					: out std_logic;
+		TXDATA				: out std_logic;   
+		RTSn					: out std_logic
 	);                                              
 end entity WF6850IP_TOP_SOC;
 
 architecture STRUCTURE of WF6850IP_TOP_SOC is
 	component WF6850IP_CTRL_STATUS
 		port (
-			CLK		: in bit;
-			RESETn	: in bit;
-			CS			: in bit_vector(2 downto 0);
-			E			: in bit;   
-			RWn     	: in bit;
-			RS			: in bit;
-			DATA_IN	: in bit_vector(7 downto 0);   
-			DATA_OUT	: out bit_vector(7 downto 0);  
-			DATA_EN	: out bit;
-			RDRF		: in bit;
-			TDRE		: in bit;
-			DCDn		: in bit;
-			CTSn		: in bit;
-			FE			: in bit;
-			OVR		: in bit;
-			PE			: in bit;
-			MCLR		: out bit;
-			RTSn		: out bit;
-			CDS		: out bit_vector(1 downto 0);
-			WS			: out bit_vector(2 downto 0);
-			TC			: out bit_vector(1 downto 0);
-			IRQn		: out bit
+			CLK		: in std_logic;
+			RESETn	: in std_logic;
+			CS			: in std_logic_vector(2 downto 0);
+			E			: in std_logic;   
+			RWn     	: in std_logic;
+			RS			: in std_logic;
+			DATA_IN	: in std_logic_vector(7 downto 0);   
+			DATA_OUT	: out std_logic_vector(7 downto 0);  
+			DATA_EN	: out std_logic;
+			RDRF		: in std_logic;
+			TDRE		: in std_logic;
+			DCDn		: in std_logic;
+			CTSn		: in std_logic;
+			FE			: in std_logic;
+			OVR		: in std_logic;
+			PE			: in std_logic;
+			MCLR		: out std_logic;
+			RTSn		: out std_logic;
+			CDS		: out std_logic_vector(1 downto 0);
+			WS			: out std_logic_vector(2 downto 0);
+			TC			: out std_logic_vector(1 downto 0);
+			IRQn		: out std_logic
 		);                                              
 	end component;
 	
 	component WF6850IP_RECEIVE
 		port (
-			CLK				: in bit;
-			RESETn			: in bit;
-			MCLR				: in bit;
-			CS					: in bit_vector(2 downto 0);
-			E		       	: in bit;   
-			RWn            : in bit;
-			RS					: in bit;
-			DATA_OUT	      : out bit_vector(7 downto 0);   
-			DATA_EN			: out bit;
-			WS					: in bit_vector(2 downto 0);
-			CDS				: in bit_vector(1 downto 0);
-			RXCLK				: in bit;
-			RXDATA			: in bit;
-			RDRF				: out bit;
-			OVR				: out bit;
-			PE					: out bit;
-			FE					: out bit
+			CLK				: in std_logic;
+			RESETn			: in std_logic;
+			MCLR				: in std_logic;
+			CS					: in std_logic_vector(2 downto 0);
+			E		       	: in std_logic;   
+			RWn            : in std_logic;
+			RS					: in std_logic;
+			DATA_OUT	      : out std_logic_vector(7 downto 0);   
+			DATA_EN			: out std_logic;
+			WS					: in std_logic_vector(2 downto 0);
+			CDS				: in std_logic_vector(1 downto 0);
+			RXCLK				: in std_logic;
+			RXDATA			: in std_logic;
+			RDRF				: out std_logic;
+			OVR				: out std_logic;
+			PE					: out std_logic;
+			FE					: out std_logic
 		);                                              
 	end component;
 	
 	component WF6850IP_TRANSMIT
 		port (
-			CLK					: in bit;
-			RESETn				: in bit;
-			MCLR				: in bit;
-			CS					: in bit_vector(2 downto 0);
-			E		       		: in bit;   
-			RWn              	: in bit;
-			RS					: in bit;
-			DATA_IN		        : in bit_vector(7 downto 0);   
-			CTSn				: in bit;
-			TC					: in bit_vector(1 downto 0);
-			WS					: in bit_vector(2 downto 0);
-			CDS					: in bit_vector(1 downto 0);
-			TXCLK				: in bit;
-			TDRE				: out bit;        
-			TXDATA				: out bit
+			CLK					: in std_logic;
+			RESETn				: in std_logic;
+			MCLR				: in std_logic;
+			CS					: in std_logic_vector(2 downto 0);
+			E		       		: in std_logic;   
+			RWn              	: in std_logic;
+			RS					: in std_logic;
+			DATA_IN		        : in std_logic_vector(7 downto 0);   
+			CTSn				: in std_logic;
+			TC					: in std_logic_vector(1 downto 0);
+			WS					: in std_logic_vector(2 downto 0);
+			CDS					: in std_logic_vector(1 downto 0);
+			TXCLK				: in std_logic;
+			TDRE				: out std_logic;        
+			TXDATA				: out std_logic
 		);                                              
 	end component;
 	
-	signal DATA_IN_I	: bit_vector(7 downto 0);
-	signal DATA_RX		: bit_vector(7 downto 0);
-	signal DATA_RX_EN	: bit;
-	signal DATA_CTRL	: bit_vector(7 downto 0);
-	signal DATA_CTRL_EN	: bit;
-	signal RDRF_I		: bit;
-	signal TDRE_I		: bit;
-	signal FE_I			: bit;
-	signal OVR_I		: bit;
-	signal PE_I			: bit;
-	signal MCLR_I		: bit;
-	signal CDS_I		: bit_vector(1 downto 0);
-	signal WS_I			: bit_vector(2 downto 0);
-	signal TC_I			: bit_vector(1 downto 0);
-	signal IRQ_In		: bit;
+	signal DATA_IN_I	: std_logic_vector(7 downto 0);
+	signal DATA_RX		: std_logic_vector(7 downto 0);
+	signal DATA_RX_EN	: std_logic;
+	signal DATA_CTRL	: std_logic_vector(7 downto 0);
+	signal DATA_CTRL_EN	: std_logic;
+	signal RDRF_I		: std_logic;
+	signal TDRE_I		: std_logic;
+	signal FE_I			: std_logic;
+	signal OVR_I		: std_logic;
+	signal PE_I			: std_logic;
+	signal MCLR_I		: std_logic;
+	signal CDS_I		: std_logic_vector(1 downto 0);
+	signal WS_I			: std_logic_vector(2 downto 0);
+	signal TC_I			: std_logic_vector(1 downto 0);
+	signal IRQ_In		: std_logic;
 begin
-	DATA_IN_I <= To_BitVector(DATA_IN);
+	DATA_IN_I <= (DATA_IN);
 	DATA_EN <= DATA_RX_EN or DATA_CTRL_EN;
-	DATA_OUT <= To_StdLogicVector(DATA_RX) when DATA_RX_EN = '1' else
-				To_StdLogicVector(DATA_CTRL) when DATA_CTRL_EN = '1' else (others => '0');
+	DATA_OUT <= (DATA_RX) when DATA_RX_EN = '1' else
+				(DATA_CTRL) when DATA_CTRL_EN = '1' else (others => '0');
 				
 	IRQn <= '0' when IRQ_In = '0' else '1';
 

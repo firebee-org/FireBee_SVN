@@ -56,67 +56,67 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF68901IP_USART_CTRL is
 	port (
 		-- System Control:
-		CLK				: in bit;
-        RESETn			: in bit;
+		CLK				: in std_logic;
+        RESETn			: in std_logic;
 
 		-- Bus control:
-        DSn				: in bit;
-        CSn				: in bit;   
-        RWn     		: in bit;
-        RS				: in bit_vector(5 downto 1);
-        DATA_IN			: in bit_vector(7 downto 0);   
-        DATA_OUT		: out bit_vector(7 downto 0);   
-		DATA_OUT_EN		: out bit;
+        DSn				: in std_logic;
+        CSn				: in std_logic;   
+        RWn     		: in std_logic;
+        RS				: in std_logic_vector(5 downto 1);
+        DATA_IN			: in std_logic_vector(7 downto 0);   
+        DATA_OUT		: out std_logic_vector(7 downto 0);   
+		DATA_OUT_EN		: out std_logic;
 
 		-- USART data register
-		RX_SAMPLE		: in bit;
-        RX_DATA			: in bit_vector(7 downto 0);
-        TX_DATA			: out bit_vector(7 downto 0);   
-        SCR_OUT			: out bit_vector(7 downto 0);   
+		RX_SAMPLE		: in std_logic;
+        RX_DATA			: in std_logic_vector(7 downto 0);
+        TX_DATA			: out std_logic_vector(7 downto 0);   
+        SCR_OUT			: out std_logic_vector(7 downto 0);   
 
 		-- USART control inputs:
-		BF				: in bit;
-		BE				: in bit;
-		FE				: in bit;
-		OE				: in bit;
-		UE				: in bit;
-		PE				: in bit;
-		M_CIP			: in bit;
-		FS_B			: in bit;
-		TX_END			: in bit;
+		BF				: in std_logic;
+		BE				: in std_logic;
+		FE				: in std_logic;
+		OE				: in std_logic;
+		UE				: in std_logic;
+		PE				: in std_logic;
+		M_CIP			: in std_logic;
+		FS_B			: in std_logic;
+		TX_END			: in std_logic;
 
 		-- USART control outputs:
-		CL				: out bit_vector(1 downto 0);
-		ST				: out bit_vector(1 downto 0);
-		FS_CLR			: out bit;
-		UDR_WRITE		: out bit;
-		UDR_READ		: out bit;
-		RSR_READ		: out bit;
-		TSR_READ		: out bit;
-		LOOPBACK		: out bit;
-		SDOUT_EN		: out bit;
-		SD_LEVEL		: out bit;
-		CLK_MODE		: out bit;
-		RE				: out bit;
-		TE				: out bit;
-		P_ENA			: out bit;
-		P_EOn			: out bit;
-		SS				: out bit;
-		BR				: out bit
+		CL				: out std_logic_vector(1 downto 0);
+		ST				: out std_logic_vector(1 downto 0);
+		FS_CLR			: out std_logic;
+		UDR_WRITE		: out std_logic;
+		UDR_READ		: out std_logic;
+		RSR_READ		: out std_logic;
+		TSR_READ		: out std_logic;
+		LOOPBACK		: out std_logic;
+		SDOUT_EN		: out std_logic;
+		SD_LEVEL		: out std_logic;
+		CLK_MODE		: out std_logic;
+		RE				: out std_logic;
+		TE				: out std_logic;
+		P_ENA			: out std_logic;
+		P_EOn			: out std_logic;
+		SS				: out std_logic;
+		BR				: out std_logic
        );                                              
 end entity WF68901IP_USART_CTRL;
 
 architecture BEHAVIOR of WF68901IP_USART_CTRL is
-signal SCR	: bit_vector(7 downto 0); -- Synchronous data register.
-signal UCR	: bit_vector(7 downto 1); -- USART control register.
-signal RSR	: bit_vector(7 downto 0); -- Receiver status register.
-signal TSR	: bit_vector(7 downto 0); -- Transmitter status register.
-signal UDR	: bit_vector(7 downto 0); -- USART data register.
+signal SCR	: std_logic_vector(7 downto 0); -- Synchronous data register.
+signal UCR	: std_logic_vector(7 downto 1); -- USART control register.
+signal RSR	: std_logic_vector(7 downto 0); -- Receiver status register.
+signal TSR	: std_logic_vector(7 downto 0); -- Transmitter status register.
+signal UDR	: std_logic_vector(7 downto 0); -- USART data register.
 begin
 	USART_REGISTERS: process(RESETn, CLK)
 	begin

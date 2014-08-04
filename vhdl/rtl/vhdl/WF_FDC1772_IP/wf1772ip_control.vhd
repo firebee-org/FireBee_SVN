@@ -71,85 +71,85 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF1772IP_CONTROL is
 	port(
 		-- System control:
-		CLK		: in bit;
-		RESETn	: in bit;
+		CLK		: in std_logic;
+		RESETn	: in std_logic;
 
 		-- Chip control signals:
-		A1, A0	: in bit;
-		RWn		: in bit;
-		CSn		: in bit;
-		DDEn	: in bit;
+		A1, A0	: in std_logic;
+		RWn		: in std_logic;
+		CSn		: in std_logic;
+		DDEn	: in std_logic;
 
 		-- Registers:
-		DR	: in bit_vector(7 downto 0); -- Data register.
+		DR	: in std_logic_vector(7 downto 0); -- Data register.
 		CMD	: in std_logic_vector(7 downto 0); -- Command register.
 		DSR	: in std_logic_vector(7 downto 0); -- Shift register.
 		TR	: in std_logic_vector(7 downto 0); -- Track register.
 		SR	: in std_logic_vector(7 downto 0); -- Sector register.
 
 		-- Status flags:
-		MO				: buffer bit; -- Motor on status flag.
-		WR_PR			: out bit; -- Write protect status flag.
-		SPINUP_RECTYPE	: out bit; -- Spin up / record type status flag.
-        SEEK_RNF		: out bit; -- Seek error / record not found status flag.
-		CRC_ERRFLAG		: out bit; -- CRC status flag.
-		LOST_DATA_TR00	: out bit; -- Status flag indicates lost data or track 00 position.
-        DRQ				: out bit; -- Data request.
-		DRQ_IPn			: out bit; -- Data request status flag.
-		BUSY			: buffer bit; -- BUSY status flag.
+		MO				: buffer std_logic; -- Motor on status flag.
+		WR_PR			: out std_logic; -- Write protect status flag.
+		SPINUP_RECTYPE	: out std_logic; -- Spin up / record type status flag.
+        SEEK_RNF		: out std_logic; -- Seek error / record not found status flag.
+		CRC_ERRFLAG		: out std_logic; -- CRC status flag.
+		LOST_DATA_TR00	: out std_logic; -- Status flag indicates lost data or track 00 position.
+        DRQ				: out std_logic; -- Data request.
+		DRQ_IPn			: out std_logic; -- Data request status flag.
+		BUSY			: buffer std_logic; -- BUSY status flag.
 
 		-- Address mark detector controls:
-		AM_2_DISK	: out bit;	-- Enables / disables the address mark detector.
-		ID_AM		: in bit; 	-- Address mark of the ID field
-		DATA_AM		: in bit; 	-- Address mark of the data field
-		DDATA_AM	: in bit; 	-- Address mark of a deleted data field
+		AM_2_DISK	: out std_logic;	-- Enables / disables the address mark detector.
+		ID_AM		: in std_logic; 	-- Address mark of the ID field
+		DATA_AM		: in std_logic; 	-- Address mark of the data field
+		DDATA_AM	: in std_logic; 	-- Address mark of a deleted data field
 
 		-- CRC unit controls:
-		CRC_ERR		: in bit; 	-- CRC decoder's error.
-		CRC_PRES	: out bit;	-- Preset CRC during write operations.
+		CRC_ERR		: in std_logic; 	-- CRC decoder's error.
+		CRC_PRES	: out std_logic;	-- Preset CRC during write operations.
 
 		-- Track register controls:
-		TR_PRES		: out bit;	-- Set x"FF".
-		TR_CLR		: out bit;	-- Clear.
-		TR_INC		: out bit;	-- Increment.
-		TR_DEC		: out bit;	-- Decrement.
+		TR_PRES		: out std_logic;	-- Set x"FF".
+		TR_CLR		: out std_logic;	-- Clear.
+		TR_INC		: out std_logic;	-- Increment.
+		TR_DEC		: out std_logic;	-- Decrement.
 
 		-- Sector register control:
-		SR_LOAD		: out bit; -- Load.
-		SR_INC		: out bit; -- Increment.
+		SR_LOAD		: out std_logic; -- Load.
+		SR_INC		: out std_logic; -- Increment.
 		-- The TRACK_NR is required during the type III command
 		--  'Read Address'. TRACK_NR is the content of the TRACKMEM.
 		TRACK_NR	: out std_logic_vector(7 downto 0);
 
 		-- DATA register control:
-		DR_CLR		: out bit; -- Clear.
-		DR_LOAD		: out bit; -- LOAD.
+		DR_CLR		: out std_logic; -- Clear.
+		DR_LOAD		: out std_logic; -- LOAD.
 
 		-- Shift register control:
-		SHFT_LOAD_ND	: out bit; -- Load normal data.
-		SHFT_LOAD_SD	: out bit; -- Load special data.
+		SHFT_LOAD_ND	: out std_logic; -- Load normal data.
+		SHFT_LOAD_SD	: out std_logic; -- Load special data.
 
 		-- Transceiver controls:
-		CRC_2_DISK	: out bit;	-- Cause the Transceiver to write out CRC data.
-		DSR_2_DISK	: out bit;	-- Cause the Transceiver to write normal data.
-		FF_2_DISK	: out bit;	-- Cause the Transceiver to write x"FF" bytes.
-		PRECOMP_EN	: out bit; 	-- Enables the write precompensation.
+		CRC_2_DISK	: out std_logic;	-- Cause the Transceiver to write out CRC data.
+		DSR_2_DISK	: out std_logic;	-- Cause the Transceiver to write normal data.
+		FF_2_DISK	: out std_logic;	-- Cause the Transceiver to write x"FF" bytes.
+		PRECOMP_EN	: out std_logic; 	-- Enables the write precompensation.
 
 		-- Miscellaneous Controls:
-		DATA_STRB 	: in bit;	-- Data strobe (read and write operation)
-		WPRTn		: in bit; 	-- Write protect flag
-		IPn			: in bit; 	-- Index pulse flag
-		TRACK00n	: in bit; 	-- Track zero flag
-		DISK_RWn	: out bit;  -- This signal reflects the data direction.
-		DIRC		: out bit;	-- Step direction control.
-		STEP		: out bit;	-- Step pulse.
-		WG			: out bit;	-- Write gate control.
-		INTRQ		: out bit 	-- Interrupt request flag.
+		DATA_STRB 	: in std_logic;	-- Data strobe (read and write operation)
+		WPRTn		: in std_logic; 	-- Write protect flag
+		IPn			: in std_logic; 	-- Index pulse flag
+		TRACK00n	: in std_logic; 	-- Track zero flag
+		DISK_RWn	: out std_logic;  -- This signal reflects the data direction.
+		DIRC		: out std_logic;	-- Step direction control.
+		STEP		: out std_logic;	-- Step pulse.
+		WG			: out std_logic;	-- Write gate control.
+		INTRQ		: out std_logic 	-- Interrupt request flag.
 	);
 end WF1772IP_CONTROL;
 
@@ -176,17 +176,17 @@ architecture BEHAVIOR of WF1772IP_CONTROL is
 	signal CMD_WR			: boolean;
 	signal STAT_RD			: boolean;
 	signal DELAY			: boolean;
-	signal DRQ_I            : bit;
+	signal DRQ_I            : std_logic;
 	signal INDEX_CNT		: boolean;
-	signal DIR				: bit;
-	signal INDEX_MARK		: bit;
+	signal DIR				: std_logic;
+	signal INDEX_MARK		: std_logic;
 	signal STEP_TRAP		: boolean;
 	signal TYPE_IV_BREAK	: boolean;
 	signal BYTE_RDY			: boolean;
-	signal SECT_LEN 		: std_logic_vector(10 downto 0);
+	signal SECT_LEN 		: unsigned (10 downto 0);
 	signal TRACKMEM			: std_logic_vector(7 downto 0);
 	signal T3_TRADR			: boolean;
-	signal T3_DATATYPE		: bit_vector(7 downto 0);
+	signal T3_DATATYPE		: std_logic_vector(7 downto 0);
 begin
 	-- The Forced interrupt stops any command at the end of an internal micro instruction.
 	-- Forced interrupt waits until ALU operations in progress are complete (CRC calculations,
@@ -720,7 +720,7 @@ begin
 	-- In T1_STEP_PULSE the delay is according to the CMD(1 downto 0) as follows: 
 	-- "11" = 3ms, "10" = 2ms, "01" = 12ms, "00" = 6ms.
 	-- In T1_VERIFY_DELAY there is a delay of 30ms.
-	variable DELCNT : std_logic_vector(19 downto 0);
+	variable DELCNT : unsigned (19 downto 0);
 	begin
 		if RESETn = '0' then
 			DELCNT := (others => '0');
@@ -734,21 +734,21 @@ begin
 				case CMD_STATE is
 					-- Time delays work on CLK edges.
 					when DELAY_15MS | T1_CHECK_DIR | T1_STEP_DELAY | T1_VERIFY_DELAY =>
-						DELCNT := DELCNT + '1';
+						DELCNT := DELCNT + 1;
 					-- Bit count delays work on data strobes.
 					-- Read from disk operation:
                     when T1_SCAN_TRACK | T1_SCAN_CRC | T1_VERIFY_CRC | T2_SCAN_TRACK | T2_SCAN_SECT |
 						 T2_SCAN_LEN | T2_VERIFY_CRC_1 | T2_VERIFY_AM  | T2_FIRSTBYTE |
 						 T2_NEXTBYTE | T2_VERIFY_CRC_2 | T3_SHIFT | T3_SHIFT_ADR | T3_VERIFY_CRC =>
 						if DATA_STRB = '1' then
-							DELCNT := DELCNT + '1';
+							DELCNT := DELCNT + 1;
 						end if;
 					-- Write to disk operation:
 					when T2_DELAY_B2 | T2_DELAY_B8 | T2_WR_LEADIN |
 						 T2_WR_AM | T2_DELAY_B1 |T2_DELAY_B11 | T2_WR_BYTE | T2_DATALOST |
 						 T2_WR_CRC | T2_WR_FF | T3_DELAY_B3 | T3_WR_DATA | T3_DATALOST   =>
 						if DATA_STRB = '1' then
-							DELCNT := DELCNT + '1';
+							DELCNT := DELCNT + 1;
 						end if;
 					when others =>
 						DELCNT := (others => '0'); -- Clear the delay counter if not used.
@@ -786,7 +786,7 @@ begin
 			when T1_SCAN_TRACK | T2_SCAN_TRACK | T2_SCAN_LEN | T2_FIRSTBYTE | T2_NEXTBYTE |
 							T2_WR_BYTE | T2_DATALOST | T2_WR_FF | T3_DATALOST | T3_SHIFT_ADR =>
 				case DELCNT is
-					when x"00008" => DELAY <= true; -- The delay in this case is 8 bit times.
+					when x"00008" => DELAY <= true; -- The delay in this case is 8 std_logic times.
 					when others => DELAY <= false;
 				end case;
 			when T1_SCAN_CRC =>
@@ -795,9 +795,9 @@ begin
 					when others => DELAY <= false;
 				end case;
 			when T2_WR_AM =>
-				if DDEn = '1' and DELCNT = x"00008" then -- Wait for 8 address mark bits (FM mode).
+				if DDEn = '1' and DELCNT = x"00008" then -- Wait for 8 address mark std_logics (FM mode).
 					DELAY <= true;
-				elsif DDEn = '0' and DELCNT = x"00020" then -- Wait for 32 sync and address mark bits (MFM mode).
+				elsif DDEn = '0' and DELCNT = x"00020" then -- Wait for 32 sync and address mark std_logics (MFM mode).
 					DELAY <= true;
 				else
 					DELAY <= false;
@@ -811,9 +811,9 @@ begin
 					DELAY <= false;
 				end if;
 			when T2_WR_LEADIN =>
-				if DDEn = '1' and DELCNT = x"00030" then -- Scan for 48 zero bits in FM mode.
+				if DDEn = '1' and DELCNT = x"00030" then -- Scan for 48 zero std_logics in FM mode.
 					DELAY <= true;
-				elsif DDEn = '0' and DELCNT = x"00060" then -- Scan for 96 zero bits in MFM mode.
+				elsif DDEn = '0' and DELCNT = x"00060" then -- Scan for 96 zero std_logics in MFM mode.
 					DELAY <= true;
 				else
 					DELAY <= false;
@@ -853,16 +853,16 @@ begin
 					when others => DELAY <= false;
 				end case;
 			when T3_WR_DATA =>
-				if T3_DATATYPE = x"F7" and DELCNT = x"00010" then -- Wait for 16 CRC bits.
+				if T3_DATATYPE = x"F7" and DELCNT = x"00010" then -- Wait for 16 CRC std_logics.
 					DELAY <= true;
-				elsif T3_DATATYPE /= x"F7" and DELCNT = x"00008" then -- Wait for 8 data bits.
+				elsif T3_DATATYPE /= x"F7" and DELCNT = x"00008" then -- Wait for 8 data std_logics.
 					DELAY <= true;
 				else
 					DELAY <= false;
 				end if;
 			when T3_SHIFT =>
 				case DELCNT is
-					when x"00001" => DELAY <= true; -- Scan just one data bit.
+					when x"00001" => DELAY <= true; -- Scan just one data std_logic.
 					when others => DELAY <= false;
 				end case;
 			when others =>
@@ -876,8 +876,8 @@ begin
 	-- It is achieved by counting the index pulses of the disk. This encounters problems, 
 	-- if the disk is not inserted. For this reason there is additionally to the index counter 
 	-- a timeout which is active if there are no index pulses.
-	variable CNT : std_logic_vector(3 downto 0);
-	variable TIMEOUT : std_logic_vector(27 downto 0);
+	variable CNT : unsigned (3 downto 0);
+	variable TIMEOUT : unsigned (27 downto 0);
 	variable LOCK : boolean;
 	begin
 		if RESETn = '0' then
@@ -890,14 +890,14 @@ begin
                 when SPINUP | T1_SPINDOWN | T1_SCAN_TRACK | T1_SCAN_CRC | T1_VERIFY_CRC |
                               T2_INIT | T2_SCAN_TRACK | T2_SCAN_SECT |T2_SCAN_LEN | T2_VERIFY_CRC_1 | T3_RD_ADR | T3_VERIFY_AM =>
 					if IPn = '0' and LOCK = false then -- Count the index pulses.
-						CNT := CNT + '1';
+						CNT := CNT + 1;
 						LOCK := true;
 					elsif IPn = '1' then
 						LOCK := false;
 					end if;
 					--
 					if TIMEOUT < x"17FFFFF" then -- Timeout of about 1.5s.
-						TIMEOUT := TIMEOUT + '1';
+						TIMEOUT := TIMEOUT + 1;
 					end if;
 				when others =>
 					CNT := x"0";
@@ -959,7 +959,7 @@ begin
 	-- This process counts the bytes read in the type III read address
 	-- command during the command states T3_SHIFT_ADR, T3_LOAD_DATA2,
 	-- T3_SET_DRQ_2 and T3_CHECK_RD.
-	variable CNT 	: std_logic_vector(2 downto 0);
+		variable CNT 	: unsigned (2 downto 0);
 	begin
 		if RESETn = '0' then
 			CNT := "000";
@@ -968,7 +968,7 @@ begin
 				when T3_VERIFY_AM =>
 					CNT := "000"; -- Clear the counter right befor the count operation.
 				when T3_SET_DRQ_2 =>
-					CNT := CNT + '1'; -- Increment after each read cycle.
+					CNT := CNT + 1; -- Increment after each read cycle.
 				when others =>
 					null;
 			end case;
@@ -981,17 +981,17 @@ begin
 
 	BYTEASMBLY: process(RESETn, CLK)
 	-- This process controls the condition in the CMD_STATE T3_CHECK_DR.
-	-- Therefore the bits shifted into the DSR in command state T3_SHIFT are counted.
+	-- Therefore the std_logics shifted into the DSR in command state T3_SHIFT are counted.
 	-- The count condition is entering the command state T3_CHECK_INDEX_3. The clear
 	-- condition is either the command state IDLE or the command state T3_CHECK_DR.
-	variable CNT : std_logic_vector(3 downto 0);
+	variable CNT : unsigned (3 downto 0);
 	begin
 		if RESETn = '0' then
 			CNT := x"0";
 		elsif CLK = '1' and CLK' event then
 			case CMD_STATE is
 				when IDLE => CNT := x"0";
-				when T3_CHECK_INDEX_3 => CNT := CNT + '1';
+				when T3_CHECK_INDEX_3 => CNT := CNT + 1;
 				when T3_CHECK_DR => CNT := (others => '0');
 				when others => null;
 			end case;
@@ -1037,7 +1037,7 @@ begin
 				when others =>
 					null;
 			end case;
-			-- The data request bit is also cleared by reading or writing the
+			-- The data request std_logic is also cleared by reading or writing the
 			-- data register (direct memory access operation).
 			if (DATA_RD = true or DATA_WR = true) then
 				DRQ_I <= '0';
@@ -1144,7 +1144,7 @@ begin
 	end process P_INTRQ;
 
 	P_LOST_DATA_TR00: process(RESETn, CLK)
-	-- Logic for the status bit number 2:
+	-- Logic for the status std_logic number 2:
 	-- The TRACK00 flag is used to detect wether a floppy disk drive
 	-- is connected or not.
 	begin
@@ -1174,7 +1174,7 @@ begin
 	end process P_LOST_DATA_TR00;
 
 	MOTORSWITCH: process(RESETn, CLK)
-	variable INDEXCNT	: std_logic_vector(3 downto 0);
+	variable INDEXCNT	: unsigned (3 downto 0);
 	variable LOCK		: boolean;
 	begin
 		if RESETn = '0' then
@@ -1186,7 +1186,7 @@ begin
 				INDEXCNT := x"9"; -- Initialise the index counter.
 				LOCK := false;
 			elsif LOCK = false and IPn = '0' and INDEXCNT > x"0" then
-				INDEXCNT := INDEXCNT - '1'; -- Count the index pulses in the IDLE state.
+				INDEXCNT := INDEXCNT - 1; -- Count the index pulses in the IDLE state.
 				LOCK := true;
 			elsif IPn = '1' then
 				LOCK := false;
@@ -1255,7 +1255,7 @@ begin
 	-- If after 255 stepping pulses no TRACK00n was not detected, the
 	-- RESTORE command is terminated and the interrupt request and the
 	-- seek error are set.
-	variable STEP_CNT : std_logic_vector(7 downto 0);
+		variable STEP_CNT : unsigned (7 downto 0);
 	begin
 		if RESETn = '0' then
 			STEP_CNT := (others => '0');
@@ -1265,7 +1265,7 @@ begin
 			elsif CMD(7 downto 4) /= "0000" then -- No RESTORE command.
 				STEP_CNT := x"00";
 			elsif CMD_STATE = T1_STEP and STEP_CNT < x"FF" then
-				STEP_CNT := STEP_CNT + '1';
+				STEP_CNT := STEP_CNT + 1;
 			end if;
 		end if;
 		--
@@ -1278,7 +1278,7 @@ begin
 	STEPPULSE: process(RESETn, CLK)
 	-- The step pulse duration is in the original WD1772 4us in MFM mode and 8 us.
 	-- in FM mode This process is responsible to provide the correct pulse lengths.
-	variable CNT : std_logic_vector(7 downto 0);
+		variable CNT : unsigned (7 downto 0);
 	begin
 		if RESETn = '0' then
 			CNT := (others => '0');
@@ -1289,7 +1289,7 @@ begin
                     when '0' => CNT := x"40"; --Start counter for MFM step pulse.
 				end case;
 			elsif CNT > x"00" then
-				CNT := CNT -1; -- Count 63 or 127 CLK cycles ...
+				CNT := CNT - 1; -- Count 63 or 127 CLK cycles ...
 			end if;
 			case CNT is
 				when x"00" => STEP <= '0';
@@ -1339,7 +1339,7 @@ begin
 						when others => SECT_LEN <= "10000000000"; -- Dummy for U, X, Z, W, H, L, -.
 					end case;
 				when T2_LOAD_DATA | T2_LOAD_SHFT =>
-					SECT_LEN <= SECT_LEN - '1';
+					SECT_LEN <= SECT_LEN - 1;
 				when others =>
 					null;
 			end case;

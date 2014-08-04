@@ -64,169 +64,169 @@ package WF1772IP_PKG is
 -- component declarations:
 component WF1772IP_AM_DETECTOR
 	port(
-		CLK			: in bit;
-		RESETn		: in bit;
-		DDEn		: in bit;
-		DATA		: in bit;
-		DATA_STRB	: in bit;
-		ID_AM		: out bit;
-		DATA_AM		: out bit;
-		DDATA_AM	: out bit
+		CLK			: in std_logic;
+		RESETn		: in std_logic;
+		DDEn		: in std_logic;
+		DATA		: in std_logic;
+		DATA_STRB	: in std_logic;
+		ID_AM		: out std_logic;
+		DATA_AM		: out std_logic;
+		DDATA_AM	: out std_logic
 	);
 end component;
 
 component WF1772IP_CONTROL
 	port(
-		CLK				: in bit;
-		RESETn			: in bit;
-		A1, A0			: in bit;
-		RWn				: in bit;
-		CSn				: in bit;
-		DDEn			: in bit;
-		DR				: in bit_vector(7 downto 0);
+		CLK				: in std_logic;
+		RESETn			: in std_logic;
+		A1, A0			: in std_logic;
+		RWn				: in std_logic;
+		CSn				: in std_logic;
+		DDEn			: in std_logic;
+		DR				: in std_logic_vector(7 downto 0);
 		CMD				: in std_logic_vector(7 downto 0);
 		DSR				: in std_logic_vector(7 downto 0);
 		TR				: in std_logic_vector(7 downto 0);
 		SR				: in std_logic_vector(7 downto 0);
-		MO				: out bit;
-		WR_PR			: out bit;
-		SPINUP_RECTYPE	: out bit;
-		SEEK_RNF		: out bit;
-		CRC_ERRFLAG		: out bit;
-		LOST_DATA_TR00	: out bit;
-		DRQ				: out bit;
-		DRQ_IPn			: out bit;
-		BUSY			: out bit;
-		AM_2_DISK		: out bit;
-		ID_AM			: in bit;
-		DATA_AM			: in bit;
-		DDATA_AM		: in bit;
-		CRC_ERR			: in bit;
-		CRC_PRES		: out bit;
-		TR_PRES			: out bit;
-		TR_CLR			: out bit;
-		TR_INC			: out bit;
-		TR_DEC			: out bit;
-		SR_LOAD			: out bit;
-		SR_INC			: out bit;
+		MO				: out std_logic;
+		WR_PR			: out std_logic;
+		SPINUP_RECTYPE	: out std_logic;
+		SEEK_RNF		: out std_logic;
+		CRC_ERRFLAG		: out std_logic;
+		LOST_DATA_TR00	: out std_logic;
+		DRQ				: out std_logic;
+		DRQ_IPn			: out std_logic;
+		BUSY			: out std_logic;
+		AM_2_DISK		: out std_logic;
+		ID_AM			: in std_logic;
+		DATA_AM			: in std_logic;
+		DDATA_AM		: in std_logic;
+		CRC_ERR			: in std_logic;
+		CRC_PRES		: out std_logic;
+		TR_PRES			: out std_logic;
+		TR_CLR			: out std_logic;
+		TR_INC			: out std_logic;
+		TR_DEC			: out std_logic;
+		SR_LOAD			: out std_logic;
+		SR_INC			: out std_logic;
 		TRACK_NR		: out std_logic_vector(7 downto 0);
-		DR_CLR			: out bit;
-		DR_LOAD			: out bit;
-		SHFT_LOAD_SD	: out bit;
-		SHFT_LOAD_ND	: out bit;
-		CRC_2_DISK		: out bit;
-		DSR_2_DISK		: out bit;
-		FF_2_DISK		: out bit;
-		PRECOMP_EN		: out bit;
-		DATA_STRB 		: in bit;
-		DISK_RWn		: out bit;
-		WPRTn			: in bit;
-		TRACK00n		: in bit;
-		IPn				: in bit;
-		DIRC			: out bit;
-		STEP			: out bit;
-		WG				: out bit;
-		INTRQ			: out bit
+		DR_CLR			: out std_logic;
+		DR_LOAD			: out std_logic;
+		SHFT_LOAD_SD	: out std_logic;
+		SHFT_LOAD_ND	: out std_logic;
+		CRC_2_DISK		: out std_logic;
+		DSR_2_DISK		: out std_logic;
+		FF_2_DISK		: out std_logic;
+		PRECOMP_EN		: out std_logic;
+		DATA_STRB 		: in std_logic;
+		DISK_RWn		: out std_logic;
+		WPRTn			: in std_logic;
+		TRACK00n		: in std_logic;
+		IPn				: in std_logic;
+		DIRC			: out std_logic;
+		STEP			: out std_logic;
+		WG				: out std_logic;
+		INTRQ			: out std_logic
 	);
 end component;
 
 component WF1772IP_CRC_LOGIC
 	port(
-		CLK			: in bit;
-		RESETn		: in bit;
-		DDEn		: in bit;
-		DISK_RWn	: in bit;
-		ID_AM		: in bit;
-		DATA_AM		: in bit;
-		DDATA_AM	: in bit;
-		SD			: in bit;
-		CRC_STRB	: in bit;
-		CRC_2_DISK	: in bit;
-		CRC_PRES	: in bit;
-		CRC_SDOUT	: out bit;
-		CRC_ERR		: out bit
+		CLK			: in std_logic;
+		RESETn		: in std_logic;
+		DDEn		: in std_logic;
+		DISK_RWn	: in std_logic;
+		ID_AM		: in std_logic;
+		DATA_AM		: in std_logic;
+		DDATA_AM	: in std_logic;
+		SD			: in std_logic;
+		CRC_STRB	: in std_logic;
+		CRC_2_DISK	: in std_logic;
+		CRC_PRES	: in std_logic;
+		CRC_SDOUT	: out std_logic;
+		CRC_ERR		: out std_logic
 	);
 end component;
 
 component WF1772IP_DIGITAL_PLL
 	port(
-		CLK			: in bit;
-		RESETn		: in bit;
-		DDEn		: in bit;
-		HDTYPE		: in bit;
-		DISK_RWn	: in bit;
-		RDn			: in bit;
-		PLL_D		: out bit;
-		PLL_DSTRB	: out bit
+		CLK			: in std_logic;
+		RESETn		: in std_logic;
+		DDEn		: in std_logic;
+		HDTYPE		: in std_logic;
+		DISK_RWn	: in std_logic;
+		RDn			: in std_logic;
+		PLL_D		: out std_logic;
+		PLL_DSTRB	: out std_logic
 	);
 end component;
 
 component WF1772IP_REGISTERS
 	port(
-		CLK				: in bit;
-		RESETn			: in bit;
-		CSn				: in bit;
-		ADR				: in bit_vector(1 downto 0);
-		RWn				: in bit;
+		CLK				: in std_logic;
+		RESETn			: in std_logic;
+		CSn				: in std_logic;
+		ADR				: in std_logic_vector(1 downto 0);
+		RWn				: in std_logic;
 		DATA_IN			: in std_logic_vector (7 downto 0);
 		DATA_OUT		: out std_logic_vector (7 downto 0);
-		DATA_EN			: out bit;
+		DATA_EN			: out std_logic;
 		CMD				: out std_logic_vector(7 downto 0);
 		SR				: out std_logic_vector(7 downto 0);
 		TR				: out std_logic_vector(7 downto 0);
 		DSR				: out std_logic_vector(7 downto 0);
-		DR				: out bit_vector(7 downto 0);
-		SD_R			: in bit;
-		DATA_STRB		: in bit;
-		DR_CLR			: in bit;
-		DR_LOAD			: in bit;
-		TR_PRES			: in bit;
-		TR_CLR			: in bit;
-		TR_INC			: in bit;
-		TR_DEC			: in bit;
+		DR				: out std_logic_vector(7 downto 0);
+		SD_R			: in std_logic;
+		DATA_STRB		: in std_logic;
+		DR_CLR			: in std_logic;
+		DR_LOAD			: in std_logic;
+		TR_PRES			: in std_logic;
+		TR_CLR			: in std_logic;
+		TR_INC			: in std_logic;
+		TR_DEC			: in std_logic;
 		TRACK_NR 		: in std_logic_vector(7 downto 0);
-		SR_LOAD			: in bit;
-		SR_INC			: in bit;
-		SHFT_LOAD_SD	: in bit;
-		SHFT_LOAD_ND	: in bit;
-		MOTOR_ON		: in bit;
-		WRITE_PROTECT	: in bit;
-		SPINUP_RECTYPE	: in bit;
-		SEEK_RNF		: in bit;
-		CRC_ERRFLAG		: in bit;
-		LOST_DATA_TR00	: in bit;
-		DRQ				: in bit;
-		DRQ_IPn			: in bit;
-		BUSY			: in bit;
-		DDEn			: in bit
+		SR_LOAD			: in std_logic;
+		SR_INC			: in std_logic;
+		SHFT_LOAD_SD	: in std_logic;
+		SHFT_LOAD_ND	: in std_logic;
+		MOTOR_ON		: in std_logic;
+		WRITE_PROTECT	: in std_logic;
+		SPINUP_RECTYPE	: in std_logic;
+		SEEK_RNF		: in std_logic;
+		CRC_ERRFLAG		: in std_logic;
+		LOST_DATA_TR00	: in std_logic;
+		DRQ				: in std_logic;
+		DRQ_IPn			: in std_logic;
+		BUSY			: in std_logic;
+		DDEn			: in std_logic
 	);
 end component;
 
 component WF1772IP_TRANSCEIVER
 	port(
-		CLK				: in bit;
-		RESETn			: in bit;
-		DDEn			: in bit;
-		HDTYPE			: in bit;
-		ID_AM			: in bit;
-		DATA_AM			: in bit;
-		DDATA_AM		: in bit;
-		SHFT_LOAD_SD	: in bit;
-		DR				: in bit_vector(7 downto 0);
-		PRECOMP_EN		: in bit;
-		AM_TYPE			: in bit;
-		AM_2_DISK		: in bit;
-		CRC_2_DISK		: in bit;
-		DSR_2_DISK		: in bit;
-		FF_2_DISK		: in bit;
+		CLK				: in std_logic;
+		RESETn			: in std_logic;
+		DDEn			: in std_logic;
+		HDTYPE			: in std_logic;
+		ID_AM			: in std_logic;
+		DATA_AM			: in std_logic;
+		DDATA_AM		: in std_logic;
+		SHFT_LOAD_SD	: in std_logic;
+		DR				: in std_logic_vector(7 downto 0);
+		PRECOMP_EN		: in std_logic;
+		AM_TYPE			: in std_logic;
+		AM_2_DISK		: in std_logic;
+		CRC_2_DISK		: in std_logic;
+		DSR_2_DISK		: in std_logic;
+		FF_2_DISK		: in std_logic;
 		SR_SDOUT		: in std_logic;
-		CRC_SDOUT		: in bit;
-		WRn				: out bit;
-		PLL_DSTRB		: in bit;
-		PLL_D			: in bit;
-		WDATA 			: out bit;
-		DATA_STRB 		: out bit;
-		SD_R			: out bit
+		CRC_SDOUT		: in std_logic;
+		WRn				: out std_logic;
+		PLL_DSTRB		: in std_logic;
+		PLL_D			: in std_logic;
+		WDATA 			: out std_logic;
+		DATA_STRB 		: out std_logic;
+		SD_R			: out std_logic
 	);
 end component;
 end WF1772IP_PKG;

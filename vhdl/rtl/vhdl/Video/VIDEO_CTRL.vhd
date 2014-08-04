@@ -44,7 +44,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity VIDEO_CTRL is
     port(
@@ -262,7 +262,7 @@ begin
                '1' when FB_SIZE(1) = '1' and FB_SIZE(0) = '0' and FB_ADR(1) = '1' else -- Low word.
                '1' when FB_ADR(1 downto 0) = "11" else '0'; -- Byte 3.
              
-    -- 16 bit selectors:
+    -- 16 std_logic selectors:
     FB_16B(0) <= not FB_ADR(0);
     FB_16B(1) <= '1'when FB_ADR(0) = '1' else
                  '1' when FB_SIZE(1) = '0' and FB_SIZE(0) = '0' else -- No byte.
@@ -706,7 +706,7 @@ begin
         elsif FBEE_VIDEO_ON = '1' and FBEE_VCTR(9 downto 8) = "01" then
             HSY_LEN <= x"20";
         elsif FBEE_VIDEO_ON = '1' and FBEE_VCTR(9) = '1' then
-            HSY_LEN <= x"10" + ('0' & VR_FRQ(7 downto 1)); -- HSYNC pulse length in pixels = frequency/500ns.
+            HSY_LEN <= std_logic_vector(unsigned'(x"10") + unsigned('0' & VR_FRQ(7 downto 1))); -- HSYNC pulse length in pixels = frequency/500ns.
         else
             HSY_LEN <= x"00";
         end if;
@@ -728,9 +728,9 @@ begin
     P_DOUBLE_LINE_2   : process
     begin
         wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-        if DOP_ZEI = '1' and VVCNT(0) /= VDIS_START(0) and VVCNT /= "00000000000" and VHCNT < HDIS_END - '1' then        
+        if DOP_ZEI = '1' and VVCNT(0) /= VDIS_START(0) and VVCNT /= "00000000000" and VHCNT < std_logic_vector(unsigned(HDIS_END) - 1) then        
             INTER_ZEI_I <= '1'; -- Switch insertion line to "double". Line zero due to SYNC.
-        elsif DOP_ZEI = '1' and VVCNT(0) = VDIS_START(0) and VVCNT /= "00000000000" and VHCNT > HDIS_END - "10" then
+        elsif DOP_ZEI = '1' and VVCNT(0) = VDIS_START(0) and VVCNT /= "00000000000" and VHCNT > std_logic_vector(unsigned(HDIS_END) - 10) then
             INTER_ZEI_I <= '1'; -- Switch insertion mode to "normal". Lines and line zero due to SYNC.
         else
             INTER_ZEI_I <= '0';
@@ -740,16 +740,16 @@ begin
     end process P_DOUBLE_LINE_2;
 
     -- The following multiplications change every time the video resolution is changed.
-    MUL1 <= VDL_HBE * MULF(5 downto 1);
-    MUL2 <= (VDL_HHT + '1' + VDL_HSS) * MULF(5 downto 1);
-    MUL3 <= (VDL_HHT + "10") * MULF(5 downto 1);
+    MUL1 <= std_logic_vector(unsigned(VDL_HBE) * unsigned(MULF(5 downto 1)));
+    MUL2 <= std_logic_vector(unsigned(VDL_HHT) + 1 + unsigned(VDL_HSS) * unsigned(MULF(5 downto 1)));
+    MUL3 <= std_logic_vector(unsigned(VDL_HHT) + 10 * unsigned(MULF(5 downto 1)));
 
     BORDER_LEFT <= VDL_HBE when FBEE_VIDEO_ON = '1' else 
                   x"015" when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
                   x"02A" when ATARI_SYNC = '1' else MUL1(16 downto 5);
-    HDIS_START <= VDL_HDB when FBEE_VIDEO_ON = '1' else BORDER_LEFT + '1'; 
-    HDIS_END <= VDL_HDE when FBEE_VIDEO_ON = '1' else BORDER_LEFT + HDIS_LEN;
-    BORDER_RIGHT <= VDL_HBB when FBEE_VIDEO_ON = '1' else HDIS_END + '1';
+    HDIS_START <= VDL_HDB when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(BORDER_LEFT) + 1);
+    HDIS_END <= VDL_HDE when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(BORDER_LEFT) + unsigned(HDIS_LEN));
+    BORDER_RIGHT <= VDL_HBB when FBEE_VIDEO_ON = '1' else std_logic_vector(unsigned(HDIS_END) + 1);
     HS_START <= VDL_HSS when FBEE_VIDEO_ON = '1' else
                 ATARI_HL(11 downto 0) when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
                 ATARI_HH(11 downto 0) when VDL_VMD(2) = '1' else MUL2(16 downto 5);
@@ -764,7 +764,7 @@ begin
                 "00110101111" when ATARI_SYNC = '1' and ST_VIDEO = '1' else -- 431.
                 "00111111111" when ATARI_SYNC = '1' else '0' & VDL_VDE(10 downto 1); -- 511.
     BORDER_BOTTOM <= VDL_VBB when FBEE_VIDEO_ON = '1' else
-                  VDIS_END + '1' when ATARI_SYNC = '1' else ('0' & VDL_VBB(10 downto 1)) + '1';
+                  std_logic_vector(unsigned(VDIS_END) + 1) when ATARI_SYNC = '1' else ('0' & std_logic_vector(unsigned(VDL_VBB(10 downto 1)) + 1));
     VS_START <= VDL_VSS when FBEE_VIDEO_ON = '1' else
                 ATARI_VL(10 downto 0) when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
                 ATARI_VH(10 downto 0) when ATARI_SYNC = '1' else '0' & VDL_VSS(10 downto 1);
@@ -772,7 +772,7 @@ begin
                ATARI_VL(26 downto 16) when ATARI_SYNC = '1' and VDL_VMD(2) = '1' else
                ATARI_VH(26 downto 16) when ATARI_SYNC = '1' else '0' & VDL_VFT(10 downto 1);
 
-    LAST <= '1' when VHCNT  = H_TOTAL - "10" else '0';
+    LAST <= '1' when VHCNT  = std_logic_vector(unsigned(H_TOTAL) - 10) else '0';
 
     VIDEO_CLOCK_DOMAIN   : process
     begin
@@ -793,19 +793,19 @@ begin
         end if;
 
         if LAST = '0' then
-            VHCNT <= VHCNT + '1';
+            VHCNT <= std_logic_vector(unsigned(VHCNT) + 1);
         else
             VHCNT <= (others => '0');
         end if;
 
-        if LAST = '1' and VVCNT = V_TOTAL - '1' then
+        if LAST = '1' and VVCNT = std_logic_vector(unsigned(V_TOTAL) - 1) then
             VVCNT <= (others => '0');
         elsif LAST = '1' then
-            VVCNT <= VVCNT + '1';
+            VVCNT <= std_logic_vector(unsigned(VVCNT) + 1);
         end if;
 
         -- Display on/off:
-        if LAST = '1' and VVCNT > BORDER_TOP - '1' and VVCNT < BORDER_BOTTOM - '1' then
+        if LAST = '1' and VVCNT > std_logic_vector(unsigned(BORDER_TOP) - 1) and VVCNT < std_logic_vector(unsigned(BORDER_BOTTOM) - 1) then
             DPO_ZL <= '1';
         elsif LAST = '1' then
             DPO_ZL <= '0';
@@ -817,7 +817,7 @@ begin
             DPO_ON <= '0';
         end if;
 
-        if VHCNT = BORDER_RIGHT - '1' then
+        if VHCNT = std_logic_vector(unsigned(BORDER_RIGHT) - 1) then
             DPO_OFF <= '1';
         else
             DPO_OFF <= '0';
@@ -826,7 +826,7 @@ begin
         DISP_ON <= (DISP_ON and not DPO_OFF) or (DPO_ON and DPO_ZL);
 
         -- Data transfer on/off:
-        if VHCNT = HDIS_START - '1' then
+        if VHCNT = std_logic_vector(unsigned(HDIS_START) - 1) then
             VDO_ON <= '1'; -- BESSER EINZELN WEGEN TIMING.
         else
             VDO_ON <= '0';
@@ -838,7 +838,7 @@ begin
             VDO_OFF <= '0';
         end if;
 
-        if LAST = '1' and VVCNT >= VDIS_START - '1' and VVCNT < VDIS_END then
+        if LAST = '1' and VVCNT >= std_logic_vector(unsigned(VDIS_START) - 1) and VVCNT < VDIS_END then
             VDO_ZL <= '1'; -- Take over at the end of the line.
         elsif LAST = '1' then
             VDO_ZL <= '0'; -- 1 ZEILE DAVOR ON OFF
@@ -848,19 +848,19 @@ begin
         VDTRON <= (VDTRON and not VDO_OFF) or (VDO_ON and VDO_ZL);
 
         -- Delay and SYNC
-        if VHCNT = HS_START - "11" then
+        if VHCNT = std_logic_vector(unsigned(HS_START) - 11) then
             HSYNC_START <= '1';
         else
             HSYNC_START <= '0';
         end if;
         
         if HSYNC_START = '1' then
-            HSYNC_I <= HSY_LEN;
+            HSYNC_I <= std_logic_vector(unsigned(HSY_LEN));
         elsif HSYNC_I > x"00" then
-            HSYNC_I <= HSYNC_I - '1';
+            HSYNC_I <= std_logic_vector(unsigned(HSYNC_I) - 1);
         end if;
 
-        if LAST = '1' and VVCNT = VS_START - "11" then
+        if LAST = '1' and VVCNT = std_logic_vector(unsigned(VS_START) - 11) then
             VSYNC_START <= '1'; -- start am ende der Zeile vor dem vsync
         else
             VSYNC_START <= '0';
@@ -869,7 +869,7 @@ begin
         if LAST = '1' and VSYNC_START = '1' then -- Start at the end of the line before VSYNC.
             VSYNC_I <= "011"; -- 3 lines vsync length.
         elsif LAST = '1' and VSYNC_I > "000" then
-            VSYNC_I <= VSYNC_I - '1'; -- Count down.
+            VSYNC_I <= std_logic_vector(unsigned(VSYNC_I) - 1); -- Count down.
         end if;
 
         if FBEE_VCTR(15) = '1' and VDL_VCT(5) = '1' and VSYNC_I = "000" then
@@ -897,7 +897,7 @@ begin
         RAND <= RAND(5 downto 0) & (DISP_ON and not VDTRON and FBEE_VCTR(25));
         RAND_ON <= RAND(6);
 
-        if LAST = '1' and VVCNT = V_TOTAL - "10" then
+        if LAST = '1' and VVCNT = std_logic_vector(unsigned(V_TOTAL) - 10) then
             FIFO_CLR <= '1';
         elsif LAST = '1' then
             FIFO_CLR <= '0';
@@ -928,7 +928,7 @@ begin
         end if;
         
         if VDTRON = '1' and SYNC_PIX = '0' then
-            SUB_PIXEL_CNT <= SUB_PIXEL_CNT + '1';
+            SUB_PIXEL_CNT <= std_logic_vector(unsigned(SUB_PIXEL_CNT) + 1);
         elsif VDTRON = '1' then
             SUB_PIXEL_CNT <= (others => '0');
         end if;

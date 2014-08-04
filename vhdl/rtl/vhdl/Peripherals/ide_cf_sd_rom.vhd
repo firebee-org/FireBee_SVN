@@ -44,7 +44,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity IDE_CF_SD_ROM is
 	port(
@@ -85,7 +85,7 @@ entity IDE_CF_SD_ROM is
 		ROM4n               : out std_logic;
 		ROM3n               : out std_logic;
 
-        CF_WP               : in bit;
+        CF_WP               : in std_logic;
 		CF_CSn              : out std_logic_vector(1 downto 0)
 	);
 end entity IDE_CF_SD_ROM;

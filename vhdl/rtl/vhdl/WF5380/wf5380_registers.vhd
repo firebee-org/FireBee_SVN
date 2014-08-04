@@ -32,7 +32,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright © 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
+---- Copyright ï¿½ 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
 ---- All rights reserved. No portion of this sourcecode may be    ----
 ---- reproduced or transmitted in any form by any means, whether  ----
 ---- by electronic, mechanical, photocopying, recording or        ----
@@ -48,68 +48,68 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF5380_REGISTERS is
 	port (
         -- System controls:
-		CLK			: in bit;
-		RESETn	    : in bit; -- System reset.
+		CLK			: in std_logic;
+		RESETn	    : in std_logic; -- System reset.
 		
 		-- Address and data:
-		ADR			: in bit_vector(2 downto 0);
-		DATA_IN		: in bit_vector(7 downto 0);
-		DATA_OUT	: out bit_vector(7 downto 0);
-		DATA_EN		: out bit;
+		ADR			: in std_logic_vector(2 downto 0);
+		DATA_IN		: in std_logic_vector(7 downto 0);
+		DATA_OUT	: out std_logic_vector(7 downto 0);
+		DATA_EN		: out std_logic;
 
 		-- Bus and DMA controls:
-		CSn			: in bit;
-		RDn		    : in bit;
-		WRn	        : in bit;
+		CSn			: in std_logic;
+		RDn		    : in std_logic;
+		WRn	        : in std_logic;
 
         -- Core controls:
-		RSTn	    : in bit; -- SCSI reset.
-		RST         : out bit; -- Programmed SCSI reset.
-        ARB_EN      : out bit; -- Arbitration enable.
-        DMA_ACTIVE  : in bit; -- DMA is running.
-        DMA_EN      : out bit; -- DMA mode enable.
-        BSY_DISn    : out bit; -- BSY monitoring enable.
-        EOP_EN      : out bit; -- EOP interrupt enable.
-        PINT_EN     : out bit; -- Parity interrupt enable.
-        SPER        : out bit; -- Parity error.
-        TARG        : out bit; -- Target mode.
-        BLK         : out bit; -- Block DMA mode.
-        DMA_DIS     : in bit; -- Reset the DMA_EN by this signal.
-        IDR_WR      : in bit; -- Write input data register during DMA.
-        ODR_WR      : in bit; -- Write output data register, during DMA.
-        CHK_PAR     : in bit; -- Check Parity during DMA operation.
-        AIP         : in bit; -- Arbitration in progress.
-        ARB         : in bit; -- Arbitration.
-        LA          : in bit; -- Lost arbitration.
+		RSTn	    : in std_logic; -- SCSI reset.
+		RST         : out std_logic; -- Programmed SCSI reset.
+        ARB_EN      : out std_logic; -- Arstd_logicration enable.
+        DMA_ACTIVE  : in std_logic; -- DMA is running.
+        DMA_EN      : out std_logic; -- DMA mode enable.
+        BSY_DISn    : out std_logic; -- BSY monitoring enable.
+        EOP_EN      : out std_logic; -- EOP interrupt enable.
+        PINT_EN     : out std_logic; -- Parity interrupt enable.
+        SPER        : out std_logic; -- Parity error.
+        TARG        : out std_logic; -- Target mode.
+        BLK         : out std_logic; -- Block DMA mode.
+        DMA_DIS     : in std_logic; -- Reset the DMA_EN by this signal.
+        IDR_WR      : in std_logic; -- Write input data register during DMA.
+        ODR_WR      : in std_logic; -- Write output data register, during DMA.
+        CHK_PAR     : in std_logic; -- Check Parity during DMA operation.
+        AIP         : in std_logic; -- Arstd_logicration in progress.
+        ARB         : in std_logic; -- Arstd_logicration.
+        LA          : in std_logic; -- Lost arstd_logicration.
 
-        CSD         : in bit_vector(7 downto 0); -- SCSI data.
-        CSB         : in bit_vector(7 downto 0); -- Current SCSI bus status.
-        BSR         : in bit_vector(7 downto 0); -- Bus and status.
+        CSD         : in std_logic_vector(7 downto 0); -- SCSI data.
+        CSB         : in std_logic_vector(7 downto 0); -- Current SCSI bus status.
+        BSR         : in std_logic_vector(7 downto 0); -- Bus and status.
 
-        ODR_OUT     : out bit_vector(7 downto 0); -- This is the ODR register.
-        ICR_OUT     : out bit_vector(7 downto 0); -- This is the ICR register.
-        TCR_OUT     : out bit_vector(3 downto 0); -- This is the TCR register.
-        SER_OUT     : out bit_vector(7 downto 0); -- This is the SER register.
+        ODR_OUT     : out std_logic_vector(7 downto 0); -- This is the ODR register.
+        ICR_OUT     : out std_logic_vector(7 downto 0); -- This is the ICR register.
+        TCR_OUT     : out std_logic_vector(3 downto 0); -- This is the TCR register.
+        SER_OUT     : out std_logic_vector(7 downto 0); -- This is the SER register.
         
-		SDS         : out bit; -- Start DMA send, write only.
-		SDT         : out bit; -- Start DMA target receive, write only.
-		SDI         : out bit; -- Start DMA initiator receive, write only.
-		RPI         : out bit
+		SDS         : out std_logic; -- Start DMA send, write only.
+		SDT         : out std_logic; -- Start DMA target receive, write only.
+		SDI         : out std_logic; -- Start DMA initiator receive, write only.
+		RPI         : out std_logic
     );
 end entity WF5380_REGISTERS;
 	
 architecture BEHAVIOUR of WF5380_REGISTERS is
-signal ICR  : bit_vector(7 downto 0); -- Initiator command register, read/write.
-signal IDR  : bit_vector(7 downto 0); -- Input data register.
-signal MR2  : bit_vector(7 downto 0); -- Mode register 2, read/write.
-signal ODR  : bit_vector(7 downto 0); -- Output data register, write only.
-signal SER  : bit_vector(7 downto 0); -- Select enable register, write only.
-signal TCR  : bit_vector(3 downto 0); -- Target command register, read/write.
+signal ICR  : std_logic_vector(7 downto 0); -- Initiator command register, read/write.
+signal IDR  : std_logic_vector(7 downto 0); -- Input data register.
+signal MR2  : std_logic_vector(7 downto 0); -- Mode register 2, read/write.
+signal ODR  : std_logic_vector(7 downto 0); -- Output data register, write only.
+signal SER  : std_logic_vector(7 downto 0); -- Select enable register, write only.
+signal TCR  : std_logic_vector(3 downto 0); -- Target command register, read/write.
 begin
     REGISTERS: process(RESETn, CLK)
     -- This process reflects all registers in the 5380.
@@ -178,7 +178,7 @@ begin
     PARITY: process(RESETn, CLK)
     -- This is the parity generating logic with it's related
     -- error generation.
-	variable PAR_VAR : bit;
+	variable PAR_VAR : std_logic;
 	variable LOCK : boolean;
     begin
         if RESETn = '0' then
@@ -235,7 +235,7 @@ begin
     
     RST     <= ICR(7);
        
-    -- Readback, unused bit positions are read back zero.
+    -- Readback, unused std_logic positions are read back zero.
     DATA_OUT <= CSD when ADR = "000" and CSn = '0' and RDn = '0' else -- Current SCSI data.
                 ICR(7) & AIP & LA & ICR(4 downto 0) when ADR = "001" and CSn = '0' and RDn = '0' else
                 MR2 when ADR = "010" and CSn = '0' and RDn = '0' else
@@ -246,3 +246,7 @@ begin
 
     RPI <= '1' when ADR = "111" and CSn = '0' and RDn = '0' else '0'; -- Reset parity/interrupts.
 end BEHAVIOUR;
+
+architecture LIGHT of WF5380_REGISTERS is
+begin
+end LIGHT;

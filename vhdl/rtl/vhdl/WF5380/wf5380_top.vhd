@@ -16,7 +16,7 @@
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright © 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
+---- Copyright ï¿½ 2009-2010 Wolfgang Foerster Inventronik GmbH.    ----
 ---- All rights reserved. No portion of this sourcecode may be    ----
 ---- reproduced or transmitted in any form by any means, whether  ----
 ---- by electronic, mechanical, photocopying, recording or        ----
@@ -35,27 +35,27 @@ use work.wf5380_pkg.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity WF5380_TOP is
 	port (
         -- System controls:
-		CLK			: in bit;
-		RESETn	    : in bit;
+		CLK			: in std_logic;
+		RESETn	    : in std_logic;
 		
 		-- Address and data:
 		ADR			: in std_logic_vector(2 downto 0);
 		DATA		: inout std_logic_vector(7 downto 0);
 
 		-- Bus and DMA controls:
-		CSn			: in bit;
-		RDn		    : in bit;
-		WRn	        : in bit;
-		EOPn        : in bit;
-		DACKn	    : in bit;
-		DRQ		    : out bit;
-		INT		    : out bit;
-		READY       : out bit;
+		CSn			: in std_logic;
+		RDn		    : in std_logic;
+		WRn	        : in std_logic;
+		EOPn        : in std_logic;
+		DACKn	    : in std_logic;
+		DRQ		    : out std_logic;
+		INT		    : out std_logic;
+		READY       : out std_logic;
 		
 		-- SCSI bus:
 		DBn		    : inout std_logic_vector(7 downto 0);
@@ -76,113 +76,113 @@ architecture STRUCTURE of WF5380_TOP is
 component WF5380_TOP_SOC
 	port (
         -- System controls:
-		CLK			: in bit;
-		RESETn	    : in bit;
-		ADR			: in bit_vector(2 downto 0);
-		DATA_IN		: in bit_vector(7 downto 0);
-		DATA_OUT	: out bit_vector(7 downto 0);
-		DATA_EN		: out bit;
-		CSn			: in bit;
-		RDn		    : in bit;
-		WRn	        : in bit;
-		EOPn        : in bit;
-		DACKn	    : in bit;
-		DRQ		    : out bit;
-		INT		    : out bit;
-		READY       : out bit;
-		DB_INn		: in bit_vector(7 downto 0);
-		DB_OUTn		: out bit_vector(7 downto 0);
-		DB_EN       : out bit;
-		DBP_INn		: in bit;
-		DBP_OUTn	: out bit;
-		DBP_EN      : out bit;
-		RST_INn     : in bit;
-		RST_OUTn    : out bit;
-		RST_EN      : out bit;
-		BSY_INn     : in bit;
-		BSY_OUTn    : out bit;
-		BSY_EN      : out bit;
-		SEL_INn     : in bit;
-		SEL_OUTn    : out bit;
-		SEL_EN      : out bit;
-		ACK_INn     : in bit;
-		ACK_OUTn    : out bit;
-		ACK_EN      : out bit;
-		ATN_INn     : in bit;
-		ATN_OUTn    : out bit;
-		ATN_EN      : out bit;
-		REQ_INn     : in bit;
-		REQ_OUTn    : out bit;
-		REQ_EN      : out bit;
-		IOn_IN      : in bit;
-		IOn_OUT     : out bit;
-		IO_EN       : out bit;
-		CDn_IN      : in bit;
-		CDn_OUT     : out bit;
-		CD_EN       : out bit;
-		MSG_INn     : in bit;
-		MSG_OUTn    : out bit;
-		MSG_EN      : out bit
+		CLK			: in std_logic;
+		RESETn	    : in std_logic;
+		ADR			: in std_logic_vector(2 downto 0);
+		DATA_IN		: in std_logic_vector(7 downto 0);
+		DATA_OUT	: out std_logic_vector(7 downto 0);
+		DATA_EN		: out std_logic;
+		CSn			: in std_logic;
+		RDn		    : in std_logic;
+		WRn	        : in std_logic;
+		EOPn        : in std_logic;
+		DACKn	    : in std_logic;
+		DRQ		    : out std_logic;
+		INT		    : out std_logic;
+		READY       : out std_logic;
+		DB_INn		: in std_logic_vector(7 downto 0);
+		DB_OUTn		: out std_logic_vector(7 downto 0);
+		DB_EN       : out std_logic;
+		DBP_INn		: in std_logic;
+		DBP_OUTn	: out std_logic;
+		DBP_EN      : out std_logic;
+		RST_INn     : in std_logic;
+		RST_OUTn    : out std_logic;
+		RST_EN      : out std_logic;
+		BSY_INn     : in std_logic;
+		BSY_OUTn    : out std_logic;
+		BSY_EN      : out std_logic;
+		SEL_INn     : in std_logic;
+		SEL_OUTn    : out std_logic;
+		SEL_EN      : out std_logic;
+		ACK_INn     : in std_logic;
+		ACK_OUTn    : out std_logic;
+		ACK_EN      : out std_logic;
+		ATN_INn     : in std_logic;
+		ATN_OUTn    : out std_logic;
+		ATN_EN      : out std_logic;
+		REQ_INn     : in std_logic;
+		REQ_OUTn    : out std_logic;
+		REQ_EN      : out std_logic;
+		IOn_IN      : in std_logic;
+		IOn_OUT     : out std_logic;
+		IO_EN       : out std_logic;
+		CDn_IN      : in std_logic;
+		CDn_OUT     : out std_logic;
+		CD_EN       : out std_logic;
+		MSG_INn     : in std_logic;
+		MSG_OUTn    : out std_logic;
+		MSG_EN      : out std_logic
 	);
 end component;
 --
-signal ADR_IN       : bit_vector(2 downto 0);
-signal DATA_IN      : bit_vector(7 downto 0);
-signal DATA_OUT     : bit_vector(7 downto 0);
-signal DATA_EN      : bit;
-signal DB_INn	    : bit_vector(7 downto 0);
-signal DB_OUTn	    : bit_vector(7 downto 0);
-signal DB_EN        : bit;
-signal DBP_INn	    : bit;
-signal DBP_OUTn	    : bit;
-signal DBP_EN       : bit;
-signal RST_INn      : bit;
-signal RST_OUTn     : bit;
-signal RST_EN       : bit;
-signal BSY_INn      : bit;
-signal BSY_OUTn     : bit;
-signal BSY_EN       : bit;
-signal SEL_INn      : bit;
-signal SEL_OUTn     : bit;
-signal SEL_EN       : bit;
-signal ACK_INn      : bit;
-signal ACK_OUTn     : bit;
-signal ACK_EN       : bit;
-signal ATN_INn      : bit;
-signal ATN_OUTn     : bit;
-signal ATN_EN       : bit;
-signal REQ_INn      : bit;
-signal REQ_OUTn     : bit;
-signal REQ_EN       : bit;
-signal IOn_IN       : bit;
-signal IOn_OUT      : bit;
-signal IO_EN        : bit;
-signal CDn_IN       : bit;
-signal CDn_OUT      : bit;
-signal CD_EN        : bit;
-signal MSG_INn      : bit;
-signal MSG_OUTn     : bit;
-signal MSG_EN       : bit;
+signal ADR_IN       : std_logic_vector(2 downto 0);
+signal DATA_IN      : std_logic_vector(7 downto 0);
+signal DATA_OUT     : std_logic_vector(7 downto 0);
+signal DATA_EN      : std_logic;
+signal DB_INn	    : std_logic_vector(7 downto 0);
+signal DB_OUTn	    : std_logic_vector(7 downto 0);
+signal DB_EN        : std_logic;
+signal DBP_INn	    : std_logic;
+signal DBP_OUTn	    : std_logic;
+signal DBP_EN       : std_logic;
+signal RST_INn      : std_logic;
+signal RST_OUTn     : std_logic;
+signal RST_EN       : std_logic;
+signal BSY_INn      : std_logic;
+signal BSY_OUTn     : std_logic;
+signal BSY_EN       : std_logic;
+signal SEL_INn      : std_logic;
+signal SEL_OUTn     : std_logic;
+signal SEL_EN       : std_logic;
+signal ACK_INn      : std_logic;
+signal ACK_OUTn     : std_logic;
+signal ACK_EN       : std_logic;
+signal ATN_INn      : std_logic;
+signal ATN_OUTn     : std_logic;
+signal ATN_EN       : std_logic;
+signal REQ_INn      : std_logic;
+signal REQ_OUTn     : std_logic;
+signal REQ_EN       : std_logic;
+signal IOn_IN       : std_logic;
+signal IOn_OUT      : std_logic;
+signal IO_EN        : std_logic;
+signal CDn_IN       : std_logic;
+signal CDn_OUT      : std_logic;
+signal CD_EN        : std_logic;
+signal MSG_INn      : std_logic;
+signal MSG_OUTn     : std_logic;
+signal MSG_EN       : std_logic;
 begin
-    ADR_IN <= To_BitVector(ADR);
+    ADR_IN <= ADR;
 
-    DATA_IN <= To_BitVector(DATA);
-    DATA <= To_StdLogicVector(DATA_OUT) when DATA_EN = '1' else (others => 'Z');
+    DATA_IN <= DATA;
+    DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
 
-    DB_INn <= To_BitVector(DBn);
-    DBn <= To_StdLogicVector(DB_OUTn) when DB_EN = '1' else (others => 'Z');
+    DB_INn <= DBn;
+    DBn <= DB_OUTn when DB_EN = '1' else (others => 'Z');
 
-    DBP_INn <= To_Bit(DBPn);
+    DBP_INn <= DBPn;
 
-    RST_INn <= To_Bit(RSTn);
-    BSY_INn <= To_Bit(BSYn);
-    SEL_INn <= To_Bit(SELn);
-    ACK_INn <= To_Bit(ACKn);
-    ATN_INn <= To_Bit(ATNn);
-    REQ_INn <= To_Bit(REQn);
-    IOn_IN <= To_Bit(IOn);
-    CDn_IN <= To_Bit(CDn);
-    MSG_INn <= To_Bit(MSGn);
+    RST_INn <= RSTn;
+    BSY_INn <= BSYn;
+    SEL_INn <= SELn;
+    ACK_INn <= ACKn;
+    ATN_INn <= ATNn;
+    REQ_INn <= REQn;
+    IOn_IN <= IOn;
+    CDn_IN <= CDn;
+    MSG_INn <= MSGn;
 
     DBPn <= '1' when DBP_OUTn = '1' and DBP_EN = '1' else
             '0' when DBP_OUTn = '0' and DBP_EN = '1' else 'Z';
@@ -256,3 +256,7 @@ begin
             MSG_EN      => MSG_EN
         );
 end STRUCTURE;
+
+architecture LIGHT of WF5380_TOP is
+begin
+end LIGHT;
