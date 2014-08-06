@@ -281,23 +281,23 @@ begin
 		CLUT_FBEE_B <= CLUT_FI(clut_fi_index)(7 downto 0);
 	end process P_CLUT_ST_PX;
 
-    P_VIDEO_OUT: process
-    variable VIDEO_OUT  : std_logic_vector(23 downto 0);
-    begin
-        wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-        case CC_SEL is
-            when "111" => VIDEO_OUT := CCR; -- Register type video.
-            when "110" => VIDEO_OUT := CC_24(23 downto 0); -- 3 byte FIFO type video.
-            when "101" => VIDEO_OUT := CC_16; -- 2 byte FIFO type video.
-            when "100" => VIDEO_OUT := CLUT_FBEE_R & CLUT_FBEE_G & CLUT_FBEE_B; -- Firebee type video.
-            when "001" => VIDEO_OUT := CLUT_FA_R & "00" & CLUT_FA_G & "00" & CLUT_FA_B & "00"; -- Falcon type video.
-            when "000" => VIDEO_OUT := CLUT_ST_R & x"0" & CLUT_ST_G & x"0" & CLUT_ST_B & x"0"; -- ST type video.
-            when others => VIDEO_OUT := (others => '0');
-        end case;
-        RED <= VIDEO_OUT(23 downto 16);
-        GREEN <= VIDEO_OUT(15 downto 8);
-        BLUE <= VIDEO_OUT(7 downto 0);
-    end process P_VIDEO_OUT;
+	P_VIDEO_OUT: process
+	variable VIDEO_OUT  : std_logic_vector(23 downto 0);
+	begin
+		wait until rising_edge(CLK_PIXEL_I);
+		case CC_SEL is
+			when "111" => VIDEO_OUT := CCR; -- Register type video.
+			when "110" => VIDEO_OUT := CC_24(23 downto 0); -- 3 byte FIFO type video.
+			when "101" => VIDEO_OUT := CC_16; -- 2 byte FIFO type video.
+			when "100" => VIDEO_OUT := CLUT_FBEE_R & CLUT_FBEE_G & CLUT_FBEE_B; -- Firebee type video.
+			when "001" => VIDEO_OUT := CLUT_FA_R & "00" & CLUT_FA_G & "00" & CLUT_FA_B & "00"; -- Falcon type video.
+			when "000" => VIDEO_OUT := CLUT_ST_R & x"0" & CLUT_ST_G & x"0" & CLUT_ST_B & x"0"; -- ST type video.
+			when others => VIDEO_OUT := (others => '0');
+		end case;
+		RED <= VIDEO_OUT(23 downto 16);
+		GREEN <= VIDEO_OUT(15 downto 8);
+		BLUE <= VIDEO_OUT(7 downto 0);
+	end process P_VIDEO_OUT;
 
 	P_CC: process
 		variable CC24_I : std_logic_vector(31 downto 0);
@@ -307,10 +307,10 @@ begin
 		wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
 		case CLUT_ADR_MUX(1 downto 0) is
 			when "11" => CC24_I := FIFO_D(31 downto 0);
-           when "10" => CC24_I := FIFO_D(63 downto 32);
-           when "01" => CC24_I := FIFO_D(95 downto 64);
-           when "00" => CC24_I := FIFO_D(127 downto 96);
-           when others => CC24_I := (others => 'Z');
+			when "10" => CC24_I := FIFO_D(63 downto 32);
+			when "01" => CC24_I := FIFO_D(95 downto 64);
+			when "00" => CC24_I := FIFO_D(127 downto 96);
+			when others => CC24_I := (others => 'Z');
 		end case;
            --
 		CC_24 <= CC24_I;
@@ -355,138 +355,138 @@ begin
 		end case;
 	end process P_CC;
 
-    CLUT_SHIFT_IN <= CLUT_ADR_A(6 downto 1) when COLOR4 = '0' and COLOR2 = '0' else
-                     CLUT_ADR_A(7 downto 2) when COLOR4 = '0' and COLOR2 = '1' else
-                     "00" & CLUT_ADR_A(7 downto 4) when COLOR4 = '1' and COLOR2 = '0' else "000000";
+	CLUT_SHIFT_IN <= CLUT_ADR_A(6 downto 1) when COLOR4 = '0' and COLOR2 = '0' else
+							CLUT_ADR_A(7 downto 2) when COLOR4 = '0' and COLOR2 = '1' else
+							"00" & CLUT_ADR_A(7 downto 4) when COLOR4 = '1' and COLOR2 = '0' else "000000";
 
-    FIFO_RD_REQ_128 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '1' else '0';
-    FIFO_RD_REQ_512 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '0' else '0';
+	FIFO_RD_REQ_128 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '1' else '0';
+	FIFO_RD_REQ_512 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '0' else '0';
 
-    FIFO_DMUX: process
-    begin
-        wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-        if FIFO_RDE = '1' and INTER_ZEI = '1' then
-            FIFO_D <= FIFO_D_OUT_128;
-        elsif FIFO_RDE = '1' then
-            FIFO_D <= FIFO_D_OUT_512;
-        end if;
-    end process FIFO_DMUX;
+	FIFO_DMUX: process
+	begin
+		wait until rising_edge(CLK_PIXEL_I);
+		if FIFO_RDE = '1' and INTER_ZEI = '1' then
+			FIFO_D <= FIFO_D_OUT_128;
+		elsif FIFO_RDE = '1' then
+			FIFO_D <= FIFO_D_OUT_512;
+		end if;
+	end process FIFO_DMUX;
 
-    CLUT_SHIFTREGS: process
-    variable CLUT_SHIFTREG   : CLUT_SHIFTREG_TYPE;
-    begin
-        wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-        CLUT_SHIFT_LOAD <= FIFO_RDE;
-        if CLUT_SHIFT_LOAD = '1' then
-            for i in 0 to 7 loop
-                CLUT_SHIFTREG(7 - i) := FIFO_D((i+1)*16 -1 downto i*16);
-            end loop;
-        else
-            CLUT_SHIFTREG(7) := CLUT_SHIFTREG(7)(14 downto 0) & CLUT_ADR_A(0);
-            CLUT_SHIFTREG(6) := CLUT_SHIFTREG(6)(14 downto 0) & CLUT_ADR_A(7);
-            CLUT_SHIFTREG(5) := CLUT_SHIFTREG(5)(14 downto 0) & CLUT_SHIFT_IN(5);
-            CLUT_SHIFTREG(4) := CLUT_SHIFTREG(4)(14 downto 0) & CLUT_SHIFT_IN(4);
-            CLUT_SHIFTREG(3) := CLUT_SHIFTREG(3)(14 downto 0) & CLUT_SHIFT_IN(3);
-            CLUT_SHIFTREG(2) := CLUT_SHIFTREG(2)(14 downto 0) & CLUT_SHIFT_IN(2);
-            CLUT_SHIFTREG(1) := CLUT_SHIFTREG(1)(14 downto 0) & CLUT_SHIFT_IN(1);
-            CLUT_SHIFTREG(0) := CLUT_SHIFTREG(0)(14 downto 0) & CLUT_SHIFT_IN(0);
-        end if;
-        --
-        for i in 0 to 7 loop
-            CLUT_ADR_A(i) <= CLUT_SHIFTREG(i)(15);
-        end loop;
-    end process CLUT_SHIFTREGS;
+	CLUT_SHIFTREGS: process
+		variable CLUT_SHIFTREG   : CLUT_SHIFTREG_TYPE;
+	begin
+		wait until rising_edge(CLK_PIXEL_I);
+		CLUT_SHIFT_LOAD <= FIFO_RDE;
+		if CLUT_SHIFT_LOAD = '1' then
+			for i in 0 to 7 loop
+				CLUT_SHIFTREG(7 - i) := FIFO_D((i + 1) * 16 - 1 downto i * 16);
+			end loop;
+		else
+			CLUT_SHIFTREG(7) := CLUT_SHIFTREG(7)(14 downto 0) & CLUT_ADR_A(0);
+			CLUT_SHIFTREG(6) := CLUT_SHIFTREG(6)(14 downto 0) & CLUT_ADR_A(7);
+			CLUT_SHIFTREG(5) := CLUT_SHIFTREG(5)(14 downto 0) & CLUT_SHIFT_IN(5);
+			CLUT_SHIFTREG(4) := CLUT_SHIFTREG(4)(14 downto 0) & CLUT_SHIFT_IN(4);
+			CLUT_SHIFTREG(3) := CLUT_SHIFTREG(3)(14 downto 0) & CLUT_SHIFT_IN(3);
+			CLUT_SHIFTREG(2) := CLUT_SHIFTREG(2)(14 downto 0) & CLUT_SHIFT_IN(2);
+			CLUT_SHIFTREG(1) := CLUT_SHIFTREG(1)(14 downto 0) & CLUT_SHIFT_IN(1);
+			CLUT_SHIFTREG(0) := CLUT_SHIFTREG(0)(14 downto 0) & CLUT_SHIFT_IN(0);
+		end if;
+		--
+      for i in 0 to 7 loop
+			CLUT_ADR_A(i) <= CLUT_SHIFTREG(i)(15);
+		end loop;
+	end process CLUT_SHIFTREGS;
 
-    CLUT_ADR(7) <= CLUT_OFF(3) or (CLUT_ADR_A(7) and COLOR8);
-    CLUT_ADR(6) <= CLUT_OFF(2) or (CLUT_ADR_A(6) and COLOR8);
-    CLUT_ADR(5) <= CLUT_OFF(1) or (CLUT_ADR_A(5) and COLOR8);
-    CLUT_ADR(4) <= CLUT_OFF(0) or (CLUT_ADR_A(4) and COLOR8);
-    CLUT_ADR(3) <= CLUT_ADR_A(3) and (COLOR8 or COLOR4);
-    CLUT_ADR(2) <= CLUT_ADR_A(2) and (COLOR8 or COLOR4);
-    CLUT_ADR(1) <= CLUT_ADR_A(1) and (COLOR8 or COLOR4 or COLOR2);
-    CLUT_ADR(0) <= CLUT_ADR_A(0);
+	CLUT_ADR(7) <= CLUT_OFF(3) or (CLUT_ADR_A(7) and COLOR8);
+	CLUT_ADR(6) <= CLUT_OFF(2) or (CLUT_ADR_A(6) and COLOR8);
+	CLUT_ADR(5) <= CLUT_OFF(1) or (CLUT_ADR_A(5) and COLOR8);
+	CLUT_ADR(4) <= CLUT_OFF(0) or (CLUT_ADR_A(4) and COLOR8);
+	CLUT_ADR(3) <= CLUT_ADR_A(3) and (COLOR8 or COLOR4);
+	CLUT_ADR(2) <= CLUT_ADR_A(2) and (COLOR8 or COLOR4);
+	CLUT_ADR(1) <= CLUT_ADR_A(1) and (COLOR8 or COLOR4 or COLOR2);
+	CLUT_ADR(0) <= CLUT_ADR_A(0);
     
-    FB_AD_OUT <= x"0" & CLUT_ST_OUT & x"0000" when CLUT_ST_RD = '1' else
-                 CLUT_FA_OUT(17 downto 12) & "00" & CLUT_FA_OUT(11 downto 6) & "00" & x"0000" when CLUT_FA_RDH = '1' else
-                 x"00" & CLUT_FA_OUT(5 downto 0) & "00" & x"0000" when CLUT_FA_RDL = '1' else
-                 x"00" & CLUT_FBEE_OUT when CLUT_FBEE_RD = '1' else 
-                 DATA_OUT_VIDEO_CTRL when DATA_EN_H_VIDEO_CTRL = '1' else -- Use upper word.
-                 DATA_OUT_VIDEO_CTRL when DATA_EN_L_VIDEO_CTRL = '1' else (others => '0'); -- Use lower word.
+	FB_AD_OUT <= x"0" & CLUT_ST_OUT & x"0000" when CLUT_ST_RD = '1' else
+						CLUT_FA_OUT(17 downto 12) & "00" & CLUT_FA_OUT(11 downto 6) & "00" & x"0000" when CLUT_FA_RDH = '1' else
+						x"00" & CLUT_FA_OUT(5 downto 0) & "00" & x"0000" when CLUT_FA_RDL = '1' else
+						x"00" & CLUT_FBEE_OUT when CLUT_FBEE_RD = '1' else 
+						DATA_OUT_VIDEO_CTRL when DATA_EN_H_VIDEO_CTRL = '1' else -- Use upper word.
+						DATA_OUT_VIDEO_CTRL when DATA_EN_L_VIDEO_CTRL = '1' else (others => '0'); -- Use lower word.
 
-    FB_AD_EN_31_16 <= '1' when CLUT_FBEE_RD = '1' else
-                      '1' when CLUT_FA_RDH = '1' else
-                      '1' when DATA_EN_H_VIDEO_CTRL = '1' else '0';
+	FB_AD_EN_31_16 <= '1' when CLUT_FBEE_RD = '1' else
+							'1' when CLUT_FA_RDH = '1' else
+							'1' when DATA_EN_H_VIDEO_CTRL = '1' else '0';
                 
-    FB_AD_EN_15_0 <= '1' when CLUT_FBEE_RD = '1' else
-                     '1' when CLUT_FA_RDL = '1' else
-                     '1' when DATA_EN_L_VIDEO_CTRL = '1' else '0';
+	FB_AD_EN_15_0 <= '1' when CLUT_FBEE_RD = '1' else
+							'1' when CLUT_FA_RDL = '1' else
+							'1' when DATA_EN_L_VIDEO_CTRL = '1' else '0';
     
-    VD_VZ <= VD_VZ_I;
+	VD_VZ <= VD_VZ_I;
     
-    DFF_CLK0: process
-    begin
-        wait until CLK_DDR0 = '1' and CLK_DDR0' event;
-        VD_VZ_I <= VD_VZ_I(63 downto 0) & VDP_IN(63 downto 0);
-        --
-        if FIFO_WRE = '1' then
-            VDM_A <= VD_VZ_I;
-            VDM_B <= VDM_A;
-        end if;
-    end process DFF_CLK0;
+	DFF_CLK0: process
+	begin
+		wait until rising_edge(CLK_DDR0);
+		VD_VZ_I <= VD_VZ_I(63 downto 0) & VDP_IN(63 downto 0);
 
-    DFF_CLK2: process
-    begin
-        wait until CLK_DDR2 = '1' and CLK_DDR2' event;
-        VDMP <= SR_VDMP;
-    end process DFF_CLK2;
+		if FIFO_WRE = '1' then
+			VDM_A <= VD_VZ_I;
+			VDM_B <= VDM_A;
+		end if;
+	end process DFF_CLK0;
 
-    DFF_CLK3: process
-    begin
-        wait until CLK_DDR3 = '1' and CLK_DDR3' event;
-        VDMP_I <= VDMP;
-    end process DFF_CLK3;
+	DFF_CLK2: process
+	begin
+		wait until CLK_DDR2 = '1' and CLK_DDR2' event;
+		VDMP <= SR_VDMP;
+	end process DFF_CLK2;
 
-    VDM <= VDMP_I(7 downto 4) when CLK_DDR3 = '1' else VDMP_I(3 downto 0);
+	DFF_CLK3: process
+	begin
+		wait until rising_edge(CLK_DDR3);
+		VDMP_I <= VDMP;
+	end process DFF_CLK3;
+
+	VDM <= VDMP_I(7 downto 4) when CLK_DDR3 = '1' else VDMP_I(3 downto 0);
     
-    SHIFT_CLK0: process
-    variable TMP : std_logic_vector(4 downto 0);
-    begin
-        wait until CLK_DDR0 = '1' and CLK_DDR0' event;
-        TMP := SR_FIFO_WRE & TMP(4 downto 1);
-        FIFO_WRE <= TMP(0);
-    end process SHIFT_CLK0;
+	SHIFT_CLK0: process
+		variable TMP : std_logic_vector(4 downto 0);
+	begin
+		wait until rising_edge(CLK_DDR0);
+		TMP := SR_FIFO_WRE & TMP(4 downto 1);
+		FIFO_WRE <= TMP(0);
+	end process SHIFT_CLK0;
 
-    with VDM_SEL select
-        VDM_C <=  VDM_B when x"0",
-                    VDM_B(119 downto 0) & VDM_A(127 downto 120) when x"1",
-                    VDM_B(111 downto 0) & VDM_A(127 downto 112) when x"2",
-                    VDM_B(103 downto 0) & VDM_A(127 downto 104) when x"3",
-                    VDM_B(95 downto 0) & VDM_A(127 downto 96) when x"4",
-                    VDM_B(87 downto 0) & VDM_A(127 downto 88) when x"5",
-                    VDM_B(79 downto 0) & VDM_A(127 downto 80) when x"6",
-                    VDM_B(71 downto 0) & VDM_A(127 downto 72) when x"7",
-                    VDM_B(63 downto 0) & VDM_A(127 downto 64) when x"8",
-                    VDM_B(55 downto 0) & VDM_A(127 downto 56) when x"9",
-                    VDM_B(47 downto 0) & VDM_A(127 downto 48) when x"A",
-                    VDM_B(39 downto 0) & VDM_A(127 downto 40) when x"B",
-                    VDM_B(31 downto 0) & VDM_A(127 downto 32) when x"C",
-                    VDM_B(23 downto 0) & VDM_A(127 downto 24) when x"D",
-                    VDM_B(15 downto 0) & VDM_A(127 downto 16) when x"E",
-                    VDM_B(7 downto 0) & VDM_A(127 downto 8) when x"F",
-                    (others => 'X') when others;
+	with VDM_SEL select
+		VDM_C <=  VDM_B when x"0",
+						VDM_B(119 downto 0) & VDM_A(127 downto 120) when x"1",
+						VDM_B(111 downto 0) & VDM_A(127 downto 112) when x"2",
+						VDM_B(103 downto 0) & VDM_A(127 downto 104) when x"3",
+						VDM_B(95 downto 0) & VDM_A(127 downto 96) when x"4",
+						VDM_B(87 downto 0) & VDM_A(127 downto 88) when x"5",
+						VDM_B(79 downto 0) & VDM_A(127 downto 80) when x"6",
+						VDM_B(71 downto 0) & VDM_A(127 downto 72) when x"7",
+						VDM_B(63 downto 0) & VDM_A(127 downto 64) when x"8",
+						VDM_B(55 downto 0) & VDM_A(127 downto 56) when x"9",
+						VDM_B(47 downto 0) & VDM_A(127 downto 48) when x"A",
+						VDM_B(39 downto 0) & VDM_A(127 downto 40) when x"B",
+						VDM_B(31 downto 0) & VDM_A(127 downto 32) when x"C",
+						VDM_B(23 downto 0) & VDM_A(127 downto 24) when x"D",
+						VDM_B(15 downto 0) & VDM_A(127 downto 16) when x"E",
+						VDM_B(7 downto 0) & VDM_A(127 downto 8) when x"F",
+						(others => 'X') when others;
 
-    I_FIFO_DC0: lpm_fifo_dc0
-        port map(
-            aclr        => FIFO_CLR_I,  
-            data        => VDM_C,
-            rdclk       => CLK_PIXEL_I,
-            rdreq       => FIFO_RD_REQ_512,
-            wrclk       => CLK_DDR0,
-            wrreq       => FIFO_WRE,
-            q           => FIFO_D_OUT_512,
-            --rdempty   =>, -- Not used.
-            wrusedw     => FIFO_MW
-        );
+	I_FIFO_DC0: lpm_fifo_dc0
+	port map(
+		aclr        => FIFO_CLR_I,  
+		data        => VDM_C,
+		rdclk       => CLK_PIXEL_I,
+		rdreq       => FIFO_RD_REQ_512,
+		wrclk       => CLK_DDR0,
+		wrreq       => FIFO_WRE,
+		q           => FIFO_D_OUT_512,
+		--rdempty   =>, -- Not used.
+		wrusedw     => FIFO_MW
+	);
 
     I_FIFO_DZ: lpm_fifoDZ
         port map(

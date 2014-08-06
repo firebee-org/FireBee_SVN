@@ -91,17 +91,16 @@ entity IDE_CF_SD_ROM is
 end entity IDE_CF_SD_ROM;
 
 architecture BEHAVIOUR of IDE_CF_SD_ROM is
-type CMD_STATES is(	IDLE, T1, T6, T7);
-signal CMD_STATE				: CMD_STATES;
-signal NEXT_CMD_STATE			: CMD_STATES;
-
-signal ROM_CS					: STD_LOGIC;
-
-signal IDE_CF_CS				: std_logic;
-signal NEXT_IDE_RDn				: std_logic;
-signal NEXT_IDE_WRn				: std_logic;
+	type CMD_STATES is (IDLE, T1, T6, T7);
+	
+	signal CMD_STATE				: CMD_STATES;
+	signal NEXT_CMD_STATE		: CMD_STATES;
+	signal ROM_CS					: STD_LOGIC;
+	signal IDE_CF_CS				: std_logic;
+	signal NEXT_IDE_RDn			: std_logic;
+	signal NEXT_IDE_WRn			: std_logic;
 begin
-    ROM_CS <= '1' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = x"5" else '0'; -- FFF A'0000/2'0000
+	ROM_CS <= '1' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = "101" else '0'; -- FFF A'0000/2'0000
 
     RP_UDSn <= '0' when FB_WRn = '1' and FB_B0 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
     RP_LDSn <= '0' when FB_WRn = '1' and FB_B1 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 

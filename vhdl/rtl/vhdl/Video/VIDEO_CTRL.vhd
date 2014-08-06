@@ -464,15 +464,15 @@ begin
     ST_CLUT <= '1' when ST_VIDEO = '1' and FBEE_VIDEO_ON = '0' and FALCON_CLUT = '0' and COLOR1_I = '0' else '0';
 
     -- Several (video)-registers:
-    CCR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "000000000000000000100000001" else '0';-- $404/4.
-    SYS_CTR_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000000000011" else '0'; -- $8006/2.
-    VDL_LOF_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000100000111" else '0'; -- $820E/2.
-    VDL_LWD_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000100001000" else '0'; -- $8210/2.
-    VDL_HHT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000001" else '0'; -- $8282/2.
-    VDL_HBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000011" else '0'; -- $8286/2.
-    VDL_HDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000100" else '0'; -- $8288/2.
-    VDL_HDE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000101" else '0'; -- $828A/2.
-    VDL_HBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000010" else '0'; -- $8284/2.
+    CCR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR = x"f0000404" else '0';	-- $F0000404 - Firebee video border color
+    SYS_CTR_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8008" else '0';	-- $FF8006 - Falcon monitor type register
+    VDL_LOF_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff820e" else '0'; -- $FF820E/F - line-width hi/lo.
+    VDL_LWD_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8210" else '0'; -- $FF8210/1 - vertical wrap hi/lo.
+    VDL_HHT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8282" else '0'; -- $FF8282/3 - horizontal hold timer hi/lo.
+    VDL_HBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8286" else '0'; -- $FF8286/7 - horizontal border end hi/lo.
+    VDL_HDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8288" else '0'; -- $FF8288/9 - horizontal display begin hi/lo.
+    VDL_HDE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828a" else '0'; -- $FF828A/B - horizontal display end hi/lo.
+    VDL_HBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8284" else '0'; -- $FF8284/5 - horizontal border begin hi/lo.
     VDL_HSS_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101000110" else '0'; -- $828C/2.
     VDL_VBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101010011" else '0'; -- $82A6/2.
     VDL_VDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000101010100" else '0'; -- $82A8/2.

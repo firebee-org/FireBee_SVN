@@ -569,10 +569,10 @@ begin
 	FALCON_IO_TA <= ACIA_CS or SNDCS or not DTACK_OUT_MFPn or PADDLE_CS or IDE_CF_TA or DMA_CS;
 	FB_TAn <= '0' when (BLITTER_TA or VIDEO_DDR_TA or VIDEO_MOD_TA or FALCON_IO_TA or DSP_TA or INT_HANDLER_TA)= '1' else '1';
 
-	ACIA_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 3) = x"1FF80" else '0'; -- FFC00-FFC07 FFC00/8
-	MFP_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 6) = x"3FE8" else '0'; -- FFA00/40
-	PADDLE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 6) = x"3E48" else '0'; -- F9200-F923F
-	SNDCS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 2) = x"3E200" else '0'; -- 8800-8803 F8800/4
+	ACIA_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 3) & "000" = x"FFFC00" else '0';			-- FFFC00 - FFFC07
+	MFP_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 6) & "000000" = x"FFFA00" else '0';		-- FFFA00/40
+	PADDLE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 6) & "000000"= x"FF9200" else '0';	-- FF9200-FF923F
+	SNDCS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 2) & "00" = x"FF8800" else '0'; 			-- FF8800-FF8803
 	SNDCS_I <= '1' when SNDCS = '1' and FB_ADR (1) = '0' else '0';
 	SNDIR_I <= '1' when SNDCS = '1' and FB_WRn = '0' else '0';
 
@@ -599,7 +599,7 @@ begin
 	HD_DD_OUT <= FDD_HD_DD when FBEE_CONF(29) = '0' else WDC_BSL0;
 	LDS <= '1' when MFP_CS = '1' or MFP_INTACK = '1' else '0';
 	ACIA_IRQn <= IRQ_KEYBDn and IRQ_MIDIn;
-	MFP_INTACK <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"20000" else '0'; 	--F002'0000
+	MFP_INTACK <= '1' when FB_CSn(2) = '0' and FB_ADR(19 downto 0) = x"20000" else '0'; 	--F002'0000
 	DINTn <= '0' when IDE_INT = '1' and FBEE_CONF(28) = '1' else
 				'0' when FD_INT = '1' else
 				'0' when SCSI_INT = '1' and FBEE_CONF(28) = '1' else '1';
