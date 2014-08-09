@@ -129,7 +129,7 @@ architecture BEHAVIOUR of VIDEO_SYSTEM is
 			data		: in std_logic_vector (127 downto 0);
 			rdreq		: in std_logic ;
 			wrreq		: in std_logic ;
-			q		    : out std_logic_vector (127 downto 0)
+			q		   : out std_logic_vector (127 downto 0)
 		);
 	end component;
 	
@@ -209,12 +209,11 @@ architecture BEHAVIOUR of VIDEO_SYSTEM is
 	signal ZR_C8                : std_logic_vector(7 downto 0);
 	
 begin
-    CLK_PIXEL <= CLK_PIXEL_I;
-    
-    FIFO_CLR <= FIFO_CLR_I;
+	CLK_PIXEL <= CLK_PIXEL_I;
+	FIFO_CLR <= FIFO_CLR_I;
 		
-    P_CLUT_ST_MC: process
-    -- This is the dual ported ram for the ST colour lookup tables.
+	P_CLUT_ST_MC: process
+		-- This is the dual ported ram for the ST colour lookup tables.
 	 	variable clut_fa_index			: integer;
 		variable clut_st_index			: integer;
 		variable clut_fi_index			: integer;
@@ -223,7 +222,7 @@ begin
 		clut_fa_index := to_integer(unsigned(FB_ADR(9 downto 2)));
 		clut_fi_index := to_integer(unsigned(FB_ADR(9 downto 2)));
 
-		wait until CLK_MAIN = '1' and CLK_MAIN' event;
+		wait until rising_edge(CLK_MAIN);
 		if CLUT_ST_WR(0) = '1' then
 			CLUT_ST(clut_st_index)(11 downto 8) <= FB_AD_IN(27 downto 24);
 		end if;
@@ -254,14 +253,14 @@ begin
 		CLUT_ST_OUT <= CLUT_ST(clut_st_index);
 		CLUT_FA_OUT <= CLUT_FA(clut_fa_index);
 		CLUT_FBEE_OUT <= CLUT_FI(clut_fi_index);
-    end process P_CLUT_ST_MC;
+	end process P_CLUT_ST_MC;
 
-    P_CLUT_ST_PX: process
-	 	variable clut_fa_index			: integer;
+	P_CLUT_ST_PX: process
+		variable clut_fa_index			: integer;
 		variable clut_st_index			: integer;
 		variable clut_fi_index			: integer;
-    -- This is the dual ported ram for the ST colour lookup tables.
-    begin
+		-- This is the dual ported ram for the ST colour lookup tables.
+	begin
 		clut_st_index := to_integer(unsigned(CLUT_ADR(3 downto 0)));
 		clut_fa_index := to_integer(unsigned(CLUT_ADR));
 		clut_fi_index := to_integer(unsigned(ZR_C8));
@@ -282,7 +281,7 @@ begin
 	end process P_CLUT_ST_PX;
 
 	P_VIDEO_OUT: process
-	variable VIDEO_OUT  : std_logic_vector(23 downto 0);
+		variable VIDEO_OUT  : std_logic_vector(23 downto 0);
 	begin
 		wait until rising_edge(CLK_PIXEL_I);
 		case CC_SEL is
@@ -436,7 +435,7 @@ begin
 
 	DFF_CLK2: process
 	begin
-		wait until CLK_DDR2 = '1' and CLK_DDR2' event;
+		wait until rising_edge(CLK_DDR2);
 		VDMP <= SR_VDMP;
 	end process DFF_CLK2;
 
@@ -488,66 +487,66 @@ begin
 		wrusedw     => FIFO_MW
 	);
 
-    I_FIFO_DZ: lpm_fifoDZ
-        port map(
-            aclr        => DOP_FIFO_CLR,
-            clock       => CLK_PIXEL_I,
-            data        => FIFO_D_OUT_512,
-            rdreq       => FIFO_RD_REQ_128,
-            wrreq       => FIFO_RD_REQ_512,
-            q           => FIFO_D_OUT_128
-        );
+	I_FIFO_DZ: lpm_fifoDZ
+		port map(
+			aclr        => DOP_FIFO_CLR,
+			clock       => CLK_PIXEL_I,
+			data        => FIFO_D_OUT_512,
+			rdreq       => FIFO_RD_REQ_128,
+			wrreq       => FIFO_RD_REQ_512,
+			q           => FIFO_D_OUT_128
+		);
 
-    I_VIDEO_CTRL: VIDEO_CTRL
-        port map(
-            CLK_MAIN            => CLK_MAIN,
-            FB_CSn(1)           => FB_CSn(1),
-            FB_CSn(2)           => FB_CSn(2),
-            FB_WRn              => FB_WRn,
-            FB_OEn              => FB_OEn,
-            FB_SIZE(0)          => FB_SIZE0,
-            FB_SIZE(1)          => FB_SIZE1,
-            FB_ADR              => FB_ADR,
-            CLK33M              => CLK_33M,
-            CLK25M              => CLK_25M,
-            BLITTER_RUN         => BLITTER_RUN,
-            CLK_VIDEO           => CLK_VIDEO,
-            VR_D                => VR_D,
-            VR_BUSY             => VR_BUSY,
-            COLOR8              => COLOR8,
-            FBEE_CLUT_RD        => CLUT_FBEE_RD,
-            COLOR1              => COLOR1,
-            FALCON_CLUT_RDH     => CLUT_FA_RDH,
-            FALCON_CLUT_RDL     => CLUT_FA_RDL,
-            FALCON_CLUT_WR      => CLUT_FA_WR,
-            CLUT_ST_RD          => CLUT_ST_RD,
-            CLUT_ST_WR          => CLUT_ST_WR,
-            CLUT_MUX_ADR        => CLUT_ADR_MUX,
-            HSYNC               => HSYNC,
-            VSYNC               => VSYNC,
-            BLANKn              => BLANKn,
-            SYNCn               => SYNCn,
-            PD_VGAn             => PD_VGAn,
-            FIFO_RDE            => FIFO_RDE,
-            COLOR2              => COLOR2,
-            COLOR4              => COLOR4,
-            CLK_PIXEL           => CLK_PIXEL_I,
-            CLUT_OFF            => CLUT_OFF,
-            BLITTER_ON          => BLITTER_ON,
-            VIDEO_RAM_CTR       => VIDEO_RAM_CTR,
-            VIDEO_MOD_TA        => VIDEO_MOD_TA,
-            CCR                 => CCR,
-            CCSEL               => CC_SEL,
-            FBEE_CLUT_WR        => CLUT_FBEE_WR,
-            INTER_ZEI           => INTER_ZEI,
-            DOP_FIFO_CLR        => DOP_FIFO_CLR,
-            VIDEO_RECONFIG      => VIDEO_RECONFIG,
-            VR_WR               => VR_WR,
-            VR_RD               => VR_RD,
-            FIFO_CLR            => FIFO_CLR_I,
-            DATA_IN             => FB_AD_IN,
-            DATA_OUT            => DATA_OUT_VIDEO_CTRL,
-            DATA_EN_H           => DATA_EN_H_VIDEO_CTRL,
-            DATA_EN_L           => DATA_EN_L_VIDEO_CTRL
-        );
+	I_VIDEO_CTRL: VIDEO_CTRL
+		port map(
+			CLK_MAIN            => CLK_MAIN,
+			FB_CSn(1)           => FB_CSn(1),
+			FB_CSn(2)           => FB_CSn(2),
+			FB_WRn              => FB_WRn,
+			FB_OEn              => FB_OEn,
+			FB_SIZE(0)          => FB_SIZE0,
+			FB_SIZE(1)          => FB_SIZE1,
+			FB_ADR              => FB_ADR,
+			CLK33M              => CLK_33M,
+			CLK25M              => CLK_25M,
+			BLITTER_RUN         => BLITTER_RUN,
+			CLK_VIDEO           => CLK_VIDEO,
+			VR_D                => VR_D,
+			VR_BUSY             => VR_BUSY,
+			COLOR8              => COLOR8,
+			FBEE_CLUT_RD        => CLUT_FBEE_RD,
+			COLOR1              => COLOR1,
+			FALCON_CLUT_RDH     => CLUT_FA_RDH,
+			FALCON_CLUT_RDL     => CLUT_FA_RDL,
+			FALCON_CLUT_WR      => CLUT_FA_WR,
+			CLUT_ST_RD          => CLUT_ST_RD,
+			CLUT_ST_WR          => CLUT_ST_WR,
+			CLUT_MUX_ADR        => CLUT_ADR_MUX,
+			HSYNC               => HSYNC,
+			VSYNC               => VSYNC,
+			BLANKn              => BLANKn,
+			SYNCn               => SYNCn,
+			PD_VGAn             => PD_VGAn,
+			FIFO_RDE            => FIFO_RDE,
+			COLOR2              => COLOR2,
+			COLOR4              => COLOR4,
+			CLK_PIXEL           => CLK_PIXEL_I,
+			CLUT_OFF            => CLUT_OFF,
+			BLITTER_ON          => BLITTER_ON,
+			VIDEO_RAM_CTR       => VIDEO_RAM_CTR,
+			VIDEO_MOD_TA        => VIDEO_MOD_TA,
+			CCR                 => CCR,
+			CCSEL               => CC_SEL,
+			FBEE_CLUT_WR        => CLUT_FBEE_WR,
+			INTER_ZEI           => INTER_ZEI,
+			DOP_FIFO_CLR        => DOP_FIFO_CLR,
+			VIDEO_RECONFIG      => VIDEO_RECONFIG,
+			VR_WR               => VR_WR,
+			VR_RD               => VR_RD,
+			FIFO_CLR            => FIFO_CLR_I,
+			DATA_IN             => FB_AD_IN,
+			DATA_OUT            => DATA_OUT_VIDEO_CTRL,
+			DATA_EN_H           => DATA_EN_H_VIDEO_CTRL,
+			DATA_EN_L           => DATA_EN_L_VIDEO_CTRL
+		);
 end architecture;

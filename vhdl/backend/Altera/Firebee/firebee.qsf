@@ -723,7 +723,6 @@ set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.cmp
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_pkg.vhd
 set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.qip
 set_global_assignment -name VHDL_FILE ../../../testbenches/ddr_ram_model.vhd
-set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to AMKB_TX
 set_instance_assignment -name PAD_TO_CORE_DELAY 0 -to CLK_DDR_OUT
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUTn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUTn
