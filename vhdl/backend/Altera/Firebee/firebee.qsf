@@ -682,4 +682,8 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUTn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUTn
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUT
 set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUT
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_33M
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUT
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
