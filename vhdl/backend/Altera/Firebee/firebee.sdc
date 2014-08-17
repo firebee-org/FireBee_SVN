@@ -835,9 +835,8 @@ set_output_delay -add_delay -max -clock [get_clocks {CLK_33M}]  5.000 [get_ports
 # Set False Path
 #**************************************************************
 
-set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_re9:dffpipe19|dffe20a*}]
-set_false_path -from [get_registers {*dcfifo*rdptr_g[*]}] -to [get_registers {*dcfifo*ws_dgrp*}]
-
+set_false_path -from [get_clocks {CLK_MAIN*wire_pll1_clk[0]}] -to [get_clocks {CLK_33M,altpll3:I_PLL3|altpll:altpll_component|altpll_66t2:auto_generated|clk[2],altpll4:I_PLL4|altpll:altpll_component|altpll4_altpll:auto_generated|wire_pll1_clk[0]}]
+set_false_path -from [get_clocks {CLK_MAIN}] -to [get_clocks {CLK_MAIN}]
 
 #**************************************************************
 # Set Multicycle Path
