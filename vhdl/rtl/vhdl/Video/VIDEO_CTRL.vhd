@@ -477,7 +477,7 @@ begin
 	VDL_HBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8284" else '0'; -- $FF8284/5 - horizontal border begin hi/lo.
 	VDL_HSS_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828c" else '0'; -- $FF828C/D - position hsync (HSS).
 	VDL_VFT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a2" else '0'; -- $FF82A2/3 - video frequency timer (VFT).
-	VDL_VBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) & '0' = x"ff82a4" else '0'; -- $FF82A4/5 - vertical blank on (in half line steps).
+	VDL_VBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a4" else '0'; -- $FF82A4/5 - vertical blank on (in half line steps).
 	VDL_VBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a6" else '0'; -- $FF82A6/7 - vertical blank off (in half line steps).
 	VDL_VDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a8" else '0'; -- $FF82A8/9 - vertical display begin (VDB).
 	VDL_VDE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82aa" else '0'; -- $FF82AA/B - vertical display end (VDE).
