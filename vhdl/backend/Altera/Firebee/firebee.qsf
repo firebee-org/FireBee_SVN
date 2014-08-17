@@ -417,7 +417,7 @@ set_location_assignment PIN_T8 -to FB_CSn[1]
 set_location_assignment PIN_T9 -to FB_CSn[2]
 set_location_assignment PIN_V6 -to FB_CSn[3]
 set_location_assignment PIN_R6 -to FB_OEn
-set_location_assignment PIN_G14 -to FB_WRn
+set_location_assignment PIN_T5 -to FB_WRn
 set_location_assignment PIN_T21 -to MASTERn
 set_location_assignment PIN_E11 -to DREQ1n
 set_location_assignment PIN_A12 -to DACK1n
