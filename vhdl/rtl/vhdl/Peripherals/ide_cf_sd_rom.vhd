@@ -95,7 +95,7 @@ architecture BEHAVIOUR of IDE_CF_SD_ROM is
 	
 	signal CMD_STATE				: CMD_STATES;
 	signal NEXT_CMD_STATE		: CMD_STATES;
-	signal ROM_CS					: STD_LOGIC;
+	signal ROM_CS					: std_logic;
 	signal IDE_CF_CS				: std_logic;
 	signal NEXT_IDE_RDn			: std_logic;
 	signal NEXT_IDE_WRn			: std_logic;
@@ -105,17 +105,17 @@ begin
     RP_UDSn <= '0' when FB_WRn = '1' and FB_B0 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
     RP_LDSn <= '0' when FB_WRn = '1' and FB_B1 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
 
-    IDE_CF_CS <= '1' when FB_CS1n = '0' and FB_ADR(19 downto 7) = x"0" else '0'; -- FFF0'0000/80
+    IDE_CF_CS <= '1' when FB_CS1n = '0' and FB_ADR(19 downto 7) = 13x"1" else '0'; -- FFF0'0000/80
 
-    IDE_CSn(0) <= '0' when FBEE_CONF(30) = '0' and FB_ADR(19 downto 5) = x"2" else -- FFF0'0040-FFF0'005F 
-                  '0' when FBEE_CONF(30) = '1' and FB_ADR(19 downto 5) = x"0" else '1'; -- FFFO'0000-FFF0'001F
-    IDE_CSn(1) <= '0' when FBEE_CONF(30) = '0' and FB_ADR(19 downto 5) = x"3" else -- FFF0'0060-FFF0'007F 
-                  '0' when FBEE_CONF(30) = '1' and FB_ADR(19 downto 5) = x"1" else '1'; -- FFFO'0020-FFF0'003F
+    IDE_CSn(0) <= '0' when FBEE_CONF(30) = '0' and FB_ADR(19 downto 5) = 15x"2" else -- FFF0'0040-FFF0'005F 
+                  '0' when FBEE_CONF(30) = '1' and FB_ADR(19 downto 5) = 15x"0" else '1'; -- FFFO'0000-FFF0'001F
+    IDE_CSn(1) <= '0' when FBEE_CONF(30) = '0' and FB_ADR(19 downto 5) = 15x"3" else -- FFF0'0060-FFF0'007F 
+                  '0' when FBEE_CONF(30) = '1' and FB_ADR(19 downto 5) = 15x"1" else '1'; -- FFFO'0020-FFF0'003F
 
-    CF_CSn(0) <= '0' when FBEE_CONF(31) = '0' and FB_ADR(19 downto 5) = x"0" else -- FFFO'0000-FFF0'001F
-                 '0' when FBEE_CONF(31) = '1' and FB_ADR(19 downto 5) = x"2" else '1'; -- FFFO'0040-FFF0'005F
-    CF_CSn(1) <= '0' when FBEE_CONF(31) = '0' and FB_ADR(19 downto 5) = x"1" else -- FFF0'0020-FFF0'003F
-                 '0' when FBEE_CONF(31) = '1' and FB_ADR(19 downto 5) = x"3" else '1'; -- FFFO'0060-FFF0'007F
+    CF_CSn(0) <= '0' when FBEE_CONF(31) = '0' and FB_ADR(19 downto 5) = 15x"0" else -- FFFO'0000-FFF0'001F
+                 '0' when FBEE_CONF(31) = '1' and FB_ADR(19 downto 5) = 15x"2" else '1'; -- FFFO'0040-FFF0'005F
+    CF_CSn(1) <= '0' when FBEE_CONF(31) = '0' and FB_ADR(19 downto 5) = 15x"1" else -- FFF0'0020-FFF0'003F
+                 '0' when FBEE_CONF(31) = '1' and FB_ADR(19 downto 5) = 15x"3" else '1'; -- FFFO'0060-FFF0'007F
 
     IDE_DRQn <= '0';    
 
@@ -175,6 +175,6 @@ begin
     SD_CMD_D1_OUT <= '0';
     SD_CMD_D1_EN <= '0';
 
-    ROM4n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = x"5" and FB_ADR(16) = '0' else '1'; -- FFF A'0000/2'0000
-    ROM3n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = x"5" and FB_ADR(16) = '1' else '1'; -- FFF A'0000/2'0000	
+    ROM4n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '0' else '1'; -- FFF A'0000/2'0000
+    ROM3n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '1' else '1'; -- FFF A'0000/2'0000	
 end architecture BEHAVIOUR;

@@ -192,7 +192,7 @@ begin
 	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F892" else '0'; -- DMA SOUND
 
 	-- IF video ADR changes:
-	TIN0 <= '1' when FB_CSn(1) = '0' and FB_WRn = '0' and FB_ADR(19 downto 1) = x"7C100" else '0'; -- Write video base address high 0xFFFF8201/2.
+	TIN0 <= '1' when FB_CSn(1) = '0' and FB_WRn = '0' and FB_ADR(19 downto 1) = 19x"7C100" else '0'; -- Write video base address high 0xFFFF8201/2.
 
 	P_INT_LATCH  : process
 	begin

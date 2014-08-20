@@ -306,9 +306,9 @@ begin
 					DDR_NEXT_STATE <= DS_T4W;
 				elsif DDR_ACCESS = BLITTER and BLITTER_WR = '1' then
 					DDR_NEXT_STATE <= DS_T4W;
-				elsif DDR_ACCESS = CPU then -- CPU?
+				elsif DDR_ACCESS = CPU then 	-- CPU?
 					DDR_NEXT_STATE <= DS_T4R;                                                 
-				elsif DDR_ACCESS = FIFO then -- FIFO?
+				elsif DDR_ACCESS = FIFO then	-- FIFO?
 					DDR_NEXT_STATE <= DS_T4F;
 				elsif DDR_ACCESS = BLITTER then
 					DDR_NEXT_STATE <= DS_T4R;                                                 
@@ -463,8 +463,8 @@ begin
 		end case;
 	end process DDR_STATE_DEC;
 
-    P_CLK0: process
-    begin
+	P_CLK0: process
+	begin
 		wait until rising_edge(DDRCLK0);
 		
 		-- Default assignments;

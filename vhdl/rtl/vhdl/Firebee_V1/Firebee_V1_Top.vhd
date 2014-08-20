@@ -96,11 +96,11 @@ use ieee.numeric_std.all;
 
 entity firebee is
 	port(
-		RSTO_MCFn           : in std_logic;
-		CLK_33M             : in std_logic;
-		CLK_MAIN            : in std_logic;
+		RSTO_MCFn           : in std_logic;				-- reset signal from Coldfire
+		CLK_33M             : in std_logic;				-- 33 MHz clock
+		CLK_MAIN            : in std_logic;				-- 33 MHz clock
 
-		CLK_24M576          : out std_logic;
+		CLK_24M576          : out std_logic;			-- 
 		CLK_25M             : out std_logic;
 		CLK_DDR_OUT         : out std_logic;
 		CLK_DDR_OUTn        : out std_logic;
@@ -118,7 +118,7 @@ entity firebee is
 		DACK1n              : in std_logic;
 		DREQ1n              : out std_logic;
 
-		MASTERn             : in std_logic; -- Not used so far.
+		MASTERn             : in std_logic; -- determines if the Firebee is PCI master (='0') or slave. Not used so far.
 		TOUT0n              : in std_logic; -- Not used so far.
 
 		LED_FPGA_OK         : out std_logic;
@@ -323,8 +323,8 @@ architecture Structure of firebee is
 		); 
 	end component;
 
-	signal ACIA_CS		    	: std_logic;
-	signal ACIA_IRQn			: std_logic;
+	signal ACIA_CS		    		 : std_logic;
+	signal ACIA_IRQn				 : std_logic;
 	signal ACSI_D_OUT           : std_logic_vector(7 downto 0);
 	signal ACSI_D_EN            : std_logic;
 	signal BLANK_In             : std_logic;
@@ -567,7 +567,7 @@ begin
 	LED_FPGA_OK <= TIMEBASE(17);
 
 	FALCON_IO_TA <= ACIA_CS or SNDCS or not DTACK_OUT_MFPn or PADDLE_CS or IDE_CF_TA or DMA_CS;
-	FB_TAn <= '0' when (BLITTER_TA or VIDEO_DDR_TA or VIDEO_MOD_TA or FALCON_IO_TA or DSP_TA or INT_HANDLER_TA)= '1' else '1';
+	FB_TAn <= '0' when (BLITTER_TA or VIDEO_DDR_TA or VIDEO_MOD_TA or FALCON_IO_TA or DSP_TA or INT_HANDLER_TA)= '1' else 'Z';
 
 	ACIA_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 3) & "000" = x"FFFC00" else '0';			-- FFFC00 - FFFC07
 	MFP_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 6) & "000000" = x"FFFA00" else '0';		-- FFFA00/40
@@ -625,14 +625,14 @@ begin
 									x"00" when MFP_INTACK = '1' and FB_OEn = '0' else
 									DATA_OUT_ACIA_I  when ACIA_CS = '1' and FB_ADR(2) = '0' and FB_OEn = '0' else
 									DATA_OUT_ACIA_II when ACIA_CS = '1' and FB_ADR(2) = '1' and FB_OEn = '0' else
-									x"BF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"0" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"1" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"8" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"9" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"A" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"B" and FB_OEn = '0' else
-									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"10" and FB_OEn = '0' else
-									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"11" and FB_OEn = '0' else (others => 'Z');
+									x"BF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"0" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"1" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"8" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"9" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"A" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"B" and FB_OEn = '0' else
+									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"10" and FB_OEn = '0' else
+									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"11" and FB_OEn = '0' else (others => 'Z');
 
 	FB_AD(23 downto 16) <= DATA_OUT_BLITTER(23 downto 16) when DATA_EN_BLITTER = '1' else
 									VDP_Q1(23 downto 16) when FB_VDOE = x"2" else
@@ -647,14 +647,14 @@ begin
 									DATA_OUT_MFP when MFP_CS = '1' and FB_OEn = '0' else
 									x"00" when MFP_INTACK = '1' and FB_OEn = '0' else
 									FB_AD_OUT_RTC when FB_AD_EN_RTC = '1' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"0" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"1" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"8" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"9" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"A" and FB_OEn = '0' else
-									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"B" and FB_OEn = '0' else
-									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"10" and FB_OEn = '0' else
-									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = x"11" and FB_OEn = '0' else (others => 'Z');
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"0" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"1" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"8" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"9" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"A" and FB_OEn = '0' else
+									x"FF" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"B" and FB_OEn = '0' else
+									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"10" and FB_OEn = '0' else
+									x"00" when PADDLE_CS = '1' and FB_ADR(5 downto 1) = 5x"11" and FB_OEn = '0' else (others => 'Z');
 
 	FB_AD(15 downto 8) <= DATA_OUT_BLITTER(15 downto 8) when DATA_EN_BLITTER = '1' else
 									VDP_Q1(15 downto 8) when FB_VDOE = x"2" else
@@ -682,7 +682,7 @@ begin
 	begin
 		wait until rising_edge(DDR_SYNC_66M);
 		if FB_ALE = '1' then
-			FB_ADR <= FB_AD;
+			FB_ADR <= FB_AD;		-- latch Flexbus address
 		end if;
 		--
 		if VD_EN_I = '0' then

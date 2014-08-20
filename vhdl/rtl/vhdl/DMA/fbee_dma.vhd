@@ -216,17 +216,17 @@ begin
                                DMA_BYTECNT(16 downto 9) when DMA_DATA_CS = '1' and DMA_MODE(4) = '1' and FB_OEn = '0' else
                                "0000" & (not DMA_STATUS(1)) & "0" & WDC_BSL(1) & FLOPPY_HD_DD when WDC_BSL_CS = '1' and FB_OEn = '0' else
                                RDF_AZ(7 downto 0) when DMA_AZ_CS = '1' and FB_OEn = '0' else
-                               SNDMACTL when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"0" and FB_OEn = '0' else
-                               SNDBASHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"1" and FB_OEn = '0' else
-                               SNDBASMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"2" and FB_OEn = '0' else
-                               SNDBASLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"3" and FB_OEn = '0' else
-                               SNDADRHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"4" and FB_OEn = '0' else
-                               SNDADRMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"5" and FB_OEn = '0' else
-                               SNDADRLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"6" and FB_OEn = '0' else
-                               SNDENDHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"7" and FB_OEn = '0' else
-                               SNDENDMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"8" and FB_OEn = '0' else
-                               SNDENDLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"9" and FB_OEn = '0' else
-                               SNDMODE when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"10" and FB_OEn = '0' else
+                               SNDMACTL when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"0" and FB_OEn = '0' else
+                               SNDBASHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"1" and FB_OEn = '0' else
+                               SNDBASMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"2" and FB_OEn = '0' else
+                               SNDBASLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"3" and FB_OEn = '0' else
+                               SNDADRHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"4" and FB_OEn = '0' else
+                               SNDADRMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"5" and FB_OEn = '0' else
+                               SNDADRLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"6" and FB_OEn = '0' else
+                               SNDENDHI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"7" and FB_OEn = '0' else
+                               SNDENDMI when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"8" and FB_OEn = '0' else
+                               SNDENDLO when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"9" and FB_OEn = '0' else
+                               SNDMODE when DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"10" and FB_OEn = '0' else
                                DMA_HIGH when DMA_HIGH_CS = '1' and FB_OEn = '0' else
                                DMA_MID  when DMA_MID_CS = '1'  and FB_OEn = '0' else
                                DMA_LOW  when DMA_LOW_CS = '1'  and FB_OEn = '0' else
@@ -275,22 +275,22 @@ begin
 
     SCSI_CS <= SCSI_CS_I;
 
-    DMA_MODE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C303" else '0';						-- F8606/2
-    DMA_DATA_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C302" else '0';						-- F8604/2 
+    DMA_MODE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C303" else '0';						-- F8606/2
+    DMA_DATA_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C302" else '0';						-- F8604/2 
     FDC_CS   <= '1' when DMA_DATA_CS = '1' and DMA_MODE(4 downto 3) = "00" and FB_B1 = '1' else '0';
     SCSI_CS_I  <= '1' when DMA_DATA_CS = '1' and DMA_MODE(4 downto 3) = "01" and FB_B1 = '1' else '0';
-    DMA_AZ_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"002010C" else '0'; -- F002'010C LONG
-    DMA_TOP_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C304" and FB_B0 = '1' else '0'; -- F8608/2
-    DMA_HIGH_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C304" and FB_B1 = '1' else '0'; -- F8609/2		
-    DMA_MID_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C305" and FB_B1 = '1' else '0'; -- F860B/2		
-    DMA_LOW_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C306" and FB_B1 = '1' else '0'; -- F860D/2	
-    DMA_DIRECT_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"20100" else '0'; -- F002'0100 WORD 
-    DMA_ADR_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"20104" else '0'; -- F002'0104 LONG 
-    DMA_BYTECNT_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"20108" else '0'; -- F002'0108 LONG 
-    DMA_SND_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 6) = x"3E24" else '0'; -- F8900-F893F
-    FCF_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = x"0020110" and LONG = '1' else '0'; -- F002'0110 LONG ONLY
+    DMA_AZ_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = 27x"002010C" else '0'; -- F002'010C LONG
+    DMA_TOP_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C304" and FB_B0 = '1' else '0'; -- F8608/2
+    DMA_HIGH_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C304" and FB_B1 = '1' else '0'; -- F8609/2		
+    DMA_MID_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C305" and FB_B1 = '1' else '0'; -- F860B/2		
+    DMA_LOW_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C306" and FB_B1 = '1' else '0'; -- F860D/2	
+    DMA_DIRECT_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = 27x"20100" else '0'; -- F002'0100 WORD 
+    DMA_ADR_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = 27x"20104" else '0'; -- F002'0104 LONG 
+    DMA_BYTECNT_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = 27x"20108" else '0'; -- F002'0108 LONG 
+    DMA_SND_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(20 downto 6) = 15x"3E24" else '0'; -- F8900-F893F
+    FCF_CS  <= '1' when FB_CSn(2) = '0' and FB_ADR(26 downto 0) = 27x"0020110" and LONG = '1' else '0'; -- F002'0110 LONG ONLY
     DMA_CS <= FCF_CS or DMA_MODE_CS or DMA_SND_CS or DMA_ADR_CS or DMA_DIRECT_CS or DMA_BYTECNT_CS;
-    WDC_BSL_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = x"7C307" else '0';						-- F860E/2
+    WDC_BSL_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = 19x"7C307" else '0';						-- F860E/2
 
     FCF_APH <= '1' when FB_ALE = '1' and FB_AD_IN(31 downto 0) = x"F0020110" and LONG = '1' else '0'; -- ADRESSPHASE F0020110 LONG ONLY
 
@@ -462,27 +462,27 @@ begin
             SNDENDLO <= x"00";
             SNDMODE <= x"00";
 		elsif CLK_MAIN = '1' and CLK_MAIN' event then
-            if DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"0" and FB_WRn = '0' and FB_B1 ='1' then
+            if DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"0" and FB_WRn = '0' and FB_B1 ='1' then
 				SNDMACTL <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"1" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"1" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDBASHI <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"2" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"2" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDBASMI <= FB_AD_IN(23downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"3" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"3" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDBASLO <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"4" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"4" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDADRHI <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"5" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"5" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDADRMI <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"6" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"6" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDADRLO <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"7" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"7" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDENDHI <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"8" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"8" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDENDMI <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"9" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"9" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDENDLO <= FB_AD_IN(23 downto 16);
-            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = x"10" and FB_WRn = '0' and FB_B1 ='1' then
+            elsif DMA_SND_CS = '1' and FB_ADR(5 downto 1) = 5x"10" and FB_WRn = '0' and FB_B1 ='1' then
                 SNDMODE <= FB_AD_IN(23 downto 16);
 			end if;
         end if;
