@@ -197,10 +197,11 @@ begin
 			elsif TR_STATE = LOAD_SHFT then
 				-- Load 'normal' data if there is no break condition:
 				case CL is
-					when "11" => SHIFT_REG <= "000" & TX_DATA(4 downto 0); -- 5 datastd_logics.
-					when "10" => SHIFT_REG <= "00" & TX_DATA(5 downto 0); -- 6 datastd_logics.
-					when "01" => SHIFT_REG <= '0' & TX_DATA(6 downto 0); -- 7 datastd_logics.
-					when "00" => SHIFT_REG <= TX_DATA; -- 8 datastd_logics.
+					when "11" => SHIFT_REG <= "000" & TX_DATA(4 downto 0); -- 5 databits.
+					when "10" => SHIFT_REG <= "00" & TX_DATA(5 downto 0); -- 6 databits
+					when "01" => SHIFT_REG <= '0' & TX_DATA(6 downto 0); -- 7 databits
+					when "00" => SHIFT_REG <= TX_DATA; -- 8 databits
+					when others => SHIFT_REG <= x"00";
 				end case;
 			elsif TR_STATE = SHIFTOUT and CLK_STRB = '1' then
 				SHIFT_REG <= '0' & SHIFT_REG(7 downto 1); -- Shift right.

@@ -306,6 +306,7 @@ begin
 				when "010" => PRESCALE := x"09"; -- Prescaler = 10.
 				when "001" => PRESCALE := x"03"; -- Prescaler = 4.
 				when "000" => PRESCALE := x"00"; -- Timer stopped or event count mode.
+				when others => PRESCALE := x"00";
 			end case;
 			A_CNTSTRB <= '1';
 		end if;
@@ -329,6 +330,7 @@ begin
 				when "010" => PRESCALE := x"09"; -- Prescaler = 10.
 				when "001" => PRESCALE := x"03"; -- Prescaler = 4.
 				when "000" => PRESCALE := x"00"; -- Timer stopped or event count mode.
+				when others => PRESCALE := x"00";
 			end case;
 			B_CNTSTRB <= '1';
 		end if;
@@ -352,6 +354,7 @@ begin
 				when "010" => PRESCALE := x"09"; -- Prescaler = 10.
 				when "001" => PRESCALE := x"03"; -- Prescaler = 4.
 				when "000" => PRESCALE := x"00"; -- Timer stopped.
+				when others => PRESCALE := x"00";
 			end case;
 			C_CNTSTRB <= '1';
 		end if;
@@ -375,6 +378,7 @@ begin
 				when "010" => PRESCALE := x"09"; -- Prescaler = 10.
 				when "001" => PRESCALE := x"03"; -- Prescaler = 4.
 				when "000" => PRESCALE := x"00"; -- Timer stopped.
+				when others => PRESCALE := x"00";
 			end case;
 			D_CNTSTRB <= '1';
 		end if;
@@ -420,6 +424,7 @@ begin
 							TAO_I <= not TAO_I; -- Toggle the timer A output pin.
 							TIMER_A_INT <= '1';
 						end if;
+				  when others => TAO_I <= '0';
 				end case;					
 			end if;
 		end if;
@@ -465,6 +470,7 @@ begin
 							TBO_I <= not TBO_I; -- Toggle the timer B output pin.
 							TIMER_B_INT <= '1';
 						end if;
+					when others => TBO_I <= '0';
 				end case;					
 			end if;
 		end if;

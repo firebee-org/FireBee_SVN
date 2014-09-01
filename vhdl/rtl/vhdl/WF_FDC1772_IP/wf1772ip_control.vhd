@@ -1286,7 +1286,8 @@ begin
 			if CMD_STATE = T1_STEP then
 				case DDEn is
 					when '1' => CNT := x"80"; --Start counter for FM step pulse.
-                    when '0' => CNT := x"40"; --Start counter for MFM step pulse.
+          when '0' => CNT := x"40"; --Start counter for MFM step pulse.
+        when others => CNT := x"80";
 				end case;
 			elsif CNT > x"00" then
 				CNT := CNT - 1; -- Count 63 or 127 CLK cycles ...

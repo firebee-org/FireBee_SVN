@@ -149,7 +149,8 @@ begin
 		BUSCYCLE <= INACTIVE	when "000" | "010" | "101",
 					ADDRESS 	when "001" | "100" | "111",
 					R_READ 		when "011",
-					R_WRITE 	when "110";
+					R_WRITE 	when "110",
+					INACTIVE when others;
 
 	ADDRESSLATCH: process(RESETn, SYS_CLK)
 	-- This process is responsible to store the desired register

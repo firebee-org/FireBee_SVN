@@ -219,6 +219,7 @@ begin
 				ADDER_MSBs <= std_logic_vector(ADDER_DATA(11 downto 9));
 			when "10" => -- FM mode using DD disks, results in 4us inspection period:
 				ADDER_MSBs <= std_logic_vector(ADDER_DATA(12 downto 10));
+			when others => ADDER_MSBs <= std_logic_vector(ADDER_DATA(11 downto 9));
 		end case;
 	end process ADDER;
 
@@ -315,6 +316,7 @@ begin
 							when "101" => FREQ_AMOUNT := "1010";
 							when "110" => FREQ_AMOUNT := "1011";
 							when "111" => FREQ_AMOUNT := "1100";
+							when others => FREQ_AMOUNT := "0100";
 						end case;
 					when 1 =>
 						case ADDER_MSBs is
@@ -326,6 +328,7 @@ begin
 							when "101" => FREQ_AMOUNT := "1001";
 							when "110" => FREQ_AMOUNT := "1010";
 							when "111" => FREQ_AMOUNT := "1011";
+							when others => FREQ_AMOUNT := "0011";
 						end case;
 					when others =>
 						FREQ_AMOUNT := "0000";
@@ -371,6 +374,7 @@ begin
 					when "101" => PHASE_AMOUNT := "101000";
 					when "110" => PHASE_AMOUNT := "101100";
 					when "111" => PHASE_AMOUNT := "110000";
+					when others => PHASE_AMOUNT := "010000";
 				end case;
 			elsif RD_PULSE = '1' and DDEn = '1' and HDTYPE = '1' then -- FM mode, double density
 				case ADDER_MSBs is -- Multiplier: 2.
@@ -382,6 +386,7 @@ begin
 					when "101" => PHASE_AMOUNT := "100100";
 					when "110" => PHASE_AMOUNT := "100110";
 					when "111" => PHASE_AMOUNT := "101000";
+					when others => PHASE_AMOUNT := "001000";
 				end case;
             elsif RD_PULSE = '1' and DDEn = '0' and HDTYPE = '0' then -- MFM mode, single density
 				case ADDER_MSBs is -- Multiplier: 2.
@@ -393,6 +398,7 @@ begin
 					when "101" => PHASE_AMOUNT := "100011";
 					when "110" => PHASE_AMOUNT := "100100";
 					when "111" => PHASE_AMOUNT := "100110";
+					when others => PHASE_AMOUNT := "000110";
 				end case;
 			elsif RD_PULSE = '1' and DDEn = '0' and HDTYPE = '1' then -- MFM mode, double density.
 				case ADDER_MSBs is -- Multiplier: 1.
@@ -404,6 +410,7 @@ begin
 					when "101" => PHASE_AMOUNT := "100010";
 					when "110" => PHASE_AMOUNT := "100011";
 					when "111" => PHASE_AMOUNT := "100100";
+					when others => PHASE_AMOUNT := "000100";
 				end case;
 			else -- Modify phase amount register:
                 if PHASE_AMOUNT(4 downto 0) > x"0" then

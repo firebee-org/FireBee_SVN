@@ -184,6 +184,7 @@ begin
 				when "01" => LOOPBACK <= '0'; SD_LEVEL <= '0'; SDOUT_EN <= '1';
 				when "10" => LOOPBACK <= '0'; SD_LEVEL <= '1'; SDOUT_EN <= '1';
 				when "11" => LOOPBACK <= '1'; SD_LEVEL <= '1'; SDOUT_EN <= '1';
+				when others => LOOPBACK <= '0'; SD_LEVEL <= '0'; SDOUT_EN <= '0';
 			end case;			
 		end if;
 	end process SOUT_CONFIG;

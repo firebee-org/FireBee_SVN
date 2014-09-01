@@ -253,6 +253,7 @@ begin
 					else
 						FM_In <= '1';
 					end if;
+				when OTHERS => FM_In <= '0';
 			end case;
 		end if;
 	end process FM_ENCODER;
@@ -445,6 +446,7 @@ begin
 					else
 						MFM_In <= '1';
 					end if;
+				when others => MFM_In <= '0';
 			end case;
 		end if;
 	end process MFM_WR_OUT;
