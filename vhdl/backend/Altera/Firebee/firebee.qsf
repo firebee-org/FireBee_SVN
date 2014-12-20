@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone III"
 set_global_assignment -name DEVICE EP3C40F484C6
-set_global_assignment -name TOP_LEVEL_ENTITY firebee
+set_global_assignment -name TOP_LEVEL_ENTITY Firebee
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:04:08  MAY 31, 2014"
 set_global_assignment -name LAST_QUARTUS_VERSION 13.1
@@ -49,9 +49,6 @@ set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 set_global_assignment -name DEVICE_FILTER_PIN_COUNT 484
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (VHDL)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
@@ -249,6 +246,246 @@ set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:b2v_Fredi_Aschwanden|
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:b2v_Fredi_Aschwanden|DDRCLK[2]" -section_id fast
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:b2v_Fredi_Aschwanden|DDRCLK[3]" -section_id fast
 
+set_global_assignment -name SYNCHRONIZER_IDENTIFICATION AUTO
+set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
+set_global_assignment -name ENABLE_DRC_SETTINGS ON
+set_global_assignment -name ENABLE_SIGNALTAP OFF
+
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA ON
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+set_global_assignment -name MUX_RESTRUCTURE ON
+set_global_assignment -name STATE_MACHINE_PROCESSING "MINIMAL BITS"
+set_global_assignment -name AUTO_SHIFT_REGISTER_RECOGNITION OFF
+set_global_assignment -name ALLOW_SHIFT_REGISTER_MERGING_ACROSS_HIERARCHIES ALWAYS
+set_global_assignment -name AUTO_DSP_RECOGNITION ON
+set_global_assignment -name FITTER_EFFORT "AUTO FIT"
+set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 1.0
+set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS OFF
+set_global_assignment -name FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION AUTOMATICALLY
+set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
+set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
+set_global_assignment -name ALLOW_ANY_ROM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name ALLOW_ANY_SHIFT_REGISTER_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON
+set_global_assignment -name AUTO_RAM_RECOGNITION OFF
+set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
+set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
+set_location_assignment PIN_AB12 -to CLK_33M
+set_location_assignment PIN_G1 -to CLK_MAIN
+set_location_assignment PIN_AB10 -to CLK_24M576
+set_location_assignment PIN_J1 -to CLK_USB
+set_location_assignment PIN_T4 -to CLK_25M
+set_location_assignment PIN_U8 -to FB_SIZE[0]
+set_location_assignment PIN_Y4 -to FB_SIZE[1]
+set_location_assignment PIN_T3 -to FB_BURSTn
+set_location_assignment PIN_T8 -to FB_CSn[1]
+set_location_assignment PIN_T9 -to FB_CSn[2]
+set_location_assignment PIN_V6 -to FB_CSn[3]
+set_location_assignment PIN_R6 -to FB_OEn
+set_location_assignment PIN_T5 -to FB_WRn
+set_location_assignment PIN_T21 -to MASTERn
+set_location_assignment PIN_E11 -to DREQ1n
+set_location_assignment PIN_A12 -to DACK1n
+set_location_assignment PIN_B12 -to DACK0n
+set_location_assignment PIN_T22 -to TOUT0n
+set_location_assignment PIN_AB17 -to CLK_DDR_OUT
+set_location_assignment PIN_AA17 -to CLK_DDR_OUTn
+set_location_assignment PIN_AB18 -to VCASn
+set_location_assignment PIN_T18 -to VCSn
+set_location_assignment PIN_W17 -to VRASn
+set_location_assignment PIN_Y17 -to VWEn
+set_location_assignment PIN_AA15 -to VD_QS[0]
+set_location_assignment PIN_W15 -to VD_QS[1]
+set_location_assignment PIN_U22 -to VD_QS[2]
+set_location_assignment PIN_T16 -to VD_QS[3]
+set_location_assignment PIN_V1 -to PD_VGAn
+set_location_assignment PIN_A8 -to DSP_IO[0]
+set_location_assignment PIN_A7 -to DSP_IO[1]
+set_location_assignment PIN_B7 -to DSP_IO[2]
+set_location_assignment PIN_A6 -to DSP_IO[3]
+set_location_assignment PIN_B6 -to DSP_IO[4]
+set_location_assignment PIN_E9 -to DSP_IO[5]
+set_location_assignment PIN_C8 -to DSP_IO[6]
+set_location_assignment PIN_C7 -to DSP_IO[7]
+set_location_assignment PIN_G10 -to DSP_IO[8]
+set_location_assignment PIN_A15 -to DSP_IO[9]
+set_location_assignment PIN_B15 -to DSP_IO[10]
+set_location_assignment PIN_C13 -to DSP_IO[11]
+set_location_assignment PIN_D13 -to DSP_IO[12]
+set_location_assignment PIN_E13 -to DSP_IO[13]
+set_location_assignment PIN_A14 -to DSP_IO[14]
+set_location_assignment PIN_B14 -to DSP_IO[15]
+set_location_assignment PIN_A13 -to DSP_IO[16]
+set_location_assignment PIN_B13 -to DSP_IO[17]
+set_location_assignment PIN_M4 -to ACSI_ACKn
+set_location_assignment PIN_M2 -to ACSI_CSn
+set_location_assignment PIN_M1 -to ACSI_RESETn
+set_location_assignment PIN_W2 -to CF_CSn[0]
+set_location_assignment PIN_W1 -to CF_CSn[1]
+set_location_assignment PIN_T7 -to FB_TAn
+set_location_assignment PIN_R2 -to IDE_CSn[0]
+set_location_assignment PIN_R1 -to IDE_CSn[1]
+set_location_assignment PIN_P1 -to IDE_RDn
+set_location_assignment PIN_P2 -to IDE_WRn
+set_location_assignment PIN_F21 -to IRQn[2]
+set_location_assignment PIN_H20 -to IRQn[3]
+set_location_assignment PIN_F20 -to IRQn[4]
+set_location_assignment PIN_P5 -to IRQn[5]
+set_location_assignment PIN_P7 -to IRQn[6]
+set_location_assignment PIN_N7 -to IRQn[7]
+set_location_assignment PIN_AA1 -to PCI_INTAn
+set_location_assignment PIN_V4 -to PCI_INTBn
+set_location_assignment PIN_V3 -to PCI_INTCn
+set_location_assignment PIN_P6 -to PCI_INTDn
+set_location_assignment PIN_P3 -to ROM3n
+set_location_assignment PIN_U2 -to ROM4n
+set_location_assignment PIN_N5 -to RP_LDSn
+set_location_assignment PIN_P4 -to RP_UDSn
+set_location_assignment PIN_N2 -to SCSI_ACKn
+set_location_assignment PIN_M3 -to SCSI_ATNn
+set_location_assignment PIN_N8 -to SCSI_BUSYn
+set_location_assignment PIN_N6 -to SCSI_RSTn
+set_location_assignment PIN_M8 -to SCSI_SELn
+set_location_assignment PIN_B20 -to FDD_SDSELn
+set_location_assignment PIN_B4 -to DSP_SRBHEn
+set_location_assignment PIN_A4 -to DSP_SRBLEn
+set_location_assignment PIN_B8 -to DSP_SRCSn
+set_location_assignment PIN_F11 -to DSP_SROEn
+set_location_assignment PIN_F8 -to DSP_SRWEn
+set_location_assignment PIN_D17 -to FDD_WR_GATE
+set_location_assignment PIN_J4 -to ACSI_INTn
+set_location_assignment PIN_K7 -to ACSI_DRQn
+set_location_assignment PIN_F16 -to FDD_HD_DD
+set_location_assignment PIN_E16 -to FDD_INDEXn
+set_location_assignment PIN_K21 -to HSYNC
+set_location_assignment PIN_K19 -to VSYNC
+set_location_assignment PIN_G17 -to BLANKn
+set_location_assignment PIN_F19 -to CLK_PIXEL
+set_location_assignment PIN_F17 -to SYNCn
+set_location_assignment PIN_G15 -to FDD_STEP_DIR
+set_location_assignment PIN_F14 -to FDD_STEP
+set_location_assignment PIN_G16 -to FDD_MOT_ON
+set_location_assignment PIN_E5 -to LP_DIR
+set_location_assignment PIN_B11 -to RSTO_MCFn
+set_location_assignment PIN_F13 -to SD_D3
+set_location_assignment PIN_A5 -to DSP_SRD[1]
+set_location_assignment PIN_C6 -to DSP_SRD[2]
+set_location_assignment PIN_G11 -to DSP_SRD[3]
+set_location_assignment PIN_C10 -to DSP_SRD[4]
+set_location_assignment PIN_F9 -to DSP_SRD[5]
+set_location_assignment PIN_E10 -to DSP_SRD[6]
+set_location_assignment PIN_H11 -to DSP_SRD[7]
+set_location_assignment PIN_B9 -to DSP_SRD[8]
+set_location_assignment PIN_A10 -to DSP_SRD[9]
+set_location_assignment PIN_A9 -to DSP_SRD[10]
+set_location_assignment PIN_B10 -to DSP_SRD[11]
+set_location_assignment PIN_D10 -to DSP_SRD[12]
+set_location_assignment PIN_F10 -to DSP_SRD[13]
+set_location_assignment PIN_G9 -to DSP_SRD[14]
+set_location_assignment PIN_H10 -to DSP_SRD[15]
+set_location_assignment PIN_B17 -to SD_D2
+set_location_assignment PIN_A16 -to SD_D1
+set_location_assignment PIN_B16 -to SD_D0
+set_location_assignment PIN_M20 -to SD_CARD_DETECT
+set_location_assignment PIN_A20 -to FDD_RDn
+set_location_assignment PIN_B5 -to DSP_SRD[0]
+set_location_assignment PIN_T1 -to CF_WP
+set_location_assignment PIN_C19 -to FDD_TRACK00
+set_location_assignment PIN_C17 -to FDD_DCHGn
+set_location_assignment PIN_D19 -to FDD_WPn
+set_location_assignment PIN_H2 -to SCSI_MSGn
+set_location_assignment PIN_J3 -to SCSI_IOn
+set_location_assignment PIN_U1 -to SCSI_DRQn
+set_location_assignment PIN_H1 -to SCSI_CDn
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
+set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION AUTO
+set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL NORMAL
+set_global_assignment -name AUTO_PACKED_REGISTERS_STRATIXII AUTO
+
+set_global_assignment -name EDA_TEST_BENCH_NAME ddr_ctlr_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ms" -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddr_ctlr_tb -section_id ddr_ctlr_tb
+set_global_assignment -name FITTER_AUTO_EFFORT_DESIRED_SLACK_MARGIN "0 ns"
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
+set_global_assignment -name RTLV_REMOVE_FANOUT_FREE_REGISTERS OFF
+set_global_assignment -name RTLV_SIMPLIFIED_LOGIC OFF
+set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp.stp
+set_global_assignment -name SDC_FILE firebee.sdc
+set_global_assignment -name SOURCE_FILE firebee.qsf
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DDR/DDR_CTRL.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/Video_Top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/RTC/rtc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_soc_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_registers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_control.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_tx.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_rx.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_ctrl.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_timers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_interrupts.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_gpio.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_transmit.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_receive.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_ctrl_status.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_transceiver.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_registers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_digital_pll.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_crc_logic.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_control.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_am_detector.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_wave.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DSP/DSP.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Peripherals/ide_cf_sd_rom.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/fbee_dma.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Blitter/Blitter_WF.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Interrupt/interrupt.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/VIDEO_CTRL.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo1.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo0.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll4.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll3.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll3.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll2.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll2.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll1.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll1.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee_pkg.vhd
+set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.qip
+set_global_assignment -name VHDL_FILE ../../../testbenches/ddr_ram_model.vhd
+
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[0]
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[1]
@@ -375,119 +612,6 @@ set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to FB_AD
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_WP
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_CMD_D1
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_CLK
-set_global_assignment -name SYNCHRONIZER_IDENTIFICATION AUTO
-set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
-set_global_assignment -name ENABLE_DRC_SETTINGS ON
-set_global_assignment -name ENABLE_SIGNALTAP OFF
-
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA ON
-set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
-set_global_assignment -name MUX_RESTRUCTURE ON
-set_global_assignment -name STATE_MACHINE_PROCESSING "MINIMAL BITS"
-set_global_assignment -name AUTO_SHIFT_REGISTER_RECOGNITION OFF
-set_global_assignment -name ALLOW_SHIFT_REGISTER_MERGING_ACROSS_HIERARCHIES ALWAYS
-set_global_assignment -name AUTO_DSP_RECOGNITION ON
-set_global_assignment -name FITTER_EFFORT "AUTO FIT"
-set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 1.0
-set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS OFF
-set_global_assignment -name FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION AUTOMATICALLY
-set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
-set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
-set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
-set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
-set_global_assignment -name ALLOW_ANY_ROM_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name ALLOW_ANY_SHIFT_REGISTER_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON
-set_global_assignment -name AUTO_RAM_RECOGNITION OFF
-set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
-set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
-set_location_assignment PIN_AB12 -to CLK_33M
-set_location_assignment PIN_G1 -to CLK_MAIN
-set_location_assignment PIN_AB10 -to CLK_24M576
-set_location_assignment PIN_J1 -to CLK_USB
-set_location_assignment PIN_T4 -to CLK_25M
-set_location_assignment PIN_U8 -to FB_SIZE[0]
-set_location_assignment PIN_Y4 -to FB_SIZE[1]
-set_location_assignment PIN_T3 -to FB_BURSTn
-set_location_assignment PIN_T8 -to FB_CSn[1]
-set_location_assignment PIN_T9 -to FB_CSn[2]
-set_location_assignment PIN_V6 -to FB_CSn[3]
-set_location_assignment PIN_R6 -to FB_OEn
-set_location_assignment PIN_T5 -to FB_WRn
-set_location_assignment PIN_T21 -to MASTERn
-set_location_assignment PIN_E11 -to DREQ1n
-set_location_assignment PIN_A12 -to DACK1n
-set_location_assignment PIN_B12 -to DACK0n
-set_location_assignment PIN_T22 -to TOUT0n
-set_location_assignment PIN_AB17 -to CLK_DDR_OUT
-set_location_assignment PIN_AA17 -to CLK_DDR_OUTn
-set_location_assignment PIN_AB18 -to VCASn
-set_location_assignment PIN_T18 -to VCSn
-set_location_assignment PIN_W17 -to VRASn
-set_location_assignment PIN_Y17 -to VWEn
-set_location_assignment PIN_AA15 -to VD_QS[0]
-set_location_assignment PIN_W15 -to VD_QS[1]
-set_location_assignment PIN_U22 -to VD_QS[2]
-set_location_assignment PIN_T16 -to VD_QS[3]
-set_location_assignment PIN_V1 -to PD_VGAn
-set_location_assignment PIN_A8 -to DSP_IO[0]
-set_location_assignment PIN_A7 -to DSP_IO[1]
-set_location_assignment PIN_B7 -to DSP_IO[2]
-set_location_assignment PIN_A6 -to DSP_IO[3]
-set_location_assignment PIN_B6 -to DSP_IO[4]
-set_location_assignment PIN_E9 -to DSP_IO[5]
-set_location_assignment PIN_C8 -to DSP_IO[6]
-set_location_assignment PIN_C7 -to DSP_IO[7]
-set_location_assignment PIN_G10 -to DSP_IO[8]
-set_location_assignment PIN_A15 -to DSP_IO[9]
-set_location_assignment PIN_B15 -to DSP_IO[10]
-set_location_assignment PIN_C13 -to DSP_IO[11]
-set_location_assignment PIN_D13 -to DSP_IO[12]
-set_location_assignment PIN_E13 -to DSP_IO[13]
-set_location_assignment PIN_A14 -to DSP_IO[14]
-set_location_assignment PIN_B14 -to DSP_IO[15]
-set_location_assignment PIN_A13 -to DSP_IO[16]
-set_location_assignment PIN_B13 -to DSP_IO[17]
-set_location_assignment PIN_M4 -to ACSI_ACKn
-set_location_assignment PIN_M2 -to ACSI_CSn
-set_location_assignment PIN_M1 -to ACSI_RESETn
-set_location_assignment PIN_W2 -to CF_CSn[0]
-set_location_assignment PIN_W1 -to CF_CSn[1]
-set_location_assignment PIN_T7 -to FB_TAn
-set_location_assignment PIN_R2 -to IDE_CSn[0]
-set_location_assignment PIN_R1 -to IDE_CSn[1]
-set_location_assignment PIN_P1 -to IDE_RDn
-set_location_assignment PIN_P2 -to IDE_WRn
-set_location_assignment PIN_F21 -to IRQn[2]
-set_location_assignment PIN_H20 -to IRQn[3]
-set_location_assignment PIN_F20 -to IRQn[4]
-set_location_assignment PIN_P5 -to IRQn[5]
-set_location_assignment PIN_P7 -to IRQn[6]
-set_location_assignment PIN_N7 -to IRQn[7]
-set_location_assignment PIN_AA1 -to PCI_INTAn
-set_location_assignment PIN_V4 -to PCI_INTBn
-set_location_assignment PIN_V3 -to PCI_INTCn
-set_location_assignment PIN_P6 -to PCI_INTDn
-set_location_assignment PIN_P3 -to ROM3n
-set_location_assignment PIN_U2 -to ROM4n
-set_location_assignment PIN_N5 -to RP_LDSn
-set_location_assignment PIN_P4 -to RP_UDSn
-set_location_assignment PIN_N2 -to SCSI_ACKn
-set_location_assignment PIN_M3 -to SCSI_ATNn
-set_location_assignment PIN_N8 -to SCSI_BUSYn
-set_location_assignment PIN_N6 -to SCSI_RSTn
-set_location_assignment PIN_M8 -to SCSI_SELn
-set_location_assignment PIN_B20 -to FDD_SDSELn
-set_location_assignment PIN_B4 -to DSP_SRBHEn
-set_location_assignment PIN_A4 -to DSP_SRBLEn
-set_location_assignment PIN_B8 -to DSP_SRCSn
-set_location_assignment PIN_F11 -to DSP_SROEn
-set_location_assignment PIN_F8 -to DSP_SRWEn
-set_location_assignment PIN_D17 -to FDD_WR_GATE
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to VD_QS[0]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to VD_QS[1]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to VD_QS[2]
@@ -504,20 +628,6 @@ set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D2
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D1
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D0
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D3
-set_location_assignment PIN_J4 -to ACSI_INTn
-set_location_assignment PIN_K7 -to ACSI_DRQn
-set_location_assignment PIN_F16 -to FDD_HD_DD
-set_location_assignment PIN_E16 -to FDD_INDEXn
-set_location_assignment PIN_K21 -to HSYNC
-set_location_assignment PIN_K19 -to VSYNC
-set_location_assignment PIN_G17 -to BLANKn
-set_location_assignment PIN_F19 -to CLK_PIXEL
-set_location_assignment PIN_F17 -to SYNCn
-set_location_assignment PIN_G15 -to FDD_STEP_DIR
-set_location_assignment PIN_F14 -to FDD_STEP
-set_location_assignment PIN_G16 -to FDD_MOT_ON
-set_location_assignment PIN_E5 -to LP_DIR
-set_location_assignment PIN_B11 -to RSTO_MCFn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VD_QS
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VWEn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VRASn
@@ -552,46 +662,6 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to DSP_SRBHEn
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to CLK_24M576
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to CLK_USB
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to CLK_25M
-set_location_assignment PIN_F13 -to SD_D3
-set_location_assignment PIN_A5 -to DSP_SRD[1]
-set_location_assignment PIN_C6 -to DSP_SRD[2]
-set_location_assignment PIN_G11 -to DSP_SRD[3]
-set_location_assignment PIN_C10 -to DSP_SRD[4]
-set_location_assignment PIN_F9 -to DSP_SRD[5]
-set_location_assignment PIN_E10 -to DSP_SRD[6]
-set_location_assignment PIN_H11 -to DSP_SRD[7]
-set_location_assignment PIN_B9 -to DSP_SRD[8]
-set_location_assignment PIN_A10 -to DSP_SRD[9]
-set_location_assignment PIN_A9 -to DSP_SRD[10]
-set_location_assignment PIN_B10 -to DSP_SRD[11]
-set_location_assignment PIN_D10 -to DSP_SRD[12]
-set_location_assignment PIN_F10 -to DSP_SRD[13]
-set_location_assignment PIN_G9 -to DSP_SRD[14]
-set_location_assignment PIN_H10 -to DSP_SRD[15]
-set_location_assignment PIN_B17 -to SD_D2
-set_location_assignment PIN_A16 -to SD_D1
-set_location_assignment PIN_B16 -to SD_D0
-set_location_assignment PIN_M20 -to SD_CARD_DETECT
-set_location_assignment PIN_A20 -to FDD_RDn
-set_location_assignment PIN_B5 -to DSP_SRD[0]
-set_location_assignment PIN_T1 -to CF_WP
-set_location_assignment PIN_C19 -to FDD_TRACK00
-set_location_assignment PIN_C17 -to FDD_DCHGn
-set_location_assignment PIN_D19 -to FDD_WPn
-set_location_assignment PIN_H2 -to SCSI_MSGn
-set_location_assignment PIN_J3 -to SCSI_IOn
-set_location_assignment PIN_U1 -to SCSI_DRQn
-set_location_assignment PIN_H1 -to SCSI_CDn
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION AUTO
-set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL NORMAL
-set_global_assignment -name AUTO_PACKED_REGISTERS_STRATIXII AUTO
-
-set_global_assignment -name EDA_TEST_BENCH_NAME ddr_ctlr_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ms" -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddr_ctlr_tb -section_id ddr_ctlr_tb
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[1]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[2]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[3]"
@@ -608,13 +678,6 @@ set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll4:I_PLL4|altpll:al
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll4:I_PLL4|altpll:altpll_component|clk[2]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll4:I_PLL4|altpll:altpll_component|clk[3]"
 set_instance_assignment -name AUTO_GLOBAL_CLOCK ON -to "altpll1:I_PLL1|altpll:altpll_component|clk[0]"
-set_global_assignment -name FITTER_AUTO_EFFORT_DESIRED_SLACK_MARGIN "0 ns"
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
-set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
-set_global_assignment -name RTLV_REMOVE_FANOUT_FREE_REGISTERS OFF
-set_global_assignment -name RTLV_SIMPLIFIED_LOGIC OFF
-set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp.stp
 set_instance_assignment -name PAD_TO_CORE_DELAY 0 -to CLK_DDR_OUT
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUTn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUTn
@@ -624,66 +687,6 @@ set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_33M
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUT
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
-set_global_assignment -name SDC_FILE firebee.sdc
-set_global_assignment -name SOURCE_FILE firebee.qsf
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_Top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DDR/DDR_CTRL.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/Video_Top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/RTC/rtc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_soc_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_registers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_control.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_tx.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_rx.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_ctrl.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_timers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_interrupts.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_gpio.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_transmit.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_receive.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_ctrl_status.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_transceiver.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_registers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_digital_pll.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_crc_logic.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_control.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_am_detector.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_wave.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DSP/DSP.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Peripherals/ide_cf_sd_rom.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/fbee_dma.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Blitter/Blitter_WF.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Interrupt/interrupt.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/VIDEO_CTRL.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo1.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo0.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll4.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll3.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll3.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll2.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll2.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_pkg.vhd
-set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.qip
-set_global_assignment -name VHDL_FILE ../../../testbenches/ddr_ram_model.vhd
+
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
