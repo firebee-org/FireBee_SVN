@@ -615,9 +615,18 @@ set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
 set_global_assignment -name RTLV_REMOVE_FANOUT_FREE_REGISTERS OFF
 set_global_assignment -name RTLV_SIMPLIFIED_LOGIC OFF
 set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp.stp
+set_instance_assignment -name PAD_TO_CORE_DELAY 0 -to CLK_DDR_OUT
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUTn
+set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUTn
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUT
+set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUT
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_33M
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUT
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 set_global_assignment -name SDC_FILE firebee.sdc
 set_global_assignment -name SOURCE_FILE firebee.qsf
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_Top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_Top.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DDR/DDR_CTRL.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/Video_Top.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/RTC/rtc.vhd
@@ -677,13 +686,4 @@ set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee_V1/altpll1.cmp
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee_V1/Firebee_V1_pkg.vhd
 set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee_V1/altpll_reconfig1.qip
 set_global_assignment -name VHDL_FILE ../../../testbenches/ddr_ram_model.vhd
-set_instance_assignment -name PAD_TO_CORE_DELAY 0 -to CLK_DDR_OUT
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUTn
-set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUTn
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to CLK_DDR_OUT
-set_instance_assignment -name IO_STANDARD "2.5 V" -to CLK_DDR_OUT
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_33M
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUT
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
