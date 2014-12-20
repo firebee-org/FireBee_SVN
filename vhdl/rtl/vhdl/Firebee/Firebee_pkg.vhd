@@ -159,8 +159,8 @@ package firebee_pkg is
 			CLK_MAIN        : in std_logic;
 			DDR_SYNC_66M    : in std_logic;
 			FB_ADR          : in std_logic_vector(31 downto 0);
-			FB_CS1n         : in std_logic;
-			FB_OEn          : in std_logic;
+			FB_CS1_n        : in std_logic;
+			FB_OE_n         : in std_logic;
 			FB_SIZE0        : in std_logic;
 			FB_SIZE1        : in std_logic;
 			FB_ALE          : in std_logic;
