@@ -166,7 +166,7 @@ package firebee_pkg is
 			FB_ALE          : in std_logic;
 			FB_WRn          : in std_logic;
 			FIFO_CLR        : in std_logic;
-			VIDEO_RAM_CTR   : in std_logic_vector(15 downto 0);
+			video_control_register   : in std_logic_vector(15 downto 0);
 			BLITTER_ADR     : in std_logic_vector(31 downto 0);
 			BLITTER_SIG     : in std_logic;
 			BLITTER_WR      : in std_logic;
