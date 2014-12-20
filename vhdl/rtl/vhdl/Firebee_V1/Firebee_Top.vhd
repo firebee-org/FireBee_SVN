@@ -788,7 +788,7 @@ BEGIN
         END IF;
     END PROCESS VDP_Q_BUFFER;
  
-    I_DDR_CTRL: DDR_CTRL_V1
+    I_DDR_CTRL: DDR_CTRL
         PORT MAP(
             CLK_MAIN            => CLK_MAIN,
             ddr_sync_66m        => ddr_sync_66m,

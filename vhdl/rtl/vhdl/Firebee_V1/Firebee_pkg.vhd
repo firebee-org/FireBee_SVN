@@ -154,7 +154,7 @@ package firebee_pkg is
 		);
 	end component;
 
-	component DDR_CTRL_V1 is
+	component DDR_CTRL is
 		port(
 			CLK_MAIN        : in std_logic;
 			DDR_SYNC_66M    : in std_logic;
