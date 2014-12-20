@@ -1,38 +1,38 @@
 ----------------------------------------------------------------------
 ----                                                              ----
 ---- This file is part of the 'Firebee' project.                  ----
----- http://acp.atari.ORg                                         ----
+---- http://acp.atari.org                                         ----
 ----                                                              ----
 ---- Description:                                                 ----
 ---- This design unit provides the toplevel of the 'Firebee'      ----
----- computer. It is optimized fOR the use of an Altera Cyclone   ----
----- FPGA (EP3C40F484). This IP-CORe is based on the first edi-   ----
----- tion of the Firebee configware ORigINally provided by Fredi  ----
----- Ashwanden  and Wolfgang Förster. This release is IN compa-   ----
----- rision to the first edition completely written IN VHDL.      ----
+---- computer. It is optimized for the use of an Altera Cyclone   ----
+---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----
+---- tion of the Firebee configware originally provided by Fredi  ----
+---- Aschwanden  and Wolfgang Förster. This release is in compa-  ----
+---- rision to the first edition completely written in VHDL.      ----
 ----                                                              ----
----- AuthOR(s):                                                   ----
----- - Wolfgang Foerster, wf@experiment-s.de; wf@INventronik.de   ----
+---- Author(s):                                                   ----
+---- - Wolfgang Foerster, wf@experiment-s.de; wf@inventronik.de   ----
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
 ---- Copyright (C) 2012 Wolfgang Förster                          ----
 ----                                                              ----
 ---- This source file is free software; you can redistribute it   ----
----- and/OR modIFy it under the terms of the GNU General Public   ----
+---- and/OR modify it under the terms of the GNU General Public   ----
 ---- License as published by the Free Software Foundation; either ----
----- version 2 of the License, OR (at your option) any later      ----
+---- version 2 of the License, or (at your option) any later      ----
 ---- version.                                                     ----
 ----                                                              ----
----- This program is distributed IN the hope that it will be      ----
+---- This program is distributed in the hope that it will be      ----
 ---- useful, but WITHOUT ANY WARRANTY; WITHOUT even the implied   ----
 ---- warranty of MERCHANTABILITY OR FITNESS FOR A PARTICULAR      ----
 ---- PURPOSE.  See the GNU General Public License fOR mORe        ----
 ---- details.                                                     ----
 ----                                                              ----
 ---- You should have received a copy of the GNU General Public    ----
----- License along WITH this program; IF NOT, write to the Free   ----
----- Software Foundation, Inc., 51 FranklIN Street, FIFth FloOR,  ----
+---- License along with this program; If not, write to the Free   ----
+---- Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  ----
 ---- Boston, MA 02110-1301, USA.                                  ----
 ----                                                              ----
 ----------------------------------------------------------------------
@@ -68,27 +68,27 @@
 --     Several code cleanups:
 --       Resolved the tri state logic IN all modules. The only tri states are now IN the
 --         top level FIREBEE_V1.
---       Replaced several Altera lpm modules to achieve a manufacturer INdepENDant code.
---         However we have still some modules like memORy OR FIFOs which are required up to now.
+--       Replaced several Altera lpm modules to achieve a manufacturer independant code.
+--         However we have still some modules like memory OR FIFOs which are required up to now.
 --       Removed the vdr latch.
 --       Removed the AMKBD filter.
 --       Updated all Suska-Codes (ACIA, MFP, 5380, 1772, 2149) to the latest code base.
---       The sound module wORks now on the positive clock edge.
---       The multi function PORT wORks now on the positive clock edge.
---     NamINg conventions:
---       Replaced the 'n' prefixes WITH 'n' postfixes to achieve consistent SIGNAL names.
---       Replaced the old ACP_xx SIGNAL names by FBEE_xx (ACP is the old wORkINg title).
+--       The sound module works now on the positive clock edge.
+--       The multi function port works now on the positive clock edge.
+--     Naming conventions:
+--       Replaced the 'n' prefixes WITH 'n' postfixes to achieve consistent signal names.
+--       Replaced the old ACP_xx signal names by FBEE_xx (ACP is the old working title).
 --     Improvements (hopefully)
 --         Fixed the video_reconfig strobe logic IN the video control section.
 --     Others:
 --       Provided file headers to all Firebee relevant design units.
---       Provided a timequest constraINt file.
+--       Provided a timequest constraint file.
 --       Switched all code elements to English language.
---       Provided a complete new file structure fOR the project.
+--       Provided a complete new file structure for the project.
 --
 
-LIBRARY wORk;
-    USE wORk.firebee_pkg.ALL;
+LIBRARY work;
+    USE work.firebee_pkg.ALL;
 
 LIBRARY IEEE;
     USE IEEE.STD_LOGIC_1164.ALL;
@@ -118,7 +118,7 @@ ENTITY firebee IS
         DACK1n              : IN STD_LOGIC;
         DREQ1n              : OUT STD_LOGIC;
 
-        MASTERn             : IN STD_LOGIC; -- determINes IF the Firebee is PCI master (='0') OR slave. Not used so far.
+        MASTERn             : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
         TOUT0n              : IN STD_LOGIC; -- Not used so far.
 
         LED_FPGA_OK         : OUT STD_LOGIC;
@@ -266,7 +266,7 @@ ARCHITECTURE Structure of firebee is
 
     COMPONENT altpll2
         PORT(
-            INclk0      : IN STD_LOGIC  := '0';
+            inclk0      : IN STD_LOGIC  := '0';
             c0          : OUT STD_LOGIC ;
             c1          : OUT STD_LOGIC ;
             c2          : OUT STD_LOGIC ;
@@ -277,7 +277,7 @@ ARCHITECTURE Structure of firebee is
 
     COMPONENT altpll3
         PORT(
-            INclk0      : IN STD_LOGIC  := '0';
+            inclk0      : IN STD_LOGIC  := '0';
             c0          : OUT STD_LOGIC ;
             c1          : OUT STD_LOGIC ;
             c2          : OUT STD_LOGIC ;
@@ -524,18 +524,18 @@ BEGIN
             scandata        => pll_scandata,
             scanclkena      => pll_scanclkena,
             configupdate    => pll_configupdate,
-            c0              => clk_video,        -- configurable video clk, set to 96 MHz INitially
+            c0              => clk_video,                   -- configurable video clk, set to 96 MHz initially
             scandataOUT     => pll_scandataout,
             scandone        => pll_scandone
             --locked        => -- Not used.
         );
 
-    I_RECONFIG: altpll_reconfig1                                -- to enable reconfiguration of altpll4 (video clock)
+    I_RECONFIG: altpll_reconfig1                            -- to enable reconfiguration of altpll4 (video clock)
         PORT MAP(
             reconfig            => video_reconfig,
             read_param          => vr_rd,
             write_param         => vr_wr,
-            data_in             => FB_AD(24 DOWNTO 16),    -- FIXED: this looks like a typo. Must be FB_AD(24 DOWNTO 16) INstead of fb_adr(24 DOWNTO 16)
+            data_in             => FB_AD(24 DOWNTO 16),     -- FIXED: this looks like a typo. Must be FB_AD(24 DOWNTO 16) instead of fb_adr(24 DOWNTO 16)
             counter_type        => fb_adr(5 DOWNTO 2),
             counter_param       => fb_adr(8 DOWNTO 6),
             pll_scandataout     => pll_scandataout,
@@ -572,10 +572,10 @@ BEGIN
     falcon_io_ta <= acia_cs OR sndcs OR NOT dtack_out_mfp_n OR paddle_cs OR ide_cf_ta OR dma_cs;
     FB_TAn <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta)= '1' ELSE 'Z';
 
-    acia_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';            -- FFFC00 - FFFC07
-    mfp_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';        -- FFFA00/40
-    paddle_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000"= x"FF9200" ELSE '0';    -- FF9200-FF923F
-    sndcs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 2) & "00" = x"FF8800" ELSE '0';             -- FF8800-FF8803
+    acia_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';           -- FFFC00 - FFFC07
+    mfp_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';         -- FFFA00/40
+    paddle_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000"= x"FF9200" ELSE '0';       -- FF9200-FF923F
+    sndcs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 2) & "00" = x"FF8800" ELSE '0';              -- FF8800-FF8803
     sndcs_i <= '1' WHEN sndcs = '1' and fb_adr (1) = '0' ELSE '0';
     sndir_i <= '1' WHEN sndcs = '1' and FB_WRn = '0' ELSE '0';
 
@@ -591,7 +591,7 @@ BEGIN
     SCSI_BUSYn <= scsi_bsy_out_n WHEN scsi_bsy_en = '1' ELSE 'Z';
     SCSI_SELn <= SCSI_SEL_OUTn WHEN scsi_sel_en = '1' ELSE 'Z';
 
-    keyb_rxd <= '0' WHEN AMKB_RX = '0' OR PIC_AMKB_RX = '0' ELSE '1';        -- get keyboard data either from PIC (PS/2) OR from Atari keyboard
+    keyb_rxd <= '0' WHEN AMKB_RX = '0' OR PIC_AMKB_RX = '0' ELSE '1';                       -- get keyboard data either from PIC (PS/2) OR from Atari keyboard
 
     SD_D3 <= sd_cd_d3_out WHEN sd_cd_d3_en = '1' ELSE 'Z';
     SD_CMD_D1 <= sd_cmd_d1_out WHEN sd_cmd_d1_en = '1' ELSE 'Z';
@@ -602,7 +602,7 @@ BEGIN
     hd_dd_out <= FDD_HD_DD WHEN fbee_conf(29) = '0' ELSE wdc_bsl0;
     lds <= '1' WHEN mfp_cs = '1' OR mfp_intack = '1' ELSE '0';
     acia_irq_n <= irq_keybd_n and irq_midi_n;
-    mfp_intack <= '1' WHEN FB_CSn(2) = '0' and fb_adr(19 DOWNTO 0) = x"20000" ELSE '0';        --F002'0000
+    mfp_intack <= '1' WHEN FB_CSn(2) = '0' and fb_adr(19 DOWNTO 0) = x"20000" ELSE '0';                     --F002'0000
     dint_n <= '0' WHEN IDE_INT = '1' and fbee_conf(28) = '1' ELSE
                 '0' WHEN fd_int = '1' ELSE
                 '0' WHEN scsi_int = '1' and fbee_conf(28) = '1' ELSE '1';
@@ -711,20 +711,20 @@ BEGIN
         END IF;
     END PROCESS SYNCHRONIZATION;
 
-    VIDEO_OUT: PROCESS
+    video_out : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_pixel_i);
         VSYNC <= vsync_i;
         HSYNC <= hsync_i;
         BLANKn <= blank_i_n;
-    END PROCESS VIDEO_OUT;
+    END PROCESS video_out;
 
-    P_ddr_wr: PROCESS
+    p_ddr_wr: PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(3));
         ddr_wr <= sr_ddr_wr;
         ddrwr_d_sel(0) <= sr_ddrwr_d_sel;
-    END PROCESS P_ddr_wr;
+    END PROCESS p_ddr_wr;
 
     vd_qs_en <= ddr_wr;
     VD <= vd_out WHEN vd_en = '1' ELSE (OTHERS => 'Z');
@@ -735,20 +735,20 @@ BEGIN
     vd_qs_out(3) <= clk_ddr(0);
     VD_QS <= vd_qs_out WHEN vd_qs_en = '1' ELSE (OTHERS => 'Z');
 
-    DDR_DATA_IN_N: PROCESS
+    ddr_data_in_n : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(1));
         ddr_d_in_n <= VD;
-    END PROCESS DDR_DATA_IN_N;
+    END PROCESS ddr_data_in_n;
     --
-    DDR_DATA_IN_P: PROCESS
+    ddr_data_in_p : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(1));
         vdp_in(31 DOWNTO 0) <= VD;
         vdp_in(63 DOWNTO 32) <= ddr_d_in_n;
-    END PROCESS DDR_DATA_IN_P;
+    END PROCESS ddr_data_in_p;
 
-    DDR_DATA_OUT_P: PROCESS(clk_ddr(3))
+    ddr_data_out_p : PROCESS(clk_ddr(3))
         variable DDR_D_OUT_H    : STD_LOGIC_VECTOR(31 DOWNTO 0);
         variable DDR_D_OUT_L    : STD_LOGIC_VECTOR(31 DOWNTO 0);
     BEGIN
@@ -758,13 +758,13 @@ BEGIN
             vd_en <= sr_ddr_wr OR ddr_wr;
         END IF;
         --
-        case clk_ddr(3) is
+        CASE clk_ddr(3) IS
             WHEN  '1' => vd_out <= DDR_D_OUT_H;
             WHEN OTHERS => vd_out <= DDR_D_OUT_L;
-        END case;
-    END PROCESS DDR_DATA_OUT_P;
+        END CASE;
+    END PROCESS ddr_data_out_p;
 
-    WITH ddrwr_d_sel select
+    WITH ddrwr_d_sel SELECT
         vdp_out <= blitter_dout(63 DOWNTO 0) WHEN "11",
                         blitter_dout(127 DOWNTO 64) WHEN "10",
                         fb_ddr(63 DOWNTO 0) WHEN "01",
@@ -773,7 +773,7 @@ BEGIN
 
     vd_en_i <= sr_ddr_wr OR ddr_wr;
 
-    VDP_Q_BUFFER: PROCESS
+    vdp_q_buffer : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(0));
         ddr_fb <= sr_ddr_fb & ddr_fb(4 DOWNTO 1);
@@ -786,7 +786,7 @@ BEGIN
             vdp_q2 <= vdp_in(63 DOWNTO 32);
             vdp_q3 <= vdp_in(31 DOWNTO 0);
         END IF;
-    END PROCESS VDP_Q_BUFFER;
+    END PROCESS vdp_q_buffer;
  
     I_DDR_CTRL: DDR_CTRL
         PORT MAP(
