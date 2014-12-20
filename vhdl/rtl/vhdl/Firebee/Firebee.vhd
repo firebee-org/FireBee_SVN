@@ -106,11 +106,11 @@ ENTITY firebee IS
         clk_ddr_OUTn        : OUT STD_LOGIC;
         CLK_USB             : OUT STD_LOGIC;
 
-        FB_AD               : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        FB_AD               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         FB_ALE              : IN STD_LOGIC;
         FB_BURSTn           : IN STD_LOGIC;
-        FB_CSn              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
-        FB_SIZE             : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+        FB_CSn              : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
+        FB_SIZE             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
         FB_OEn              : IN STD_LOGIC;
         FB_WRn              : IN STD_LOGIC;
         FB_TAn              : OUT STD_LOGIC;
@@ -124,8 +124,8 @@ ENTITY firebee IS
         LED_FPGA_OK         : OUT STD_LOGIC;
         RESERVED_1          : OUT STD_LOGIC;
 
-        VA                  : OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
-        BA                  : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+        VA                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
+        BA                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
         VWEn                : OUT STD_LOGIC;
         VcaSn               : OUT STD_LOGIC;
         VRASn               : OUT STD_LOGIC;
@@ -137,14 +137,14 @@ ENTITY firebee IS
         HSYNC               : OUT STD_LOGIC;
         BLANKn              : OUT STD_LOGIC;
         
-        VR                  : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        VG                  : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        VB                  : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        VR                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        VG                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        VB                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
 
-        VDM                 : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        VDM                 : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        VD                  : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        VD_QS               : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        VD                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        VD_QS               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
         PD_VGAn             : OUT STD_LOGIC;
         VCKE                : OUT STD_LOGIC;
@@ -156,14 +156,14 @@ ENTITY firebee IS
         PCI_INTCn           : IN STD_LOGIC;
         PCI_INTDn           : IN STD_LOGIC;
 
-        IRQn                : OUT STD_LOGIC_VECTOR(7 DOWNTO 2);
+        IRQn                : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
         TIN0                : OUT STD_LOGIC;
 
         YM_QA               : OUT STD_LOGIC;
         YM_QB               : OUT STD_LOGIC;
         YM_QC               : OUT STD_LOGIC;
 
-        LP_D                : INOUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        LP_D                : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         LP_DIR              : OUT STD_LOGIC;
 
         DSA_D               : OUT STD_LOGIC;
@@ -194,11 +194,11 @@ ENTITY firebee IS
         SCSI_BUSYn          : INOUT STD_LOGIC;
         SCSI_RSTn           : INOUT STD_LOGIC;
         SCSI_DIR            : OUT STD_LOGIC;
-        SCSI_D              : INOUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        SCSI_D              : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         SCSI_PAR            : INOUT STD_LOGIC;
 
         ACSI_DIR            : OUT STD_LOGIC;
-        ACSI_D              : INOUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        ACSI_D              : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         ACSI_CSn            : OUT STD_LOGIC;
         ACSI_A1             : OUT STD_LOGIC;
         ACSI_reset_n         : OUT STD_LOGIC;
@@ -234,10 +234,10 @@ ENTITY firebee IS
         SD_WP               : IN STD_LOGIC;
 
         CF_WP               : IN STD_LOGIC;
-        CF_CSn              : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+        CF_CSn              : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
 
-        DSP_IO              : INOUT STD_LOGIC_VECTOR(17 DOWNTO 0);
-        DSP_SRD             : INOUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        DSP_IO              : INOUT STD_LOGIC_VECTOR (17 DOWNTO 0);
+        DSP_SRD             : INOUT STD_LOGIC_VECTOR (15 DOWNTO 0);
         DSP_SRCSn           : OUT STD_LOGIC;
         DSP_SRBLEn          : OUT STD_LOGIC;
         DSP_SRBHEn          : OUT STD_LOGIC;
@@ -249,7 +249,7 @@ ENTITY firebee IS
         IDE_RES             : OUT STD_LOGIC;
         IDE_WRn             : OUT STD_LOGIC;
         IDE_RDn             : OUT STD_LOGIC;
-        IDE_CSn             : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
+        IDE_CSn             : OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
     );
 END ENTITY firebee;
 
@@ -278,9 +278,9 @@ ARCHITECTURE Structure of firebee is
     COMPONENT altpll3
         PORT(
             inclk0      : IN STD_LOGIC  := '0';
-            c0          : OUT STD_LOGIC ;
-            c1          : OUT STD_LOGIC ;
-            c2          : OUT STD_LOGIC ;
+            c0          : OUT STD_LOGIC;
+            c1          : OUT STD_LOGIC;
+            c2          : OUT STD_LOGIC;
             c3          : OUT STD_LOGIC 
         );
     END COMPONENT;
@@ -293,9 +293,9 @@ ARCHITECTURE Structure of firebee is
             scanclk         : IN STD_LOGIC  := '1';
             scanclkena      : IN STD_LOGIC  := '0';
             scandata        : IN STD_LOGIC  := '0';
-            c0              : OUT STD_LOGIC ;
-            locked          : OUT STD_LOGIC ;
-            scandataOUT     : OUT STD_LOGIC ;
+            c0              : OUT STD_LOGIC;
+            locked          : OUT STD_LOGIC;
+            scandataOUT     : OUT STD_LOGIC;
             scandone        : OUT STD_LOGIC 
         );
     END COMPONENT;
@@ -325,55 +325,55 @@ ARCHITECTURE Structure of firebee is
 
     SIGNAL acia_cs              : STD_LOGIC;
     SIGNAL acia_irq_n           : STD_LOGIC;
-    SIGNAL acsi_d_out           : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL acsi_d_out           : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL acsi_d_en            : STD_LOGIC;
     SIGNAL blank_i_n            : STD_LOGIC;
-    SIGNAL blitter_adr          : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL blitter_adr          : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL blitter_dack_sr      : STD_LOGIC;
-    SIGNAL blitter_dout         : STD_LOGIC_VECTOR(127 DOWNTO 0);
+    SIGNAL blitter_dout         : STD_LOGIC_VECTOR (127 DOWNTO 0);
     SIGNAL blitter_on           : STD_LOGIC;
     SIGNAL blitter_run          : STD_LOGIC;
     SIGNAL blitter_sig          : STD_LOGIC;
     SIGNAL blitter_ta           : STD_LOGIC;
     SIGNAL blitter_wr           : STD_LOGIC;
     SIGNAL byte                 : STD_LOGIC; -- When Byte -> 1
-    SIGNAL ca                   : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL ca                   : STD_LOGIC_VECTOR (2 DOWNTO 0);
     SIGNAL clk_2m0              : STD_LOGIC;
     SIGNAL clk_2m4576           : STD_LOGIC;
     SIGNAL clk_25m_i            : STD_LOGIC;
     SIGNAL clk_48m              : STD_LOGIC;
     SIGNAL clk_500k             : STD_LOGIC;
-    SIGNAL clk_ddr              : STD_LOGIC_VECTOR(3 DOWNTO 0);
+    SIGNAL clk_ddr              : STD_LOGIC_VECTOR (3 DOWNTO 0);
     SIGNAL clk_fdc              : STD_LOGIC;
     SIGNAL clk_pixel_i          : STD_LOGIC;
     SIGNAL clk_video            : STD_LOGIC;
-    SIGNAL da_out_x             : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL da_out_x             : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL data_en_blitter      : STD_LOGIC;
     SIGNAL data_en_h_ddr_ctrl   : STD_LOGIC;
     SIGNAL data_en_l_ddr_ctrl   : STD_LOGIC;
-    SIGNAL data_in_fdc_scsi     : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL data_out_acia_i      : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL data_out_acia_iI     : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL data_out_blitter     : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL data_out_ddr_ctrl    : STD_LOGIC_VECTOR(31 DOWNTO 16);
-    SIGNAL data_out_fdc         : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL data_out_mfp         : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL data_out_scsi        : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL data_in_fdc_scsi     : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL data_out_acia_i      : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL data_out_acia_iI     : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL data_out_blitter     : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL data_out_ddr_ctrl    : STD_LOGIC_VECTOR (31 DOWNTO 16);
+    SIGNAL data_out_fdc         : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL data_out_mfp         : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL data_out_scsi        : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL dint_n               : STD_LOGIC;
-    SIGNAL ddr_d_in_n           : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL ddr_fb               : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL ddr_d_in_n           : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL ddr_fb               : STD_LOGIC_VECTOR (4 DOWNTO 0);
     SIGNAL ddr_sync_66m         : STD_LOGIC;
     SIGNAL ddr_wr               : STD_LOGIC;
-    SIGNAL ddrwr_d_sel          : STD_LOGIC_VECTOR(1 DOWNTO 0);
+    SIGNAL ddrwr_d_sel          : STD_LOGIC_VECTOR (1 DOWNTO 0);
     SIGNAL dma_cs               : STD_LOGIC;
     SIGNAL drq11_dma            : STD_LOGIC;
     SIGNAL drq_fdc              : STD_LOGIC;
     SIGNAL drq_dma              : STD_LOGIC;
     SIGNAL dsp_int              : STD_LOGIC;
     SIGNAL dsp_io_en            : STD_LOGIC;
-    SIGNAL dsp_io_out           : STD_LOGIC_VECTOR(17 DOWNTO 0);
+    SIGNAL dsp_io_out           : STD_LOGIC_VECTOR (17 DOWNTO 0);
     SIGNAL dsp_srd_en           : STD_LOGIC;
-    SIGNAL dsp_srd_out          : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL dsp_srd_out          : STD_LOGIC_VECTOR (15 DOWNTO 0);
     SIGNAL dsp_ta               : STD_LOGIC;
     SIGNAL dtack_out_mfp_n      : STD_LOGIC;
     SIGNAL falcon_io_ta         : STD_LOGIC;
@@ -391,23 +391,23 @@ ARCHITECTURE Structure of firebee is
 
     SIGNAL fb_ad_en_dsp         : STD_LOGIC;
     SIGNAL fb_ad_en_rtc         : STD_LOGIC;
-    SIGNAL fb_ad_out_dma        : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL fb_ad_out_dsp        : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL fb_ad_out_ih         : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL fb_ad_out_rtc        : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL fb_ad_out_video      : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL fb_adr               : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL fb_ad_out_dma        : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL fb_ad_out_dsp        : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL fb_ad_out_ih         : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL fb_ad_out_rtc        : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL fb_ad_out_video      : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL fb_adr               : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL fb_b0                : STD_LOGIC; -- UPPER Byte BEI 16 STD_LOGIC BUS
     SIGNAL fb_b1                : STD_LOGIC; -- LOWER Byte BEI 16 STD_LOGIC BUS
-    SIGNAL fb_ddr               : STD_LOGIC_VECTOR(127 DOWNTO 0);
-    SIGNAL fb_le                : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL fb_vdoe              : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL fbee_conf            : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL fb_ddr               : STD_LOGIC_VECTOR (127 DOWNTO 0);
+    SIGNAL fb_le                : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL fb_vdoe              : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL fbee_conf            : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL fd_int               : STD_LOGIC;
     SIGNAL fdc_cs_n             : STD_LOGIC;
     SIGNAL fdc_wr_n             : STD_LOGIC;
     SIGNAL fifo_clr             : STD_LOGIC;
-    SIGNAL fifo_mw              : STD_LOGIC_VECTOR(8 DOWNTO 0);
+    SIGNAL fifo_mw              : STD_LOGIC_VECTOR (8 DOWNTO 0);
     SIGNAL hd_dd_out            : STD_LOGIC;
     SIGNAL hsync_i              : STD_LOGIC;
     SIGNAL ide_cf_ta            : STD_LOGIC;
@@ -418,7 +418,7 @@ ARCHITECTURE Structure of firebee is
     SIGNAL keyb_rxd             : STD_LOGIC;
     SIGNAL lds                  : STD_LOGIC;
     SIGNAL locked               : STD_LOGIC;
-    SIGNAL lp_d_x               : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL lp_d_x               : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL lp_dir_x             : STD_LOGIC;
     SIGNAL mfp_cs               : STD_LOGIC;
     SIGNAL mfp_intack           : STD_LOGIC;
@@ -443,7 +443,7 @@ ARCHITECTURE Structure of firebee is
     SIGNAL scsi_dbp_out_n       : STD_LOGIC;
     SIGNAL scsi_drq             : STD_LOGIC;
     SIGNAL scsi_int             : STD_LOGIC;
-    SIGNAL scsi_d_out_n         : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL scsi_d_out_n         : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL scsi_rst_en          : STD_LOGIC;
     SIGNAL scsi_rst_out_n       : STD_LOGIC;
     SIGNAL scsi_sel_en          : STD_LOGIC;
@@ -460,28 +460,28 @@ ARCHITECTURE Structure of firebee is
     SIGNAL sr_ddr_wr            : STD_LOGIC;
     SIGNAL sr_ddrwr_d_sel       : STD_LOGIC;
     SIGNAL sr_fifo_wre          : STD_LOGIC;
-    SIGNAL sr_vdmp              : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL sr_vdmp              : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL tdo                  : STD_LOGIC;
-    SIGNAL timebase             : unsigned (17 DOWNTO 0);
+    SIGNAL timebase             : UNSIGNED (17 DOWNTO 0);
     SIGNAL vd_en                : STD_LOGIC;
     SIGNAL vd_en_i              : STD_LOGIC;
-    SIGNAL vd_out               : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL vd_out               : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL vd_qs_en             : STD_LOGIC;
-    SIGNAL vd_qs_out            : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL vd_vz                : STD_LOGIC_VECTOR(127 DOWNTO 0);
-    SIGNAL vdm_sel              : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL vdp_in               : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL vdp_out              : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL vdp_q1               : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL vdp_q2               : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL vdp_q3               : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL vdr                  : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL vd_qs_out            : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL vd_vz                : STD_LOGIC_VECTOR (127 DOWNTO 0);
+    SIGNAL vdm_sel              : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL vdp_in               : STD_LOGIC_VECTOR (63 DOWNTO 0);
+    SIGNAL vdp_out              : STD_LOGIC_VECTOR (63 DOWNTO 0);
+    SIGNAL vdp_q1               : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL vdp_q2               : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL vdp_q3               : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL vdr                  : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL video_ddr_ta         : STD_LOGIC;
     SIGNAL video_mod_ta         : STD_LOGIC;
-    SIGNAL video_ram_ctr        : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL video_ram_ctr        : STD_LOGIC_VECTOR (15 DOWNTO 0);
     SIGNAL video_reconfig       : STD_LOGIC;
     SIGNAL vr_busy              : STD_LOGIC;
-    SIGNAL vr_d                 : STD_LOGIC_VECTOR(8 DOWNTO 0);
+    SIGNAL vr_d                 : STD_LOGIC_VECTOR (8 DOWNTO 0);
     SIGNAL vr_rd                : STD_LOGIC;
     SIGNAL vr_wr                : STD_LOGIC;
     SIGNAL vsync_i              : STD_LOGIC;
@@ -535,9 +535,9 @@ BEGIN
             reconfig            => video_reconfig,
             read_param          => vr_rd,
             write_param         => vr_wr,
-            data_in             => FB_AD(24 DOWNTO 16),     -- FIXED: this looks like a typo. Must be FB_AD(24 DOWNTO 16) instead of fb_adr(24 DOWNTO 16)
-            counter_type        => fb_adr(5 DOWNTO 2),
-            counter_param       => fb_adr(8 DOWNTO 6),
+            data_in             => FB_AD (24 DOWNTO 16),    -- FIXED: this looks like a typo. Must be FB_AD(24 DOWNTO 16) instead of fb_adr(24 DOWNTO 16)
+            counter_type        => fb_adr (5 DOWNTO 2),
+            counter_param       => fb_adr (8 DOWNTO 6),
             pll_scandataout     => pll_scandataout,
             pll_scandone        => pll_scandone,
             clock               => CLK_MAIN,
