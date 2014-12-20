@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- This file is part of the 'Firebee' project.                  ----
+---- This file is part OF the 'Firebee' project.                  ----
 ---- http://acp.atari.org                                         ----
 ----                                                              ----
 ---- Description:                                                 ----
----- This design unit provides the video toplevel of the 'Firebee'----
----- computer. It is optimized for the use of an Altera Cyclone   ----
+---- This design unit provides the video toplevel OF the 'Firebee'----
+---- computer. It is optimized FOR the   OF an Altera Cyclone   ----
 ---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----
----- tion of the Firebee configware originally provided by Fredi  ----
----- Ashwanden  and Wolfgang Förster. This release is in compa-   ----
----- rision to the first edition completely written in VHDL.      ----
+---- tion OF the Firebee configware originally provided by Fredi  ----
+---- Ashwanden  and Wolfgang Förster. This release is IN compa-   ----
+---- rision TO the first edition completely written IN VHDL.      ----
 ----                                                              ----
 ---- Author(s):                                                   ----
 ---- - Wolfgang Foerster, wf@experiment-s.de; wf@inventronik.de   ----
@@ -19,19 +19,19 @@
 ---- Copyright (C) 2012 Wolfgang Förster                          ----
 ----                                                              ----
 ---- This source file is free software; you can redistribute it   ----
----- and/or modify it under the terms of the GNU General Public   ----
+---- and/or modify it under the terms OF the GNU General Public   ----
 ---- License as published by the Free Software Foundation; either ----
----- version 2 of the License, or (at your option) any later      ----
+---- version 2 OF the License, or (at your option) any later      ----
 ---- version.                                                     ----
 ----                                                              ----
----- This program is distributed in the hope that it will be      ----
----- useful, but WITHOUT ANY WARRANTY; without even the implied   ----
----- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      ----
----- PURPOSE.  See the GNU General Public License for more        ----
+---- This program is distributed IN the hope that it will be      ----
+----    ful, but WITHOUT ANY WARRANTY; without even the implied   ----
+---- warranty OF MERCHANTABILITY or FITNESS FOR A PARTICULAR      ----
+---- PURPOSE.  See the GNU General Public License FOR more        ----
 ---- details.                                                     ----
 ----                                                              ----
----- You should have received a copy of the GNU General Public    ----
----- License along with this program; if not, write to the Free   ----
+---- You should have received a copy OF the GNU General Public    ----
+---- License along with this program; IF not, write TO the Free   ----
 ---- Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  ----
 ---- Boston, MA 02110-1301, USA.                                  ----
 ----                                                              ----
@@ -40,361 +40,361 @@
 -- Revision History
 -- 
 -- Revision 2K12B  20120801 WF
---   Initial Release of the second edition.
---     ST colours enhanced to 4 bit colour mode (STE compatibility).
+--   Initial Release OF the second edition.
+--     ST colours enhanced TO 4 bit colour mode (STE compatibility).
 
-library work;
-use work.firebee_pkg.all;
+LIBRARY work;
+    USE work.firebee_pkg.ALL;
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+    USE IEEE.std_logic_1164.ALL;
+    USE IEEE.numeric_std.ALL;
 
-entity VIDEO_SYSTEM is
-    port(
-        CLK_MAIN            : in std_logic;
-        CLK_33M             : in std_logic;
-        CLK_25M             : in std_logic;
-        CLK_VIDEO           : in std_logic;
-        CLK_DDR3            : in std_logic;
-        CLK_DDR2            : in std_logic;
-        CLK_DDR0            : in std_logic;
-        CLK_PIXEL           : out std_logic;
+ENTITY VIDEO_SYSTEM IS
+    PORT (
+        CLK_MAIN            : IN STD_LOGIC;
+        CLK_33M             : IN STD_LOGIC;
+        CLK_25M             : IN STD_LOGIC;
+        CLK_VIDEO           : IN STD_LOGIC;
+        CLK_DDR3            : IN STD_LOGIC;
+        CLK_DDR2            : IN STD_LOGIC;
+        CLK_DDR0            : IN STD_LOGIC;
+        CLK_PIXEL           : OUT STD_LOGIC;
         
-        VR_D                : in std_logic_vector(8 downto 0);
-        VR_BUSY             : in std_logic;
+        VR_D                : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+        VR_BUSY             : IN STD_LOGIC;
         
-        FB_ADR              : in std_logic_vector(31 downto 0);
-        FB_AD_IN            : in std_logic_vector(31 downto 0);
-        FB_AD_OUT           : out std_logic_vector(31 downto 0);
-        FB_AD_EN_31_16      : out std_logic; -- Hi word.
-        FB_AD_EN_15_0       : out std_logic; -- Low word.
-        FB_ALE              : in std_logic;
-        FB_CSn              : in std_logic_vector(3 downto 1);
-        FB_OEn              : in std_logic;
-        FB_WRn              : in std_logic;
-        FB_SIZE1            : in std_logic;
-        FB_SIZE0            : in std_logic;
+        FB_ADR              : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        FB_AD_IN            : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        FB_AD_OUT           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        FB_AD_EN_31_16      : OUT STD_LOGIC; -- Hi word.
+        FB_AD_EN_15_0       : OUT STD_LOGIC; -- Low word.
+        FB_ALE              : IN STD_LOGIC;
+        FB_CSn              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+        FB_OEn              : IN STD_LOGIC;
+        FB_WRn              : IN STD_LOGIC;
+        FB_SIZE1            : IN STD_LOGIC;
+        FB_SIZE0            : IN STD_LOGIC;
         
-        VDP_IN              : in std_logic_vector(63 downto 0);
+        VDP_IN              : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-        VR_RD               : out std_logic;
-        VR_WR               : out std_logic;
-        VIDEO_RECONFIG      : out std_logic;
+        VR_RD               : OUT STD_LOGIC;
+        VR_WR               : OUT STD_LOGIC;
+        VIDEO_RECONFIG      : OUT STD_LOGIC;
 
-        RED                 : out std_logic_vector(7 downto 0);
-        GREEN               : out std_logic_vector(7 downto 0);
-        BLUE                : out std_logic_vector(7 downto 0);
-        VSYNC               : out std_logic;
-        HSYNC               : out std_logic;
-        SYNCn               : out std_logic;
-        BLANKn              : out std_logic;
+        RED                 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        GREEN               : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        BLUE                : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        VSYNC               : OUT STD_LOGIC;
+        HSYNC               : OUT STD_LOGIC;
+        SYNCn               : OUT STD_LOGIC;
+        BLANKn              : OUT STD_LOGIC;
         
-        PD_VGAn             : out std_logic;
-        VIDEO_MOD_TA        : out std_logic;
+        PD_VGAn             : OUT STD_LOGIC;
+        VIDEO_MOD_TA        : OUT STD_LOGIC;
 
-        VD_VZ               : out std_logic_vector(127 downto 0);
-        SR_FIFO_WRE         : in std_logic;
-        SR_VDMP             : in std_logic_vector(7 downto 0);
-        FIFO_MW             : out std_logic_vector(8 downto 0);
-        VDM_SEL             : in std_logic_vector(3 downto 0);
-        VIDEO_RAM_CTR       : out std_logic_vector(15 downto 0);
-        FIFO_CLR            : out std_logic;
-        VDM                 : out std_logic_vector(3 downto 0);
+        VD_VZ               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+        SR_FIFO_WRE         : IN STD_LOGIC;
+        SR_VDMP             : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+        FIFO_MW             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
+        VDM_SEL             : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        VIDEO_RAM_CTR       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        FIFO_CLR            : OUT STD_LOGIC;
+        VDM                 : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
         
-        BLITTER_RUN         : in std_logic;
-        BLITTER_ON          : out std_logic
+        BLITTER_RUN         : IN STD_LOGIC;
+        BLITTER_ON          : OUT STD_LOGIC
     );
-end entity VIDEO_SYSTEM;
+END ENTITY VIDEO_SYSTEM;
         
-architecture BEHAVIOUR of VIDEO_SYSTEM is
-	component lpm_fifo_dc0
-		port(
-			aclr		: in std_logic  := '0';
-			data		: in std_logic_vector (127 downto 0);
-			rdclk		: in std_logic ;
-			rdreq		: in std_logic ;
-			wrclk		: in std_logic ;
-			wrreq		: in std_logic ;
-			q		    : out std_logic_vector (127 downto 0);
-			rdempty		: out STD_LOGIC ;
-			wrusedw		: out std_logic_vector (8 downto 0)
+ARCHITECTURE BEHAVIOUR OF VIDEO_SYSTEM is
+	COMPONENT lpm_fifo_dc0
+		PORT(
+			aclr		: IN STD_LOGIC  := '0';
+			data		: IN STD_LOGIC_VECTOR (127 DOWNTO 0);
+			rdclk		: IN STD_LOGIC ;
+			rdreq		: IN STD_LOGIC ;
+			wrclk		: IN STD_LOGIC ;
+			wrreq		: IN STD_LOGIC ;
+			q		    : OUT STD_LOGIC_VECTOR (127 DOWNTO 0);
+			rdempty		: OUT STD_LOGIC ;
+			wrusedw		: OUT STD_LOGIC_VECTOR (8 DOWNTO 0)
 		);
-	end component;
+	END COMPONENT;
 	
-	component lpm_fifoDZ is
-		port(
-			aclr		: in std_logic ;
-			clock		: in std_logic ;
-			data		: in std_logic_vector (127 downto 0);
-			rdreq		: in std_logic ;
-			wrreq		: in std_logic ;
-			q		   : out std_logic_vector (127 downto 0)
+	COMPONENT lpm_fifoDZ is
+		PORT(
+			aclr		: IN STD_LOGIC ;
+			clock		: IN STD_LOGIC ;
+			data		: IN STD_LOGIC_VECTOR (127 DOWNTO 0);
+			rdreq		: IN STD_LOGIC ;
+			wrreq		: IN STD_LOGIC ;
+			q		   : OUT STD_LOGIC_VECTOR (127 DOWNTO 0)
 		);
-	end component;
+	END COMPONENT;
 	
-	type CLUT_SHIFTREG_TYPE is array(0 to 7) of std_logic_vector(15 downto 0);
-	type CLUT_ST_TYPE is array(0 to 15) of std_logic_vector(11 downto 0);
-	type CLUT_FA_TYPE is array(0 to 255) of std_logic_vector(17 downto 0);
-	type CLUT_FBEE_TYPE is array(0 to 255) of std_logic_vector(23 downto 0);
+	TYPE CLUT_SHIFTREG_TYPE is ARRAY(0 TO 7) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
+	TYPE CLUT_ST_TYPE is ARRAY(0 TO 15) OF STD_LOGIC_VECTOR(11 DOWNTO 0);
+	TYPE CLUT_FA_TYPE is ARRAY(0 TO 255) OF STD_LOGIC_VECTOR(17 DOWNTO 0);
+	TYPE CLUT_FBEE_TYPE is ARRAY(0 TO 255) OF STD_LOGIC_VECTOR(23 DOWNTO 0);
 	
-	signal CLUT_FA              : CLUT_FA_TYPE;
-	signal CLUT_FI              : CLUT_FBEE_TYPE;
-	signal CLUT_ST              : CLUT_ST_TYPE;
+	SIGNAL CLUT_FA              : CLUT_FA_TYPE;
+	SIGNAL CLUT_FI              : CLUT_FBEE_TYPE;
+	SIGNAL CLUT_ST              : CLUT_ST_TYPE;
 	
-	signal CLUT_FA_R            : std_logic_vector(5 downto 0);  
-	signal CLUT_FA_G            : std_logic_vector(5 downto 0);
-	signal CLUT_FA_B            : std_logic_vector(5 downto 0);
-	signal CLUT_FBEE_R          : std_logic_vector(7 downto 0);  
-	signal CLUT_FBEE_G          : std_logic_vector(7 downto 0);
-	signal CLUT_FBEE_B          : std_logic_vector(7 downto 0);
-	signal CLUT_ST_R            : std_logic_vector(3 downto 0);  
-	signal CLUT_ST_G            : std_logic_vector(3 downto 0);
-	signal CLUT_ST_B            : std_logic_vector(3 downto 0);
+	SIGNAL CLUT_FA_R            : STD_LOGIC_VECTOR(5 DOWNTO 0);  
+	SIGNAL CLUT_FA_G            : STD_LOGIC_VECTOR(5 DOWNTO 0);
+	SIGNAL CLUT_FA_B            : STD_LOGIC_VECTOR(5 DOWNTO 0);
+	SIGNAL CLUT_FBEE_R          : STD_LOGIC_VECTOR(7 DOWNTO 0);  
+	SIGNAL CLUT_FBEE_G          : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL CLUT_FBEE_B          : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL CLUT_ST_R            : STD_LOGIC_VECTOR(3 DOWNTO 0);  
+	SIGNAL CLUT_ST_G            : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL CLUT_ST_B            : STD_LOGIC_VECTOR(3 DOWNTO 0);
 	
-	signal CLUT_FA_OUT          : std_logic_vector(17 downto 0);
-	signal CLUT_FBEE_OUT        : std_logic_vector(23 downto 0);
-	signal CLUT_ST_OUT          : std_logic_vector(11 downto 0);
+	SIGNAL CLUT_FA_OUT          : STD_LOGIC_VECTOR(17 DOWNTO 0);
+	SIGNAL CLUT_FBEE_OUT        : STD_LOGIC_VECTOR(23 DOWNTO 0);
+	SIGNAL CLUT_ST_OUT          : STD_LOGIC_VECTOR(11 DOWNTO 0);
 	
-	signal CLUT_ADR             : std_logic_vector(7 downto 0);        
-	signal CLUT_ADR_A           : std_logic_vector(7 downto 0);
-	signal CLUT_ADR_MUX         : std_logic_vector(3 downto 0);
-	signal CLUT_SHIFT_IN        : std_logic_vector(5 downto 0);
+	SIGNAL CLUT_ADR             : STD_LOGIC_VECTOR(7 DOWNTO 0);        
+	SIGNAL CLUT_ADR_A           : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL CLUT_ADR_MUX         : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL CLUT_SHIFT_IN        : STD_LOGIC_VECTOR(5 DOWNTO 0);
 	
-	signal CLUT_SHIFT_LOAD      : std_logic;
-	signal CLUT_OFF             : std_logic_vector(3 downto 0);
-	signal CLUT_FBEE_RD         : std_logic;
-	signal CLUT_FBEE_WR         : std_logic_vector(3 downto 0);
-	signal CLUT_FA_RDH          : std_logic;
-	signal CLUT_FA_RDL          : std_logic;
-	signal CLUT_FA_WR           : std_logic_vector(3 downto 0);
-	signal CLUT_ST_RD           : std_logic;
-	signal CLUT_ST_WR           : std_logic_vector(1 downto 0);
+	SIGNAL CLUT_SHIFT_LOAD      : STD_LOGIC;
+	SIGNAL CLUT_OFF             : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL CLUT_FBEE_RD         : STD_LOGIC;
+	SIGNAL CLUT_FBEE_WR         : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL CLUT_FA_RDH          : STD_LOGIC;
+	SIGNAL CLUT_FA_RDL          : STD_LOGIC;
+	SIGNAL CLUT_FA_WR           : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL CLUT_ST_RD           : STD_LOGIC;
+	SIGNAL CLUT_ST_WR           : STD_LOGIC_VECTOR(1 DOWNTO 0);
 	
-	signal DATA_OUT_VIDEO_CTRL  : std_logic_vector(31 downto 0);
-	signal DATA_EN_H_VIDEO_CTRL : std_logic;
-	signal DATA_EN_L_VIDEO_CTRL : std_logic;
+	SIGNAL DATA_OUT_VIDEO_CTRL  : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	SIGNAL DATA_EN_H_VIDEO_CTRL : STD_LOGIC;
+	SIGNAL DATA_EN_L_VIDEO_CTRL : STD_LOGIC;
 	
-	signal COLOR1               : std_logic;
-	signal COLOR2               : std_logic;
-	signal COLOR4               : std_logic;
-	signal COLOR8               : std_logic;
-	signal CCR                  : std_logic_vector(23 downto 0);
-	signal CC_SEL               : std_logic_vector(2 downto 0);
+	SIGNAL COLOR1               : STD_LOGIC;
+	SIGNAL COLOR2               : STD_LOGIC;
+	SIGNAL COLOR4               : STD_LOGIC;
+	SIGNAL COLOR8               : STD_LOGIC;
+	SIGNAL CCR                  : STD_LOGIC_VECTOR(23 DOWNTO 0);
+	SIGNAL CC_SEL               : STD_LOGIC_VECTOR(2 DOWNTO 0);
 	
-	signal FIFO_CLR_I           : std_logic;
-	signal DOP_FIFO_CLR         : std_logic;
-	signal FIFO_WRE             : std_logic;
+	SIGNAL FIFO_CLR_I           : STD_LOGIC;
+	SIGNAL DOP_FIFO_CLR         : STD_LOGIC;
+	SIGNAL FIFO_WRE             : STD_LOGIC;
 	
-	signal FIFO_RD_REQ_128      : std_logic;
-	signal FIFO_RD_REQ_512      : std_logic;
-	signal FIFO_RDE             : std_logic;
-	signal INTER_ZEI            : std_logic;
-	signal FIFO_D_OUT_128       : std_logic_vector(127 downto 0);
-	signal FIFO_D_OUT_512       : std_logic_vector(127 downto 0);
-	signal FIFO_D_IN_512        : std_logic_vector(127 downto 0);
-	signal FIFO_D               : std_logic_vector(127 downto 0);
+	SIGNAL FIFO_RD_REQ_128      : STD_LOGIC;
+	SIGNAL FIFO_RD_REQ_512      : STD_LOGIC;
+	SIGNAL FIFO_RDE             : STD_LOGIC;
+	SIGNAL INTER_ZEI            : STD_LOGIC;
+	SIGNAL FIFO_D_OUT_128       : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL FIFO_D_OUT_512       : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL FIFO_D_IN_512        : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL FIFO_D               : STD_LOGIC_VECTOR(127 DOWNTO 0);
 	
-	signal VD_VZ_I              : std_logic_vector(127 downto 0);
-	signal VDM_A                : std_logic_vector(127 downto 0);
-	signal VDM_B                : std_logic_vector(127 downto 0);
-	signal VDM_C                : std_logic_vector(127 downto 0);
-	signal V_DMA_SEL            : std_logic_vector(3 downto 0);
-	signal VDMP                 : std_logic_vector(7 downto 0);
-	signal VDMP_I               : std_logic_vector(7 downto 0);
-	signal CC_24                : std_logic_vector(31 downto 0);
-	signal CC_16                : std_logic_vector(23 downto 0);
-	signal CLK_PIXEL_I          : std_logic;
-	signal VD_OUT_I             : std_logic_vector(31 downto 0);
-	signal ZR_C8                : std_logic_vector(7 downto 0);
+	SIGNAL VD_VZ_I              : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL VDM_A                : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL VDM_B                : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL VDM_C                : STD_LOGIC_VECTOR(127 DOWNTO 0);
+	SIGNAL V_DMA_SEL            : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL VDMP                 : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL VDMP_I               : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL CC_24                : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	SIGNAL CC_16                : STD_LOGIC_VECTOR(23 DOWNTO 0);
+	SIGNAL CLK_PIXEL_I          : STD_LOGIC;
+	SIGNAL VD_OUT_I             : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	SIGNAL ZR_C8                : STD_LOGIC_VECTOR(7 DOWNTO 0);
 	
-begin
+BEGIN
 	CLK_PIXEL <= CLK_PIXEL_I;
 	FIFO_CLR <= FIFO_CLR_I;
 		
-	P_CLUT_ST_MC: process
-		-- This is the dual ported ram for the ST colour lookup tables.
-	 	variable clut_fa_index			: integer;
-		variable clut_st_index			: integer;
-		variable clut_fi_index			: integer;
-	begin
-		clut_st_index := to_integer(unsigned(FB_ADR(4 downto 1)));
-		clut_fa_index := to_integer(unsigned(FB_ADR(9 downto 2)));
-		clut_fi_index := to_integer(unsigned(FB_ADR(9 downto 2)));
+	P_CLUT_ST_MC: PROCESS
+		-- This is the dual ported ram FOR the ST colour lookup tables.
+	 	VARIABLE clut_fa_index			: integer;
+		VARIABLE clut_st_index			: integer;
+		VARIABLE clut_fi_index			: integer;
+	BEGIN
+		clut_st_index := TO_INTEGER(UNSIGNED(FB_ADR(4 DOWNTO 1)));
+		clut_fa_index := TO_INTEGER(UNSIGNED(FB_ADR(9 DOWNTO 2)));
+		clut_fi_index := TO_INTEGER(UNSIGNED(FB_ADR(9 DOWNTO 2)));
 
-		wait until rising_edge(CLK_MAIN);
-		if CLUT_ST_WR(0) = '1' then
-			CLUT_ST(clut_st_index)(11 downto 8) <= FB_AD_IN(27 downto 24);
-		end if;
-		if CLUT_ST_WR(1) = '1' then
-			CLUT_ST(clut_st_index)(7 downto 0) <= FB_AD_IN(23 downto 16);
-		end if;
+		WAIT UNTIL RISING_EDGE(CLK_MAIN);
+		IF CLUT_ST_WR(0) = '1' THEN
+			CLUT_ST(clut_st_index)(11 DOWNTO 8) <= FB_AD_IN(27 DOWNTO 24);
+		END IF;
+		IF CLUT_ST_WR(1) = '1' THEN
+			CLUT_ST(clut_st_index)(7 DOWNTO 0) <= FB_AD_IN(23 DOWNTO 16);
+		END IF;
 
-		if CLUT_FA_WR(0) = '1' then
-			CLUT_FA(clut_fa_index)(17 downto 12) <= FB_AD_IN(31 downto 26);
-		end if;
-		if CLUT_FA_WR(1) = '1' then
-			CLUT_FA(clut_fa_index)(11 downto 6) <= FB_AD_IN(23 downto 18);
-		end if;
-		if CLUT_FA_WR(3) = '1' then
-			CLUT_FA(clut_fa_index)(5 downto 0) <= FB_AD_IN(23 downto 18);
-		end if;
+		IF CLUT_FA_WR(0) = '1' THEN
+			CLUT_FA(clut_fa_index)(17 DOWNTO 12) <= FB_AD_IN(31 DOWNTO 26);
+		END IF;
+		IF CLUT_FA_WR(1) = '1' THEN
+			CLUT_FA(clut_fa_index)(11 DOWNTO 6) <= FB_AD_IN(23 DOWNTO 18);
+		END IF;
+		IF CLUT_FA_WR(3) = '1' THEN
+			CLUT_FA(clut_fa_index)(5 DOWNTO 0) <= FB_AD_IN(23 DOWNTO 18);
+		END IF;
 
-		if CLUT_FBEE_WR(1) = '1' then
-			CLUT_FI(clut_fi_index)(23 downto 16) <= FB_AD_IN(23 downto 16);
-		end if;
-		if CLUT_FBEE_WR(2) = '1' then
-			CLUT_FI(clut_fi_index)(15 downto 8) <= FB_AD_IN(15 downto 8);
-		end if;
-		if CLUT_FBEE_WR(3) = '1' then
-			CLUT_FI(clut_fi_index)(7 downto 0) <= FB_AD_IN(7 downto 0);
-		end if;
+		IF CLUT_FBEE_WR(1) = '1' THEN
+			CLUT_FI(clut_fi_index)(23 DOWNTO 16) <= FB_AD_IN(23 DOWNTO 16);
+		END IF;
+		IF CLUT_FBEE_WR(2) = '1' THEN
+			CLUT_FI(clut_fi_index)(15 DOWNTO 8) <= FB_AD_IN(15 DOWNTO 8);
+		END IF;
+		IF CLUT_FBEE_WR(3) = '1' THEN
+			CLUT_FI(clut_fi_index)(7 DOWNTO 0) <= FB_AD_IN(7 DOWNTO 0);
+		END IF;
         --
 		CLUT_ST_OUT <= CLUT_ST(clut_st_index);
 		CLUT_FA_OUT <= CLUT_FA(clut_fa_index);
 		CLUT_FBEE_OUT <= CLUT_FI(clut_fi_index);
-	end process P_CLUT_ST_MC;
+	END PROCESS P_CLUT_ST_MC;
 
-	P_CLUT_ST_PX: process
-		variable clut_fa_index			: integer;
-		variable clut_st_index			: integer;
-		variable clut_fi_index			: integer;
-		-- This is the dual ported ram for the ST colour lookup tables.
-	begin
-		clut_st_index := to_integer(unsigned(CLUT_ADR(3 downto 0)));
-		clut_fa_index := to_integer(unsigned(CLUT_ADR));
-		clut_fi_index := to_integer(unsigned(ZR_C8));
+	P_CLUT_ST_PX: PROCESS
+		VARIABLE clut_fa_index			: integer;
+		VARIABLE clut_st_index			: integer;
+		VARIABLE clut_fi_index			: integer;
+		-- This is the dual ported ram FOR the ST colour lookup tables.
+	BEGIN
+		clut_st_index := TO_INTEGER(UNSIGNED(CLUT_ADR(3 DOWNTO 0)));
+		clut_fa_index := TO_INTEGER(UNSIGNED(CLUT_ADR));
+		clut_fi_index := TO_INTEGER(UNSIGNED(ZR_C8));
 		
-		wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
+		WAIT UNTIL CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
 
-		CLUT_ST_R <= CLUT_ST(clut_st_index)(8) & CLUT_ST(clut_st_index)(11 downto 9);
-		CLUT_ST_G <= CLUT_ST(clut_st_index)(4) & CLUT_ST(clut_st_index)(7 downto 5);
-		CLUT_ST_B <= CLUT_ST(clut_st_index)(0) & CLUT_ST(clut_st_index)(3 downto 1);
+		CLUT_ST_R <= CLUT_ST(clut_st_index)(8) & CLUT_ST(clut_st_index)(11 DOWNTO 9);
+		CLUT_ST_G <= CLUT_ST(clut_st_index)(4) & CLUT_ST(clut_st_index)(7 DOWNTO 5);
+		CLUT_ST_B <= CLUT_ST(clut_st_index)(0) & CLUT_ST(clut_st_index)(3 DOWNTO 1);
 		
-		CLUT_FA_R <= CLUT_FA(clut_fa_index)(17 downto 12);
-		CLUT_FA_G <= CLUT_FA(clut_fa_index)(11 downto 6);
-		CLUT_FA_B <= CLUT_FA(clut_fa_index)(5 downto 0);
+		CLUT_FA_R <= CLUT_FA(clut_fa_index)(17 DOWNTO 12);
+		CLUT_FA_G <= CLUT_FA(clut_fa_index)(11 DOWNTO 6);
+		CLUT_FA_B <= CLUT_FA(clut_fa_index)(5 DOWNTO 0);
 		
-		CLUT_FBEE_R <= CLUT_FI(clut_fi_index)(23 downto 16);
-		CLUT_FBEE_G <= CLUT_FI(clut_fi_index)(15 downto 8);
-		CLUT_FBEE_B <= CLUT_FI(clut_fi_index)(7 downto 0);
-	end process P_CLUT_ST_PX;
+		CLUT_FBEE_R <= CLUT_FI(clut_fi_index)(23 DOWNTO 16);
+		CLUT_FBEE_G <= CLUT_FI(clut_fi_index)(15 DOWNTO 8);
+		CLUT_FBEE_B <= CLUT_FI(clut_fi_index)(7 DOWNTO 0);
+	END PROCESS P_CLUT_ST_PX;
 
-	P_VIDEO_OUT: process
-		variable VIDEO_OUT  : std_logic_vector(23 downto 0);
-	begin
-		wait until rising_edge(CLK_PIXEL_I);
-		case CC_SEL is
-			when "111" => VIDEO_OUT := CCR; -- Register type video.
-			when "110" => VIDEO_OUT := CC_24(23 downto 0); -- 3 byte FIFO type video.
-			when "101" => VIDEO_OUT := CC_16; -- 2 byte FIFO type video.
-			when "100" => VIDEO_OUT := CLUT_FBEE_R & CLUT_FBEE_G & CLUT_FBEE_B; -- Firebee type video.
-			when "001" => VIDEO_OUT := CLUT_FA_R & "00" & CLUT_FA_G & "00" & CLUT_FA_B & "00"; -- Falcon type video.
-			when "000" => VIDEO_OUT := CLUT_ST_R & x"0" & CLUT_ST_G & x"0" & CLUT_ST_B & x"0"; -- ST type video.
-			when others => VIDEO_OUT := (others => '0');
-		end case;
-		RED <= VIDEO_OUT(23 downto 16);
-		GREEN <= VIDEO_OUT(15 downto 8);
-		BLUE <= VIDEO_OUT(7 downto 0);
-	end process P_VIDEO_OUT;
+	P_VIDEO_OUT: PROCESS
+		VARIABLE VIDEO_OUT  : STD_LOGIC_VECTOR(23 DOWNTO 0);
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_PIXEL_I);
+		CASE CC_SEL is
+			WHEN "111" => VIDEO_OUT := CCR; -- Register TYPE video.
+			WHEN "110" => VIDEO_OUT := CC_24(23 DOWNTO 0); -- 3 byte FIFO TYPE video.
+			WHEN "101" => VIDEO_OUT := CC_16; -- 2 byte FIFO TYPE video.
+			WHEN "100" => VIDEO_OUT := CLUT_FBEE_R & CLUT_FBEE_G & CLUT_FBEE_B; -- Firebee TYPE video.
+			WHEN "001" => VIDEO_OUT := CLUT_FA_R & "00" & CLUT_FA_G & "00" & CLUT_FA_B & "00"; -- Falcon TYPE video.
+			WHEN "000" => VIDEO_OUT := CLUT_ST_R & x"0" & CLUT_ST_G & x"0" & CLUT_ST_B & x"0"; -- ST TYPE video.
+			WHEN OTHERS => VIDEO_OUT := (OTHERS => '0');
+		END CASE;
+		RED <= VIDEO_OUT(23 DOWNTO 16);
+		GREEN <= VIDEO_OUT(15 DOWNTO 8);
+		BLUE <= VIDEO_OUT(7 DOWNTO 0);
+	END PROCESS P_VIDEO_OUT;
 
-	P_CC: process
-		variable CC24_I : std_logic_vector(31 downto 0);
-      variable CC_I   : std_logic_vector(15 downto 0);
-      variable ZR_C8_I   : std_logic_vector(7 downto 0);
-	begin
-		wait until CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
-		case CLUT_ADR_MUX(1 downto 0) is
-			when "11" => CC24_I := FIFO_D(31 downto 0);
-			when "10" => CC24_I := FIFO_D(63 downto 32);
-			when "01" => CC24_I := FIFO_D(95 downto 64);
-			when "00" => CC24_I := FIFO_D(127 downto 96);
-			when others => CC24_I := (others => 'Z');
-		end case;
+	P_CC: PROCESS
+		VARIABLE CC24_I : STD_LOGIC_VECTOR(31 DOWNTO 0);
+      VARIABLE CC_I   : STD_LOGIC_VECTOR(15 DOWNTO 0);
+      VARIABLE ZR_C8_I   : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	BEGIN
+		WAIT UNTIL CLK_PIXEL_I = '1' and CLK_PIXEL_I' event;
+		CASE CLUT_ADR_MUX(1 DOWNTO 0) is
+			WHEN "11" => CC24_I := FIFO_D(31 DOWNTO 0);
+			WHEN "10" => CC24_I := FIFO_D(63 DOWNTO 32);
+			WHEN "01" => CC24_I := FIFO_D(95 DOWNTO 64);
+			WHEN "00" => CC24_I := FIFO_D(127 DOWNTO 96);
+			WHEN OTHERS => CC24_I := (OTHERS => 'Z');
+		END CASE;
            --
 		CC_24 <= CC24_I;
            --
-		case CLUT_ADR_MUX(2 downto 0) is
-			when "111" => CC_I := FIFO_D(15 downto 0);
-			when "110" => CC_I := FIFO_D(31 downto 16);
-			when "101" => CC_I := FIFO_D(47 downto 32);
-			when "100" => CC_I := FIFO_D(63 downto 48);
-			when "011" => CC_I := FIFO_D(79 downto 64);
-			when "010" => CC_I := FIFO_D(95 downto 80);
-			when "001" => CC_I := FIFO_D(111 downto 96);
-			when "000" => CC_I := FIFO_D(127 downto 112);
-			when others => CC_I := (others => 'X');
-		end case;
+		CASE CLUT_ADR_MUX(2 DOWNTO 0) is
+			WHEN "111" => CC_I := FIFO_D(15 DOWNTO 0);
+			WHEN "110" => CC_I := FIFO_D(31 DOWNTO 16);
+			WHEN "101" => CC_I := FIFO_D(47 DOWNTO 32);
+			WHEN "100" => CC_I := FIFO_D(63 DOWNTO 48);
+			WHEN "011" => CC_I := FIFO_D(79 DOWNTO 64);
+			WHEN "010" => CC_I := FIFO_D(95 DOWNTO 80);
+			WHEN "001" => CC_I := FIFO_D(111 DOWNTO 96);
+			WHEN "000" => CC_I := FIFO_D(127 DOWNTO 112);
+			WHEN OTHERS => CC_I := (OTHERS => 'X');
+		END CASE;
            --
-		CC_16 <= CC_I(15 downto 11) & "000" & CC_I(10 downto 5) & "00" & CC_I(4 downto 0) & "000";
+		CC_16 <= CC_I(15 DOWNTO 11) & "000" & CC_I(10 DOWNTO 5) & "00" & CC_I(4 DOWNTO 0) & "000";
            --
-		case CLUT_ADR_MUX(3 downto 0) is
-			when x"F" => ZR_C8_I := FIFO_D(7 downto 0);
-			when x"E" => ZR_C8_I := FIFO_D(15 downto 8);
-			when x"D" => ZR_C8_I := FIFO_D(23 downto 16);
-			when x"C" => ZR_C8_I := FIFO_D(31 downto 24);
-			when x"B" => ZR_C8_I := FIFO_D(39 downto 32);
-			when x"A" => ZR_C8_I := FIFO_D(47 downto 40);
-			when x"9" => ZR_C8_I := FIFO_D(55 downto 48);
-			when x"8" => ZR_C8_I := FIFO_D(63 downto 56);
-			when x"7" => ZR_C8_I := FIFO_D(71 downto 64);
-			when x"6" => ZR_C8_I := FIFO_D(79 downto 72);
-			when x"5" => ZR_C8_I := FIFO_D(87 downto 80);
-			when x"4" => ZR_C8_I := FIFO_D(95 downto 88);
-			when x"3" => ZR_C8_I := FIFO_D(103 downto 96);
-			when x"2" => ZR_C8_I := FIFO_D(111 downto 104);
-			when x"1" => ZR_C8_I := FIFO_D(119 downto 112);
-			when x"0" => ZR_C8_I := FIFO_D(127 downto 120);
-			when others => ZR_C8_I := (others => 'X');
-		end case;
+		CASE CLUT_ADR_MUX(3 DOWNTO 0) is
+			WHEN x"F" => ZR_C8_I := FIFO_D(7 DOWNTO 0);
+			WHEN x"E" => ZR_C8_I := FIFO_D(15 DOWNTO 8);
+			WHEN x"D" => ZR_C8_I := FIFO_D(23 DOWNTO 16);
+			WHEN x"C" => ZR_C8_I := FIFO_D(31 DOWNTO 24);
+			WHEN x"B" => ZR_C8_I := FIFO_D(39 DOWNTO 32);
+			WHEN x"A" => ZR_C8_I := FIFO_D(47 DOWNTO 40);
+			WHEN x"9" => ZR_C8_I := FIFO_D(55 DOWNTO 48);
+			WHEN x"8" => ZR_C8_I := FIFO_D(63 DOWNTO 56);
+			WHEN x"7" => ZR_C8_I := FIFO_D(71 DOWNTO 64);
+			WHEN x"6" => ZR_C8_I := FIFO_D(79 DOWNTO 72);
+			WHEN x"5" => ZR_C8_I := FIFO_D(87 DOWNTO 80);
+			WHEN x"4" => ZR_C8_I := FIFO_D(95 DOWNTO 88);
+			WHEN x"3" => ZR_C8_I := FIFO_D(103 DOWNTO 96);
+			WHEN x"2" => ZR_C8_I := FIFO_D(111 DOWNTO 104);
+			WHEN x"1" => ZR_C8_I := FIFO_D(119 DOWNTO 112);
+			WHEN x"0" => ZR_C8_I := FIFO_D(127 DOWNTO 120);
+			WHEN OTHERS => ZR_C8_I := (OTHERS => 'X');
+		END CASE;
 			--
-		case COLOR1 is
-			when '1' => ZR_C8 <= ZR_C8_I;
-			when others => ZR_C8 <= "0000000" & ZR_C8_I(0); 
-		end case;
-	end process P_CC;
+		CASE COLOR1 is
+			WHEN '1' => ZR_C8 <= ZR_C8_I;
+			WHEN OTHERS => ZR_C8 <= "0000000" & ZR_C8_I(0); 
+		END CASE;
+	END PROCESS P_CC;
 
-	CLUT_SHIFT_IN <= CLUT_ADR_A(6 downto 1) when COLOR4 = '0' and COLOR2 = '0' else
-							CLUT_ADR_A(7 downto 2) when COLOR4 = '0' and COLOR2 = '1' else
-							"00" & CLUT_ADR_A(7 downto 4) when COLOR4 = '1' and COLOR2 = '0' else "000000";
+	CLUT_SHIFT_IN <= CLUT_ADR_A(6 DOWNTO 1) WHEN COLOR4 = '0' and COLOR2 = '0' ELSE
+							CLUT_ADR_A(7 DOWNTO 2) WHEN COLOR4 = '0' and COLOR2 = '1' ELSE
+							"00" & CLUT_ADR_A(7 DOWNTO 4) WHEN COLOR4 = '1' and COLOR2 = '0' ELSE "000000";
 
-	FIFO_RD_REQ_128 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '1' else '0';
-	FIFO_RD_REQ_512 <= '1' when FIFO_RDE = '1' and INTER_ZEI = '0' else '0';
+	FIFO_RD_REQ_128 <= '1' WHEN FIFO_RDE = '1' and INTER_ZEI = '1' ELSE '0';
+	FIFO_RD_REQ_512 <= '1' WHEN FIFO_RDE = '1' and INTER_ZEI = '0' ELSE '0';
 
-	FIFO_DMUX: process
-	begin
-		wait until rising_edge(CLK_PIXEL_I);
-		if FIFO_RDE = '1' and INTER_ZEI = '1' then
+	FIFO_DMUX: PROCESS
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_PIXEL_I);
+		IF FIFO_RDE = '1' and INTER_ZEI = '1' THEN
 			FIFO_D <= FIFO_D_OUT_128;
-		elsif FIFO_RDE = '1' then
+		ELSIF FIFO_RDE = '1' THEN
 			FIFO_D <= FIFO_D_OUT_512;
-		end if;
-	end process FIFO_DMUX;
+		END IF;
+	END PROCESS FIFO_DMUX;
 
-	CLUT_SHIFTREGS: process
-		variable CLUT_SHIFTREG   : CLUT_SHIFTREG_TYPE;
-	begin
-		wait until rising_edge(CLK_PIXEL_I);
+	CLUT_SHIFTREGS: PROCESS
+		VARIABLE CLUT_SHIFTREG   : CLUT_SHIFTREG_TYPE;
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_PIXEL_I);
 		CLUT_SHIFT_LOAD <= FIFO_RDE;
-		if CLUT_SHIFT_LOAD = '1' then
-			for i in 0 to 7 loop
-				CLUT_SHIFTREG(7 - i) := FIFO_D((i + 1) * 16 - 1 downto i * 16);
-			end loop;
-		else
-			CLUT_SHIFTREG(7) := CLUT_SHIFTREG(7)(14 downto 0) & CLUT_ADR_A(0);
-			CLUT_SHIFTREG(6) := CLUT_SHIFTREG(6)(14 downto 0) & CLUT_ADR_A(7);
-			CLUT_SHIFTREG(5) := CLUT_SHIFTREG(5)(14 downto 0) & CLUT_SHIFT_IN(5);
-			CLUT_SHIFTREG(4) := CLUT_SHIFTREG(4)(14 downto 0) & CLUT_SHIFT_IN(4);
-			CLUT_SHIFTREG(3) := CLUT_SHIFTREG(3)(14 downto 0) & CLUT_SHIFT_IN(3);
-			CLUT_SHIFTREG(2) := CLUT_SHIFTREG(2)(14 downto 0) & CLUT_SHIFT_IN(2);
-			CLUT_SHIFTREG(1) := CLUT_SHIFTREG(1)(14 downto 0) & CLUT_SHIFT_IN(1);
-			CLUT_SHIFTREG(0) := CLUT_SHIFTREG(0)(14 downto 0) & CLUT_SHIFT_IN(0);
-		end if;
+		IF CLUT_SHIFT_LOAD = '1' THEN
+			FOR i IN 0 TO 7 LOOP
+				CLUT_SHIFTREG(7 - i) := FIFO_D((i + 1) * 16 - 1 DOWNTO i * 16);
+			END LOOP;
+		ELSE
+			CLUT_SHIFTREG(7) := CLUT_SHIFTREG(7)(14 DOWNTO 0) & CLUT_ADR_A(0);
+			CLUT_SHIFTREG(6) := CLUT_SHIFTREG(6)(14 DOWNTO 0) & CLUT_ADR_A(7);
+			CLUT_SHIFTREG(5) := CLUT_SHIFTREG(5)(14 DOWNTO 0) & CLUT_SHIFT_IN(5);
+			CLUT_SHIFTREG(4) := CLUT_SHIFTREG(4)(14 DOWNTO 0) & CLUT_SHIFT_IN(4);
+			CLUT_SHIFTREG(3) := CLUT_SHIFTREG(3)(14 DOWNTO 0) & CLUT_SHIFT_IN(3);
+			CLUT_SHIFTREG(2) := CLUT_SHIFTREG(2)(14 DOWNTO 0) & CLUT_SHIFT_IN(2);
+			CLUT_SHIFTREG(1) := CLUT_SHIFTREG(1)(14 DOWNTO 0) & CLUT_SHIFT_IN(1);
+			CLUT_SHIFTREG(0) := CLUT_SHIFTREG(0)(14 DOWNTO 0) & CLUT_SHIFT_IN(0);
+		END IF;
 		--
-      for i in 0 to 7 loop
+      FOR i IN 0 TO 7 LOOP
 			CLUT_ADR_A(i) <= CLUT_SHIFTREG(i)(15);
-		end loop;
-	end process CLUT_SHIFTREGS;
+		END LOOP;
+	END PROCESS CLUT_SHIFTREGS;
 
 	CLUT_ADR(7) <= CLUT_OFF(3) or (CLUT_ADR_A(7) and COLOR8);
 	CLUT_ADR(6) <= CLUT_OFF(2) or (CLUT_ADR_A(6) and COLOR8);
@@ -405,77 +405,77 @@ begin
 	CLUT_ADR(1) <= CLUT_ADR_A(1) and (COLOR8 or COLOR4 or COLOR2);
 	CLUT_ADR(0) <= CLUT_ADR_A(0);
     
-	FB_AD_OUT <= x"0" & CLUT_ST_OUT & x"0000" when CLUT_ST_RD = '1' else
-						CLUT_FA_OUT(17 downto 12) & "00" & CLUT_FA_OUT(11 downto 6) & "00" & x"0000" when CLUT_FA_RDH = '1' else
-						x"00" & CLUT_FA_OUT(5 downto 0) & "00" & x"0000" when CLUT_FA_RDL = '1' else
-						x"00" & CLUT_FBEE_OUT when CLUT_FBEE_RD = '1' else 
-						DATA_OUT_VIDEO_CTRL when DATA_EN_H_VIDEO_CTRL = '1' else -- Use upper word.
-						DATA_OUT_VIDEO_CTRL when DATA_EN_L_VIDEO_CTRL = '1' else (others => '0'); -- Use lower word.
+	FB_AD_OUT <= x"0" & CLUT_ST_OUT & x"0000" WHEN CLUT_ST_RD = '1' ELSE
+						CLUT_FA_OUT(17 DOWNTO 12) & "00" & CLUT_FA_OUT(11 DOWNTO 6) & "00" & x"0000" WHEN CLUT_FA_RDH = '1' ELSE
+						x"00" & CLUT_FA_OUT(5 DOWNTO 0) & "00" & x"0000" WHEN CLUT_FA_RDL = '1' ELSE
+						x"00" & CLUT_FBEE_OUT WHEN CLUT_FBEE_RD = '1' ELSE 
+						DATA_OUT_VIDEO_CTRL WHEN DATA_EN_H_VIDEO_CTRL = '1' ELSE -- Use upper word.
+						DATA_OUT_VIDEO_CTRL WHEN DATA_EN_L_VIDEO_CTRL = '1' ELSE (OTHERS => '0'); -- Use lower word.
 
-	FB_AD_EN_31_16 <= '1' when CLUT_FBEE_RD = '1' else
-							'1' when CLUT_FA_RDH = '1' else
-							'1' when DATA_EN_H_VIDEO_CTRL = '1' else '0';
+	FB_AD_EN_31_16 <= '1' WHEN CLUT_FBEE_RD = '1' ELSE
+							'1' WHEN CLUT_FA_RDH = '1' ELSE
+							'1' WHEN DATA_EN_H_VIDEO_CTRL = '1' ELSE '0';
                 
-	FB_AD_EN_15_0 <= '1' when CLUT_FBEE_RD = '1' else
-							'1' when CLUT_FA_RDL = '1' else
-							'1' when DATA_EN_L_VIDEO_CTRL = '1' else '0';
+	FB_AD_EN_15_0 <= '1' WHEN CLUT_FBEE_RD = '1' ELSE
+							'1' WHEN CLUT_FA_RDL = '1' ELSE
+							'1' WHEN DATA_EN_L_VIDEO_CTRL = '1' ELSE '0';
     
 	VD_VZ <= VD_VZ_I;
     
-	DFF_CLK0: process
-	begin
-		wait until rising_edge(CLK_DDR0);
-		VD_VZ_I <= VD_VZ_I(63 downto 0) & VDP_IN(63 downto 0);
+	DFF_CLK0: PROCESS
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_DDR0);
+		VD_VZ_I <= VD_VZ_I(63 DOWNTO 0) & VDP_IN(63 DOWNTO 0);
 
-		if FIFO_WRE = '1' then
+		IF FIFO_WRE = '1' THEN
 			VDM_A <= VD_VZ_I;
 			VDM_B <= VDM_A;
-		end if;
-	end process DFF_CLK0;
+		END IF;
+	END PROCESS DFF_CLK0;
 
-	DFF_CLK2: process
-	begin
-		wait until rising_edge(CLK_DDR2);
+	DFF_CLK2: PROCESS
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_DDR2);
 		VDMP <= SR_VDMP;
-	end process DFF_CLK2;
+	END PROCESS DFF_CLK2;
 
-	DFF_CLK3: process
-	begin
-		wait until rising_edge(CLK_DDR3);
+	DFF_CLK3: PROCESS
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_DDR3);
 		VDMP_I <= VDMP;
-	end process DFF_CLK3;
+	END PROCESS DFF_CLK3;
 
-	VDM <= VDMP_I(7 downto 4) when CLK_DDR3 = '1' else VDMP_I(3 downto 0);
+	VDM <= VDMP_I(7 DOWNTO 4) WHEN CLK_DDR3 = '1' ELSE VDMP_I(3 DOWNTO 0);
     
-	SHIFT_CLK0: process
-		variable TMP : std_logic_vector(4 downto 0);
-	begin
-		wait until rising_edge(CLK_DDR0);
-		TMP := SR_FIFO_WRE & TMP(4 downto 1);
+	SHIFT_CLK0: PROCESS
+		VARIABLE TMP : STD_LOGIC_VECTOR(4 DOWNTO 0);
+	BEGIN
+		WAIT UNTIL RISING_EDGE(CLK_DDR0);
+		TMP := SR_FIFO_WRE & TMP(4 DOWNTO 1);
 		FIFO_WRE <= TMP(0);
-	end process SHIFT_CLK0;
+	END PROCESS SHIFT_CLK0;
 
 	with VDM_SEL select
-		VDM_C <=  VDM_B when x"0",
-						VDM_B(119 downto 0) & VDM_A(127 downto 120) when x"1",
-						VDM_B(111 downto 0) & VDM_A(127 downto 112) when x"2",
-						VDM_B(103 downto 0) & VDM_A(127 downto 104) when x"3",
-						VDM_B(95 downto 0) & VDM_A(127 downto 96) when x"4",
-						VDM_B(87 downto 0) & VDM_A(127 downto 88) when x"5",
-						VDM_B(79 downto 0) & VDM_A(127 downto 80) when x"6",
-						VDM_B(71 downto 0) & VDM_A(127 downto 72) when x"7",
-						VDM_B(63 downto 0) & VDM_A(127 downto 64) when x"8",
-						VDM_B(55 downto 0) & VDM_A(127 downto 56) when x"9",
-						VDM_B(47 downto 0) & VDM_A(127 downto 48) when x"A",
-						VDM_B(39 downto 0) & VDM_A(127 downto 40) when x"B",
-						VDM_B(31 downto 0) & VDM_A(127 downto 32) when x"C",
-						VDM_B(23 downto 0) & VDM_A(127 downto 24) when x"D",
-						VDM_B(15 downto 0) & VDM_A(127 downto 16) when x"E",
-						VDM_B(7 downto 0) & VDM_A(127 downto 8) when x"F",
-						(others => 'X') when others;
+		VDM_C <=  VDM_B WHEN x"0",
+						VDM_B(119 DOWNTO 0) & VDM_A(127 DOWNTO 120) WHEN x"1",
+						VDM_B(111 DOWNTO 0) & VDM_A(127 DOWNTO 112) WHEN x"2",
+						VDM_B(103 DOWNTO 0) & VDM_A(127 DOWNTO 104) WHEN x"3",
+						VDM_B(95 DOWNTO 0) & VDM_A(127 DOWNTO 96) WHEN x"4",
+						VDM_B(87 DOWNTO 0) & VDM_A(127 DOWNTO 88) WHEN x"5",
+						VDM_B(79 DOWNTO 0) & VDM_A(127 DOWNTO 80) WHEN x"6",
+						VDM_B(71 DOWNTO 0) & VDM_A(127 DOWNTO 72) WHEN x"7",
+						VDM_B(63 DOWNTO 0) & VDM_A(127 DOWNTO 64) WHEN x"8",
+						VDM_B(55 DOWNTO 0) & VDM_A(127 DOWNTO 56) WHEN x"9",
+						VDM_B(47 DOWNTO 0) & VDM_A(127 DOWNTO 48) WHEN x"A",
+						VDM_B(39 DOWNTO 0) & VDM_A(127 DOWNTO 40) WHEN x"B",
+						VDM_B(31 DOWNTO 0) & VDM_A(127 DOWNTO 32) WHEN x"C",
+						VDM_B(23 DOWNTO 0) & VDM_A(127 DOWNTO 24) WHEN x"D",
+						VDM_B(15 DOWNTO 0) & VDM_A(127 DOWNTO 16) WHEN x"E",
+						VDM_B(7 DOWNTO 0) & VDM_A(127 DOWNTO 8) WHEN x"F",
+						(OTHERS => 'X') WHEN OTHERS;
 
 	I_FIFO_DC0: lpm_fifo_dc0
-	port map(
+	PORT map(
 		aclr        => FIFO_CLR_I,  
 		data        => VDM_C,
 		rdclk       => CLK_PIXEL_I,
@@ -483,12 +483,12 @@ begin
 		wrclk       => CLK_DDR0,
 		wrreq       => FIFO_WRE,
 		q           => FIFO_D_OUT_512,
-		--rdempty   =>, -- Not used.
+		--rdempty   =>, -- Not  d.
 		wrusedw     => FIFO_MW
 	);
 
 	I_FIFO_DZ: lpm_fifoDZ
-		port map(
+		PORT map(
 			aclr        => DOP_FIFO_CLR,
 			clock       => CLK_PIXEL_I,
 			data        => FIFO_D_OUT_512,
@@ -498,7 +498,7 @@ begin
 		);
 
 	I_VIDEO_CTRL: VIDEO_CTRL
-		port map(
+		PORT map(
 			CLK_MAIN            => CLK_MAIN,
 			FB_CSn(1)           => FB_CSn(1),
 			FB_CSn(2)           => FB_CSn(2),
@@ -549,4 +549,4 @@ begin
 			DATA_EN_H           => DATA_EN_H_VIDEO_CTRL,
 			DATA_EN_L           => DATA_EN_L_VIDEO_CTRL
 		);
-end architecture;
+END ARCHITECTURE;
