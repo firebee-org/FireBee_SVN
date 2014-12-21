@@ -72,7 +72,7 @@ ENTITY VIDEO_SYSTEM IS
         FB_ALE              : IN STD_LOGIC;
         FB_CSn              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
         FB_OEn              : IN STD_LOGIC;
-        FB_WRn              : IN STD_LOGIC;
+        fb_wr_n             : IN STD_LOGIC;
         FB_SIZE1            : IN STD_LOGIC;
         FB_SIZE0            : IN STD_LOGIC;
         
@@ -502,7 +502,7 @@ BEGIN
 			CLK_MAIN            => CLK_MAIN,
 			FB_CSn(1)           => FB_CSn(1),
 			FB_CSn(2)           => FB_CSn(2),
-			FB_WRn              => FB_WRn,
+			fb_wr_n             => fb_wr_n,
 			FB_OEn              => FB_OEn,
 			FB_SIZE(0)          => FB_SIZE0,
 			FB_SIZE(1)          => FB_SIZE1,

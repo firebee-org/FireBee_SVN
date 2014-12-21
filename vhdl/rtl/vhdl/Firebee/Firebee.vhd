@@ -98,21 +98,21 @@ ENTITY firebee IS
     PORT(
         RSTO_MCFn           : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
         CLK_33M             : IN STD_LOGIC;                -- 33 MHz clock
-        CLK_MAIN            : IN STD_LOGIC;                -- 33 MHz clock
+        clk_main            : IN STD_LOGIC;                -- 33 MHz clock
 
         CLK_24M576          : OUT STD_LOGIC;            -- 
         CLK_25M             : OUT STD_LOGIC;
         clk_ddr_OUT         : OUT STD_LOGIC;
         clk_ddr_OUTn        : OUT STD_LOGIC;
-        CLK_USB             : OUT STD_LOGIC;
+        clk_usb             : OUT STD_LOGIC;
 
-        FB_AD               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        FB_ALE              : IN STD_LOGIC;
+        fb_ad               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        fb_ale              : IN STD_LOGIC;
         FB_BURSTn           : IN STD_LOGIC;
         FB_CSn              : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
-        FB_SIZE             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
+        fb_size             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
         FB_OEn              : IN STD_LOGIC;
-        FB_WRn              : IN STD_LOGIC;
+        fb_wr_n             : IN STD_LOGIC;
         FB_TAn              : OUT STD_LOGIC;
         
         DACK1n              : IN STD_LOGIC;
@@ -121,43 +121,43 @@ ENTITY firebee IS
         MASTERn             : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
         TOUT0n              : IN STD_LOGIC; -- Not used so far.
 
-        LED_FPGA_OK         : OUT STD_LOGIC;
-        RESERVED_1          : OUT STD_LOGIC;
+        led_fpga_ok         : OUT STD_LOGIC;
+        reserved_1          : OUT STD_LOGIC;
 
-        VA                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
-        BA                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
+        va                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
+        ba                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
         VWEn                : OUT STD_LOGIC;
         VcaSn               : OUT STD_LOGIC;
-        VRASn               : OUT STD_LOGIC;
+        vrASn               : OUT STD_LOGIC;
         VCSn                : OUT STD_LOGIC;
 
-        CLK_PIXEL           : OUT STD_LOGIC;
+        clk_pixel           : OUT STD_LOGIC;
         SYNCn               : OUT STD_LOGIC;
         VSYNC               : OUT STD_LOGIC;
         HSYNC               : OUT STD_LOGIC;
         BLANKn              : OUT STD_LOGIC;
         
-        VR                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-        VG                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-        VB                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        vr                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        vg                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        vb                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
 
-        VDM                 : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        vdm                 : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        VD                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        VD_QS               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        vd                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        vd_qs               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        PD_VGAn             : OUT STD_LOGIC;
-        VCKE                : OUT STD_LOGIC;
-        PIC_INT             : IN STD_LOGIC;
-        E0_INT              : IN STD_LOGIC;
-        DVI_INT             : IN STD_LOGIC;
+        PD_vgAn             : OUT STD_LOGIC;
+        vcke                : OUT STD_LOGIC;
+        pic_int             : IN STD_LOGIC;
+        e0_int              : IN STD_LOGIC;
+        dvi_int             : IN STD_LOGIC;
         PCI_INTAn           : IN STD_LOGIC;
         PCI_INTBn           : IN STD_LOGIC;
         PCI_INTCn           : IN STD_LOGIC;
         PCI_INTDn           : IN STD_LOGIC;
 
         IRQn                : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
-        TIN0                : OUT STD_LOGIC;
+        tin0                : OUT STD_LOGIC;
 
         YM_QA               : OUT STD_LOGIC;
         YM_QB               : OUT STD_LOGIC;
@@ -244,9 +244,9 @@ ENTITY firebee IS
         DSP_SRWEn           : OUT STD_LOGIC;
         DSP_SROEn           : OUT STD_LOGIC;
 
-        IDE_INT             : IN STD_LOGIC;
-        IDE_RDY             : IN STD_LOGIC;
-        IDE_RES             : OUT STD_LOGIC;
+        ide_int             : IN STD_LOGIC;
+        ide_rdy             : IN STD_LOGIC;
+        ide_res             : OUT STD_LOGIC;
         IDE_WRn             : OUT STD_LOGIC;
         IDE_RDn             : OUT STD_LOGIC;
         IDE_CSn             : OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
@@ -490,7 +490,7 @@ ARCHITECTURE Structure of firebee is
 BEGIN
     I_PLL1: altpll1
         PORT MAP(
-            inclk0      => CLK_MAIN,
+            inclk0      => clk_main,
             c0          => clk_2m4576,              -- 2.4576 MHz
             c1          => CLK_24M576,              -- 24.576 MHz
             c2          => clk_48m,                 -- 48 MHz
@@ -499,7 +499,7 @@ BEGIN
 
     I_PLL2: altpll2
         PORT MAP(
-            inclk0      => CLK_MAIN,
+            inclk0      => clk_main,
             c0          => clk_ddr(0),              -- 132 MHz / 240°
             c1          => clk_ddr(1),              -- 132 MHz / 0°
             c2          => clk_ddr(2),              -- 132 MHz / 180°
@@ -509,7 +509,7 @@ BEGIN
     
     I_PLL3: altpll3
         PORT MAP(
-            inclk0      => CLK_MAIN,
+            inclk0      => clk_main,
             c0          => clk_2m0,                 -- 2 MHz
             c1          => clk_fdc,                 -- 16 MHz
             c2          => clk_25m_i,               -- 25 MHz
@@ -518,7 +518,7 @@ BEGIN
     
     I_PLL4: altpll4
         PORT MAP(
-            inclk0          => CLK_MAIN,
+            inclk0          => clk_main,
             areset          => pll_areset,
             scanclk         => pll_scanclk,
             scandata        => pll_scandata,
@@ -535,12 +535,12 @@ BEGIN
             reconfig            => video_reconfig,
             read_param          => vr_rd,
             write_param         => vr_wr,
-            data_in             => FB_AD (24 DOWNTO 16),    -- FIXED: this looks like a typo. Must be FB_AD(24 DOWNTO 16) instead of fb_adr(24 DOWNTO 16)
+            data_in             => fb_ad (24 DOWNTO 16),    -- FIXED: this looks like a typo. Must be fb_ad(24 DOWNTO 16) instead of fb_adr(24 DOWNTO 16)
             counter_type        => fb_adr (5 DOWNTO 2),
             counter_param       => fb_adr (8 DOWNTO 6),
             pll_scandataout     => pll_scandataout,
             pll_scandone        => pll_scandone,
-            clock               => CLK_MAIN,
+            clock               => clk_main,
             reset               => NOT reset_n,
             pll_areset_in       => '0', -- Not used.
             busy                => vr_busy,
@@ -553,31 +553,33 @@ BEGIN
         );
 
     CLK_25M <= clk_25m_i;
-    CLK_USB <= clk_48m;
+    clk_usb <= clk_48m;
+    
     clk_ddr_OUT <= clk_ddr(0);
     clk_ddr_OUTn <= NOT clk_ddr(0);
-    CLK_PIXEL <= clk_pixel_i;
+    
+    clk_pixel <= clk_pixel_i;
 
-    P_timebase: PROCESS
+    p_timebase: PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_500k);
         timebase <= timebase + 1;
-    END PROCESS P_timebase;
+    END PROCESS p_timebase;
 
     reset_n <= RSTO_MCFn and locked;
-    IDE_RES <= NOT ide_res_i and reset_n;
+    ide_res <= NOT ide_res_i and reset_n;
     DREQ1n <= DACK1n;
-    LED_FPGA_OK <= timebase(17);
+    led_fpga_ok <= timebase(17);                                    -- won't work: doesn't seem to be connected
 
     falcon_io_ta <= acia_cs OR sndcs OR NOT dtack_out_mfp_n OR paddle_cs OR ide_cf_ta OR dma_cs;
-    FB_TAn <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta)= '1' ELSE 'Z';
+    FB_TAn <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' ELSE 'Z';
 
     acia_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';           -- FFFC00 - FFFC07
     mfp_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';         -- FFFA00/40
     paddle_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000"= x"FF9200" ELSE '0';       -- FF9200-FF923F
     sndcs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 2) & "00" = x"FF8800" ELSE '0';              -- FF8800-FF8803
     sndcs_i <= '1' WHEN sndcs = '1' and fb_adr (1) = '0' ELSE '0';
-    sndir_i <= '1' WHEN sndcs = '1' and FB_WRn = '0' ELSE '0';
+    sndir_i <= '1' WHEN sndcs = '1' and fb_wr_n = '0' ELSE '0';
 
     LP_D <= lp_d_x WHEN lp_dir_x = '0' ELSE (OTHERS => 'Z');
     LP_DIR <= lp_dir_x;
@@ -603,18 +605,18 @@ BEGIN
     lds <= '1' WHEN mfp_cs = '1' OR mfp_intack = '1' ELSE '0';
     acia_irq_n <= irq_keybd_n and irq_midi_n;
     mfp_intack <= '1' WHEN FB_CSn(2) = '0' and fb_adr(19 DOWNTO 0) = x"20000" ELSE '0';                     --F002'0000
-    dint_n <= '0' WHEN IDE_INT = '1' and fbee_conf(28) = '1' ELSE
+    dint_n <= '0' WHEN ide_int = '1' and fbee_conf(28) = '1' ELSE
                 '0' WHEN fd_int = '1' ELSE
                 '0' WHEN scsi_int = '1' and fbee_conf(28) = '1' ELSE '1';
 
     MIDI_TLR <= midi_out;
     MIDI_OLR <= midi_out;
 
-    byte <= '1' WHEN FB_SIZE(1) = '0' and FB_SIZE(0) = '1' ELSE '0';
+    byte <= '1' WHEN fb_size(1) = '0' and fb_size(0) = '1' ELSE '0';
     fb_b0 <= '1' WHEN fb_adr(0) = '0' OR byte = '0' ELSE '0';
     fb_b1 <= '1' WHEN fb_adr(0) = '1' OR byte = '0' ELSE '0';
 
-    FB_AD(31 DOWNTO 24) <= data_out_blitter(31 DOWNTO 24) WHEN data_en_blitter = '1' ELSE
+    fb_ad(31 DOWNTO 24) <= data_out_blitter(31 DOWNTO 24) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(31 DOWNTO 24) WHEN fb_vdoe = x"2" ELSE
                                     vdp_q2(31 DOWNTO 24) WHEN fb_vdoe = x"4" ELSE
                                     vdp_q3(31 DOWNTO 24) WHEN fb_vdoe = x"8" ELSE
@@ -637,7 +639,7 @@ BEGIN
                                     x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and FB_OEn = '0' ELSE
                                     x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and FB_OEn = '0' ELSE (OTHERS => 'Z');
 
-    FB_AD(23 DOWNTO 16) <= data_out_blitter(23 DOWNTO 16) WHEN data_en_blitter = '1' ELSE
+    fb_ad(23 DOWNTO 16) <= data_out_blitter(23 DOWNTO 16) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(23 DOWNTO 16) WHEN fb_vdoe = x"2" ELSE
                                     vdp_q2(23 DOWNTO 16) WHEN fb_vdoe = x"4" ELSE
                                     vdp_q3(23 DOWNTO 16) WHEN fb_vdoe = x"8" ELSE
@@ -659,7 +661,7 @@ BEGIN
                                     x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and FB_OEn = '0' ELSE
                                     x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and FB_OEn = '0' ELSE (OTHERS => 'Z');
 
-    FB_AD(15 DOWNTO 8) <= data_out_blitter(15 DOWNTO 8) WHEN data_en_blitter = '1' ELSE
+    fb_ad(15 DOWNTO 8) <= data_out_blitter(15 DOWNTO 8) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(15 DOWNTO 8) WHEN fb_vdoe = x"2" ELSE
                                     vdp_q2(15 DOWNTO 8) WHEN fb_vdoe = x"4" ELSE
                                     vdp_q3(15 DOWNTO 8) WHEN fb_vdoe = x"8" ELSE
@@ -670,7 +672,7 @@ BEGIN
                                     vdr(15 DOWNTO 8) WHEN fb_vdoe = x"1" ELSE
                                     "000000" & data_out_mfp(7 DOWNTO 6) WHEN mfp_intack = '1' and FB_OEn = '0' ELSE (OTHERS => 'Z');
 
-    FB_AD(7 DOWNTO 0) <= data_out_blitter(7 DOWNTO 0) WHEN data_en_blitter = '1' ELSE
+    fb_ad(7 DOWNTO 0) <= data_out_blitter(7 DOWNTO 0) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(7 DOWNTO 0) WHEN fb_vdoe = x"2" ELSE
                                     vdp_q2(7 DOWNTO 0) WHEN fb_vdoe = x"4" ELSE
                                     vdp_q3(7 DOWNTO 0) WHEN fb_vdoe = x"8" ELSE
@@ -684,32 +686,32 @@ BEGIN
     synchronization : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(ddr_sync_66m);
-        IF FB_ALE = '1' THEN
-            fb_adr <= FB_AD;        -- latch Flexbus address
+        IF fb_ale = '1' THEN
+            fb_adr <= fb_ad;        -- latch Flexbus address
         END IF;
         --
         IF vd_en_i = '0' THEN
-            vdr <= VD;
+            vdr <= vd;
         ELSE
             vdr <= vd_out;
         END IF;
         --
         IF fb_le(0) = '1' THEN
-            fb_ddr(127 DOWNTO 96) <= FB_AD;
+            fb_ddr(127 DOWNTO 96) <= fb_ad;
         END IF;
         --
         IF fb_le(1) = '1' THEN
-            fb_ddr(95 DOWNTO 64) <= FB_AD;
+            fb_ddr(95 DOWNTO 64) <= fb_ad;
         END IF;
         --
         IF fb_le(2) = '1' THEN
-            fb_ddr(63 DOWNTO 32) <= FB_AD;
+            fb_ddr(63 DOWNTO 32) <= fb_ad;
         END IF;
         --
         IF fb_le(3) = '1' THEN
-            fb_ddr(31 DOWNTO 0) <= FB_AD;
+            fb_ddr(31 DOWNTO 0) <= fb_ad;
         END IF;
-    END PROCESS SYNCHRONIZATION;
+    END PROCESS synchronization;
 
     video_out : PROCESS
     BEGIN
@@ -727,24 +729,24 @@ BEGIN
     END PROCESS p_ddr_wr;
 
     vd_qs_en <= ddr_wr;
-    VD <= vd_out WHEN vd_en = '1' ELSE (OTHERS => 'Z');
+    vd <= vd_out WHEN vd_en = '1' ELSE (OTHERS => 'Z');
 
     vd_qs_out(0) <= clk_ddr(0);
     vd_qs_out(1) <= clk_ddr(0);
     vd_qs_out(2) <= clk_ddr(0);
     vd_qs_out(3) <= clk_ddr(0);
-    VD_QS <= vd_qs_out WHEN vd_qs_en = '1' ELSE (OTHERS => 'Z');
+    vd_qs <= vd_qs_out WHEN vd_qs_en = '1' ELSE (OTHERS => 'Z');
 
     ddr_data_in_n : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(1));
-        ddr_d_in_n <= VD;
+        ddr_d_in_n <= vd;
     END PROCESS ddr_data_in_n;
     --
     ddr_data_in_p : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_ddr(1));
-        vdp_in(31 DOWNTO 0) <= VD;
+        vdp_in(31 DOWNTO 0) <= vd;
         vdp_in(63 DOWNTO 32) <= ddr_d_in_n;
     END PROCESS ddr_data_in_p;
 
@@ -790,32 +792,32 @@ BEGIN
  
     I_DDR_CTRL: DDR_CTRL
         PORT MAP(
-            CLK_MAIN            => CLK_MAIN,
+            clk_main            => clk_main,
             ddr_sync_66m        => ddr_sync_66m,
             fb_adr              => fb_adr,
-            FB_CS1_n            => FB_CSn(1),
-            FB_OE_n             => FB_OEn,
-            FB_SIZE0            => FB_SIZE(0),
-            FB_SIZE1            => FB_SIZE(1),
-            FB_ALE              => FB_ALE,
-            FB_WRn              => FB_WRn,
+            fb_cs1_n            => FB_CSn(1),
+            fb_oe_n             => FB_OEn,
+            fb_size0            => fb_size(0),
+            fb_size1            => fb_size(1),
+            fb_ale              => fb_ale,
+            fb_wr_n             => fb_wr_n,
             blitter_adr         => blitter_adr,
             blitter_sig         => blitter_sig,
             blitter_wr          => blitter_wr,
             SR_BLITTER_DACK     => blitter_dack_sr,
-            BA                  => BA,
-            VA                  => VA,
+            ba                  => ba,
+            va                  => va,
             fb_le               => fb_le,
             CLK_33M             => CLK_33M,
-            VRASn               => VRASn,
+            vrASn               => vrASn,
             VcaSn               => VcaSn,
             VWEn                => VWEn,
             VCSn                => VCSn,
             fifo_clr            => fifo_clr,
             DDRCLK0             => clk_ddr(0),
             video_control_register => video_ram_ctr,
-            VCKE                => VCKE,
-            DATA_IN             => FB_AD,
+            vcke                => vcke,
+            DATA_IN             => fb_ad,
             DATA_OUT            => data_out_ddr_ctrl,
             DATA_EN_H           => data_en_h_ddr_ctrl,
             DATA_EN_L           => data_en_l_ddr_ctrl,
@@ -834,16 +836,16 @@ BEGIN
 --    I_BLITTER: FBEE_BLITTER
 --        PORT MAP(
 --            resetn               => reset_n,
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --            clk_ddr0            => clk_ddr(0),
 --            fb_adr              => fb_adr,
---            FB_ALE              => FB_ALE,
---            FB_SIZE1            => FB_SIZE(1),
---            FB_SIZE0            => FB_SIZE(0),
+--            fb_ale              => fb_ale,
+--            fb_size1            => fb_size(1),
+--            fb_size0            => fb_size(0),
 --            FB_CSn              => FB_CSn,
 --            FB_OEn              => FB_OEn,
---            FB_WRn              => FB_WRn,
---            DATA_IN             => FB_AD,
+--            fb_wr_n              => fb_wr_n,
+--            DATA_IN             => fb_ad,
 --            DATA_OUT            => data_out_blitter,
 --            DATA_EN             => data_en_blitter,
 --            blitter_adr         => blitter_adr,
@@ -859,29 +861,29 @@ BEGIN
 
     I_VIDEOSYSTEM: VIDEO_SYSTEM
         PORT MAP(
-            CLK_MAIN            => CLK_MAIN,
+            clk_main            => clk_main,
             CLK_33M             => CLK_33M,
             CLK_25M             => clk_25m_i,
             clk_video           => clk_video,
             clk_ddr3            => clk_ddr(3),
             clk_ddr2            => clk_ddr(2),
             clk_ddr0            => clk_ddr(0),
-            CLK_PIXEL           => clk_pixel_i,
+            clk_pixel           => clk_pixel_i,
 
             vr_d                => vr_d,
             vr_busy             => vr_busy,
 
             fb_adr              => fb_adr,
-            FB_AD_IN            => FB_AD,
-            FB_AD_OUT           => fb_ad_out_video,
-            FB_AD_EN_31_16      => fb_ad_en_31_16_video,
-            FB_AD_EN_15_0       => fb_ad_en_15_0_video,
-            FB_ALE              => FB_ALE,
+            fb_ad_in            => fb_ad,
+            fb_ad_out           => fb_ad_out_video,
+            fb_ad_en_31_16      => fb_ad_en_31_16_video,
+            fb_ad_en_15_0       => fb_ad_en_15_0_video,
+            fb_ale              => fb_ale,
             FB_CSn              => FB_CSn,
             FB_OEn              => FB_OEn,
-            FB_WRn              => FB_WRn,
-            FB_SIZE1            => FB_SIZE(1),
-            FB_SIZE0            => FB_SIZE(0),
+            fb_wr_n             => FB_WR_n,
+            fb_size1            => fb_size(1),
+            fb_size0            => fb_size(0),
 
             vdp_in              => vdp_in,
 
@@ -889,15 +891,15 @@ BEGIN
             vr_wr               => vr_wr,
             video_reconfig      => video_reconfig,
 
-            RED                 => VR,
-            GREEN               => VG,
-            BLUE                => VB,
+            RED                 => vr,
+            GREEN               => vg,
+            BLUE                => vb,
             VSYNC               => vsync_i,
             HSYNC               => hsync_i,
             SYNCn               => SYNCn,
             BLANKn              => blank_i_n,
 
-            PD_VGAn             => PD_VGAn,
+            PD_vgAn             => PD_vgAn,
             video_mod_ta        => video_mod_ta,
 
             vd_vz               => vd_vz,
@@ -907,30 +909,30 @@ BEGIN
             vdm_sel             => vdm_sel,
             video_ram_ctr       => video_ram_ctr,
             fifo_clr            => fifo_clr,
-            VDM                 => VDM,
+            vdm                 => vdm,
             blitter_on          => blitter_on,
             blitter_run         => blitter_run
         );
 
 --    I_INTHANDLER: INTHANDLER
 --        PORT MAP(
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --            resetn              => reset_n,
 --            fb_adr              => fb_adr,
 --            FB_CSn              => FB_CSn(2 DOWNTO 1),
 --            FB_OEn              => FB_OEn,
---            FB_SIZE0            => FB_SIZE(0),
---            FB_SIZE1            => FB_SIZE(1),
---            FB_WRn              => FB_WRn,
---            FB_AD_IN            => FB_AD,
---            FB_AD_OUT           => fb_ad_out_ih,
---            FB_AD_EN_31_24      => fb_ad_en_31_24_ih,
---            FB_AD_EN_23_16      => fb_ad_en_23_16_ih,
---            FB_AD_EN_15_8       => fb_ad_en_15_8_ih,
---            FB_AD_EN_7_0        => fb_ad_en_7_0_ih,
---            PIC_INT             => PIC_INT,
---            E0_INT              => E0_INT,
---            DVI_INT             => DVI_INT,
+--            fb_size0            => fb_size(0),
+--            fb_size1            => fb_size(1),
+--            fb_wr_n              => fb_wr_n,
+--            fb_ad_IN            => fb_ad,
+--            fb_ad_OUT           => fb_ad_out_ih,
+--            fb_ad_EN_31_24      => fb_ad_en_31_24_ih,
+--            fb_ad_EN_23_16      => fb_ad_en_23_16_ih,
+--            fb_ad_EN_15_8       => fb_ad_en_15_8_ih,
+--            fb_ad_EN_7_0        => fb_ad_en_7_0_ih,
+--            pic_int             => pic_int,
+--            e0_int              => e0_int,
+--            dvi_int             => dvi_int,
 --            PCI_INTAn           => PCI_INTAn,
 --            PCI_INTBn           => PCI_INTBn,
 --            PCI_INTCn           => PCI_INTCn,
@@ -943,27 +945,27 @@ BEGIN
 --            IRQn                => IRQn,
 --            int_handler_ta      => int_handler_ta,
 --            fbee_conf           => fbee_conf,
---            TIN0                => TIN0
+--            tin0                => tin0
 --        );
 
 --    I_DMA: FBEE_DMA
 --        PORT MAP(
 --            RESET               => NOT reset_n,
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --            clk_fdc             => clk_fdc,
 --
 --            fb_adr              => fb_adr(26 DOWNTO 0),
---            FB_ALE              => FB_ALE,
---            FB_SIZE             => FB_SIZE,
+--            fb_ale              => fb_ale,
+--            fb_size             => fb_size,
 --            FB_CSn              => FB_CSn(2 DOWNTO 1),
 --            FB_OEn              => FB_OEn,
---            FB_WRn              => FB_WRn,
---            FB_AD_IN            => FB_AD,
---            FB_AD_OUT           => fb_ad_out_dma,
---            FB_AD_EN_31_24      => fb_ad_en_31_24_dma,
---            FB_AD_EN_23_16      => fb_ad_en_23_16_dma,
---            FB_AD_EN_15_8       => fb_ad_en_15_8_dma,
---            FB_AD_EN_7_0        => fb_ad_en_7_0_dma,
+--            fb_wr_n              => fb_wr_n,
+--            fb_ad_IN            => fb_ad,
+--            fb_ad_OUT           => fb_ad_out_dma,
+--            fb_ad_EN_31_24      => fb_ad_en_31_24_dma,
+--            fb_ad_EN_23_16      => fb_ad_en_23_16_dma,
+--            fb_ad_EN_15_8       => fb_ad_en_15_8_dma,
+--            fb_ad_EN_7_0        => fb_ad_en_7_0_dma,
 --
 --            ACSI_DIR            => ACSI_DIR,
 --            ACSI_D_IN           => ACSI_D,
@@ -995,18 +997,18 @@ BEGIN
 --            fdc_csn             => fdc_cs_n,
 --            fdc_wrn             => fdc_wr_n,
 --            fd_int              => fd_int,
---            IDE_INT             => IDE_INT,
+--            ide_int             => ide_int,
 --            dma_cs              => dma_cs
 --        );
 
 --    I_IDE_CF_SD_ROM: IDE_CF_SD_ROM
 --        PORT MAP(
 --            RESET               => NOT reset_n,
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --
 --            fb_adr              => fb_adr(19 DOWNTO 5),
 --            FB_CS1n             => FB_CSn(1),
---            FB_WRn              => FB_WRn,
+--            fb_wr_n              => fb_wr_n,
 --            fb_b0               => fb_b0,
 --            fb_b1               => fb_b1,
 --
@@ -1028,7 +1030,7 @@ BEGIN
 --            SD_caRD_DETECT      => SD_caRD_DETECT,
 --            SD_WP               => SD_WP,
 --
---            IDE_RDY             => IDE_RDY,
+--            ide_rdy             => ide_rdy,
 --            IDE_WRn             => IDE_WRn,
 --            IDE_RDn             => IDE_RDn,
 --            IDE_CSn             => IDE_CSn,
@@ -1045,13 +1047,13 @@ BEGIN
 --    I_DSP: DSP
 --        PORT MAP(
 --            CLK_33M             => CLK_33M,
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --            FB_OEn              => FB_OEn,
---            FB_WRn              => FB_WRn,
+--            fb_wr_n              => fb_wr_n,
 --            FB_CS1n             => FB_CSn(1),
 --            FB_CS2n             => FB_CSn(2),
---            FB_SIZE0            => FB_SIZE(0),
---            FB_SIZE1            => FB_SIZE(1),
+--            fb_size0            => fb_size(0),
+--            fb_size1            => fb_size(1),
 --            FB_BURSTn           => FB_BURSTn,
 --            fb_adr              => fb_adr,
 --            resetn              => reset_n,
@@ -1063,9 +1065,9 @@ BEGIN
 --            SROEn               => DSP_SROEn,
 --            dsp_int             => dsp_int,
 --            dsp_ta              => dsp_ta,
---            FB_AD_IN            => FB_AD,
---            FB_AD_OUT           => fb_ad_out_dsp,
---            FB_AD_EN            => fb_ad_en_dsp,
+--            fb_ad_IN            => fb_ad,
+--            fb_ad_OUT           => fb_ad_out_dsp,
+--            fb_ad_EN            => fb_ad_en_dsp,
 --            IO_IN               => DSP_IO,
 --            IO_OUT              => dsp_io_out,
 --            IO_EN               => dsp_io_en,
@@ -1076,7 +1078,7 @@ BEGIN
 
 --    I_SOUND: WF2149IP_TOP_SOC
 --        PORT MAP(
---            SYS_CLK             => CLK_MAIN,
+--            SYS_CLK             => clk_main,
 --            resetn              => reset_n,
 --
 --            WAV_CLK             => clk_2m0,
@@ -1088,7 +1090,7 @@ BEGIN
 --
 --            A9n                 => '0',
 --            A8                  => '1',
---            DA_IN               => FB_AD(31 DOWNTO 24),
+--            DA_IN               => fb_ad(31 DOWNTO 24),
 --            DA_OUT              => da_out_x,
 --
 --            IO_A_IN             => x"00", -- All port pINs are dedicated OUTputs.
@@ -1097,7 +1099,7 @@ BEGIN
 --            IO_A_OUT(5)         => LP_STR,
 --            IO_A_OUT(4)         => DTR,
 --            IO_A_OUT(3)         => RTS,
---            IO_A_OUT(2)         => RESERVED_1,
+--            IO_A_OUT(2)         => reserved_1,
 --            IO_A_OUT(1)         => DSA_D,
 --            IO_A_OUT(0)         => FDD_SDSELn,
 --            -- IO_A_EN          => TOUT0n, -- Not required.
@@ -1113,16 +1115,16 @@ BEGIN
     I_MFP: WF68901IP_TOP_SOC
         PORT MAP(  
             -- System control:
-            CLK                 => CLK_MAIN,
+            CLK                 => clk_main,
             resetn              => reset_n,
             -- Asynchronous bus control:
             DSn                 => NOT lds,
             CSn                 => NOT mfp_cs,
-            RWn                 => FB_WRn,
+            RWn                 => fb_wr_n,
             DTACKn              => dtack_out_mfp_n,
             -- Data and Adresses:
             RS                  => fb_adr(5 DOWNTO 1),
-            DATA_IN             => FB_AD(23 DOWNTO 16),
+            DATA_IN             => fb_ad(23 DOWNTO 16),
             DATA_OUT            => data_out_mfp,
             -- DATA_EN          => DATA_EN_MFP, -- Not used.
             GPIP_IN(7)          => NOT drq11_dma,
@@ -1161,17 +1163,17 @@ BEGIN
 
 --    I_ACIA_MIDI: WF6850IP_TOP_SOC
 --        PORT MAP(
---            CLK                 => CLK_MAIN,
+--            CLK                 => clk_main,
 --            resetn              => reset_n,
 --
 --            CS2n                => '0',
 --            CS1                 => fb_adr(2),
 --            CS0                 => acia_cs,
 --            E                   => acia_cs,
---            RWn                 => FB_WRN,
+--            RWn                 => fb_wr_n,
 --            RS                  => fb_adr(1),
 --
---            DATA_IN             => FB_AD(31 DOWNTO 24),
+--            DATA_IN             => fb_ad(31 DOWNTO 24),
 --            DATA_OUT            => data_out_acia_iI,
 --            -- DATA_EN                => -- Not used.
 --
@@ -1188,17 +1190,17 @@ BEGIN
 
     I_ACIA_KEYBOARD: WF6850IP_TOP_SOC
         PORT MAP(
-            CLK                 => CLK_MAIN,
+            CLK                 => clk_main,
             resetn              => reset_n,
 
             CS2n                => fb_adr(2),
             CS1                 => '1',
             CS0                 => acia_cs,
             E                   => acia_cs,
-            RWn                 => FB_WRn,
+            RWn                 => fb_wr_n,
             RS                  => fb_adr(1),
 
-            DATA_IN             => FB_AD(31 DOWNTO 24),
+            DATA_IN             => fb_ad(31 DOWNTO 24),
             DATA_OUT            => data_out_acia_i,
             -- DATA_EN                => Not used.
 
@@ -1295,17 +1297,17 @@ BEGIN
 
 --    I_RTC: RTC
 --        PORT MAP(
---            CLK_MAIN            => CLK_MAIN,
+--            clk_main            => clk_main,
 --            fb_adr              => fb_adr(19 DOWNTO 0),
 --            FB_CS1n             => FB_CSn(1),
---            FB_SIZE0            => FB_SIZE(0),
---            FB_SIZE1            => FB_SIZE(1),
---            FB_WRn              => FB_WRn,
+--            fb_size0            => fb_size(0),
+--            fb_size1            => fb_size(1),
+--            fb_wr_n              => fb_wr_n,
 --            FB_OEn              => FB_OEn,
---            FB_AD_IN            => FB_AD(23 DOWNTO 16),
---            FB_AD_OUT           => fb_ad_out_rtc,
---            FB_AD_EN_23_16      => fb_ad_en_rtc,
---            PIC_INT             => PIC_INT
+--            fb_ad_IN            => fb_ad(23 DOWNTO 16),
+--            fb_ad_OUT           => fb_ad_out_rtc,
+--            fb_ad_EN_23_16      => fb_ad_en_rtc,
+--            pic_int             => pic_int
 --        );
 END ARCHITECTURE;
 

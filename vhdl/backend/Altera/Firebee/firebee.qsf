@@ -414,8 +414,6 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 ms" -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddr_ctlr_tb -section_id ddr_ctlr_tb
 set_global_assignment -name FITTER_AUTO_EFFORT_DESIRED_SLACK_MARGIN "0 ns"
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
 set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
 set_global_assignment -name RTLV_REMOVE_FANOUT_FREE_REGISTERS OFF
 set_global_assignment -name RTLV_SIMPLIFIED_LOGIC OFF
@@ -689,4 +687,6 @@ set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 
 
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -66,7 +66,7 @@ package firebee_pkg is
 			FB_ALE              : in std_logic;
 			FB_CSn              : in std_logic_vector(3 downto 1);
 			FB_OEn              : in std_logic;
-			FB_WRn              : in std_logic;
+			fb_wr_n             : in std_logic;
 			FB_SIZE1            : in std_logic;
 			FB_SIZE0            : in std_logic;
             
@@ -106,7 +106,7 @@ package firebee_pkg is
 		port(
 			CLK_MAIN        : in std_logic;
 			FB_CSn          : in std_logic_vector(2 downto 1);
-			FB_WRn          : in std_logic;
+			fb_wr_n          : in std_logic;
 			FB_OEn          : in std_logic;
 			FB_SIZE         : in std_logic_vector(1 downto 0);
 			FB_ADR          : in std_logic_vector(31 downto 0);
@@ -159,12 +159,12 @@ package firebee_pkg is
 			CLK_MAIN        : in std_logic;
 			DDR_SYNC_66M    : in std_logic;
 			FB_ADR          : in std_logic_vector(31 downto 0);
-			FB_CS1_n        : in std_logic;
+			fb_cs1_n        : in std_logic;
 			FB_OE_n         : in std_logic;
 			FB_SIZE0        : in std_logic;
 			FB_SIZE1        : in std_logic;
 			FB_ALE          : in std_logic;
-			FB_WRn          : in std_logic;
+			fb_wr_n         : in std_logic;
 			FIFO_CLR        : in std_logic;
 			video_control_register   : in std_logic_vector(15 downto 0);
 			BLITTER_ADR     : in std_logic_vector(31 downto 0);
@@ -206,7 +206,7 @@ package firebee_pkg is
 			FB_CSn          : in std_logic_vector(2 downto 1);
 			FB_SIZE0        : in std_logic;
 			FB_SIZE1        : in std_logic;
-			FB_WRn          : in std_logic;
+			fb_wr_n         : in std_logic;
 			FB_OEn          : in std_logic;
 			FB_AD_IN        : in std_logic_vector(31 downto 0);
 			FB_AD_OUT       : out std_logic_vector(31 downto 0);
@@ -244,7 +244,7 @@ package firebee_pkg is
 			FB_SIZE                     : in std_logic_vector(1 downto 0);
 			FB_CSn                      : in std_logic_vector(2 downto 1);
 			FB_OEn                      : in std_logic;
-			FB_WRn                      : in std_logic;
+			fb_wr_n                      : in std_logic;
 			FB_AD_IN                    : in std_logic_vector(31 downto 0);
 			FB_AD_OUT                   : out std_logic_vector(31 downto 0);
 			FB_AD_EN_31_24              : out std_logic;
@@ -294,7 +294,7 @@ package firebee_pkg is
 
 			FB_ADR              : in std_logic_vector(19 downto 5);
 			FB_CS1n             : in std_logic;
-			FB_WRn              : in std_logic;
+			fb_wr_n              : in std_logic;
 			FB_B0               : in std_logic;
 			FB_B1               : in std_logic;
 
@@ -342,7 +342,7 @@ package firebee_pkg is
 			FB_SIZE0        : in std_logic;
 			FB_CSn          : in std_logic_vector(3 downto 1);
 			FB_OEn          : in std_logic;
-			FB_WRn          : in std_logic;
+			fb_wr_n          : in std_logic;
 			DATA_IN         : in std_logic_vector(31 downto 0);
 			DATA_OUT        : out std_logic_vector(31 downto 0);
 			DATA_EN         : out std_logic;
@@ -363,7 +363,7 @@ package firebee_pkg is
 			CLK_33M         : in std_logic;
 			CLK_MAIN        : in std_logic;
 			FB_OEn          : in std_logic;
-			FB_WRn          : in std_logic;
+			fb_wr_n          : in std_logic;
 			FB_CS1n         : in std_logic;
 			FB_CS2n         : in std_logic;
 			FB_SIZE0        : in std_logic;
@@ -567,7 +567,7 @@ package firebee_pkg is
 			FB_CS1n         : in std_logic;
 			FB_SIZE0        : in std_logic;
 			FB_SIZE1        : in std_logic;
-			FB_WRn          : in std_logic;
+			fb_wr_n          : in std_logic;
 			FB_OEn          : in std_logic;
 			FB_AD_IN        : in std_logic_vector(23 downto 16);
 			FB_AD_OUT       : out std_logic_vector(23 downto 16);
