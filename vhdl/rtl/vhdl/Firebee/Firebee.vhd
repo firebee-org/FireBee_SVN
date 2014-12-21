@@ -126,10 +126,10 @@ ENTITY firebee IS
 
         va                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
         ba                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
-        VWEn                : OUT STD_LOGIC;
-        VcaSn               : OUT STD_LOGIC;
-        vrASn               : OUT STD_LOGIC;
-        VCSn                : OUT STD_LOGIC;
+        vwe_n                : OUT STD_LOGIC;
+        vcas_n              : OUT STD_LOGIC;
+        vras_n              : OUT STD_LOGIC;
+        vcs_n                : OUT STD_LOGIC;
 
         clk_pixel           : OUT STD_LOGIC;
         SYNCn               : OUT STD_LOGIC;
@@ -809,10 +809,10 @@ BEGIN
             va                  => va,
             fb_le               => fb_le,
             CLK_33M             => CLK_33M,
-            vrASn               => vrASn,
-            VcaSn               => VcaSn,
-            VWEn                => VWEn,
-            VCSn                => VCSn,
+            vras_n              => vras_n,
+            vcas_n              => vcas_n,
+            vwe_n                => vwe_n,
+            vcs_n                => vcs_n,
             fifo_clr            => fifo_clr,
             DDRCLK0             => clk_ddr(0),
             video_control_register => video_ram_ctr,

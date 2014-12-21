@@ -296,9 +296,7 @@ set_location_assignment PIN_B12 -to DACK0n
 set_location_assignment PIN_T22 -to TOUT0n
 set_location_assignment PIN_AB17 -to CLK_DDR_OUT
 set_location_assignment PIN_AA17 -to CLK_DDR_OUTn
-set_location_assignment PIN_AB18 -to VCASn
 set_location_assignment PIN_T18 -to VCSn
-set_location_assignment PIN_W17 -to VRASn
 set_location_assignment PIN_Y17 -to VWEn
 set_location_assignment PIN_AA15 -to VD_QS[0]
 set_location_assignment PIN_W15 -to VD_QS[1]
@@ -628,9 +626,7 @@ set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D0
 set_instance_assignment -name PASSIVE_RESISTOR "PULL-UP" -to SD_D3
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VD_QS
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VWEn
-set_instance_assignment -name IO_STANDARD "2.5 V" -to VRASn
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VCSn
-set_instance_assignment -name IO_STANDARD "2.5 V" -to VCASn
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to HSYNC
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to CLK_PIXEL
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to VSYNC
@@ -642,8 +638,6 @@ set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQn[4]
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VCSn
 set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to VD_QS
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VWEn
-set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VRASn
-set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VCASn
 set_instance_assignment -name CURRENT_STRENGTH_NEW 16MA -to HSYNC
 set_instance_assignment -name CURRENT_STRENGTH_NEW 16MA -to CLK_PIXEL
 set_instance_assignment -name CURRENT_STRENGTH_NEW 16MA -to BLANKn
@@ -687,6 +681,12 @@ set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUTn
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 
 
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr2_ram_model.vhd -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
+set_location_assignment PIN_AB18 -to VCAS_n
+set_location_assignment PIN_W17 -to VRAS_n
+set_instance_assignment -name IO_STANDARD "2.5 V" -to VRAS_n
+set_instance_assignment -name IO_STANDARD "2.5 V" -to VCAS_n
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VRAS_n
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VCAS_n
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

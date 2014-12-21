@@ -8,8 +8,8 @@
 ---- computer. It is optimized for the use of an Altera Cyclone   ----
 ---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----
 ---- tion of the Firebee configware originally provided by Fredi  ----
----- Ashwanden  and Wolfgang Förster. This release is in compa-   ----
----- rision to the first edition completely written in VHDL.      ----
+---- Ashwanden  and Wolfgang Förster. This release is IN compa-   ----
+---- rision to the first edition completely written IN VHDL.      ----
 ----                                                              ----
 ---- Author(s):                                                   ----
 ---- - Wolfgang Foerster, wf@experiment-s.de; wf@inventronik.de   ----
@@ -24,7 +24,7 @@
 ---- version 2 of the License, or (at your option) any later      ----
 ---- version.                                                     ----
 ----                                                              ----
----- This program is distributed in the hope that it will be      ----
+---- This program is distributed IN the hope that it will be      ----
 ---- useful, but WITHOUT ANY WARRANTY; without even the implied   ----
 ---- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      ----
 ---- PURPOSE.  See the GNU General Public License for more        ----
@@ -41,538 +41,539 @@
 -- 
 -- Revision 2K12B  20120801 WF
 --   Initial Release of the second edition.
-library ieee;
-use ieee.std_logic_1164.all;
-package firebee_pkg is
-	component VIDEO_SYSTEM
-		port(
-			CLK_MAIN            : in std_logic;
-			CLK_33M             : in std_logic;
-			CLK_25M             : in std_logic;
-			CLK_VIDEO           : in std_logic;
-			CLK_DDR3            : in std_logic;
-			CLK_DDR2            : in std_logic;
-			CLK_DDR0            : in std_logic;
-			CLK_PIXEL           : out std_logic;
+LIBRARY IEEE;
+    USE IEEE.std_logic_1164.ALL;
+
+PACKAGE firebee_pkg IS
+	COMPONENT VIDEO_SYSTEM
+		PORT(
+			CLK_MAIN            : IN STD_LOGIC;
+			CLK_33M             : IN STD_LOGIC;
+			CLK_25M             : IN STD_LOGIC;
+			CLK_VIDEO           : IN STD_LOGIC;
+			CLK_DDR3            : IN STD_LOGIC;
+			CLK_DDR2            : IN STD_LOGIC;
+			CLK_DDR0            : IN STD_LOGIC;
+			CLK_PIXEL           : OUT STD_LOGIC;
             
-			VR_D                : in std_logic_vector(8 downto 0);
-			VR_BUSY             : in std_logic;
+			VR_D                : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+			VR_BUSY             : IN STD_LOGIC;
             
-			FB_ADR              : in std_logic_vector(31 downto 0);
-			FB_AD_IN            : in std_logic_vector(31 downto 0);
-			FB_AD_OUT           : out std_logic_vector(31 downto 0);
-			FB_AD_EN_31_16      : out std_logic; -- Hi word.
-			FB_AD_EN_15_0       : out std_logic; -- Low word.
-			FB_ALE              : in std_logic;
-			FB_CSn              : in std_logic_vector(3 downto 1);
-			FB_OEn              : in std_logic;
-			fb_wr_n             : in std_logic;
-			FB_SIZE1            : in std_logic;
-			FB_SIZE0            : in std_logic;
+			FB_ADR              : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_IN            : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_OUT           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_EN_31_16      : OUT STD_LOGIC; -- Hi word.
+			FB_AD_EN_15_0       : OUT STD_LOGIC; -- Low word.
+			FB_ALE              : IN STD_LOGIC;
+			FB_CSn              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+			FB_OEn              : IN STD_LOGIC;
+			fb_wr_n             : IN STD_LOGIC;
+			FB_SIZE1            : IN STD_LOGIC;
+			FB_SIZE0            : IN STD_LOGIC;
             
-			VDP_IN              : in std_logic_vector(63 downto 0);
+			VDP_IN              : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-			VR_RD               : out std_logic;
-			VR_WR               : out std_logic;
-			VIDEO_RECONFIG      : out std_logic;
+			VR_RD               : OUT STD_LOGIC;
+			VR_WR               : OUT STD_LOGIC;
+			VIDEO_RECONFIG      : OUT STD_LOGIC;
 
-			RED                 : out std_logic_vector(7 downto 0);
-			GREEN               : out std_logic_vector(7 downto 0);
-			BLUE                : out std_logic_vector(7 downto 0);
-			VSYNC               : out std_logic;
-			HSYNC               : out std_logic;
-			SYNCn               : out std_logic;
-			BLANKn              : out std_logic;
+			RED                 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			GREEN               : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			BLUE                : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			VSYNC               : OUT STD_LOGIC;
+			HSYNC               : OUT STD_LOGIC;
+			SYNCn               : OUT STD_LOGIC;
+			BLANKn              : OUT STD_LOGIC;
             
-			PD_VGAn             : out std_logic;
-			VIDEO_MOD_TA        : out std_logic;
+			PD_VGAn             : OUT STD_LOGIC;
+			VIDEO_MOD_TA        : OUT STD_LOGIC;
 
-			VD_VZ               : out std_logic_vector(127 downto 0);
-			SR_FIFO_WRE         : in std_logic;
-			SR_VDMP             : in std_logic_vector(7 downto 0);
-			FIFO_MW             : out std_logic_vector(8 downto 0);
-			VDM_SEL             : in std_logic_vector(3 downto 0);
-			VIDEO_RAM_CTR       : out std_logic_vector(15 downto 0);
-			FIFO_CLR            : out std_logic;
+			VD_VZ               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+			SR_FIFO_WRE         : IN STD_LOGIC;
+			SR_VDMP             : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			FIFO_MW             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
+			VDM_SEL             : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+			VIDEO_RAM_CTR       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+			FIFO_CLR            : OUT STD_LOGIC;
 
-			VDM                 : out std_logic_vector(3 downto 0);
+			VDM                 : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 
-			BLITTER_RUN         : in std_logic;
-			BLITTER_ON          : out std_logic
+			BLITTER_RUN         : IN STD_LOGIC;
+			BLITTER_ON          : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component VIDEO_CTRL
-		port(
-			CLK_MAIN        : in std_logic;
-			FB_CSn          : in std_logic_vector(2 downto 1);
-			fb_wr_n          : in std_logic;
-			FB_OEn          : in std_logic;
-			FB_SIZE         : in std_logic_vector(1 downto 0);
-			FB_ADR          : in std_logic_vector(31 downto 0);
-			CLK33M          : in std_logic;
-			CLK25M          : in std_logic;
-			BLITTER_RUN     : in std_logic;
-			CLK_VIDEO       : in std_logic;
-			VR_D            : in std_logic_vector(8 downto 0);
-			VR_BUSY         : in std_logic;
-			COLOR8          : out std_logic;
-			FBEE_CLUT_RD    : out std_logic;
-			COLOR1          : out std_logic;
-			FALCON_CLUT_RDH : out std_logic;
-			FALCON_CLUT_RDL : out std_logic;
-			FALCON_CLUT_WR  : out std_logic_vector(3 downto 0);
-			CLUT_ST_RD      : out std_logic;
-			CLUT_ST_WR      : out std_logic_vector(1 downto 0);
-			CLUT_MUX_ADR    : out std_logic_vector(3 downto 0);
-			HSYNC           : out std_logic;
-			VSYNC           : out std_logic;
-			BLANKn          : out std_logic;
-			SYNCn           : out std_logic;
-			PD_VGAn         : out std_logic;
-			FIFO_RDE        : out std_logic;
-			COLOR2          : out std_logic;
-			COLOR4          : out std_logic;
-			CLK_PIXEL       : out std_logic;
-			CLUT_OFF        : out std_logic_vector(3 downto 0);
-			BLITTER_ON      : out std_logic;
-			VIDEO_RAM_CTR   : out std_logic_vector(15 downto 0);
-			VIDEO_MOD_TA    : out std_logic;
-			CCR             : out std_logic_vector(23 downto 0);
-			CCSEL           : out std_logic_vector(2 downto 0);
-			FBEE_CLUT_WR    : out std_logic_vector(3 downto 0);
-			INTER_ZEI       : out std_logic;
-			DOP_FIFO_CLR    : out std_logic;
-			VIDEO_RECONFIG  : out std_logic;
-			VR_WR           : out std_logic;
-			VR_RD           : out std_logic;
-			FIFO_CLR        : out std_logic;
-			DATA_IN         : in std_logic_vector(31 downto 0);
-			DATA_OUT        : out std_logic_vector(31 downto 0);
-			DATA_EN_H       : out std_logic;
-			DATA_EN_L       : out std_logic
+	COMPONENT VIDEO_CTRL
+		PORT(
+			CLK_MAIN        : IN STD_LOGIC;
+			FB_CSn          : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			fb_wr_n          : IN STD_LOGIC;
+			FB_OEn          : IN STD_LOGIC;
+			FB_SIZE         : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			CLK33M          : IN STD_LOGIC;
+			CLK25M          : IN STD_LOGIC;
+			BLITTER_RUN     : IN STD_LOGIC;
+			CLK_VIDEO       : IN STD_LOGIC;
+			VR_D            : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+			VR_BUSY         : IN STD_LOGIC;
+			COLOR8          : OUT STD_LOGIC;
+			FBEE_CLUT_RD    : OUT STD_LOGIC;
+			COLOR1          : OUT STD_LOGIC;
+			FALCON_CLUT_RDH : OUT STD_LOGIC;
+			FALCON_CLUT_RDL : OUT STD_LOGIC;
+			FALCON_CLUT_WR  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			CLUT_ST_RD      : OUT STD_LOGIC;
+			CLUT_ST_WR      : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+			CLUT_MUX_ADR    : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			HSYNC           : OUT STD_LOGIC;
+			VSYNC           : OUT STD_LOGIC;
+			BLANKn          : OUT STD_LOGIC;
+			SYNCn           : OUT STD_LOGIC;
+			PD_VGAn         : OUT STD_LOGIC;
+			FIFO_RDE        : OUT STD_LOGIC;
+			COLOR2          : OUT STD_LOGIC;
+			COLOR4          : OUT STD_LOGIC;
+			CLK_PIXEL       : OUT STD_LOGIC;
+			CLUT_OFF        : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			BLITTER_ON      : OUT STD_LOGIC;
+			VIDEO_RAM_CTR   : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+			VIDEO_MOD_TA    : OUT STD_LOGIC;
+			CCR             : OUT STD_LOGIC_VECTOR(23 DOWNTO 0);
+			CCSEL           : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+			FBEE_CLUT_WR    : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			INTER_ZEI       : OUT STD_LOGIC;
+			DOP_FIFO_CLR    : OUT STD_LOGIC;
+			VIDEO_RECONFIG  : OUT STD_LOGIC;
+			VR_WR           : OUT STD_LOGIC;
+			VR_RD           : OUT STD_LOGIC;
+			FIFO_CLR        : OUT STD_LOGIC;
+			DATA_IN         : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			DATA_OUT        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			DATA_EN_H       : OUT STD_LOGIC;
+			DATA_EN_L       : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component DDR_CTRL is
-		port(
-			CLK_MAIN        : in std_logic;
-			DDR_SYNC_66M    : in std_logic;
-			FB_ADR          : in std_logic_vector(31 downto 0);
-			fb_cs1_n        : in std_logic;
-			FB_OE_n         : in std_logic;
-			FB_SIZE0        : in std_logic;
-			FB_SIZE1        : in std_logic;
-			FB_ALE          : in std_logic;
-			fb_wr_n         : in std_logic;
-			FIFO_CLR        : in std_logic;
-			video_control_register   : in std_logic_vector(15 downto 0);
-			BLITTER_ADR     : in std_logic_vector(31 downto 0);
-			BLITTER_SIG     : in std_logic;
-			BLITTER_WR      : in std_logic;
-			DDRCLK0         : in std_logic;
-			CLK_33M         : in std_logic;
-			FIFO_MW         : in std_logic_vector(8 downto 0);
-			VA              : out std_logic_vector(12 downto 0);
-			VWEn            : out std_logic;
-			VRASn           : out std_logic;
-			VCSn            : out std_logic;
-			VCKE            : out std_logic;
-			VCASn           : out std_logic;
-			FB_LE           : out std_logic_vector(3 downto 0);
-			FB_VDOE         : out std_logic_vector(3 downto 0);
-			SR_FIFO_WRE     : out std_logic;
-			SR_DDR_FB       : out std_logic;
-			SR_DDR_WR       : out std_logic;
-			SR_DDRWR_D_SEL  : out std_logic;
-			SR_VDMP         : out std_logic_vector(7 downto 0);
-			VIDEO_DDR_TA    : out std_logic;
-			SR_BLITTER_DACK : out std_logic;
-			BA              : out std_logic_vector(1 downto 0);
-			DDRWR_D_SEL1    : out std_logic;
-			VDM_SEL         : out std_logic_vector(3 downto 0);
-			DATA_IN         : in std_logic_vector(31 downto 0);
-			DATA_OUT        : out std_logic_vector(31 downto 16);
-			DATA_EN_H       : out std_logic;
-			DATA_EN_L       : out std_logic
+	COMPONENT DDR_CTRL is
+		PORT(
+			CLK_MAIN        : IN STD_LOGIC;
+			DDR_SYNC_66M    : IN STD_LOGIC;
+			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			fb_cs1_n        : IN STD_LOGIC;
+			FB_OE_n         : IN STD_LOGIC;
+			FB_SIZE0        : IN STD_LOGIC;
+			FB_SIZE1        : IN STD_LOGIC;
+			FB_ALE          : IN STD_LOGIC;
+			fb_wr_n         : IN STD_LOGIC;
+			FIFO_CLR        : IN STD_LOGIC;
+			video_control_register   : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+			BLITTER_ADR     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			BLITTER_SIG     : IN STD_LOGIC;
+			BLITTER_WR      : IN STD_LOGIC;
+			DDRCLK0         : IN STD_LOGIC;
+			CLK_33M         : IN STD_LOGIC;
+			FIFO_MW         : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+			VA              : OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
+			vwe_n            : OUT STD_LOGIC;
+			vras_n          : OUT STD_LOGIC;
+			vcs_n            : OUT STD_LOGIC;
+			VCKE            : OUT STD_LOGIC;
+			vcas_n          : OUT STD_LOGIC;
+			FB_LE           : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			FB_VDOE         : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			SR_FIFO_WRE     : OUT STD_LOGIC;
+			SR_DDR_FB       : OUT STD_LOGIC;
+			SR_DDR_WR       : OUT STD_LOGIC;
+			SR_DDRWR_D_SEL  : OUT STD_LOGIC;
+			SR_VDMP         : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			VIDEO_DDR_TA    : OUT STD_LOGIC;
+			SR_BLITTER_DACK : OUT STD_LOGIC;
+			BA              : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+			DDRWR_D_SEL1    : OUT STD_LOGIC;
+			VDM_SEL         : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			DATA_IN         : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			DATA_OUT        : OUT STD_LOGIC_VECTOR(31 DOWNTO 16);
+			DATA_EN_H       : OUT STD_LOGIC;
+			DATA_EN_L       : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component INTHANDLER
-		port(
-			CLK_MAIN        : in std_logic;
-			RESETn          : in std_logic;
-			FB_ADR          : in std_logic_vector(31 downto 0);
-			FB_CSn          : in std_logic_vector(2 downto 1);
-			FB_SIZE0        : in std_logic;
-			FB_SIZE1        : in std_logic;
-			fb_wr_n         : in std_logic;
-			FB_OEn          : in std_logic;
-			FB_AD_IN        : in std_logic_vector(31 downto 0);
-			FB_AD_OUT       : out std_logic_vector(31 downto 0);
-			FB_AD_EN_31_24  : out std_logic;
-			FB_AD_EN_23_16  : out std_logic;
-			FB_AD_EN_15_8   : out std_logic;
-			FB_AD_EN_7_0    : out std_logic;
-			PIC_INT         : in std_logic;
-			E0_INT          : in std_logic;
-			DVI_INT         : in std_logic;
-			PCI_INTAn       : in std_logic;
-			PCI_INTBn       : in std_logic;
-			PCI_INTCn       : in std_logic;
-			PCI_INTDn       : in std_logic;
-			MFP_INTn        : in std_logic;
-			DSP_INT         : in std_logic;
-			VSYNC           : in std_logic;
-			HSYNC           : in std_logic;
-			DRQ_DMA         : in std_logic;
-			IRQn            : out std_logic_vector(7 downto 2);
-			INT_HANDLER_TA  : out std_logic;
-			FBEE_CONF       : out std_logic_vector(31 downto 0);
-			TIN0            : out std_logic
+	COMPONENT INTHANDLER
+		PORT(
+			CLK_MAIN        : IN STD_LOGIC;
+			RESETn          : IN STD_LOGIC;
+			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_CSn          : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			FB_SIZE0        : IN STD_LOGIC;
+			FB_SIZE1        : IN STD_LOGIC;
+			fb_wr_n         : IN STD_LOGIC;
+			FB_OEn          : IN STD_LOGIC;
+			FB_AD_IN        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_OUT       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_EN_31_24  : OUT STD_LOGIC;
+			FB_AD_EN_23_16  : OUT STD_LOGIC;
+			FB_AD_EN_15_8   : OUT STD_LOGIC;
+			FB_AD_EN_7_0    : OUT STD_LOGIC;
+			PIC_INT         : IN STD_LOGIC;
+			E0_INT          : IN STD_LOGIC;
+			DVI_INT         : IN STD_LOGIC;
+			PCI_INTAn       : IN STD_LOGIC;
+			PCI_INTBn       : IN STD_LOGIC;
+			PCI_INTCn       : IN STD_LOGIC;
+			PCI_INTDn       : IN STD_LOGIC;
+			MFP_INTn        : IN STD_LOGIC;
+			DSP_INT         : IN STD_LOGIC;
+			VSYNC           : IN STD_LOGIC;
+			HSYNC           : IN STD_LOGIC;
+			DRQ_DMA         : IN STD_LOGIC;
+			IRQn            : OUT STD_LOGIC_VECTOR(7 DOWNTO 2);
+			INT_HANDLER_TA  : OUT STD_LOGIC;
+			FBEE_CONF       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			TIN0            : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component FBEE_DMA is
-		port(
-			RESET                       : in std_logic;
-			CLK_MAIN                    : in std_logic;
-			CLK_FDC                     : in std_logic;
+	COMPONENT FBEE_DMA is
+		PORT(
+			RESET                       : IN STD_LOGIC;
+			CLK_MAIN                    : IN STD_LOGIC;
+			CLK_FDC                     : IN STD_LOGIC;
 
-			FB_ADR                      : in std_logic_vector(26 downto 0);
-			FB_ALE                      : in std_logic;
-			FB_SIZE                     : in std_logic_vector(1 downto 0);
-			FB_CSn                      : in std_logic_vector(2 downto 1);
-			FB_OEn                      : in std_logic;
-			fb_wr_n                      : in std_logic;
-			FB_AD_IN                    : in std_logic_vector(31 downto 0);
-			FB_AD_OUT                   : out std_logic_vector(31 downto 0);
-			FB_AD_EN_31_24              : out std_logic;
-			FB_AD_EN_23_16              : out std_logic;
-			FB_AD_EN_15_8               : out std_logic;
-			FB_AD_EN_7_0                : out std_logic;
+			FB_ADR                      : IN STD_LOGIC_VECTOR(26 DOWNTO 0);
+			FB_ALE                      : IN STD_LOGIC;
+			FB_SIZE                     : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+			FB_CSn                      : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			FB_OEn                      : IN STD_LOGIC;
+			fb_wr_n                      : IN STD_LOGIC;
+			FB_AD_IN                    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_OUT                   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_EN_31_24              : OUT STD_LOGIC;
+			FB_AD_EN_23_16              : OUT STD_LOGIC;
+			FB_AD_EN_15_8               : OUT STD_LOGIC;
+			FB_AD_EN_7_0                : OUT STD_LOGIC;
 
-			ACSI_DIR                    : out std_logic;
-			ACSI_D_IN                   : in std_logic_vector(7 downto 0);
-			ACSI_D_OUT                  : out std_logic_vector(7 downto 0);
-			ACSI_D_EN                   : out std_logic;
-			ACSI_CSn                    : out std_logic;
-			ACSI_A1                     : out std_logic;
-			ACSI_RESETn                 : out std_logic;
-			ACSI_DRQn                   : in std_logic;
-			ACSI_ACKn                   : out std_logic;
+			ACSI_DIR                    : OUT STD_LOGIC;
+			ACSI_D_IN                   : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			ACSI_D_OUT                  : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			ACSI_D_EN                   : OUT STD_LOGIC;
+			ACSI_CSn                    : OUT STD_LOGIC;
+			ACSI_A1                     : OUT STD_LOGIC;
+			ACSI_RESETn                 : OUT STD_LOGIC;
+			ACSI_DRQn                   : IN STD_LOGIC;
+			ACSI_ACKn                   : OUT STD_LOGIC;
 
-			DATA_IN_FDC                 : in std_logic_vector(7 downto 0);
-			DATA_IN_SCSI                : in std_logic_vector(7 downto 0);
-			DATA_OUT_FDC_SCSI			: out std_logic_vector(7 downto 0);
+			DATA_IN_FDC                 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_IN_SCSI                : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_OUT_FDC_SCSI			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 
-			DMA_DRQ_IN                  : in std_logic; -- From 1772.
-			DMA_DRQ_OUT                 : out std_logic; -- To Interrupt handler.
-			DMA_DRQ11                   : out std_logic;
+			DMA_DRQ_IN                  : IN STD_LOGIC; -- From 1772.
+			DMA_DRQ_OUT                 : OUT STD_LOGIC; -- To Interrupt handler.
+			DMA_DRQ11                   : OUT STD_LOGIC;
             
-			SCSI_DRQ                    : in std_logic;
-			SCSI_DACKn                  : out std_logic;
-			SCSI_INT                    : in std_logic;
-			SCSI_CSn                    : out std_logic;
-			SCSI_CS                     : out std_logic;
+			SCSI_DRQ                    : IN STD_LOGIC;
+			SCSI_DACKn                  : OUT STD_LOGIC;
+			SCSI_INT                    : IN STD_LOGIC;
+			SCSI_CSn                    : OUT STD_LOGIC;
+			SCSI_CS                     : OUT STD_LOGIC;
 
-			CA                          : out std_logic_vector(2 downto 0);
-			FLOPPY_HD_DD                : in std_logic;
-			WDC_BSL0                    : out std_logic;
-			FDC_CSn                     : out std_logic;
-			FDC_WRn                     : out std_logic;
-			FD_INT                      : in std_logic;
-			IDE_INT                     : in std_logic;
-			DMA_CS                      : out std_logic
+			CA                          : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+			FLOPPY_HD_DD                : IN STD_LOGIC;
+			WDC_BSL0                    : OUT STD_LOGIC;
+			FDC_CSn                     : OUT STD_LOGIC;
+			FDC_WRn                     : OUT STD_LOGIC;
+			FD_INT                      : IN STD_LOGIC;
+			IDE_INT                     : IN STD_LOGIC;
+			DMA_CS                      : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component IDE_CF_SD_ROM is
-		port(
-			RESET               : in std_logic;
-			CLK_MAIN            : in std_logic;
+	COMPONENT IDE_CF_SD_ROM is
+		PORT(
+			RESET               : IN STD_LOGIC;
+			CLK_MAIN            : IN STD_LOGIC;
 
-			FB_ADR              : in std_logic_vector(19 downto 5);
-			FB_CS1n             : in std_logic;
-			fb_wr_n              : in std_logic;
-			FB_B0               : in std_logic;
-			FB_B1               : in std_logic;
+			FB_ADR              : IN STD_LOGIC_VECTOR(19 DOWNTO 5);
+			FB_CS1n             : IN STD_LOGIC;
+			fb_wr_n              : IN STD_LOGIC;
+			FB_B0               : IN STD_LOGIC;
+			FB_B1               : IN STD_LOGIC;
 
-			FBEE_CONF           : in std_logic_vector(31 downto 30);
+			FBEE_CONF           : IN STD_LOGIC_VECTOR(31 DOWNTO 30);
 
-			RP_UDSn             : out std_logic;
-			RP_LDSn             : out std_logic;
+			RP_UDSn             : OUT STD_LOGIC;
+			RP_LDSn             : OUT STD_LOGIC;
 
-			SD_CLK              : out std_logic;
-			SD_D0               : in std_logic;
-			SD_D1               : in std_logic;
-			SD_D2               : in std_logic;
-			SD_CD_D3_IN         : in std_logic;
-			SD_CD_D3_OUT        : out std_logic;
-			SD_CD_D3_EN         : out std_logic;
-			SD_CMD_D1_IN        : in std_logic;
-			SD_CMD_D1_OUT       : out std_logic;
-			SD_CMD_D1_EN        : out std_logic;
-			SD_CARD_DETECT      : in std_logic;
-			SD_WP               : in std_logic;
+			SD_CLK              : OUT STD_LOGIC;
+			SD_D0               : IN STD_LOGIC;
+			SD_D1               : IN STD_LOGIC;
+			SD_D2               : IN STD_LOGIC;
+			SD_CD_D3_IN         : IN STD_LOGIC;
+			SD_CD_D3_OUT        : OUT STD_LOGIC;
+			SD_CD_D3_EN         : OUT STD_LOGIC;
+			SD_CMD_D1_IN        : IN STD_LOGIC;
+			SD_CMD_D1_OUT       : OUT STD_LOGIC;
+			SD_CMD_D1_EN        : OUT STD_LOGIC;
+			SD_CARD_DETECT      : IN STD_LOGIC;
+			SD_WP               : IN STD_LOGIC;
 
-			IDE_RDY             : in std_logic;
-			IDE_WRn             : buffer std_logic;
-			IDE_RDn             : out std_logic;
-			IDE_CSn             : out std_logic_vector(1 downto 0);
-			IDE_DRQn            : out std_logic;
-			IDE_CF_TA           : out std_logic;
+			IDE_RDY             : IN STD_LOGIC;
+			IDE_WRn             : buffer STD_LOGIC;
+			IDE_RDn             : OUT STD_LOGIC;
+			IDE_CSn             : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+			IDE_DRQn            : OUT STD_LOGIC;
+			IDE_CF_TA           : OUT STD_LOGIC;
 
-			ROM4n               : out std_logic;
-			ROM3n               : out std_logic;
+			ROM4n               : OUT STD_LOGIC;
+			ROM3n               : OUT STD_LOGIC;
 
-			CF_WP               : in std_logic;
-			CF_CSn              : out std_logic_vector(1 downto 0)
+			CF_WP               : IN STD_LOGIC;
+			CF_CSn              : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
 		);
-	end component;
+	END COMPONENT;
 
-	component FBEE_BLITTER is
-		port(
-			RESETn          : in std_logic;
-			CLK_MAIN        : in std_logic;
-			CLK_DDR0        : in std_logic;
-			FB_ADR          : in std_logic_vector(31 downto 0);
-			FB_ALE          : in std_logic;
-			FB_SIZE1        : in std_logic;
-			FB_SIZE0        : in std_logic;
-			FB_CSn          : in std_logic_vector(3 downto 1);
-			FB_OEn          : in std_logic;
-			fb_wr_n          : in std_logic;
-			DATA_IN         : in std_logic_vector(31 downto 0);
-			DATA_OUT        : out std_logic_vector(31 downto 0);
-			DATA_EN         : out std_logic;
-			BLITTER_ON      : in std_logic;
-			BLITTER_DIN     : in std_logic_vector(127 downto 0);
-			BLITTER_DACK_SR : in std_logic;
-			BLITTER_RUN     : out std_logic;
-			BLITTER_DOUT    : out std_logic_vector(127 downto 0);
-			BLITTER_ADR     : out std_logic_vector(31 downto 0);
-			BLITTER_SIG     : out std_logic;
-			BLITTER_WR      : out std_logic;
-			BLITTER_TA      : out std_logic
+	COMPONENT FBEE_BLITTER is
+		PORT(
+			RESETn          : IN STD_LOGIC;
+			CLK_MAIN        : IN STD_LOGIC;
+			CLK_DDR0        : IN STD_LOGIC;
+			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_ALE          : IN STD_LOGIC;
+			FB_SIZE1        : IN STD_LOGIC;
+			FB_SIZE0        : IN STD_LOGIC;
+			FB_CSn          : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+			FB_OEn          : IN STD_LOGIC;
+			fb_wr_n          : IN STD_LOGIC;
+			DATA_IN         : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			DATA_OUT        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			DATA_EN         : OUT STD_LOGIC;
+			BLITTER_ON      : IN STD_LOGIC;
+			BLITTER_DIN     : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+			BLITTER_DACK_SR : IN STD_LOGIC;
+			BLITTER_RUN     : OUT STD_LOGIC;
+			BLITTER_DOUT    : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+			BLITTER_ADR     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			BLITTER_SIG     : OUT STD_LOGIC;
+			BLITTER_WR      : OUT STD_LOGIC;
+			BLITTER_TA      : OUT STD_LOGIC
 		);
-	end component;
+	END COMPONENT;
 
-	component DSP is
-		port(
-			CLK_33M         : in std_logic;
-			CLK_MAIN        : in std_logic;
-			FB_OEn          : in std_logic;
-			fb_wr_n          : in std_logic;
-			FB_CS1n         : in std_logic;
-			FB_CS2n         : in std_logic;
-			FB_SIZE0        : in std_logic;
-			FB_SIZE1        : in std_logic;
-			FB_BURSTn       : in std_logic;
-			FB_ADR          : in std_logic_vector(31 downto 0);
-			RESETn          : in std_logic;
-			FB_CS3n         : in std_logic;
-			SRCSn           : out std_logic;
-			SRBLEn          : out std_logic;
-			SRBHEn          : out std_logic;
-			SRWEn           : out std_logic;
-			SROEn           : out std_logic;
-			DSP_INT         : out std_logic;
-			DSP_TA          : out std_logic;
-			FB_AD_IN        : in std_logic_vector(31 downto 0);
-			FB_AD_OUT       : out std_logic_vector(31 downto 0);
-			FB_AD_EN        : out std_logic;
-			IO_IN           : in std_logic_vector(17 downto 0);
-			IO_OUT          : out std_logic_vector(17 downto 0);
-			IO_EN           : out std_logic;
-			SRD_IN          : in std_logic_vector(15 downto 0);
-			SRD_OUT         : out std_logic_vector(15 downto 0);
-			SRD_EN          : out std_logic
+	COMPONENT DSP is
+		PORT(
+			CLK_33M         : IN STD_LOGIC;
+			CLK_MAIN        : IN STD_LOGIC;
+			FB_OEn          : IN STD_LOGIC;
+			fb_wr_n          : IN STD_LOGIC;
+			FB_CS1n         : IN STD_LOGIC;
+			FB_CS2n         : IN STD_LOGIC;
+			FB_SIZE0        : IN STD_LOGIC;
+			FB_SIZE1        : IN STD_LOGIC;
+			FB_BURSTn       : IN STD_LOGIC;
+			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			RESETn          : IN STD_LOGIC;
+			FB_CS3n         : IN STD_LOGIC;
+			SRCSn           : OUT STD_LOGIC;
+			SRBLEn          : OUT STD_LOGIC;
+			SRBHEn          : OUT STD_LOGIC;
+			SRWEn           : OUT STD_LOGIC;
+			SROEn           : OUT STD_LOGIC;
+			DSP_INT         : OUT STD_LOGIC;
+			DSP_TA          : OUT STD_LOGIC;
+			FB_AD_IN        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_OUT       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+			FB_AD_EN        : OUT STD_LOGIC;
+			IO_IN           : IN STD_LOGIC_VECTOR(17 DOWNTO 0);
+			IO_OUT          : OUT STD_LOGIC_VECTOR(17 DOWNTO 0);
+			IO_EN           : OUT STD_LOGIC;
+			SRD_IN          : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+			SRD_OUT         : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+			SRD_EN          : OUT STD_LOGIC
 		);
-	end component DSP;
+	END COMPONENT DSP;
 
-	component WF2149IP_TOP_SOC
-		port(
-			SYS_CLK		: in std_logic;
-			RESETn   	: in std_logic;
+	COMPONENT WF2149IP_TOP_SOC
+		PORT(
+			SYS_CLK		: IN STD_LOGIC;
+			RESETn   	: IN STD_LOGIC;
 
-			WAV_CLK		: in std_logic;
-			SELn		: in std_logic;
+			WAV_CLK		: IN STD_LOGIC;
+			SELn		: IN STD_LOGIC;
 			
-			BDIR		: in std_logic;
-			BC2, BC1	: in std_logic;
+			BDIR		: IN STD_LOGIC;
+			BC2, BC1	: IN STD_LOGIC;
 
-			A9n, A8		: in std_logic;
-			DA_IN		: in std_logic_vector(7 downto 0);
-			DA_OUT		: out std_logic_vector(7 downto 0);
-			DA_EN		: out std_logic;
+			A9n, A8		: IN STD_LOGIC;
+			DA_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DA_OUT		: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DA_EN		: OUT STD_LOGIC;
 			
-			IO_A_IN		: in std_logic_vector(7 downto 0);
-			IO_A_OUT	: out std_logic_vector(7 downto 0);
-			IO_A_EN		: out std_logic;
-			IO_B_IN		: in std_logic_vector(7 downto 0);
-			IO_B_OUT	: out std_logic_vector(7 downto 0);
-			IO_B_EN		: out std_logic;
+			IO_A_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			IO_A_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			IO_A_EN		: OUT STD_LOGIC;
+			IO_B_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			IO_B_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			IO_B_EN		: OUT STD_LOGIC;
 
-			OUT_A		: out std_logic;
-			OUT_B		: out std_logic;
-			OUT_C		: out std_logic
+			OUT_A		: OUT STD_LOGIC;
+			OUT_B		: OUT STD_LOGIC;
+			OUT_C		: OUT STD_LOGIC
 		);
-	end component WF2149IP_TOP_SOC;
+	END COMPONENT WF2149IP_TOP_SOC;
 
-	component WF68901IP_TOP_SOC
-		port (
-			CLK			: in std_logic;
-			RESETn		: in std_logic;
-			DSn			: in std_logic;
-			CSn			: in std_logic;
-			RWn			: in std_logic;
-			DTACKn		: out std_logic;
-			RS			: in std_logic_vector(5 downto 1);
-			DATA_IN		: in std_logic_vector(7 downto 0);
-			DATA_OUT	: out std_logic_vector(7 downto 0);
-			DATA_EN		: out std_logic;
-			GPIP_IN		: in std_logic_vector(7 downto 0);
-			GPIP_OUT	: out std_logic_vector(7 downto 0);
-			GPIP_EN		: out std_logic_vector(7 downto 0);
-			IACKn		: in std_logic;
-			IEIn		: in std_logic;
-			IEOn		: out std_logic;
-			IRQn		: out std_logic;
-			XTAL1		: in std_logic;
-			TAI			: in std_logic;
-			TBI			: in std_logic;
-			TAO			: out std_logic;			
-			TBO			: out std_logic;			
-			TCO			: out std_logic;			
-			TDO			: out std_logic;			
-			RC			: in std_logic;
-			TC			: in std_logic;
-			SI			: in std_logic;
-			SO			: out std_logic;
-			SO_EN		: out std_logic;
-			RRn			: out std_logic;
-			TRn			: out std_logic			
+	COMPONENT WF68901IP_TOP_SOC
+		PORT (
+			CLK			: IN STD_LOGIC;
+			RESETn		: IN STD_LOGIC;
+			DSn			: IN STD_LOGIC;
+			CSn			: IN STD_LOGIC;
+			RWn			: IN STD_LOGIC;
+			DTACKn		: OUT STD_LOGIC;
+			RS			: IN STD_LOGIC_VECTOR(5 DOWNTO 1);
+			DATA_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_EN		: OUT STD_LOGIC;
+			GPIP_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			GPIP_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			GPIP_EN		: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			IACKn		: IN STD_LOGIC;
+			IEIn		: IN STD_LOGIC;
+			IEOn		: OUT STD_LOGIC;
+			IRQn		: OUT STD_LOGIC;
+			XTAL1		: IN STD_LOGIC;
+			TAI			: IN STD_LOGIC;
+			TBI			: IN STD_LOGIC;
+			TAO			: OUT STD_LOGIC;			
+			TBO			: OUT STD_LOGIC;			
+			TCO			: OUT STD_LOGIC;			
+			TDO			: OUT STD_LOGIC;			
+			RC			: IN STD_LOGIC;
+			TC			: IN STD_LOGIC;
+			SI			: IN STD_LOGIC;
+			SO			: OUT STD_LOGIC;
+			SO_EN		: OUT STD_LOGIC;
+			RRn			: OUT STD_LOGIC;
+			TRn			: OUT STD_LOGIC			
 		);
-	end component WF68901IP_TOP_SOC;
+	END COMPONENT WF68901IP_TOP_SOC;
 
-	component WF6850IP_TOP_SOC
-	  port (
-			CLK					: in std_logic;
-			RESETn				: in std_logic;
+	COMPONENT WF6850IP_TOP_SOC
+	  PORT (
+			CLK					: IN STD_LOGIC;
+			RESETn				: IN STD_LOGIC;
 
-			CS2n, CS1, CS0		: in std_logic;
-			E		       		: in std_logic;   
-			RWn              	: in std_logic;
-			RS					: in std_logic;
+			CS2n, CS1, CS0		: IN STD_LOGIC;
+			E		       		: IN STD_LOGIC;   
+			RWn              	: IN STD_LOGIC;
+			RS					: IN STD_LOGIC;
 
-			DATA_IN		        : in std_logic_vector(7 downto 0);   
-			DATA_OUT	        : out std_logic_vector(7 downto 0);   
-			DATA_EN				: out std_logic;
+			DATA_IN		        : IN STD_LOGIC_VECTOR(7 DOWNTO 0);   
+			DATA_OUT	        : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);   
+			DATA_EN				: OUT STD_LOGIC;
 
-			TXCLK				: in std_logic;
-			RXCLK				: in std_logic;
-			RXDATA				: in std_logic;
-			CTSn				: in std_logic;
-			DCDn				: in std_logic;
+			TXCLK				: IN STD_LOGIC;
+			RXCLK				: IN STD_LOGIC;
+			RXDATA				: IN STD_LOGIC;
+			CTSn				: IN STD_LOGIC;
+			DCDn				: IN STD_LOGIC;
 	        
-			IRQn				: out std_logic;
-			TXDATA				: out std_logic;   
-			RTSn				: out std_logic
+			IRQn				: OUT STD_LOGIC;
+			TXDATA				: OUT STD_LOGIC;   
+			RTSn				: OUT STD_LOGIC
 		);                                              
-	end component WF6850IP_TOP_SOC;
+	END COMPONENT WF6850IP_TOP_SOC;
 
-	component WF5380_TOP_SOC
-		port (
-			CLK			: in std_logic;
-			RESETn	    : in std_logic;
-			ADR			: in std_logic_vector(2 downto 0);
-			DATA_IN		: in std_logic_vector(7 downto 0);
-			DATA_OUT	: out std_logic_vector(7 downto 0);
-			DATA_EN		: out std_logic;
-			CSn			: in std_logic;
-			RDn		    : in std_logic;
-			WRn	        : in std_logic;
-			EOPn        : in std_logic;
-			DACKn	    : in std_logic;
-			DRQ		    : out std_logic;
-			INT		    : out std_logic;
-			READY       : out std_logic;
-			DB_INn		: in std_logic_vector(7 downto 0);
-			DB_OUTn		: out std_logic_vector(7 downto 0);
-			DB_EN       : out std_logic;
-			DBP_INn		: in std_logic;
-			DBP_OUTn	: out std_logic;
-			DBP_EN      : out std_logic;
-			RST_INn     : in std_logic;
-			RST_OUTn    : out std_logic;
-			RST_EN      : out std_logic;
-			BSY_INn     : in std_logic;
-			BSY_OUTn    : out std_logic;
-			BSY_EN      : out std_logic;
-			SEL_INn     : in std_logic;
-			SEL_OUTn    : out std_logic;
-			SEL_EN      : out std_logic;
-			ACK_INn     : in std_logic;
-			ACK_OUTn    : out std_logic;
-			ACK_EN      : out std_logic;
-			ATN_INn     : in std_logic;
-			ATN_OUTn    : out std_logic;
-			ATN_EN      : out std_logic;
-			REQ_INn     : in std_logic;
-			REQ_OUTn    : out std_logic;
-			REQ_EN      : out std_logic;
-			IOn_IN      : in std_logic;
-			IOn_OUT     : out std_logic;
-			IO_EN       : out std_logic;
-			CDn_IN      : in std_logic;
-			CDn_OUT     : out std_logic;
-			CD_EN       : out std_logic;
-			MSG_INn     : in std_logic;
-			MSG_OUTn    : out std_logic;
-			MSG_EN      : out std_logic
+	COMPONENT WF5380_TOP_SOC
+		PORT (
+			CLK			: IN STD_LOGIC;
+			RESETn	    : IN STD_LOGIC;
+			ADR			: IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+			DATA_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_EN		: OUT STD_LOGIC;
+			CSn			: IN STD_LOGIC;
+			RDn		    : IN STD_LOGIC;
+			WRn	        : IN STD_LOGIC;
+			EOPn        : IN STD_LOGIC;
+			DACKn	    : IN STD_LOGIC;
+			DRQ		    : OUT STD_LOGIC;
+			INT		    : OUT STD_LOGIC;
+			READY       : OUT STD_LOGIC;
+			DB_INn		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DB_OUTn		: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DB_EN       : OUT STD_LOGIC;
+			DBP_INn		: IN STD_LOGIC;
+			DBP_OUTn	: OUT STD_LOGIC;
+			DBP_EN      : OUT STD_LOGIC;
+			RST_INn     : IN STD_LOGIC;
+			RST_OUTn    : OUT STD_LOGIC;
+			RST_EN      : OUT STD_LOGIC;
+			BSY_INn     : IN STD_LOGIC;
+			BSY_OUTn    : OUT STD_LOGIC;
+			BSY_EN      : OUT STD_LOGIC;
+			SEL_INn     : IN STD_LOGIC;
+			SEL_OUTn    : OUT STD_LOGIC;
+			SEL_EN      : OUT STD_LOGIC;
+			ACK_INn     : IN STD_LOGIC;
+			ACK_OUTn    : OUT STD_LOGIC;
+			ACK_EN      : OUT STD_LOGIC;
+			ATN_INn     : IN STD_LOGIC;
+			ATN_OUTn    : OUT STD_LOGIC;
+			ATN_EN      : OUT STD_LOGIC;
+			REQ_INn     : IN STD_LOGIC;
+			REQ_OUTn    : OUT STD_LOGIC;
+			REQ_EN      : OUT STD_LOGIC;
+			IOn_IN      : IN STD_LOGIC;
+			IOn_OUT     : OUT STD_LOGIC;
+			IO_EN       : OUT STD_LOGIC;
+			CDn_IN      : IN STD_LOGIC;
+			CDn_OUT     : OUT STD_LOGIC;
+			CD_EN       : OUT STD_LOGIC;
+			MSG_INn     : IN STD_LOGIC;
+			MSG_OUTn    : OUT STD_LOGIC;
+			MSG_EN      : OUT STD_LOGIC
 		);
-	end component WF5380_TOP_SOC;
+	END COMPONENT WF5380_TOP_SOC;
 
-	component WF1772IP_TOP_SOC
-		port (
-			CLK			: in std_logic;
-			RESETn		: in std_logic;
-			CSn			: in std_logic;
-			RWn			: in std_logic;
-			A1, A0		: in std_logic;
-			DATA_IN		: in std_logic_vector(7 downto 0);
-			DATA_OUT	: out std_logic_vector(7 downto 0);
-			DATA_EN		: out std_logic;
-			RDn			: in std_logic;
-			TR00n		: in std_logic;
-			IPn			: in std_logic;
-			WPRTn		: in std_logic;
-			DDEn		: in std_logic;
-			HDTYPE		: in std_logic;
-			MO			: out std_logic;
-			WG			: out std_logic;
-			WD			: out std_logic;
-			STEP		: out std_logic;
-			DIRC		: out std_logic;
-			DRQ			: out std_logic;
-			INTRQ		: out std_logic
+	COMPONENT WF1772IP_TOP_SOC
+		PORT (
+			CLK			: IN STD_LOGIC;
+			RESETn		: IN STD_LOGIC;
+			CSn			: IN STD_LOGIC;
+			RWn			: IN STD_LOGIC;
+			A1, A0		: IN STD_LOGIC;
+			DATA_IN		: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_OUT	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			DATA_EN		: OUT STD_LOGIC;
+			RDn			: IN STD_LOGIC;
+			TR00n		: IN STD_LOGIC;
+			IPn			: IN STD_LOGIC;
+			WPRTn		: IN STD_LOGIC;
+			DDEn		: IN STD_LOGIC;
+			HDTYPE		: IN STD_LOGIC;
+			MO			: OUT STD_LOGIC;
+			WG			: OUT STD_LOGIC;
+			WD			: OUT STD_LOGIC;
+			STEP		: OUT STD_LOGIC;
+			DIRC		: OUT STD_LOGIC;
+			DRQ			: OUT STD_LOGIC;
+			INTRQ		: OUT STD_LOGIC
 		);
-	end component WF1772IP_TOP_SOC;
+	END COMPONENT WF1772IP_TOP_SOC;
 
-	component RTC is
-		port(
-			CLK_MAIN        : in std_logic;
-			FB_ADR          : in std_logic_vector(19 downto 0);
-			FB_CS1n         : in std_logic;
-			FB_SIZE0        : in std_logic;
-			FB_SIZE1        : in std_logic;
-			fb_wr_n          : in std_logic;
-			FB_OEn          : in std_logic;
-			FB_AD_IN        : in std_logic_vector(23 downto 16);
-			FB_AD_OUT       : out std_logic_vector(23 downto 16);
-			FB_AD_EN_23_16  : out std_logic;
-			PIC_INT         : in std_logic
+	COMPONENT RTC is
+		PORT(
+			CLK_MAIN        : IN STD_LOGIC;
+			FB_ADR          : IN STD_LOGIC_VECTOR(19 DOWNTO 0);
+			FB_CS1n         : IN STD_LOGIC;
+			FB_SIZE0        : IN STD_LOGIC;
+			FB_SIZE1        : IN STD_LOGIC;
+			fb_wr_n          : IN STD_LOGIC;
+			FB_OEn          : IN STD_LOGIC;
+			FB_AD_IN        : IN STD_LOGIC_VECTOR(23 DOWNTO 16);
+			FB_AD_OUT       : OUT STD_LOGIC_VECTOR(23 DOWNTO 16);
+			FB_AD_EN_23_16  : OUT STD_LOGIC;
+			PIC_INT         : IN STD_LOGIC
 		);
-	end component RTC;
-end firebee_pkg;
+	END COMPONENT RTC;
+END firebee_pkg;

@@ -68,11 +68,11 @@ ENTITY DDR_CTRL IS
         fifo_mw         : IN STD_LOGIC_VECTOR (8 DOWNTO 0);
         
         va              : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);               -- video Adress bus at the DDR chips
-        vwen            : OUT STD_LOGIC;                                    -- video memory write enable
-        vrasn           : OUT STD_LOGIC;                                    -- video memory RAS
-        VCSn            : OUT STD_LOGIC;                                    -- video memory chip SELECT
+        vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
+        vras_n          : OUT STD_LOGIC;                                    -- video memory RAS
+        vcs_n            : OUT STD_LOGIC;                                    -- video memory chip SELECT
         VCKE            : OUT STD_LOGIC;                                    -- video memory clock enable
-        vcasn           : OUT STD_LOGIC;                                    -- video memory CAS
+        vcas_n          : OUT STD_LOGIC;                                    -- video memory CAS
         
         FB_LE           : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
         FB_VDOE         : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
@@ -784,16 +784,16 @@ BEGIN
     -- VIDEO RAM CONTROL REGISTER (IS IN VIDEO_MUX_CTR) 
     -- $F0000400: BIT 0: VCKE; 1: NOT nVCS ;2:REFRESH ON , (0=fifo AND CNT CLEAR); 
     -- 3: CONFIG; 8: fifo_active; 
-    VCSn <= NOT(video_control_register(vrcr_refresh_on));
+    vcs_n <= NOT(video_control_register(vrcr_refresh_on));
     ddr_config <= video_control_register(3);
     fifo_active <= video_control_register(8);
 
     cpu_row_adr <= fb_adr(26 DOWNTO 14);
     cpu_ba <= fb_adr(13 DOWNTO 12);
     cpu_col_adr <= fb_adr(11 DOWNTO 2);
-    vrasn <= NOT vras;
-    vcasn <= NOT vcas;
-    vwen <= NOT vwe;
+    vras_n <= NOT vras;
+    vcas_n <= NOT vcas;
+    vwe_n <= NOT vwe;
 
     ddrwr_d_sel1 <= '1' WHEN ddr_access = blitter ELSE '0';
     

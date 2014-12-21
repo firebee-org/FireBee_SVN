@@ -34,9 +34,9 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL CLK_33M			: STD_LOGIC := '0';
     SIGNAL FIFO_MW			: STD_LOGIC_VECTOR(8 DOWNTO 0);
     SIGNAL va				: STD_LOGIC_VECTOR(12 DOWNTO 0);
-    SIGNAL vwe_n				: STD_LOGIC;
+    SIGNAL vwe_n			: STD_LOGIC;
     SIGNAL vras_n			: STD_LOGIC;
-    SIGNAL vcs_n				: STD_LOGIC;
+    SIGNAL vcs_n			: STD_LOGIC;
     SIGNAL vcke				: STD_LOGIC;
     SIGNAL vcas_n			: STD_LOGIC;
     SIGNAL FB_LE			: STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -117,10 +117,11 @@ BEGIN
 		dm_rdqs(0)  => data_en_l,
 		dm_rdqs(1)  => data_en_h,
 		ba		=> ba,
-		addr		=> va (25 DOWNTO 13),
+		addr    => va,
 		DQ		=> sr_vdmp,
-		LDQS	=> data_en_l,
-		UDQS	=> data_en_h
+		dqs(0)	=> data_en_l,
+		dqs(1)	=> data_en_h,
+        odt     => '0'
 	);
 	
 	stimulate_main_clock : process
@@ -156,13 +157,13 @@ BEGIN
 			WHEN S1 =>
 				-- data phase
 				FB_ALE <= '0';
-				FB_CS1n <= '0';
+				fb_cs1_n <= '0';
 				FB_ADR <= x"47114711";
 				if (VIDEO_DDR_TA = '1') then
 					bus_state <= S2;
 				END if;
 			WHEN S2 =>
-				FB_CS1n <= '0';
+				fb_cs1_n <= '0';
 				bus_state <= S3;
 			WHEN S3 =>
 				FB_ADR <= STD_LOGIC_VECTOR(UNSIGNED(FB_ADR) + 4);
