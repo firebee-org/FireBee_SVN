@@ -804,7 +804,7 @@ BEGIN
             blitter_adr                 => UNSIGNED(blitter_adr),
             blitter_sig                 => blitter_sig,
             blitter_wr                  => blitter_wr,
-            SR_BLITTER_DACK             => blitter_dack_sr,
+            sr_blitter_dack             => blitter_dack_sr,
             STD_LOGIC_VECTOR(ba)        => ba,
             STD_LOGIC_VECTOR(va)        => va,
             STD_LOGIC_VECTOR(fb_le)     => fb_le,
@@ -817,8 +817,8 @@ BEGIN
             DDRCLK0                     => clk_ddr(0),
             video_control_register      => UNSIGNED(video_ram_ctr),
             vcke                        => vcke,
-            DATA_IN                     => UNSIGNED(fb_ad),
-            STD_LOGIC_VECTOR(DATA_OUT)  => data_out_ddr_ctrl,
+            data_in                     => UNSIGNED(fb_ad),
+            STD_LOGIC_VECTOR(data_out)  => data_out_ddr_ctrl,
             DATA_EN_H                   => data_en_h_ddr_ctrl,
             DATA_EN_L                   => data_en_l_ddr_ctrl,
             STD_LOGIC_VECTOR(vdm_sel)   => vdm_sel,
@@ -845,8 +845,8 @@ BEGIN
 --            fb_cs_n              => fb_cs_n,
 --            fb_oe_n              => fb_oe_n,
 --            fb_wr_n              => fb_wr_n,
---            DATA_IN             => fb_ad,
---            DATA_OUT            => data_out_blitter,
+--            data_in             => fb_ad,
+--            data_out            => data_out_blitter,
 --            DATA_EN             => data_en_blitter,
 --            blitter_adr         => blitter_adr,
 --            blitter_sig         => blitter_sig,
@@ -891,9 +891,9 @@ BEGIN
             vr_wr               => vr_wr,
             video_reconfig      => video_reconfig,
 
-            RED                 => vr,
-            GREEN               => vg,
-            BLUE                => vb,
+            red                 => vr,
+            green               => vg,
+            blue                => vb,
             vsync               => vsync_i,
             hsync               => hsync_i,
             sync_n               => sync_n,
@@ -1115,7 +1115,7 @@ BEGIN
     I_MFP: WF68901IP_TOP_SOC
         PORT MAP(  
             -- System control:
-            CLK                 => clk_main,
+            clk                 => clk_main,
             resetn              => reset_n,
             -- Asynchronous bus control:
             DSn                 => NOT lds,
@@ -1123,18 +1123,18 @@ BEGIN
             RWn                 => fb_wr_n,
             DTACKn              => dtack_out_mfp_n,
             -- Data and Adresses:
-            RS                  => fb_adr(5 DOWNTO 1),
-            DATA_IN             => fb_ad(23 DOWNTO 16),
-            DATA_OUT            => data_out_mfp,
+            rs                  => fb_adr(5 DOWNTO 1),
+            data_in             => fb_ad(23 DOWNTO 16),
+            data_out            => data_out_mfp,
             -- DATA_EN          => DATA_EN_MFP, -- Not used.
-            GPIP_IN(7)          => NOT drq11_dma,
-            GPIP_IN(6)          => NOT ri,
-            GPIP_IN(5)          => dint_n,
-            GPIP_IN(4)          => acia_irq_n,
-            GPIP_IN(3)          => dsp_int,
-            GPIP_IN(2)          => NOT cts,
-            GPIP_IN(1)          => NOT dcd,
-            GPIP_IN(0)          => lp_busy,
+            gpip_in(7)          => NOT drq11_dma,
+            gpip_in(6)          => NOT ri,
+            gpip_in(5)          => dint_n,
+            gpip_in(4)          => acia_irq_n,
+            gpip_in(3)          => dsp_int,
+            gpip_in(2)          => NOT cts,
+            gpip_in(1)          => NOT dcd,
+            gpip_in(0)          => lp_busy,
             -- GPIP_OUT           =>, -- Not used; all GPIPs are direction INput.
             -- GPIP_EN            =>, -- Not used; all GPIPs are direction INput.
             -- Interrupt control:
@@ -1144,17 +1144,17 @@ BEGIN
             irq_n                => mfp_int_n,
             -- Timers and timer control:
             XTAL1               => clk_2m4576,
-            TAI                 => '0',
-            TBI                 => blank_i_n,
+            tai                 => '0',
+            tbi                 => blank_i_n,
             -- TAO              =>,
             -- TBO              =>,
             -- TCO              =>,
             tdo                 => tdo,
             -- Serial I/O control:
-            RC                  => tdo,
-            TC                  => tdo,
-            SI                  => rxd, 
-            SO                  => txd
+            rc                  => tdo,
+            tc                  => tdo,
+            si                  => rxd, 
+            so                  => txd
             -- SO_EN            => -- Not used.
             -- DMA control:
             -- RRn              => -- Not used.
@@ -1163,66 +1163,66 @@ BEGIN
 
 --    I_ACIA_MIDI: WF6850IP_TOP_SOC
 --        PORT MAP(
---            CLK                 => clk_main,
+--            clk                 => clk_main,
 --            resetn              => reset_n,
 --
 --            CS2n                => '0',
---            CS1                 => fb_adr(2),
---            CS0                 => acia_cs,
+--            cs1                 => fb_adr(2),
+--            cs0                 => acia_cs,
 --            E                   => acia_cs,
 --            RWn                 => fb_wr_n,
---            RS                  => fb_adr(1),
+--            rs                  => fb_adr(1),
 --
---            DATA_IN             => fb_ad(31 DOWNTO 24),
---            DATA_OUT            => data_out_acia_iI,
+--            data_in             => fb_ad(31 DOWNTO 24),
+--            data_out            => data_out_acia_iI,
 --            -- DATA_EN                => -- Not used.
 --
---            TXCLK               => clk_500k,
---            RXCLK               => clk_500k,
---            RXDATA              => midi_in,
+--            txclk               => clk_500k,
+--            rxclk               => clk_500k,
+--            rxdata              => midi_in,
 --            CTSn                => '0',
 --            DCDn                => '0',
 --
 --            irq_n                => irq_midi_n,
---            TXDATA              => midi_out
+--            txdata              => midi_out
 --            --RTSn                => -- Not used.
 --        );                                              
 
     I_ACIA_KEYBOARD: WF6850IP_TOP_SOC
         PORT MAP(
-            CLK                 => clk_main,
+            clk                 => clk_main,
             resetn              => reset_n,
 
             CS2n                => fb_adr(2),
-            CS1                 => '1',
-            CS0                 => acia_cs,
+            cs1                 => '1',
+            cs0                 => acia_cs,
             E                   => acia_cs,
             RWn                 => fb_wr_n,
-            RS                  => fb_adr(1),
+            rs                  => fb_adr(1),
 
-            DATA_IN             => fb_ad(31 DOWNTO 24),
-            DATA_OUT            => data_out_acia_i,
+            data_in             => fb_ad(31 DOWNTO 24),
+            data_out            => data_out_acia_i,
             -- DATA_EN                => Not used.
 
-            TXCLK               => clk_500k,
-            RXCLK               => clk_500k,
-            RXDATA              => keyb_rxd,
+            txclk               => clk_500k,
+            rxclk               => clk_500k,
+            rxdata              => keyb_rxd,
 
             CTSn                => '0',
             DCDn                => '0',
 
             irq_n                => irq_keybd_n,
-            TXDATA              => amkb_tx
+            txdata              => amkb_tx
             --RTSn                => -- Not used.
         );                                              
 
 --    I_SCSI: WF5380_TOP_SOC
 --        PORT MAP(
---            CLK                 => clk_fdc,
+--            clk                 => clk_fdc,
 --            resetn              => reset_n,
 --            ADR                 => ca,
---            DATA_IN             => data_in_fdc_scsi,
---            DATA_OUT            => data_out_scsi,
+--            data_in             => data_in_fdc_scsi,
+--            data_out            => data_out_scsi,
 --            --DATA_EN           =>,
 --            -- Bus and DMA controls:
 --            CSn                 => scsi_csn,
@@ -1271,14 +1271,14 @@ BEGIN
 --
 --    I_FDC: WF1772IP_TOP_SOC
 --        PORT MAP(
---            CLK                 => clk_fdc,
+--            clk                 => clk_fdc,
 --            resetn              => reset_n,
 --            CSn                 => fdc_cs_n,
 --            RWn                 => fdc_wr_n,
 --            A1                  => ca(2),
 --            A0                  => ca(1),
---            DATA_IN             => data_in_fdc_scsi,
---            DATA_OUT            => data_out_fdc,
+--            data_in             => data_in_fdc_scsi,
+--            data_out            => data_out_fdc,
 --            -- DATA_EN          => CD_EN_FDC,
 --            RDn                 => FDD_RDn,
 --            TR00n               => FDD_TRACK00,

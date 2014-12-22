@@ -52,58 +52,58 @@ LIBRARY IEEE;
 
 ENTITY VIDEO_SYSTEM IS
     PORT (
-        CLK_MAIN            : IN STD_LOGIC;
-        CLK_33M             : IN STD_LOGIC;
-        CLK_25M             : IN STD_LOGIC;
-        CLK_VIDEO           : IN STD_LOGIC;
+        clk_main            : IN STD_LOGIC;
+        clk_33m             : IN STD_LOGIC;
+        clk_25m             : IN STD_LOGIC;
+        clk_video           : IN STD_LOGIC;
         clk_ddr3            : IN STD_LOGIC;
         clk_ddr2            : IN STD_LOGIC;
         clk_ddr0            : IN STD_LOGIC;
         clk_pixel           : OUT STD_LOGIC;
         
-        VR_D                : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
-        VR_BUSY             : IN STD_LOGIC;
+        vr_d                : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+        vr_busy             : IN STD_LOGIC;
         
-        FB_ADR              : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        FB_AD_IN            : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        fb_adr              : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        fb_ad_in            : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         fb_ad_out           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         fb_ad_en_31_16      : OUT STD_LOGIC; -- Hi word.
         fb_ad_en_15_0       : OUT STD_LOGIC; -- Low word.
-        FB_ALE              : IN STD_LOGIC;
+        fb_ale              : IN STD_LOGIC;
         fb_cs_n             : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
         fb_oe_n             : IN STD_LOGIC;
         fb_wr_n             : IN STD_LOGIC;
-        FB_SIZE1            : IN STD_LOGIC;
-        FB_SIZE0            : IN STD_LOGIC;
+        fb_size1            : IN STD_LOGIC;
+        fb_size0            : IN STD_LOGIC;
         
         vdp_in              : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-        VR_RD               : OUT STD_LOGIC;
-        VR_WR               : OUT STD_LOGIC;
-        VIDEO_RECONFIG      : OUT STD_LOGIC;
+        vr_rd               : OUT STD_LOGIC;
+        vr_wr               : OUT STD_LOGIC;
+        video_reconfig      : OUT STD_LOGIC;
 
         red                 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         green               : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         blue                : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        VSYNC               : OUT STD_LOGIC;
-        HSYNC               : OUT STD_LOGIC;
+        vsync               : OUT STD_LOGIC;
+        hsync               : OUT STD_LOGIC;
         sync_n              : OUT STD_LOGIC;
         blank_n             : OUT STD_LOGIC;
         
         pd_vga_n            : OUT STD_LOGIC;
-        VIDEO_MOD_TA        : OUT STD_LOGIC;
+        video_mod_ta        : OUT STD_LOGIC;
 
         vd_vz               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         sr_fifo_wre         : IN STD_LOGIC;
         sr_vdmp             : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        FIFO_MW             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
+        fifo_mw             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
         vdm_sel             : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        VIDEO_RAM_CTR       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        video_ram_ctr       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         fifo_clr            : OUT STD_LOGIC;
         vdm                 : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
         
-        BLITTER_RUN         : IN STD_LOGIC;
-        BLITTER_ON          : OUT STD_LOGIC
+        blitter_run         : IN STD_LOGIC;
+        blitter_on          : OUT STD_LOGIC
     );
 END ENTITY VIDEO_SYSTEM;
         
@@ -183,7 +183,7 @@ ARCHITECTURE BEHAVIOUR OF VIDEO_SYSTEM is
 	SIGNAL CC_SEL               : STD_LOGIC_VECTOR(2 DOWNTO 0);
 	
 	SIGNAL fifo_clr_i           : STD_LOGIC;
-	SIGNAL DOP_FIFO_CLR         : STD_LOGIC;
+	SIGNAL dop_fifo_clr         : STD_LOGIC;
 	SIGNAL fifo_wre             : STD_LOGIC;
 	
 	SIGNAL fifo_rd_req_128      : STD_LOGIC;
@@ -218,36 +218,36 @@ BEGIN
 		VARIABLE clut_st_index			: INTEGER;
 		VARIABLE clut_fi_index			: INTEGER;
 	BEGIN
-		clut_st_index := TO_INTEGER(UNSIGNED(FB_ADR(4 DOWNTO 1)));
-		clut_fa_index := TO_INTEGER(UNSIGNED(FB_ADR(9 DOWNTO 2)));
-		clut_fi_index := TO_INTEGER(UNSIGNED(FB_ADR(9 DOWNTO 2)));
+		clut_st_index := TO_INTEGER(UNSIGNED(fb_adr(4 DOWNTO 1)));
+		clut_fa_index := TO_INTEGER(UNSIGNED(fb_adr(9 DOWNTO 2)));
+		clut_fi_index := TO_INTEGER(UNSIGNED(fb_adr(9 DOWNTO 2)));
 
-		WAIT UNTIL RISING_EDGE(CLK_MAIN);
+		WAIT UNTIL RISING_EDGE(clk_main);
 		IF clut_st_wr(0) = '1' THEN
-			clut_st(clut_st_index)(11 DOWNTO 8) <= FB_AD_IN(27 DOWNTO 24);
+			clut_st(clut_st_index)(11 DOWNTO 8) <= fb_ad_in(27 DOWNTO 24);
 		END IF;
 		IF clut_st_wr(1) = '1' THEN
-			clut_st(clut_st_index)(7 DOWNTO 0) <= FB_AD_IN(23 DOWNTO 16);
+			clut_st(clut_st_index)(7 DOWNTO 0) <= fb_ad_in(23 DOWNTO 16);
 		END IF;
 
 		IF clut_fa_wr(0) = '1' THEN
-			clut_fa(clut_fa_index)(17 DOWNTO 12) <= FB_AD_IN(31 DOWNTO 26);
+			clut_fa(clut_fa_index)(17 DOWNTO 12) <= fb_ad_in(31 DOWNTO 26);
 		END IF;
 		IF clut_fa_wr(1) = '1' THEN
-			clut_fa(clut_fa_index)(11 DOWNTO 6) <= FB_AD_IN(23 DOWNTO 18);
+			clut_fa(clut_fa_index)(11 DOWNTO 6) <= fb_ad_in(23 DOWNTO 18);
 		END IF;
 		IF clut_fa_wr(3) = '1' THEN
-			clut_fa(clut_fa_index)(5 DOWNTO 0) <= FB_AD_IN(23 DOWNTO 18);
+			clut_fa(clut_fa_index)(5 DOWNTO 0) <= fb_ad_in(23 DOWNTO 18);
 		END IF;
 
 		IF clut_fbee_wr(1) = '1' THEN
-			clut_fi(clut_fi_index)(23 DOWNTO 16) <= FB_AD_IN(23 DOWNTO 16);
+			clut_fi(clut_fi_index)(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16);
 		END IF;
 		IF clut_fbee_wr(2) = '1' THEN
-			clut_fi(clut_fi_index)(15 DOWNTO 8) <= FB_AD_IN(15 DOWNTO 8);
+			clut_fi(clut_fi_index)(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8);
 		END IF;
 		IF clut_fbee_wr(3) = '1' THEN
-			clut_fi(clut_fi_index)(7 DOWNTO 0) <= FB_AD_IN(7 DOWNTO 0);
+			clut_fi(clut_fi_index)(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0);
 		END IF;
         --
 		clut_st_out <= clut_st(clut_st_index);
@@ -484,12 +484,12 @@ BEGIN
 		wrreq       => fifo_wre,
 		q           => fifo_d_out_512,
 		--rdempty   =>, -- Not  d.
-		wrusedw     => FIFO_MW
+		wrusedw     => fifo_mw
 	);
 
 	I_FIFO_DZ: lpm_fifoDZ
 		PORT map(
-			aclr        => DOP_FIFO_CLR,
+			aclr        => dop_fifo_clr,
 			clock       => clk_pixel_i,
 			data        => fifo_d_out_512,
 			rdreq       => fifo_rd_req_128,
@@ -499,20 +499,20 @@ BEGIN
 
 	I_VIDEO_CTRL: VIDEO_CTRL
 		PORT map(
-			CLK_MAIN            => CLK_MAIN,
+			clk_main            => clk_main,
 			fb_cs_n(1)          => fb_cs_n(1),
 			fb_cs_n(2)          => fb_cs_n(2),
 			fb_wr_n             => fb_wr_n,
 			fb_oe_n             => fb_oe_n,
-			FB_SIZE(0)          => FB_SIZE0,
-			FB_SIZE(1)          => FB_SIZE1,
-			FB_ADR              => FB_ADR,
-			CLK33M              => CLK_33M,
-			CLK25M              => CLK_25M,
-			BLITTER_RUN         => BLITTER_RUN,
-			CLK_VIDEO           => CLK_VIDEO,
-			VR_D                => VR_D,
-			VR_BUSY             => VR_BUSY,
+			FB_SIZE(0)          => fb_size0,
+			FB_SIZE(1)          => fb_size1,
+			fb_adr              => fb_adr,
+			CLK33M              => clk_33m,
+			CLK25M              => clk_25m,
+			blitter_run         => blitter_run,
+			clk_video           => clk_video,
+			vr_d                => vr_d,
+			vr_busy             => vr_busy,
 			color8              => color8,
 			FBEE_CLUT_RD        => clut_fbee_rd,
 			COLOR1              => COLOR1,
@@ -522,8 +522,8 @@ BEGIN
 			clut_st_rd          => clut_st_rd,
 			clut_st_wr          => clut_st_wr,
 			CLUT_MUX_ADR        => clut_adr_mux,
-			HSYNC               => HSYNC,
-			VSYNC               => VSYNC,
+			hsync               => hsync,
+			vsync               => vsync,
 			blank_n             => blank_n,
 			sync_n              => sync_n,
 			pd_vga_n            => pd_vga_n,
@@ -532,19 +532,19 @@ BEGIN
 			color4              => color4,
 			clk_pixel           => clk_pixel_i,
 			clut_off            => clut_off,
-			BLITTER_ON          => BLITTER_ON,
-			VIDEO_RAM_CTR       => VIDEO_RAM_CTR,
-			VIDEO_MOD_TA        => VIDEO_MOD_TA,
+			blitter_on          => blitter_on,
+			video_ram_ctr       => video_ram_ctr,
+			video_mod_ta        => video_mod_ta,
 			ccr                 => ccr,
 			CCSEL               => CC_SEL,
 			FBEE_CLUT_WR        => clut_fbee_wr,
 			inter_zei           => inter_zei,
-			DOP_FIFO_CLR        => DOP_FIFO_CLR,
-			VIDEO_RECONFIG      => VIDEO_RECONFIG,
-			VR_WR               => VR_WR,
-			VR_RD               => VR_RD,
+			dop_fifo_clr        => dop_fifo_clr,
+			video_reconfig      => video_reconfig,
+			vr_wr               => vr_wr,
+			vr_rd               => vr_rd,
 			fifo_clr            => fifo_clr_i,
-			DATA_IN             => FB_AD_IN,
+			DATA_IN             => fb_ad_in,
 			DATA_OUT            => data_out_video_ctrl,
 			DATA_EN_H           => data_en_h_video_ctrl,
 			DATA_EN_L           => data_en_l_video_ctrl
