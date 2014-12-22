@@ -70,7 +70,7 @@ ENTITY DDR_CTRL IS
         va              : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);               -- video Adress bus at the DDR chips
         vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
         vras_n          : OUT STD_LOGIC;                                    -- video memory RAS
-        vcs_n            : OUT STD_LOGIC;                                    -- video memory chip SELECT
+        vcs_n           : OUT STD_LOGIC;                                    -- video memory chip SELECT
         vcke            : OUT STD_LOGIC;                                    -- video memory clock enable
         vcas_n          : OUT STD_LOGIC;                                    -- video memory CAS
         

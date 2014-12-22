@@ -32,7 +32,7 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL blitter_wr       : STD_LOGIC;
     SIGNAL ddrclk0          : STD_LOGIC;
     SIGNAL clk_33m          : STD_LOGIC := '0';
-    SIGNAL fifo_mw          : UNSIGNED (8 DOWNTO 0) := TO_UNSIGNED(300, 9);
+    SIGNAL fifo_mw          : UNSIGNED (8 DOWNTO 0) := (OTHERS => '0');
     SIGNAL va               : STD_LOGIC_VECTOR(12 DOWNTO 0);
     SIGNAL vwe_n            : STD_LOGIC;
     SIGNAL vras_n           : STD_LOGIC;
