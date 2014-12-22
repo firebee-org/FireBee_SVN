@@ -24,7 +24,9 @@ PACKAGE ddr2_ram_model_pkg IS
         GENERIC
         (
             VERBOSE         : BOOLEAN := TRUE;          -- define if you want additional debug output
-        
+
+            CLOCK_TICK  : TIME := (1000000 / 132000) * 1 ps;     -- time for one clock tick
+
             BA_BITS         : INTEGER := 2;             -- number of banks
             ADDR_BITS       : INTEGER := 13;            -- number of address bits
             DM_BITS         : INTEGER := 2;             -- number of data mask bits

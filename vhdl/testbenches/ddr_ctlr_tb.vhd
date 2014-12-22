@@ -108,6 +108,9 @@ BEGIN
     GENERIC MAP
     (
         VERBOSE     => TRUE,          -- define if you want additional debug output
+
+        CLOCK_TICK  => (1000000 / 132000) * 1 ps,     -- time for one clock tick
+
         BA_BITS     => 2,             -- number of banks
         ADDR_BITS   => 13,            -- number of address bits
         DM_BITS     => 2,             -- number of data mask bits
