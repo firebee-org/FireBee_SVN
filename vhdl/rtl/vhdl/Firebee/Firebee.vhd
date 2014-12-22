@@ -96,7 +96,7 @@ LIBRARY IEEE;
 
 ENTITY firebee IS
     PORT(
-        rsto_mcf_n           : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
+        rsto_mcf_n          : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
         clk_33m             : IN STD_LOGIC;                -- 33 MHz clock
         clk_main            : IN STD_LOGIC;                -- 33 MHz clock
 
@@ -108,34 +108,34 @@ ENTITY firebee IS
 
         fb_ad               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         fb_ale              : IN STD_LOGIC;
-        fb_burst_n           : IN STD_LOGIC;
-        fb_cs_n              : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
+        fb_burst_n          : IN STD_LOGIC;
+        fb_cs_n             : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
         fb_size             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
-        fb_oe_n              : IN STD_LOGIC;
+        fb_oe_n             : IN STD_LOGIC;
         fb_wr_n             : IN STD_LOGIC;
-        fb_ta_n              : OUT STD_LOGIC;
+        fb_ta_n             : OUT STD_LOGIC;
         
-        dack1_n              : IN STD_LOGIC;
-        dreq1_n              : OUT STD_LOGIC;
+        dack1_n             : IN STD_LOGIC;
+        dreq1_n             : OUT STD_LOGIC;
 
-        master_n             : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
-        tout0_n              : IN STD_LOGIC; -- Not used so far.
+        master_n            : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
+        tout0_n             : IN STD_LOGIC; -- Not used so far.
 
         led_fpga_ok         : OUT STD_LOGIC;
         reserved_1          : OUT STD_LOGIC;
 
         va                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
         ba                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
-        vwe_n                : OUT STD_LOGIC;
+        vwe_n               : OUT STD_LOGIC;
         vcas_n              : OUT STD_LOGIC;
         vras_n              : OUT STD_LOGIC;
-        vcs_n                : OUT STD_LOGIC;
+        vcs_n               : OUT STD_LOGIC;
 
         clk_pixel           : OUT STD_LOGIC;
-        sync_n               : OUT STD_LOGIC;
+        sync_n              : OUT STD_LOGIC;
         vsync               : OUT STD_LOGIC;
         hsync               : OUT STD_LOGIC;
-        blank_n              : OUT STD_LOGIC;
+        blank_n             : OUT STD_LOGIC;
         
         vr                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         vg                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
@@ -146,17 +146,17 @@ ENTITY firebee IS
         vd                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         vd_qs               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        pd_vga_n             : OUT STD_LOGIC;
+        pd_vga_n            : OUT STD_LOGIC;
         vcke                : OUT STD_LOGIC;
         pic_int             : IN STD_LOGIC;
         e0_int              : IN STD_LOGIC;
         dvi_int             : IN STD_LOGIC;
-        pci_inta_n           : IN STD_LOGIC;
-        pci_intb_n           : IN STD_LOGIC;
-        pci_intc_n           : IN STD_LOGIC;
-        pci_intd_n           : IN STD_LOGIC;
+        pci_inta_n          : IN STD_LOGIC;
+        pci_intb_n          : IN STD_LOGIC;
+        pci_intc_n          : IN STD_LOGIC;
+        pci_intd_n          : IN STD_LOGIC;
 
-        irq_n                : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
+        irq_n               : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
         tin0                : OUT STD_LOGIC;
 
         ym_qa               : OUT STD_LOGIC;
@@ -182,7 +182,7 @@ ENTITY firebee IS
         pic_amkb_rx         : IN STD_LOGIC;
         amkb_rx             : IN STD_LOGIC;
         amkb_tx             : OUT STD_LOGIC;
-        dack0_n              : IN STD_LOGIC; -- Not used.
+        dack0_n             : IN STD_LOGIC; -- Not used.
         
         scsi_drqn           : IN STD_LOGIC;
         SCSI_MSGn           : IN STD_LOGIC;
@@ -201,7 +201,7 @@ ENTITY firebee IS
         ACSI_D              : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         ACSI_CSn            : OUT STD_LOGIC;
         ACSI_A1             : OUT STD_LOGIC;
-        ACSI_reset_n         : OUT STD_LOGIC;
+        ACSI_reset_n        : OUT STD_LOGIC;
         ACSI_ACKn           : OUT STD_LOGIC;
         ACSI_DRQn           : IN STD_LOGIC;
         ACSI_INTn           : IN STD_LOGIC;
@@ -257,9 +257,9 @@ ARCHITECTURE Structure of firebee is
     COMPONENT altpll1
         PORT(
             inclk0      : IN STD_LOGIC  := '0';
-            c0          : OUT STD_LOGIC ;
-            c1          : OUT STD_LOGIC ;
-            c2          : OUT STD_LOGIC ;
+            c0          : OUT STD_LOGIC;
+            c1          : OUT STD_LOGIC;
+            c2          : OUT STD_LOGIC;
             locked      : OUT STD_LOGIC 
         );
     END COMPONENT;
@@ -267,10 +267,10 @@ ARCHITECTURE Structure of firebee is
     COMPONENT altpll2
         PORT(
             inclk0      : IN STD_LOGIC  := '0';
-            c0          : OUT STD_LOGIC ;
-            c1          : OUT STD_LOGIC ;
-            c2          : OUT STD_LOGIC ;
-            c3          : OUT STD_LOGIC ;
+            c0          : OUT STD_LOGIC;
+            c1          : OUT STD_LOGIC;
+            c2          : OUT STD_LOGIC;
+            c3          : OUT STD_LOGIC;
             c4          : OUT STD_LOGIC 
         );
     END COMPONENT;
@@ -287,12 +287,12 @@ ARCHITECTURE Structure of firebee is
 
     COMPONENT altpll4
         PORT(
-            areset          : IN STD_LOGIC  := '0';
-            configupdate    : IN STD_LOGIC  := '0';
-            inclk0          : IN STD_LOGIC  := '0';
-            scanclk         : IN STD_LOGIC  := '1';
-            scanclkena      : IN STD_LOGIC  := '0';
-            scandata        : IN STD_LOGIC  := '0';
+            areset          : IN STD_LOGIC := '0';
+            configupdate    : IN STD_LOGIC := '0';
+            inclk0          : IN STD_LOGIC := '0';
+            scanclk         : IN STD_LOGIC := '1';
+            scanclkena      : IN STD_LOGIC := '0';
+            scandata        : IN STD_LOGIC := '0';
             c0              : OUT STD_LOGIC;
             locked          : OUT STD_LOGIC;
             scandataOUT     : OUT STD_LOGIC;
@@ -397,8 +397,8 @@ ARCHITECTURE Structure of firebee is
     SIGNAL fb_ad_out_rtc        : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL fb_ad_out_video      : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL fb_adr               : STD_LOGIC_VECTOR (31 DOWNTO 0);
-    SIGNAL fb_b0                : STD_LOGIC; -- UPPER Byte BEI 16 STD_LOGIC BUS
-    SIGNAL fb_b1                : STD_LOGIC; -- LOWER Byte BEI 16 STD_LOGIC BUS
+    SIGNAL fb_b0                : STD_LOGIC;                            -- UPPER Byte BEI 16 STD_LOGIC BUS
+    SIGNAL fb_b1                : STD_LOGIC;                            -- LOWER Byte BEI 16 STD_LOGIC BUS
     SIGNAL fb_ddr               : STD_LOGIC_VECTOR (127 DOWNTO 0);
     SIGNAL fb_le                : STD_LOGIC_VECTOR (3 DOWNTO 0);
     SIGNAL fb_vdoe              : STD_LOGIC_VECTOR (3 DOWNTO 0);
@@ -754,7 +754,7 @@ BEGIN
         variable DDR_D_OUT_H    : STD_LOGIC_VECTOR(31 DOWNTO 0);
         variable DDR_D_OUT_L    : STD_LOGIC_VECTOR(31 DOWNTO 0);
     BEGIN
-        IF clk_ddr(3) = '1' and clk_ddr(3)' event THEN
+        IF RISING_EDGE(clk_ddr(3)) THEN
             DDR_D_OUT_H := vdp_out(63 DOWNTO 32);
             DDR_D_OUT_L := vdp_out(31 DOWNTO 0);
             vd_en <= sr_ddr_wr OR ddr_wr;
