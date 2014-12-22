@@ -42,13 +42,13 @@ PACKAGE ddr2_ram_model_pkg IS
             ras_n           : IN STD_LOGIC;
             cas_n           : IN STD_LOGIC;
             we_n            : IN STD_LOGIC;
-            dm_rdqs         : INOUT STD_LOGIC_VECTOR (DM_BITS - 1 DOWNTO 0);
-            ba              : IN STD_LOGIC_VECTOR (BA_BITS - 1 DOWNTO 0);
-            addr            : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0);
-            dq              : INOUT STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
-            dqs             : INOUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
-            dqs_n           : INOUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
-            rdqs_n          : OUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
+            dm_rdqs         : INOUT UNSIGNED (DM_BITS - 1 DOWNTO 0);
+            ba              : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
+            addr            : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
+            dq              : INOUT UNSIGNED (DQ_BITS - 1 DOWNTO 0);
+            dqs             : INOUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
+            dqs_n           : INOUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
+            rdqs_n          : OUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
             odt             : IN STD_LOGIC
         );
     END COMPONENT;
@@ -87,13 +87,13 @@ ENTITY ddr2_ram_model IS
         ras_n       : IN STD_LOGIC;
         cas_n       : IN STD_LOGIC;
         we_n        : IN STD_LOGIC;
-        dm_rdqs     : INOUT STD_LOGIC_VECTOR (DM_BITS - 1 DOWNTO 0);
-        ba          : IN STD_LOGIC_VECTOR (BA_BITS - 1 DOWNTO 0);
-        addr        : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0);
-        dq          : INOUT STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
-        dqs         : INOUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
-        dqs_n       : INOUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
-        rdqs_n      : OUT STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
+        dm_rdqs     : INOUT UNSIGNED (DM_BITS - 1 DOWNTO 0);
+        ba          : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
+        addr        : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
+        dq          : INOUT UNSIGNED (DQ_BITS - 1 DOWNTO 0);
+        dqs         : INOUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
+        dqs_n       : INOUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
+        rdqs_n      : OUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
         odt         : IN STD_LOGIC
     );
 END ENTITY ddr2_ram_model;
@@ -155,7 +155,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     
     -- mode registers
     SIGNAL burst_order      : STD_LOGIC;
-    SIGNAL burst_length     : STD_LOGIC_VECTOR (BL_BITS DOWNTO 0);
+    SIGNAL burst_length     : UNSIGNED (BL_BITS DOWNTO 0);
     SIGNAL cas_latency      : INTEGER;
     SIGNAL additive_latency : INTEGER;
     SIGNAL dll_reset        : STD_LOGIC;
@@ -163,9 +163,9 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL dll_en           : STD_LOGIC;
     SIGNAL write_recovery   : INTEGER;
     SIGNAL low_power        : STD_LOGIC;
-    SIGNAL odt_rtt          : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL odt_rtt          : UNSIGNED (1 DOWNTO 0);
     SIGNAL odt_en           : STD_LOGIC;
-    SIGNAL ocd              : STD_LOGIC_VECTOR (2 DOWNTO 0);
+    SIGNAL ocd              : UNSIGNED (2 DOWNTO 0);
     SIGNAL dqs_n_en         : STD_LOGIC;
     SIGNAL rdqs_en          : STD_LOGIC;
     SIGNAL out_en           : STD_LOGIC;
@@ -173,7 +173,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL write_latency    : INTEGER;
     
     TYPE cmd_type_t IS (LOAD_MODE, REFRESH, PRECHARGE, ACTIVATE, WRITE_CMD, READ_CMD, NOP, PWR_DOWN, SELF_REF);
-    TYPE cmd_type_encoding_array_t IS ARRAY(cmd_type_t) OF STD_LOGIC_VECTOR(3 DOWNTO 0);
+    TYPE cmd_type_encoding_array_t IS ARRAY(cmd_type_t) OF UNSIGNED(3 DOWNTO 0);
     CONSTANT cmd_type_encoding : cmd_type_encoding_array_t :=
         (
             "0000", "0001", "0010", "0011",
@@ -195,16 +195,16 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         );
     
     -- command state
-    SIGNAL active_bank          : STD_LOGIC_VECTOR (BANKS - 1 DOWNTO 0);
-    SIGNAL auto_precharge_bank  : STD_LOGIC_VECTOR (BANKS - 1 DOWNTO 0);
-    SIGNAL write_precharge_bank : STD_LOGIC_VECTOR (BANKS - 1 DOWNTO 0);
-    SIGNAL read_precharge_bank  : STD_LOGIC_VECTOR (BANKS - 1 DOWNTO 0);
+    SIGNAL active_bank          : UNSIGNED (BANKS - 1 DOWNTO 0);
+    SIGNAL auto_precharge_bank  : UNSIGNED (BANKS - 1 DOWNTO 0);
+    SIGNAL write_precharge_bank : UNSIGNED (BANKS - 1 DOWNTO 0);
+    SIGNAL read_precharge_bank  : UNSIGNED (BANKS - 1 DOWNTO 0);
     
-    TYPE row_array_t IS ARRAY (INTEGER RANGE <>) OF STD_LOGIC_VECTOR (BANKS - 1 DOWNTO 0);
+    TYPE row_array_t IS ARRAY (INTEGER RANGE <>) OF UNSIGNED (BANKS - 1 DOWNTO 0);
     SIGNAL active_row           : row_array_t (ROW_BITS - 1 DOWNTO 0);
     SIGNAL in_power_down        : STD_LOGIC;
     SIGNAL in_self_refresh      : STD_LOGIC;
-    SIGNAL init_mode_reg        : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL init_mode_reg        : UNSIGNED (3 DOWNTO 0);
     SIGNAL init_done            : STD_LOGIC;
     SIGNAL init_step            : INTEGER;
     SIGNAL er_trfc_max          : STD_LOGIC;
@@ -242,34 +242,34 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL tm_bank_read_end     : time_array_t (BANKS - 1 DOWNTO 0);
     
     -- pipelines
-    SIGNAL al_pipeline          : STD_LOGIC_VECTOR (MAX_PIPE DOWNTO 0);
-    SIGNAL wr_pipeline          : STD_LOGIC_VECTOR (MAX_PIPE DOWNTO 0);
-    SIGNAL rd_pipeline          : STD_LOGIC_VECTOR (MAX_PIPE DOWNTO 0);
-    SIGNAL odt_pipeline         : STD_LOGIC_VECTOR (MAX_PIPE DOWNTO 0);
+    SIGNAL al_pipeline          : UNSIGNED (MAX_PIPE DOWNTO 0);
+    SIGNAL wr_pipeline          : UNSIGNED (MAX_PIPE DOWNTO 0);
+    SIGNAL rd_pipeline          : UNSIGNED (MAX_PIPE DOWNTO 0);
+    SIGNAL odt_pipeline         : UNSIGNED (MAX_PIPE DOWNTO 0);
     
-    TYPE ba_pipeline_t IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR (BA_BITS - 1 DOWNTO 0);
+    TYPE ba_pipeline_t IS ARRAY (NATURAL RANGE <>) OF UNSIGNED (BA_BITS - 1 DOWNTO 0);
     SIGNAL ba_pipeline          : ba_pipeline_t (MAX_PIPE DOWNTO 0);
     
-    TYPE row_pipeline_t IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR (ROW_BITS - 1 DOWNTO 0);
+    TYPE row_pipeline_t IS ARRAY (NATURAL RANGE <>) OF UNSIGNED (ROW_BITS - 1 DOWNTO 0);
     SIGNAL row_pipeline         : row_pipeline_t (MAX_PIPE DOWNTO 0);
     
-    TYPE col_pipeline_t IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR (COL_BITS - 1 DOWNTO 0);
+    TYPE col_pipeline_t IS ARRAY (NATURAL RANGE <>) OF UNSIGNED (COL_BITS - 1 DOWNTO 0);
     SIGNAL col_pipeline         : col_pipeline_t (MAX_PIPE DOWNTO 0);
     
     SIGNAL prev_cke             : STD_LOGIC;
     
     -- data state
-    SIGNAL memory_data          : STD_LOGIC_VECTOR (BL_MAX * DQ_BITS - 1 DOWNTO 0);
-    SIGNAL bit_mask             : STD_LOGIC_VECTOR (BL_MAX * DQ_BITS - 1 DOWNTO 0);
-    SIGNAL burst_position       : STD_LOGIC_VECTOR (BL_BITS - 1 DOWNTO 0);
-    SIGNAL burst_cntr           : STD_LOGIC_VECTOR (BL_BITS DOWNTO 0);
-    SIGNAL dq_temp              : STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
-    SIGNAL check_write_postamble: STD_LOGIC_VECTOR (35 DOWNTO 0);
-    SIGNAL check_write_preamble : STD_LOGIC_VECTOR (35 DOWNTO 0);
-    SIGNAL check_write_dqs_high : STD_LOGIC_VECTOR (35 DOWNTO 0);
-    SIGNAL check_write_dqs_low  : STD_LOGIC_VECTOR (35 DOWNTO 0);
-    SIGNAL check_dm_tdipw       : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL check_dq_tdipw       : STD_LOGIC_VECTOR (17 DOWNTO 0);
+    SIGNAL memory_data          : UNSIGNED (BL_MAX * DQ_BITS - 1 DOWNTO 0);
+    SIGNAL bit_mask             : UNSIGNED (BL_MAX * DQ_BITS - 1 DOWNTO 0);
+    SIGNAL burst_position       : UNSIGNED (BL_BITS - 1 DOWNTO 0);
+    SIGNAL burst_cntr           : UNSIGNED (BL_BITS DOWNTO 0);
+    SIGNAL dq_temp              : UNSIGNED (DQ_BITS - 1 DOWNTO 0);
+    SIGNAL check_write_postamble: UNSIGNED (35 DOWNTO 0);
+    SIGNAL check_write_preamble : UNSIGNED (35 DOWNTO 0);
+    SIGNAL check_write_dqs_high : UNSIGNED (35 DOWNTO 0);
+    SIGNAL check_write_dqs_low  : UNSIGNED (35 DOWNTO 0);
+    SIGNAL check_dm_tdipw       : UNSIGNED (17 DOWNTO 0);
+    SIGNAL check_dq_tdipw       : UNSIGNED (17 DOWNTO 0);
     
     -- data timers/counters
     SIGNAL tm_cke               : TIME;
@@ -319,12 +319,12 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         );
 
     -- memory storage
-    TYPE mem_t IS ARRAY (INTEGER RANGE <>) OF STD_LOGIC_VECTOR (BL_MAX * DQ_BITS - 1 DOWNTO 0);
+    TYPE mem_t IS ARRAY (INTEGER RANGE <>) OF UNSIGNED (BL_MAX * DQ_BITS - 1 DOWNTO 0);
     SIGNAL memory               : mem_t(0 TO MEM_SIZE - 1);
-    TYPE adr_t IS ARRAY (INTEGER RANGE <>) OF STD_LOGIC_VECTOR (MAX_BITS - 1 DOWNTO 0);
+    TYPE adr_t IS ARRAY (INTEGER RANGE <>) OF UNSIGNED (MAX_BITS - 1 DOWNTO 0);
     SIGNAL address              : adr_t(0 TO MEM_SIZE - 1);
-    SIGNAL memory_index         : STD_LOGIC_VECTOR(MEM_BITS DOWNTO 0);
-    SIGNAL memory_used          : STD_LOGIC_VECTOR(MEM_BITS DOWNTO 0);
+    SIGNAL memory_index         : UNSIGNED(MEM_BITS DOWNTO 0);
+    SIGNAL memory_used          : UNSIGNED(MEM_BITS DOWNTO 0);
     
     SIGNAL ck_in                : STD_LOGIC;
     SIGNAL ck_n_in              : STD_LOGIC;
@@ -333,17 +333,17 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL ras_n_in             : STD_LOGIC;
     SIGNAL cas_n_in             : STD_LOGIC;
     SIGNAL we_n_in              : STD_LOGIC;
-    SIGNAL dm_in                : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL ba_in                : STD_LOGIC_VECTOR (2 DOWNTO 0);
-    SIGNAL addr_in              : STD_LOGIC_VECTOR (15 DOWNTO 0);
-    SIGNAL dq_in                : STD_LOGIC_VECTOR (71 DOWNTO 0);
-    SIGNAL dqs_in               : STD_LOGIC_VECTOR (35 DOWNTO 0);
+    SIGNAL dm_in                : UNSIGNED (17 DOWNTO 0);
+    SIGNAL ba_in                : UNSIGNED (2 DOWNTO 0);
+    SIGNAL addr_in              : UNSIGNED (15 DOWNTO 0);
+    SIGNAL dq_in                : UNSIGNED (71 DOWNTO 0);
+    SIGNAL dqs_in               : UNSIGNED (35 DOWNTO 0);
     SIGNAL odt_in               : STD_LOGIC;
     
-    SIGNAL dm_in_pos            : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL dm_in_neg            : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL dq_in_pos            : STD_LOGIC_VECTOR (71 DOWNTO 0);
-    SIGNAL dq_in_neg            : STD_LOGIC_VECTOR (71 DOWNTO 0);
+    SIGNAL dm_in_pos            : UNSIGNED (17 DOWNTO 0);
+    SIGNAL dm_in_neg            : UNSIGNED (17 DOWNTO 0);
+    SIGNAL dq_in_pos            : UNSIGNED (71 DOWNTO 0);
+    SIGNAL dq_in_neg            : UNSIGNED (71 DOWNTO 0);
     SIGNAL dq_in_valid          : STD_LOGIC;
     SIGNAL dqs_in_valid         : STD_LOGIC;
     SIGNAL wdqs_cntr            : INTEGER;
@@ -353,22 +353,22 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL wdqs_pos_cntr        : integer_array_t(35 DOWNTO 0);
     
     SIGNAL b2b_write            : STD_LOGIC;
-    SIGNAL prev_dqs_in          : STD_LOGIC_VECTOR (35 DOWNTO 0);
+    SIGNAL prev_dqs_in          : UNSIGNED (35 DOWNTO 0);
     SIGNAL diff_ck              : STD_LOGIC;
     
-    SIGNAL dqs_even             : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL dqs_odd              : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL cmd_n_in             : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL dqs_even             : UNSIGNED (17 DOWNTO 0);
+    SIGNAL dqs_odd              : UNSIGNED (17 DOWNTO 0);
+    SIGNAL cmd_n_in             : UNSIGNED (3 DOWNTO 0);
     
     -- transmit
     SIGNAL dqs_out_en           : STD_LOGIC;
-    SIGNAL dqs_out_en_dly       : STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
+    SIGNAL dqs_out_en_dly       : UNSIGNED (DQS_BITS - 1 DOWNTO 0);
     SIGNAL dqs_out              : STD_LOGIC;
-    SIGNAL dqs_out_dly          : STD_LOGIC_VECTOR (DQS_BITS - 1 DOWNTO 0);
+    SIGNAL dqs_out_dly          : UNSIGNED (DQS_BITS - 1 DOWNTO 0);
     SIGNAL dq_out_en            : STD_LOGIC;
-    SIGNAL dq_out_en_dly        : STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
-    SIGNAL dq_out               : STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
-    SIGNAL dq_out_dly           : STD_LOGIC_VECTOR (DQ_BITS - 1 DOWNTO 0);
+    SIGNAL dq_out_en_dly        : UNSIGNED (DQ_BITS - 1 DOWNTO 0);
+    SIGNAL dq_out               : UNSIGNED (DQ_BITS - 1 DOWNTO 0);
+    SIGNAL dq_out_dly           : UNSIGNED (DQ_BITS - 1 DOWNTO 0);
     SIGNAL rdqsen_cntr          : INTEGER;
     SIGNAL rdqs_cntr            : INTEGER;
     SIGNAL rdqen_cntr           : INTEGER;
@@ -403,9 +403,9 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     
     PROCEDURE cmd_task(
         cke        : IN STD_LOGIC;
-        cmd        : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        bank       : IN STD_LOGIC_VECTOR (BA_BITS - 1 DOWNTO 0);
-        addr       : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0)) IS
+        cmd        : IN UNSIGNED (3 DOWNTO 0);
+        bank       : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
+        addr       : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0)) IS
         
         VARIABLE i          : UNSIGNED (BANKS DOWNTO 0);
         VARIABLE j          : INTEGER;
@@ -416,27 +416,27 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     
     
     PROCEDURE initialize(
-        SIGNAL mode_reg0    : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0);
-        SIGNAL mode_reg1    : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0);
-        SIGNAL mode_reg2    : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0);
-        SIGNAL mode_reg3    : IN STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0)) IS
+        SIGNAL mode_reg0    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
+        SIGNAL mode_reg1    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
+        SIGNAL mode_reg2    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
+        SIGNAL mode_reg3    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0)) IS
         
-        CONSTANT AP_BIT     : STD_LOGIC_VECTOR (ADDR_BITS - 1 DOWNTO 0) := STD_LOGIC_VECTOR(TO_UNSIGNED(2 ** AP, ADDR_BITS));
+        CONSTANT AP_BIT     : UNSIGNED (ADDR_BITS - 1 DOWNTO 0) := UNSIGNED(TO_UNSIGNED(2 ** AP, ADDR_BITS));
     BEGIN
         REPORT("at time " & TIME'IMAGE(NOW) & "INFO: performing initialization sequence");
         
         cmd_task('1', cmd_type_encoding(NOP),  (OTHERS => 'X'), (OTHERS => 'X'));
         cmd_task('1', cmd_type_encoding(PRECHARGE), (OTHERS => 'X'), AP_BIT);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(3, BA_BITS)), mode_reg3);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(2, BA_BITS)), mode_reg2);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(0, BA_BITS)), mode_reg0 OR "100");  -- DLL reset
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(3, BA_BITS)), mode_reg3);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(2, BA_BITS)), mode_reg2);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(0, BA_BITS)), mode_reg0 OR "100");  -- DLL reset
         cmd_task('1', cmd_type_encoding(PRECHARGE), (OTHERS => 'X'), AP_BIT);           -- Precharge all
         cmd_task('1', cmd_type_encoding(REFRESH), (OTHERS => 'X'), (OTHERS => 'X'));
         cmd_task('1', cmd_type_encoding(REFRESH), (OTHERS => 'X'), (OTHERS => 'X'));
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(0, BA_BITS)), mode_reg0);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(1, BA_BITS)), mode_reg1 OR x"380"); -- OCD default
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), STD_LOGIC_VECTOR(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(0, BA_BITS)), mode_reg0);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1 OR x"380"); -- OCD default
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
         cmd_task('1', cmd_type_encoding(NOP), (OTHERS => 'X'), (OTHERS => 'X'));
     END initialize;
         
@@ -487,27 +487,27 @@ BEGIN
     
     PROCESS (dm_rdqs)
     BEGIN
-        dm_in <= STD_LOGIC_VECTOR(RESIZE(UNSIGNED(dm_rdqs), dm_in'LENGTH)) AFTER BUS_DELAY;
+        dm_in <= UNSIGNED(RESIZE(UNSIGNED(dm_rdqs), dm_in'LENGTH)) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (ba)
     BEGIN
-        ba_in <= STD_LOGIC_VECTOR(RESIZE(UNSIGNED(ba), ba_in'LENGTH)) AFTER BUS_DELAY;
+        ba_in <= UNSIGNED(RESIZE(UNSIGNED(ba), ba_in'LENGTH)) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (addr)
     BEGIN
-        addr_in <= STD_LOGIC_VECTOR(RESIZE(UNSIGNED(addr), addr_in'LENGTH)) AFTER BUS_DELAY;
+        addr_in <= UNSIGNED(RESIZE(UNSIGNED(addr), addr_in'LENGTH)) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (dq)
     BEGIN
-        dq_in <= STD_LOGIC_VECTOR(RESIZE(UNSIGNED(dq), dq_in'LENGTH)) AFTER BUS_DELAY;
+        dq_in <= UNSIGNED(RESIZE(UNSIGNED(dq), dq_in'LENGTH)) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (dqs, dqs_n)
     BEGIN
-        dqs_in <= STD_LOGIC_VECTOR(SHIFT_LEFT(RESIZE(UNSIGNED(dqs_n), dqs_in'LENGTH), 18)) OR STD_LOGIC_VECTOR(RESIZE(UNSIGNED(dqs), dqs_in'LENGTH));
+        dqs_in <= UNSIGNED(SHIFT_LEFT(RESIZE(UNSIGNED(dqs_n), dqs_in'LENGTH), 18)) OR UNSIGNED(RESIZE(UNSIGNED(dqs), dqs_in'LENGTH));
     END PROCESS;
     
     PROCESS (odt)
@@ -533,25 +533,25 @@ BEGIN
     cmd_n_in <= '0' & ras_n_in & cas_n_in & we_n_in WHEN NOT(cs_n_in) ELSE cmd_type_encoding(NOP);
     
     -- bufif1 buf_dqs
-    dqs <= dqs_out_dly WHEN (dqs_out_en_dly AND STD_LOGIC_VECTOR'(0 TO DQS_BITS - 1 => out_en)) /= x"0" ELSE (OTHERS => 'Z');
+    dqs <= dqs_out_dly WHEN (dqs_out_en_dly AND UNSIGNED'(0 TO DQS_BITS - 1 => out_en)) /= x"0" ELSE (OTHERS => 'Z');
     
     -- bufif1 buf_dm
     dm_rdqs <= dqs_out_dly WHEN (dqs_out_en_dly AND
-                                STD_LOGIC_VECTOR'(0 TO DM_BITS - 1 => out_en) AND
-                                STD_LOGIC_VECTOR'(0 TO DM_BITS - 1 => rdqs_en)) /= x"0" ELSE (OTHERS => 'Z');
+                                UNSIGNED'(0 TO DM_BITS - 1 => out_en) AND
+                                UNSIGNED'(0 TO DM_BITS - 1 => rdqs_en)) /= x"0" ELSE (OTHERS => 'Z');
     -- bufif1 buf_dqs_n
     dqs_n <= NOT dqs_out_dly WHEN (dqs_out_en_dly AND
-                                    STD_LOGIC_VECTOR'(0 TO DQS_BITS - 1 => out_en) AND
-                                    STD_LOGIC_VECTOR'(0 TO DQS_BITS - 1 => dqs_n_en)) /= x"0" ELSE (OTHERS => 'Z');
+                                    UNSIGNED'(0 TO DQS_BITS - 1 => out_en) AND
+                                    UNSIGNED'(0 TO DQS_BITS - 1 => dqs_n_en)) /= x"0" ELSE (OTHERS => 'Z');
     -- bufif1 buf_rdqs_n
     rdqs_n <= NOT dqs_out_dly WHEN (dqs_out_en_dly AND
-                                    STD_LOGIC_VECTOR'(0  TO DQS_BITS - 1 => out_en) AND
-                                    STD_LOGIC_VECTOR'(0 to DQS_BITS - 1 => dqs_n_en) AND
-                                    STD_LOGIC_VECTOR'(0 TO DQS_BITS - 1 => rdqs_en)) /= x"0" ELSE (OTHERS => 'Z');
+                                    UNSIGNED'(0  TO DQS_BITS - 1 => out_en) AND
+                                    UNSIGNED'(0 to DQS_BITS - 1 => dqs_n_en) AND
+                                    UNSIGNED'(0 TO DQS_BITS - 1 => rdqs_en)) /= x"0" ELSE (OTHERS => 'Z');
     
     -- bufif1 buf_dq
     dq <= dq_out_dly WHEN (dq_out_en_dly AND
-                            STD_LOGIC_VECTOR'(0 TO DQ_BITS - 1 => out_en)) /= x"0" ELSE (OTHERS => 'Z');
+                            UNSIGNED'(0 TO DQ_BITS - 1 => out_en)) /= x"0" ELSE (OTHERS => 'Z');
 
     -- initial block
     init : PROCESS
@@ -647,17 +647,17 @@ BEGIN
     
     err : PROCESS
         PROCEDURE chk_err(
-            samebank    : IN STD_LOGIC_VECTOR (0 DOWNTO 0);
-            bank        : IN STD_LOGIC_VECTOR (BA_BITS - 1 DOWNTO 0);
-            fromcmd     : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            cmd         : IN STD_LOGIC_VECTOR (3 DOWNTO 0)
+            samebank    : IN UNSIGNED (0 DOWNTO 0);
+            bank        : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
+            fromcmd     : IN UNSIGNED (3 DOWNTO 0);
+            cmd         : IN UNSIGNED (3 DOWNTO 0)
             ) IS
             
             VARIABLE err         : STD_LOGIC;
         BEGIN
             -- all matching case expression will be evaluated
             
-            CASE? (STD_LOGIC_VECTOR'(samebank & fromcmd & cmd)) IS
+            CASE? (UNSIGNED'(samebank & fromcmd & cmd)) IS
                 WHEN "0" & cmd_type_encoding(LOAD_MODE) & "0---" =>
                     IF ck_cntr - ck_load_mode < TMRD THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tMRD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));

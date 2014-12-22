@@ -17,7 +17,7 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL clock            : STD_LOGIC := '0';    -- main clock
     SIGNAL ddr_clk          : STD_LOGIC := '0';    -- ddr clock
             
-    SIGNAL fb_adr           : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL fb_adr           : UNSIGNED(31 DOWNTO 0);
     SIGNAL ddr_sync_66m     : STD_LOGIC := '0';
     SIGNAL fb_cs1_n         : STD_LOGIC;
     SIGNAL fb_oe_n          : STD_LOGIC := '1';    -- only write cycles for now
@@ -26,33 +26,33 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL fb_ale           : STD_LOGIC := 'Z';    -- defined reset state
     SIGNAL fb_wr_n          : STD_LOGIC;
     SIGNAL fifo_clr         : STD_LOGIC;
-    SIGNAL video_ram_ctr    : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    SIGNAL blitter_adr      : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL video_ram_ctr    : UNSIGNED(15 DOWNTO 0);
+    SIGNAL blitter_adr      : UNSIGNED(31 DOWNTO 0);
     SIGNAL blitter_sig      : STD_LOGIC;
     SIGNAL blitter_wr       : STD_LOGIC;
     SIGNAL ddrclk0          : STD_LOGIC;
     SIGNAL clk_33m          : STD_LOGIC := '0';
     SIGNAL fifo_mw          : UNSIGNED (8 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL va               : STD_LOGIC_VECTOR(12 DOWNTO 0);
+    SIGNAL va               : UNSIGNED(12 DOWNTO 0);
     SIGNAL vwe_n            : STD_LOGIC;
     SIGNAL vras_n           : STD_LOGIC;
     SIGNAL vcs_n            : STD_LOGIC;
     SIGNAL vcke             : STD_LOGIC;
     SIGNAL vcas_n           : STD_LOGIC;
-    SIGNAL fb_le            : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL fb_vdoe          : STD_LOGIC_VECTOR(3 DOWNTO 0);
+    SIGNAL fb_le            : UNSIGNED(3 DOWNTO 0);
+    SIGNAL fb_vdoe          : UNSIGNED(3 DOWNTO 0);
     SIGNAL sr_fifo_wre      : STD_LOGIC;
     SIGNAL sr_ddr_fb        : STD_LOGIC;
     SIGNAL sr_ddr_wr        : STD_LOGIC;
     SIGNAL sr_ddrwr_d_sel   : STD_LOGIC;
-    SIGNAL sr_vdmp          : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL sr_vdmp          : UNSIGNED(7 DOWNTO 0);
     SIGNAL video_ddr_ta     : STD_LOGIC;
     SIGNAL sr_blitter_dack  : STD_LOGIC;
-    SIGNAL ba               : STD_LOGIC_VECTOR(1 DOWNTO 0);
+    SIGNAL ba               : UNSIGNED(1 DOWNTO 0);
     SIGNAL ddrwr_d_sel1     : STD_LOGIC;
-    SIGNAL vdm_sel          : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL data_in          : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL data_out         : STD_LOGIC_VECTOR(31 DOWNTO 16);
+    SIGNAL vdm_sel          : UNSIGNED(3 DOWNTO 0);
+    SIGNAL data_in          : UNSIGNED(31 DOWNTO 0);
+    SIGNAL data_out         : UNSIGNED(31 DOWNTO 16);
     SIGNAL data_en_h        : STD_LOGIC;
     SIGNAL data_en_l        : STD_LOGIC;
     
@@ -63,109 +63,109 @@ BEGIN
     i_ddr_ctrl : DDR_CTRL
     PORT map
     (
-        clk_main => clock,
-        ddr_sync_66m => ddr_sync_66m,
-        fb_adr => fb_adr,
-        fb_cs1_n => fb_cs1_n,
-        fb_oe_n => fb_oe_n,
-        fb_size0 => fb_size0,
-        fb_size1 => fb_size1,
-        fb_ale => fb_ale,
-        FB_WR_n => fb_wr_n,
-        fifo_clr => fifo_clr,
+        clk_main        => clock,
+        ddr_sync_66m    => ddr_sync_66m,
+        fb_adr          => fb_adr,
+        fb_cs1_n        => fb_cs1_n,
+        fb_oe_n         => fb_oe_n,
+        fb_size0        => fb_size0,
+        fb_size1        => fb_size1,
+        fb_ale          => fb_ale,
+        FB_WR_n         => fb_wr_n,
+        fifo_clr        => fifo_clr,
         video_control_register => video_ram_ctr,
-        blitter_adr => blitter_adr,
-        blitter_sig => blitter_sig,
-        blitter_wr => blitter_wr,
-        ddrclk0 => ddrclk0,
-        clk_33m => clk_33m,
-        fifo_mw => fifo_mw,
-        va => va,
-        vwe_n => vwe_n,
-        vras_n => vras_n,
-        vcs_n => vcs_n,
-        vcke => vcke,
-        vcas_n => vcas_n,
-        fb_le => fb_le,
-        fb_vdoe => fb_vdoe,
-        sr_fifo_wre => sr_fifo_wre,
-        sr_ddr_fb => sr_ddr_fb,
-        sr_ddr_wr => sr_ddr_wr,
-        sr_ddrwr_d_sel => sr_ddrwr_d_sel,
-        sr_vdmp => sr_vdmp,
-        video_ddr_ta => video_ddr_ta,
+        blitter_adr     => blitter_adr,
+        blitter_sig     => blitter_sig,
+        blitter_wr      => blitter_wr,
+        ddrclk0         => ddrclk0,
+        clk_33m         => clk_33m,
+        fifo_mw         => fifo_mw,
+        va              => va,
+        vwe_n           => vwe_n,
+        vras_n          => vras_n,
+        vcs_n           => vcs_n,
+        vcke            => vcke,
+        vcas_n          => vcas_n,
+        fb_le           => fb_le,
+        fb_vdoe         => fb_vdoe,
+        sr_fifo_wre     => sr_fifo_wre,
+        sr_ddr_fb       => sr_ddr_fb,
+        sr_ddr_wr       => sr_ddr_wr,
+        sr_ddrwr_d_sel  => sr_ddrwr_d_sel,
+        sr_vdmp         => sr_vdmp,
+        video_ddr_ta    => video_ddr_ta,
         sr_blitter_dack => sr_blitter_dack,
-        ba => ba,
-        ddrwr_d_sel1 => ddrwr_d_sel1,
-        vdm_sel => vdm_sel,
-        data_in => data_in,
-        data_out => data_out,
-        data_en_h => data_en_h,
-        data_en_l => data_en_l
+        ba              => ba,
+        ddrwr_d_sel1    => ddrwr_d_sel1,
+        vdm_sel         => vdm_sel,
+        data_in         => data_in,
+        data_out        => data_out,
+        data_en_h       => data_en_h,
+        data_en_l       => data_en_l
     );
     
     i_ddr2_ram_1 : ddr2_ram_model
     GENERIC MAP
     (
-        VERBOSE     => TRUE,          -- define if you want additional debug output
+        VERBOSE         => TRUE,          -- define if you want additional debug output
 
-        CLOCK_TICK  => (1000000 / 132000) * 1 ps,     -- time for one clock tick
+        CLOCK_TICK      => (1000000 / 132000) * 1 ps,     -- time for one clock tick
 
-        BA_BITS     => 2,             -- number of banks
-        ADDR_BITS   => 13,            -- number of address bits
-        DM_BITS     => 2,             -- number of data mask bits
-        DQ_BITS     => 8,             -- number of data bits
-        DQS_BITS    => 2              -- number of data strobes
+        BA_BITS         => 2,             -- number of banks
+        ADDR_BITS       => 13,            -- number of address bits
+        DM_BITS         => 2,             -- number of data mask bits
+        DQ_BITS         => 8,             -- number of data bits
+        DQS_BITS        => 2              -- number of data strobes
     )
     PORT map
     (
-        ck          => ddrclk0,
-        ck_n        => NOT ddrclk0,
-        cke         => vcke,
-        cs_n        => vcs_n,
-        ras_n       => vras_n,
-        cas_n       => vcas_n,
-        we_n        => vwe_n,
-        dm_rdqs(0)  => data_en_l,
-        dm_rdqs(1)  => data_en_h,
-        ba          => ba,
-        addr        => va,
-        dq          => sr_vdmp,
-        dqs(0)      => data_en_l,
-        dqs(1)      => data_en_h,
-        odt         => '0'
+        ck              => ddrclk0,
+        ck_n            => NOT ddrclk0,
+        cke             => vcke,
+        cs_n            => vcs_n,
+        ras_n           => vras_n,
+        cas_n           => vcas_n,
+        we_n            => vwe_n,
+        dm_rdqs(0)      => data_en_l,
+        dm_rdqs(1)      => data_en_h,
+        ba              => ba,
+        addr            => va,
+        dq              => sr_vdmp,
+        dqs(0)          => data_en_l,
+        dqs(1)          => data_en_h,
+        odt             => '0'
     );
 
     i_ddr2_ram_2 : ddr2_ram_model
     GENERIC MAP
     (
-        VERBOSE     => TRUE,          -- define if you want additional debug output
+        VERBOSE         => TRUE,          -- define if you want additional debug output
 
-        CLOCK_TICK  => (1000000 / 132000) * 1 ps,     -- time for one clock tick
+        CLOCK_TICK      => (1000000 / 132000) * 1 ps,     -- time for one clock tick
 
-        BA_BITS     => 2,             -- number of banks
-        ADDR_BITS   => 13,            -- number of address bits
-        DM_BITS     => 2,             -- number of data mask bits
-        DQ_BITS     => 8,             -- number of data bits
-        DQS_BITS    => 2              -- number of data strobes
+        BA_BITS         => 2,             -- number of banks
+        ADDR_BITS       => 13,            -- number of address bits
+        DM_BITS         => 2,             -- number of data mask bits
+        DQ_BITS         => 8,             -- number of data bits
+        DQS_BITS        => 2              -- number of data strobes
     )
     PORT map
     (
-        ck          => ddrclk0,
-        ck_n        => NOT ddrclk0,
-        cke         => vcke,
-        cs_n        => vcs_n,
-        ras_n       => vras_n,
-        cas_n       => vcas_n,
-        we_n        => vwe_n,
-        dm_rdqs(0)  => data_en_l,
-        dm_rdqs(1)  => data_en_h,
-        ba          => ba,
-        addr        => va,
-        dq          => sr_vdmp,
-        dqs(0)      => data_en_l,
-        dqs(1)      => data_en_h,
-        odt         => '0'
+        ck              => ddrclk0,
+        ck_n            => NOT ddrclk0,
+        cke             => vcke,
+        cs_n            => vcs_n,
+        ras_n           => vras_n,
+        cas_n           => vcas_n,
+        we_n            => vwe_n,
+        dm_rdqs(0)      => data_en_l,
+        dm_rdqs(1)      => data_en_h,
+        ba              => ba,
+        addr            => va,
+        dq              => sr_vdmp,
+        dqs(0)          => data_en_l,
+        dqs(1)          => data_en_h,
+        odt             => '0'
     );
     
     stimulate_main_clock : process
@@ -188,7 +188,7 @@ BEGIN
     END process;
     
     stimulate : process
-        VARIABLE adr : STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
+        VARIABLE adr : UNSIGNED (31 DOWNTO 0) := x"00000000";
     BEGIN
         WAIT UNTIL RISING_EDGE(clock);
         CASE bus_state IS
@@ -210,7 +210,7 @@ BEGIN
                 fb_cs1_n <= '0';
                 bus_state <= S3;
             WHEN S3 =>
-                fb_adr <= STD_LOGIC_VECTOR(UNSIGNED(fb_adr) + 4);
+                fb_adr <= fb_adr + 4;
                 bus_state <= S0;
                 fb_wr_n <= 'Z';
             WHEN others =>

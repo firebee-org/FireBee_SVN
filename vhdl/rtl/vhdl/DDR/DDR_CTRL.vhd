@@ -50,7 +50,7 @@ ENTITY DDR_CTRL IS
     PORT(
         clk_main        : IN STD_LOGIC;
         ddr_sync_66m    : IN STD_LOGIC;
-        fb_adr          : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        fb_adr          : IN UNSIGNED (31 DOWNTO 0);
         fb_cs1_n        : IN STD_LOGIC;
         fb_oe_n         : IN STD_LOGIC;
         fb_size0        : IN STD_LOGIC;
@@ -58,8 +58,8 @@ ENTITY DDR_CTRL IS
         fb_ale          : IN STD_LOGIC;
         fb_wr_n          : IN STD_LOGIC;
         fifo_clr        : IN STD_LOGIC;
-        video_control_register   : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
-        blitter_adr     : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        video_control_register   : IN UNSIGNED (15 DOWNTO 0);
+        blitter_adr     : IN UNSIGNED (31 DOWNTO 0);
         blitter_sig     : IN STD_LOGIC;
         blitter_wr      : IN STD_LOGIC;
 
@@ -67,29 +67,29 @@ ENTITY DDR_CTRL IS
         clk_33m         : IN STD_LOGIC;
         fifo_mw         : IN UNSIGNED (8 DOWNTO 0);
         
-        va              : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);               -- video Adress bus at the DDR chips
+        va              : OUT UNSIGNED (12 DOWNTO 0);               -- video Adress bus at the DDR chips
         vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
         vras_n          : OUT STD_LOGIC;                                    -- video memory RAS
         vcs_n           : OUT STD_LOGIC;                                    -- video memory chip SELECT
         vcke            : OUT STD_LOGIC;                                    -- video memory clock enable
         vcas_n          : OUT STD_LOGIC;                                    -- video memory CAS
         
-        fb_le           : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        fb_vdoe         : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+        fb_le           : OUT UNSIGNED (3 DOWNTO 0);
+        fb_vdoe         : OUT UNSIGNED (3 DOWNTO 0);
         
         sr_fifo_wre     : OUT STD_LOGIC;
         sr_ddr_fb       : OUT STD_LOGIC;
         sr_ddr_wr       : OUT STD_LOGIC;
         sr_ddrwr_d_sel  : OUT STD_LOGIC;
-        sr_vdmp         : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        sr_vdmp         : OUT UNSIGNED (7 DOWNTO 0);
         
         video_ddr_ta    : OUT STD_LOGIC;
         sr_blitter_dack : OUT STD_LOGIC;
-        ba              : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
+        ba              : OUT UNSIGNED (1 DOWNTO 0);
         ddrwr_d_sel1    : OUT STD_LOGIC;
-        vdm_sel         : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-        data_in         : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        data_out        : OUT STD_LOGIC_VECTOR (31 DOWNTO 16);
+        vdm_sel         : OUT UNSIGNED (3 DOWNTO 0);
+        data_in         : IN UNSIGNED (31 DOWNTO 0);
+        data_out        : OUT UNSIGNED (31 DOWNTO 16);
         data_en_h       : OUT STD_LOGIC;
         data_en_l       : OUT STD_LOGIC
     );
@@ -102,10 +102,10 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     CONSTANT FIFO_HWM : INTEGER := 500;     -- high water mark
     
     -- constants for bits in video_control_register
-    CONSTANT VRCR_VCKE          : INTEGER := 0;
+    CONSTANT vrcr_vcke          : INTEGER := 0;
     CONSTANT VRCR_REFRESH_ON    : INTEGER := 2;
     CONSTANT VRCR_CONFIG_ON     : INTEGER := 3;
-    CONSTANT VRCR_VCS           : INTEGER := 1;
+    CONSTANT vrcr_vcs           : INTEGER := 1;
     --
     CONSTANT VRCR_FIFO_ON       : INTEGER := 24;
     CONSTANT VRCR_BORDER_ON     : INTEGER := 25;
@@ -127,33 +127,33 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL ddr_access       : ddr_access_t;
     SIGNAL ddr_state        : ddr_sm_t;
     SIGNAL ddr_next_state   : ddr_sm_t;
-    SIGNAL byte_sel         : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL byte_sel         : UNSIGNED (3 DOWNTO 0);
     SIGNAL sr_fifo_wre_i    : STD_LOGIC;
     SIGNAL vcas             : STD_LOGIC;
     SIGNAL vras             : STD_LOGIC;
     SIGNAL vwe              : STD_LOGIC;
-    SIGNAL mcs              : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL mcs              : UNSIGNED (1 DOWNTO 0);
     SIGNAL bus_cyc          : STD_LOGIC;
     SIGNAL bus_cyc_end      : STD_LOGIC;
     SIGNAL blitter_req      : STD_LOGIC;
-    SIGNAL blitter_row_adr  : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL blitter_ba       : STD_LOGIC_VECTOR (1 DOWNTO 0);
-    SIGNAL blitter_col_adr  : STD_LOGIC_VECTOR (9 DOWNTO 0);
+    SIGNAL blitter_row_adr  : UNSIGNED (12 DOWNTO 0);
+    SIGNAL blitter_ba       : UNSIGNED (1 DOWNTO 0);
+    SIGNAL blitter_col_adr  : UNSIGNED (9 DOWNTO 0);
     SIGNAL cpu_ddr_sync     : STD_LOGIC;
-    SIGNAL cpu_row_adr      : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL cpu_ba           : STD_LOGIC_VECTOR (1 DOWNTO 0);
-    SIGNAL cpu_col_adr      : STD_LOGIC_VECTOR (9 DOWNTO 0);
+    SIGNAL cpu_row_adr      : UNSIGNED (12 DOWNTO 0);
+    SIGNAL cpu_ba           : UNSIGNED (1 DOWNTO 0);
+    SIGNAL cpu_col_adr      : UNSIGNED (9 DOWNTO 0);
     SIGNAL cpu_req          : STD_LOGIC;
     SIGNAL ddr_sel          : STD_LOGIC;
     SIGNAL ddr_cs           : STD_LOGIC;
     SIGNAL ddr_config       : STD_LOGIC;
     SIGNAL fifo_req         : STD_LOGIC;
-    SIGNAL fifo_row_adr     : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL fifo_ba          : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL fifo_row_adr     : UNSIGNED (12 DOWNTO 0);
+    SIGNAL fifo_ba          : UNSIGNED (1 DOWNTO 0);
     SIGNAL fifo_col_adr     : UNSIGNED(9 DOWNTO 0);
     SIGNAL fifo_active      : STD_LOGIC;
     SIGNAL fifo_clr_sync    : STD_LOGIC;
-    SIGNAL vdm_sel_i        : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL vdm_sel_i        : UNSIGNED (3 DOWNTO 0);
     SIGNAL clear_fifo_cnt   : STD_LOGIC;
     SIGNAL stop             : STD_LOGIC;
     SIGNAL fifo_bank_ok     : STD_LOGIC;
@@ -161,27 +161,27 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL ddr_refresh_req  : STD_LOGIC;
     SIGNAL ddr_refresh_sig  : UNSIGNED(3 DOWNTO 0);
     SIGNAL need_refresh     : STD_LOGIC;
-    SIGNAL video_base_l_d   : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL video_base_l_d   : UNSIGNED (7 DOWNTO 0);
     SIGNAL video_base_l     : STD_LOGIC;
-    SIGNAL video_base_m_d   : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL video_base_m_d   : UNSIGNED (7 DOWNTO 0);
     SIGNAL video_base_m     : STD_LOGIC;
-    SIGNAL video_base_h_d   : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL video_base_h_d   : UNSIGNED (7 DOWNTO 0);
     SIGNAL video_base_h     : STD_LOGIC;
-    SIGNAL video_base_x_d   : STD_LOGIC_VECTOR (2 DOWNTO 0);
+    SIGNAL video_base_x_d   : UNSIGNED (2 DOWNTO 0);
     SIGNAL video_adr_cnt    : UNSIGNED(22 DOWNTO 0);
     SIGNAL video_cnt_l      : STD_LOGIC;
     SIGNAL video_cnt_m      : STD_LOGIC;
     SIGNAL video_cnt_h      : STD_LOGIC;
-    SIGNAL video_base_adr   : STD_LOGIC_VECTOR (22 DOWNTO 0);
-    SIGNAL video_act_adr    : STD_LOGIC_VECTOR (26 DOWNTO 0);
-    SIGNAL fb_adr_i         : STD_LOGIC_VECTOR (32 DOWNTO 0);
+    SIGNAL video_base_adr   : UNSIGNED (22 DOWNTO 0);
+    SIGNAL video_act_adr    : UNSIGNED (26 DOWNTO 0);
+    SIGNAL fb_adr_i         : UNSIGNED (32 DOWNTO 0);
     
     
-    SIGNAL va_s             : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL va_p             : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL ba_s             : STD_LOGIC_VECTOR (1 DOWNTO 0) ;
-    SIGNAL ba_p             : STD_LOGIC_VECTOR (1 DOWNTO 0);
-    SIGNAL tsiz             : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL va_s             : UNSIGNED (12 DOWNTO 0);
+    SIGNAL va_p             : UNSIGNED (12 DOWNTO 0);
+    SIGNAL ba_s             : UNSIGNED (1 DOWNTO 0) ;
+    SIGNAL ba_p             : UNSIGNED (1 DOWNTO 0);
+    SIGNAL tsiz             : UNSIGNED (1 DOWNTO 0);
 BEGIN
     tsiz <= fb_size1 & fb_size0;
     WITH tsiz SELECT
@@ -485,8 +485,8 @@ BEGIN
         
         blitter_req <= blitter_sig AND NOT
                         video_control_register(VRCR_CONFIG_ON) AND
-                        video_control_register(VRCR_VCKE) AND
-                        video_control_register(VRCR_VCS);
+                        video_control_register(vrcr_vcke) AND
+                        video_control_register(vrcr_vcs);
 
         fifo_clr_sync <= fifo_clr;
         clear_fifo_cnt <= fifo_clr_sync OR NOT fifo_active;
@@ -500,20 +500,20 @@ BEGIN
                 clear_fifo_cnt = '0' AND
                 stop = '0' AND
                 ddr_config = '0' AND
-                video_control_register(VRCR_VCKE) = '1' AND
-                video_control_register(VRCR_VCS) = '1' THEN
+                video_control_register(vrcr_vcke) = '1' AND
+                video_control_register(vrcr_vcs) = '1' THEN
             fifo_req <= '1';
         ELSE
             fifo_req <= '1';
         END IF;
 
         IF clear_fifo_cnt = '1' THEN
-            video_adr_cnt <= UNSIGNED(video_base_adr);
+            video_adr_cnt <= video_base_adr;
         ELSIF sr_fifo_wre_i = '1' THEN
             video_adr_cnt <= video_adr_cnt + 1;  
         END IF;
 
-        IF mcs = "10" AND video_control_register(VRCR_VCKE) = '1' AND video_control_register(VRCR_VCS) = '1' THEN
+        IF mcs = "10" AND video_control_register(vrcr_vcke) = '1' AND video_control_register(vrcr_vcs) = '1' THEN
             cpu_ddr_sync <= '1';
         ELSE
             cpu_ddr_sync <= '0';
@@ -592,7 +592,7 @@ BEGIN
                 va_s(9 DOWNTO 0) <= cpu_col_adr;
                 ba_s <= cpu_ba;
             ELSIF fifo_active = '1' THEN
-                va_s(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr);
+                va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr);
                 ba_s <= fifo_ba;
             ELSIF ddr_access = ddr_access_blitter THEN
                 va_s(9 DOWNTO 0) <= blitter_col_adr;
@@ -607,7 +607,7 @@ BEGIN
             END IF;
         ELSIF ddr_state = ds_t5r AND fifo_req = '1' AND fifo_bank_ok = '1' THEN
             va_s(10) <= '0';
-            va_s(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr);
+            va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr);
             ba_s <= fifo_ba;
         ELSIF ddr_state = ds_t5r THEN
             va_s(10) <= '1';
@@ -646,7 +646,7 @@ BEGIN
             sr_ddrwr_d_sel <= '1';
         ELSIF ddr_state = ds_t9w AND fifo_req = '1' AND fifo_bank_ok = '1' THEN
             va_s(10) <= '0';
-            va_s(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr);
+            va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr);
             ba_s <= fifo_ba;
         ELSIF ddr_state = ds_t9w THEN
             va_s(10) <= '0';
@@ -656,7 +656,7 @@ BEGIN
             va_s(10) <= '1';
         ELSIF ddr_state = ds_t5f AND fifo_req = '1' THEN
             va_s(10) <= '0';
-            va_s(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr + "100");
+            va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr + "100");
             ba_s <= fifo_ba;
         ELSIF ddr_state = ds_t5f THEN
             va_s(10) <= '0';
@@ -668,7 +668,7 @@ BEGIN
             va_s(10) <= '1';
         ELSIF ddr_state = ds_t7f AND fifo_req = '1' THEN
             va_s(10) <= '0';
-            va_s(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr + "100");
+            va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr + "100");
             ba_s <= fifo_ba;
         ELSIF ddr_state = ds_t7f THEN
             va_s(10) <= '1';
@@ -676,7 +676,7 @@ BEGIN
             va_s(10) <= '1';
         ELSIF ddr_state = ds_t9f AND fifo_req = '1' THEN
             va_p(10) <= '0';
-            va_p(9 DOWNTO 0) <= STD_LOGIC_VECTOR (fifo_col_adr + "100");
+            va_p(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr + "100");
             ba_p <= fifo_ba;
         ELSIF ddr_state = ds_t9f THEN
             va_s(10) <= '1';
@@ -739,46 +739,46 @@ BEGIN
     sr_fifo_wre <= sr_fifo_wre_i;
     
     va <=   data_in(26 DOWNTO 14) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND fb_wr_n = '0' ELSE
-                data_in(26 DOWNTO 14) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
-                va_p WHEN ddr_state = ds_t2a ELSE
-                data_in(26 DOWNTO 14) WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                data_in(26 DOWNTO 14) WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                va_p WHEN ddr_state = ds_t10f ELSE
-                "0010000000000" WHEN ddr_state = ds_r2 AND ddr_refresh_sig = x"9" ELSE va_s;
+            data_in(26 DOWNTO 14) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
+            va_p WHEN ddr_state = ds_t2a ELSE
+            data_in(26 DOWNTO 14) WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            data_in(26 DOWNTO 14) WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            va_p WHEN ddr_state = ds_t10f ELSE
+            "0010000000000" WHEN ddr_state = ds_r2 AND ddr_refresh_sig = x"9" ELSE va_s;
 
     ba <=   data_in(13 DOWNTO 12) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND fb_wr_n = '0' ELSE
-                data_in(13 DOWNTO 12) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
-                ba_p WHEN ddr_state = ds_t2a ELSE
-                data_in(13 DOWNTO 12) WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                data_in(13 DOWNTO 12) WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                ba_p WHEN ddr_state = ds_t10f ELSE ba_s;
+            data_in(13 DOWNTO 12) WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
+            ba_p WHEN ddr_state = ds_t2a ELSE
+            data_in(13 DOWNTO 12) WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            data_in(13 DOWNTO 12) WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            ba_p WHEN ddr_state = ds_t10f ELSE ba_s;
             
     vras <= '1' WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND fb_wr_n = '0' ELSE
-                '1' WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
-                '1' WHEN ddr_state = ds_t2a AND ddr_access = ddr_access_fifo AND fifo_req = '1' ELSE
-                '1' WHEN ddr_state = ds_t2a AND ddr_access = ddr_access_blitter AND blitter_req = '1' ELSE
-                '1' WHEN ddr_state = ds_t2b ELSE
-                '1' WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                '1' WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
-                data_in(18) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
-                '1' WHEN ddr_state = ds_cb6 ELSE
-                '1' WHEN ddr_state = ds_cb8 ELSE
-                '1' WHEN ddr_state = ds_r2 ELSE '0';
+            '1' WHEN ddr_state = ds_t2a AND ddr_sel = '1' AND (fb_size0 = '0' OR fb_size1= '0') ELSE
+            '1' WHEN ddr_state = ds_t2a AND ddr_access = ddr_access_fifo AND fifo_req = '1' ELSE
+            '1' WHEN ddr_state = ds_t2a AND ddr_access = ddr_access_blitter AND blitter_req = '1' ELSE
+            '1' WHEN ddr_state = ds_t2b ELSE
+            '1' WHEN ddr_state = ds_t10f AND fb_wr_n = '0' AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            '1' WHEN ddr_state = ds_t10f AND (fb_size0 = '0' OR fb_size1= '0') AND data_in(13 DOWNTO 12) = fifo_ba ELSE
+            data_in(18) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
+            '1' WHEN ddr_state = ds_cb6 ELSE
+            '1' WHEN ddr_state = ds_cb8 ELSE
+            '1' WHEN ddr_state = ds_r2 ELSE '0';
 
     vcas <= '1' WHEN ddr_state = ds_t4r ELSE
-                '1' WHEN ddr_state = ds_t6w ELSE
-                '1' WHEN ddr_state = ds_t4f ELSE
-                '1' WHEN ddr_state = ds_t6f ELSE
-                '1' WHEN ddr_state = ds_t8f ELSE
-                '1' WHEN ddr_state = ds_t10f AND vras = '0' ELSE
-                data_in(17) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
-                '1' WHEN ddr_state = ds_r2 AND ddr_refresh_sig /= x"9" ELSE '0';
+            '1' WHEN ddr_state = ds_t6w ELSE
+            '1' WHEN ddr_state = ds_t4f ELSE
+            '1' WHEN ddr_state = ds_t6f ELSE
+            '1' WHEN ddr_state = ds_t8f ELSE
+            '1' WHEN ddr_state = ds_t10f AND vras = '0' ELSE
+            data_in(17) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
+            '1' WHEN ddr_state = ds_r2 AND ddr_refresh_sig /= x"9" ELSE '0';
 
     vwe <= '1' WHEN ddr_state = ds_t6w ELSE
-                data_in(16) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
-                '1' WHEN ddr_state = ds_cb6 ELSE
-                '1' WHEN ddr_state = ds_cb8 ELSE
-                '1' WHEN ddr_state = ds_r2 AND ddr_refresh_sig = x"9" ELSE '0';
+           data_in(16) AND NOT fb_wr_n AND NOT fb_size0 AND NOT fb_size1 WHEN ddr_state = ds_c7 ELSE
+           '1' WHEN ddr_state = ds_cb6 ELSE
+           '1' WHEN ddr_state = ds_cb8 ELSE
+           '1' WHEN ddr_state = ds_r2 AND ddr_refresh_sig = x"9" ELSE '0';
 
     -- DDR controller:
     -- VIDEO RAM CONTROL REGISTER (IS IN VIDEO_MUX_CTR) 
@@ -801,8 +801,8 @@ BEGIN
     blitter_ba <= blitter_adr(13 DOWNTO 12);
     blitter_col_adr <= blitter_adr(11 DOWNTO 2);
 
-    fifo_row_adr <= STD_LOGIC_VECTOR (video_adr_cnt(22 DOWNTO 10));
-    fifo_ba <= STD_LOGIC_VECTOR (video_adr_cnt(9 DOWNTO 8));
+    fifo_row_adr <= video_adr_cnt(22 DOWNTO 10);
+    fifo_ba <= video_adr_cnt(9 DOWNTO 8);
     fifo_col_adr <= video_adr_cnt(7 DOWNTO 0) & "00";
 
     video_base_adr(22 DOWNTO 20) <= video_base_x_d;
@@ -814,7 +814,7 @@ BEGIN
     vdm_sel_i <= video_base_l_d(3 DOWNTO 0);
 
     -- Current video address:
-    video_act_adr(26 DOWNTO 4) <= STD_LOGIC_VECTOR (video_adr_cnt - fifo_mw);
+    video_act_adr(26 DOWNTO 4) <= video_adr_cnt - fifo_mw;
     video_act_adr(3 DOWNTO 0) <= vdm_sel_i;
 
     p_video_regs : PROCESS
@@ -822,7 +822,7 @@ BEGIN
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_33m);
         IF video_base_l = '1' AND fb_wr_n = '0' AND byte_sel(1) = '1' THEN
-            video_base_l_d <= data_in(23 DOWNTO 16); -- 16 byte boarders.
+            video_base_l_d <= data_in(23 DOWNTO 16); -- 16 byte borders
         END IF;
           
         IF video_base_m = '1' AND fb_wr_n = '0' AND byte_sel(3) = '1' THEN
@@ -849,16 +849,16 @@ BEGIN
     video_cnt_h <= '1' WHEN fb_cs1_n = '0' AND fb_adr_i(15 DOWNTO 0) = x"8204" ELSE '0'; -- x"FF8205".
 
     data_out(31 DOWNTO 24) <= "00000" & video_base_x_d WHEN video_base_h = '1' ELSE
-                                        "00000" & video_act_adr(26 DOWNTO 24) WHEN video_cnt_h = '1' ELSE (OTHERS => '0');
+                              "00000" & video_act_adr(26 DOWNTO 24) WHEN video_cnt_h = '1' ELSE (OTHERS => '0');
 
     data_en_h <= (video_base_h OR video_cnt_h) AND NOT fb_oe_n;
 
     data_out(23 DOWNTO 16) <= video_base_l_d WHEN video_base_l = '1' ELSE
-                                        video_base_m_d WHEN video_base_m = '1' ELSE
-                                        video_base_h_d WHEN video_base_h = '1' ELSE
-                                        video_act_adr(7 DOWNTO 0) WHEN video_cnt_l = '1' ELSE
-                                        video_act_adr(15 DOWNTO 8) WHEN video_cnt_m = '1' ELSE
-                                        video_act_adr(23 DOWNTO 16) WHEN video_cnt_h = '1' ELSE (OTHERS => '0');
+                              video_base_m_d WHEN video_base_m = '1' ELSE
+                              video_base_h_d WHEN video_base_h = '1' ELSE
+                              video_act_adr(7 DOWNTO 0) WHEN video_cnt_l = '1' ELSE
+                              video_act_adr(15 DOWNTO 8) WHEN video_cnt_m = '1' ELSE
+                              video_act_adr(23 DOWNTO 16) WHEN video_cnt_h = '1' ELSE (OTHERS => '0');
                       
     data_en_l <= (video_base_l OR video_base_m OR video_base_h OR video_cnt_l OR video_cnt_m OR video_cnt_h) AND NOT fb_oe_n;
 END ARCHITECTURE BEHAVIOUR;

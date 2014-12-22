@@ -66,8 +66,8 @@ PACKAGE firebee_pkg IS
 			FB_AD_EN_31_16      : OUT STD_LOGIC; -- Hi word.
 			FB_AD_EN_15_0       : OUT STD_LOGIC; -- Low word.
 			FB_ALE              : IN STD_LOGIC;
-			fb_cs_n              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
-			fb_oe_n              : IN STD_LOGIC;
+			fb_cs_n             : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+			fb_oe_n             : IN STD_LOGIC;
 			fb_wr_n             : IN STD_LOGIC;
 			fb_size1            : IN STD_LOGIC;
 			fb_size0            : IN STD_LOGIC;
@@ -83,10 +83,10 @@ PACKAGE firebee_pkg IS
 			BLUE                : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 			VSYNC               : OUT STD_LOGIC;
 			HSYNC               : OUT STD_LOGIC;
-			sync_n               : OUT STD_LOGIC;
-			blank_n              : OUT STD_LOGIC;
+			sync_n              : OUT STD_LOGIC;
+			blank_n             : OUT STD_LOGIC;
             
-			pd_vga_n             : OUT STD_LOGIC;
+			pd_vga_n            : OUT STD_LOGIC;
 			VIDEO_MOD_TA        : OUT STD_LOGIC;
 
 			VD_VZ               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
@@ -107,9 +107,9 @@ PACKAGE firebee_pkg IS
 	COMPONENT VIDEO_CTRL
 		PORT(
 			CLK_MAIN        : IN STD_LOGIC;
-			fb_cs_n          : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
-			fb_wr_n          : IN STD_LOGIC;
-			fb_oe_n          : IN STD_LOGIC;
+			fb_cs_n         : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			fb_wr_n         : IN STD_LOGIC;
+			fb_oe_n         : IN STD_LOGIC;
 			FB_SIZE         : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
 			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 			CLK33M          : IN STD_LOGIC;
@@ -129,9 +129,9 @@ PACKAGE firebee_pkg IS
 			CLUT_MUX_ADR    : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 			HSYNC           : OUT STD_LOGIC;
 			VSYNC           : OUT STD_LOGIC;
-			blank_n          : OUT STD_LOGIC;
-			sync_n           : OUT STD_LOGIC;
-			pd_vga_n         : OUT STD_LOGIC;
+			blank_n         : OUT STD_LOGIC;
+			sync_n          : OUT STD_LOGIC;
+			pd_vga_n        : OUT STD_LOGIC;
 			FIFO_RDE        : OUT STD_LOGIC;
 			COLOR2          : OUT STD_LOGIC;
 			COLOR4          : OUT STD_LOGIC;
@@ -158,46 +158,51 @@ PACKAGE firebee_pkg IS
 
 	COMPONENT DDR_CTRL is
 		PORT(
-			CLK_MAIN        : IN STD_LOGIC;
-			DDR_SYNC_66M    : IN STD_LOGIC;
-			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-			fb_cs1_n        : IN STD_LOGIC;
-			FB_OE_n         : IN STD_LOGIC;
-			fb_size0        : IN STD_LOGIC;
-			fb_size1        : IN STD_LOGIC;
-			FB_ALE          : IN STD_LOGIC;
-			fb_wr_n         : IN STD_LOGIC;
-			FIFO_CLR        : IN STD_LOGIC;
-			video_control_register   : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-			BLITTER_ADR     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-			BLITTER_SIG     : IN STD_LOGIC;
-			BLITTER_WR      : IN STD_LOGIC;
-			DDRCLK0         : IN STD_LOGIC;
-			CLK_33M         : IN STD_LOGIC;
-			FIFO_MW         : IN UNSIGNED (8 DOWNTO 0);
-			VA              : OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
-			vwe_n            : OUT STD_LOGIC;
-			vras_n          : OUT STD_LOGIC;
-			vcs_n            : OUT STD_LOGIC;
-			VCKE            : OUT STD_LOGIC;
-			vcas_n          : OUT STD_LOGIC;
-			FB_LE           : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-			FB_VDOE         : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-			SR_FIFO_WRE     : OUT STD_LOGIC;
-			SR_DDR_FB       : OUT STD_LOGIC;
-			SR_DDR_WR       : OUT STD_LOGIC;
-			SR_DDRWR_D_SEL  : OUT STD_LOGIC;
-			SR_VDMP         : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-			VIDEO_DDR_TA    : OUT STD_LOGIC;
-			SR_BLITTER_DACK : OUT STD_LOGIC;
-			BA              : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
-			DDRWR_D_SEL1    : OUT STD_LOGIC;
-			VDM_SEL         : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-			DATA_IN         : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-			DATA_OUT        : OUT STD_LOGIC_VECTOR(31 DOWNTO 16);
-			DATA_EN_H       : OUT STD_LOGIC;
-			DATA_EN_L       : OUT STD_LOGIC
-		);
+            clk_main        : IN STD_LOGIC;
+            ddr_sync_66m    : IN STD_LOGIC;
+            fb_adr          : IN UNSIGNED (31 DOWNTO 0);
+            fb_cs1_n        : IN STD_LOGIC;
+            fb_oe_n         : IN STD_LOGIC;
+            fb_size0        : IN STD_LOGIC;
+            fb_size1        : IN STD_LOGIC;
+            fb_ale          : IN STD_LOGIC;
+            fb_wr_n         : IN STD_LOGIC;
+            fifo_clr        : IN STD_LOGIC;
+            video_control_register   : IN UNSIGNED (15 DOWNTO 0);
+            blitter_adr     : IN UNSIGNED (31 DOWNTO 0);
+            blitter_sig     : IN STD_LOGIC;
+            blitter_wr      : IN STD_LOGIC;
+    
+            ddrclk0         : IN STD_LOGIC;
+            clk_33m         : IN STD_LOGIC;
+            fifo_mw         : IN UNSIGNED (8 DOWNTO 0);
+            
+            va              : OUT UNSIGNED (12 DOWNTO 0);               -- video Adress bus at the DDR chips
+            vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
+            vras_n          : OUT STD_LOGIC;                                    -- video memory RAS
+            vcs_n           : OUT STD_LOGIC;                                    -- video memory chip SELECT
+            vcke            : OUT STD_LOGIC;                                    -- video memory clock enable
+            vcas_n          : OUT STD_LOGIC;                                    -- video memory CAS
+            
+            fb_le           : OUT UNSIGNED (3 DOWNTO 0);
+            fb_vdoe         : OUT UNSIGNED (3 DOWNTO 0);
+            
+            sr_fifo_wre     : OUT STD_LOGIC;
+            sr_ddr_fb       : OUT STD_LOGIC;
+            sr_ddr_wr       : OUT STD_LOGIC;
+            sr_ddrwr_d_sel  : OUT STD_LOGIC;
+            sr_vdmp         : OUT UNSIGNED (7 DOWNTO 0);
+            
+            video_ddr_ta    : OUT STD_LOGIC;
+            sr_blitter_dack : OUT STD_LOGIC;
+            ba              : OUT UNSIGNED (1 DOWNTO 0);
+            ddrwr_d_sel1    : OUT STD_LOGIC;
+            vdm_sel         : OUT UNSIGNED (3 DOWNTO 0);
+            data_in         : IN UNSIGNED (31 DOWNTO 0);
+            data_out        : OUT UNSIGNED (31 DOWNTO 16);
+            data_en_h       : OUT STD_LOGIC;
+            data_en_l       : OUT STD_LOGIC
+        );
 	END COMPONENT;
 
 	COMPONENT INTHANDLER
@@ -205,11 +210,11 @@ PACKAGE firebee_pkg IS
 			CLK_MAIN        : IN STD_LOGIC;
 			RESETn          : IN STD_LOGIC;
 			FB_ADR          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-			fb_cs_n          : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			fb_cs_n         : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
 			fb_size0        : IN STD_LOGIC;
 			fb_size1        : IN STD_LOGIC;
 			fb_wr_n         : IN STD_LOGIC;
-			fb_oe_n          : IN STD_LOGIC;
+			fb_oe_n         : IN STD_LOGIC;
 			FB_AD_IN        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 			FB_AD_OUT       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 			FB_AD_EN_31_24  : OUT STD_LOGIC;
@@ -219,16 +224,16 @@ PACKAGE firebee_pkg IS
 			PIC_INT         : IN STD_LOGIC;
 			E0_INT          : IN STD_LOGIC;
 			DVI_INT         : IN STD_LOGIC;
-			pci_inta_n       : IN STD_LOGIC;
-			pci_intb_n       : IN STD_LOGIC;
-			pci_intc_n       : IN STD_LOGIC;
-			pci_intd_n       : IN STD_LOGIC;
-			mfp_int_n        : IN STD_LOGIC;
+			pci_inta_n      : IN STD_LOGIC;
+			pci_intb_n      : IN STD_LOGIC;
+			pci_intc_n      : IN STD_LOGIC;
+			pci_intd_n      : IN STD_LOGIC;
+			mfp_int_n       : IN STD_LOGIC;
 			DSP_INT         : IN STD_LOGIC;
 			VSYNC           : IN STD_LOGIC;
 			HSYNC           : IN STD_LOGIC;
 			DRQ_DMA         : IN STD_LOGIC;
-			irq_n            : OUT STD_LOGIC_VECTOR(7 DOWNTO 2);
+			irq_n           : OUT STD_LOGIC_VECTOR(7 DOWNTO 2);
 			INT_HANDLER_TA  : OUT STD_LOGIC;
 			FBEE_CONF       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 			TIN0            : OUT STD_LOGIC
@@ -244,9 +249,9 @@ PACKAGE firebee_pkg IS
 			FB_ADR                      : IN STD_LOGIC_VECTOR(26 DOWNTO 0);
 			FB_ALE                      : IN STD_LOGIC;
 			FB_SIZE                     : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-			fb_cs_n                      : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
-			fb_oe_n                      : IN STD_LOGIC;
-			fb_wr_n                      : IN STD_LOGIC;
+			fb_cs_n                     : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+			fb_oe_n                     : IN STD_LOGIC;
+			fb_wr_n                     : IN STD_LOGIC;
 			FB_AD_IN                    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 			FB_AD_OUT                   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 			FB_AD_EN_31_24              : OUT STD_LOGIC;
@@ -296,7 +301,7 @@ PACKAGE firebee_pkg IS
 
 			FB_ADR              : IN STD_LOGIC_VECTOR(19 DOWNTO 5);
 			FB_CS1n             : IN STD_LOGIC;
-			fb_wr_n              : IN STD_LOGIC;
+			fb_wr_n             : IN STD_LOGIC;
 			FB_B0               : IN STD_LOGIC;
 			FB_B1               : IN STD_LOGIC;
 
@@ -342,9 +347,9 @@ PACKAGE firebee_pkg IS
 			FB_ALE          : IN STD_LOGIC;
 			fb_size1        : IN STD_LOGIC;
 			fb_size0        : IN STD_LOGIC;
-			fb_cs_n          : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
-			fb_oe_n          : IN STD_LOGIC;
-			fb_wr_n          : IN STD_LOGIC;
+			fb_cs_n         : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+			fb_oe_n         : IN STD_LOGIC;
+			fb_wr_n         : IN STD_LOGIC;
 			DATA_IN         : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 			DATA_OUT        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 			DATA_EN         : OUT STD_LOGIC;
@@ -364,8 +369,8 @@ PACKAGE firebee_pkg IS
 		PORT(
 			CLK_33M         : IN STD_LOGIC;
 			CLK_MAIN        : IN STD_LOGIC;
-			fb_oe_n          : IN STD_LOGIC;
-			fb_wr_n          : IN STD_LOGIC;
+			fb_oe_n         : IN STD_LOGIC;
+			fb_wr_n         : IN STD_LOGIC;
 			FB_CS1n         : IN STD_LOGIC;
 			FB_CS2n         : IN STD_LOGIC;
 			fb_size0        : IN STD_LOGIC;
@@ -569,8 +574,8 @@ PACKAGE firebee_pkg IS
 			FB_CS1n         : IN STD_LOGIC;
 			fb_size0        : IN STD_LOGIC;
 			fb_size1        : IN STD_LOGIC;
-			fb_wr_n          : IN STD_LOGIC;
-			fb_oe_n          : IN STD_LOGIC;
+			fb_wr_n         : IN STD_LOGIC;
+			fb_oe_n         : IN STD_LOGIC;
 			FB_AD_IN        : IN STD_LOGIC_VECTOR(23 DOWNTO 16);
 			FB_AD_OUT       : OUT STD_LOGIC_VECTOR(23 DOWNTO 16);
 			FB_AD_EN_23_16  : OUT STD_LOGIC;

@@ -286,7 +286,7 @@ BEGIN
 		ELSE
 			clut_ta <= '0';
 		END IF;
-	end PROCESS P_CLUT_TA;
+	END PROCESS P_CLUT_TA;
 
 	--Falcon CLUT:
 	falcon_clut_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 10) = "1111100110" ELSE '0'; -- $F9800/$400
@@ -395,7 +395,7 @@ BEGIN
 		ELSIF atari_vl_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
 			atari_vl(7 DOWNTO 0) <= data_in(7 DOWNTO 0);
 		END IF;
-	end PROCESS P_VIDEO_CONTROL;
+	END PROCESS P_VIDEO_CONTROL;
     
 	clut_off <= falcon_shift_mode(3 DOWNTO 0) WHEN color4_i = '1' ELSE x"0";
 	pd_vga_n <= fbee_vctr(1);
@@ -452,7 +452,7 @@ BEGIN
 		ELSE
 			video_reconfig_i <= '0';
 		END IF;
-	end PROCESS P_VIDEO_CONFIG;
+	END PROCESS P_VIDEO_CONFIG;
     
 	video_ram_ctr <= fbee_vctr(31 DOWNTO 16);
     
@@ -471,16 +471,16 @@ BEGIN
 	vdl_lof_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff820e" ELSE '0'; -- $FF820E/F - line-width hi/lo.
 	VDL_LWD_CS <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8210" ELSE '0'; -- $FF8210/1 - vertical wrap hi/lo.
 	vdl_hht_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8282" ELSE '0'; -- $FF8282/3 - horizontal hold timer hi/lo.
-	vdl_hbe_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8286" ELSE '0'; -- $FF8286/7 - horizontal border end hi/lo.
+	vdl_hbe_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8286" ELSE '0'; -- $FF8286/7 - horizontal border END hi/lo.
 	vdl_hdb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8288" ELSE '0'; -- $FF8288/9 - horizontal display BEGIN hi/lo.
-	vdl_hde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828a" ELSE '0'; -- $FF828A/B - horizontal display end hi/lo.
+	vdl_hde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828a" ELSE '0'; -- $FF828A/B - horizontal display END hi/lo.
 	vdl_hbb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8284" ELSE '0'; -- $FF8284/5 - horizontal border BEGIN hi/lo.
 	vdl_hss_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828c" ELSE '0'; -- $FF828C/D - position hsync (HSS).
 	vdl_vft_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a2" ELSE '0'; -- $FF82A2/3 - video frequency timer (VFT).
 	vdl_vbb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a4" ELSE '0'; -- $FF82A4/5 - vertical blank on (IN half line steps).
 	vdl_vbe_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a6" ELSE '0'; -- $FF82A6/7 - vertical blank off (IN half line steps).
 	VDL_VDB_CS <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a8" ELSE '0'; -- $FF82A8/9 - vertical display BEGIN (VDB).
-	vdl_vde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82aa" ELSE '0'; -- $FF82AA/B - vertical display end (VDE).
+	vdl_vde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82aa" ELSE '0'; -- $FF82AA/B - vertical display END (VDE).
 	vdl_vss_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82ac" ELSE '0'; -- $FF82AC/D - position vsync (VSS).
 	vdl_vct_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82c0" ELSE '0'; -- $FF82C0/1 - clock control (VCO).
 	vdl_vmd_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82c2" ELSE '0'; -- $FF82C2/3 - resolution control.
@@ -614,7 +614,7 @@ BEGIN
 		IF vdl_vmd_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
 			vdl_vmd <= data_in(19 DOWNTO 16);
 		END IF;
-	end PROCESS P_MISC_CTRL;
+	END PROCESS P_MISC_CTRL;
 
 	blitter_on <= NOT sys_ctr(3);
     
@@ -670,13 +670,13 @@ BEGIN
 	BEGIN
 		WAIT UNTIL rising_edge(clk33m);
 		clk17m <= NOT clk17m;
-	end PROCESS P_CLK_16M5;
+	END PROCESS P_CLK_16M5;
 
 	P_CLK_12M5 : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk25m);
 		clk13m <= NOT clk13m;
-	end PROCESS P_CLK_12M5;
+	END PROCESS P_CLK_12M5;
 
 	clk_pixel_i <= clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' ELSE
 						clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' ELSE
@@ -688,32 +688,32 @@ BEGIN
 						clk33m WHEN fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "01" ELSE
 						clk_video WHEN fbee_video_on = '1' AND fbee_vctr(9) = '1' ELSE '0';
 
-	P_HSYN_LEN  : PROCESS
+	p_hsyn_len  : PROCESS
 		-- Horizontal SYNC IN clk_pixel:
 	BEGIN
 		WAIT UNTIL rising_edge(clk_main);
 		IF fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' THEN
-			hsync_len <= x"0E";
+			hsync_len <= 8D"14";
 		ELSIF fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' THEN
-			hsync_len <= x"0E";
+			hsync_len <= 8D"14";
 		ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(2) = '0' THEN
-			hsync_len <= x"10";
+			hsync_len <= 8D"16";
 		ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(0) = '0' THEN
-			hsync_len <= x"10";
+			hsync_len <= 8D"16";
 		ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '1' AND vdl_vct(0) = '0' THEN
-			hsync_len <= x"1C";
+			hsync_len <= 8D"28";
 		ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '0' AND vdl_vct(0) = '0' THEN
-			hsync_len <= x"20";
+			hsync_len <= 8D"32";
 		ELSIF fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "00" THEN
-			hsync_len <= x"1C";
+			hsync_len <= 8D"28";
 		ELSIF fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "01" THEN
-			hsync_len <= x"20";
+			hsync_len <= 8D"32";
 		ELSIF fbee_video_on = '1' AND fbee_vctr(9) = '1' THEN
-			hsync_len <= UNSIGNED (UNSIGNED'(x"10") + UNSIGNED('0' & vr_frq(7 DOWNTO 1))); -- hsync pulse length IN pixels = frequency/500ns.
+			hsync_len <= 8D"16" + vr_frq / 2; -- hsync pulse length IN pixels = frequency/500ns.
 		ELSE
 			hsync_len <= x"00";
 		END IF;
-	end PROCESS P_HSYN_LEN;
+	END PROCESS p_hsyn_len;
 
 	mulf <= "000010" WHEN st_video = '0' AND vdl_vmd(2) = '1' ELSE -- Multiplier.
 				"000100" WHEN st_video = '0' AND vdl_vmd(2) = '0' ELSE
@@ -722,13 +722,13 @@ BEGIN
 
 	hdis_len <= x"140" WHEN vdl_vmd(2) = '1' ELSE x"280"; -- Width IN pixels (320 / 640).
 
-	P_DOUBLE_LINE_1   : PROCESS
+	p_double_line_1   : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk_main);
 		dop_zei <= vdl_vmd(0) AND st_video; -- Line doubling on off.
-	end PROCESS P_DOUBLE_LINE_1;
+	END PROCESS p_double_line_1;
 
-	P_DOUBLE_LINE_2   : PROCESS
+	p_double_line_2   : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk_pixel_i);
 		IF dop_zei = '1' AND vvcnt(0) /= vdis_start(0) AND vvcnt /= "00000000000" AND vhcnt < hdis_end - 1 THEN        
@@ -739,8 +739,8 @@ BEGIN
 			inter_zei_i <= '0';
 		END IF;
 		--
-		dop_fifo_clr <= inter_zei_i AND hsync_start AND sync_pix; -- Double line info erase at the end of a double line AND at main FIFO start.
-	end PROCESS P_DOUBLE_LINE_2;
+		dop_fifo_clr <= inter_zei_i AND hsync_start AND sync_pix; -- Double line info erase at the END of a double line AND at main FIFO start.
+	END PROCESS p_double_line_2;
 
     -- The following multiplications change every time the video resolution is changed.
 	mul1 <= vdl_hbe * mulf(5 DOWNTO 1);
@@ -841,7 +841,7 @@ BEGIN
 		END IF;
 
 		IF last = '1' AND vvcnt >= UNSIGNED (UNSIGNED(vdis_start) - 1) AND vvcnt < vdis_end THEN
-			vdo_zl <= '1'; -- Take over at the end of the line.
+			vdo_zl <= '1'; -- Take over at the END of the line.
 		ELSIF last = '1' THEN
 			vdo_zl <= '0'; -- 1 ZEILE DAVOR ON OFF
 		END IF;
@@ -867,7 +867,7 @@ BEGIN
 			vsync_start <= '0';
 		END IF;
         
-		IF last = '1' AND vsync_start = '1' THEN -- Start at the end of the line before vsync.
+		IF last = '1' AND vsync_start = '1' THEN -- Start at the END of the line before vsync.
 			vsync_i <= "011"; -- 3 lines vsync length.
 		ELSIF last = '1' AND vsync_i > "000" THEN
 			vsync_i <= UNSIGNED (UNSIGNED(vsync_i) - 1); -- Count down.
@@ -955,5 +955,5 @@ BEGIN
 		clut_mux_av_0 <= sub_pixel_cnt(3 DOWNTO 0);
 		clut_mux_av_1 <= clut_mux_av_0;
 		clut_mux_adr <= clut_mux_av_1;
-	end PROCESS VIDEO_CLOCK_DOMAIN;
-end architecture BEHAVIOUR;
+	END PROCESS VIDEO_CLOCK_DOMAIN;
+END architecture BEHAVIOUR;
