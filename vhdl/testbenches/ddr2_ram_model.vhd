@@ -99,7 +99,7 @@ ENTITY ddr2_ram_model IS
 END ENTITY ddr2_ram_model;
 
 ARCHITECTURE rtl OF ddr2_ram_model IS
-     -- DDR2 RAM size constants
+    -- DDR2 RAM size constants
     CONSTANT MEM_BITS       : INTEGER := 10;            -- number of write data bursts can be stored in memory. The default is 2 ** 10 = 1024
     CONSTANT AP             : INTEGER := 10;            -- the address bit that controls auto-precharge and precharge-all
     CONSTANT TDLLK          : INTEGER := 200;
