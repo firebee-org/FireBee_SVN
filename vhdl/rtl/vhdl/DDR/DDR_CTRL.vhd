@@ -65,7 +65,7 @@ ENTITY DDR_CTRL IS
 
         ddrclk0         : IN STD_LOGIC;
         clk_33m         : IN STD_LOGIC;
-        fifo_mw         : IN STD_LOGIC_VECTOR (8 DOWNTO 0);
+        fifo_mw         : IN UNSIGNED (8 DOWNTO 0);
         
         va              : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);               -- video Adress bus at the DDR chips
         vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
@@ -96,19 +96,19 @@ ENTITY DDR_CTRL IS
 END ENTITY DDR_CTRL;
 
 ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
-    -- ddr_access_fifo WATER MARK:
-    CONSTANT fifo_lwm : INTEGER := 0;       -- low water mark
-    CONSTANT fifo_mwM : INTEGER := 200;     -- medium water mark
-    CONSTANT fifo_hwm : INTEGER := 500;     -- high water mark
+    -- fifo watermark:
+    CONSTANT FIFO_LWM : INTEGER := 0;       -- low water mark
+    CONSTANT FIFO_MWM : INTEGER := 200;     -- medium water mark
+    CONSTANT FIFO_HWM : INTEGER := 500;     -- high water mark
     
     -- constants for bits in video_control_register
-    CONSTANT vrcr_vcke          : INTEGER := 0;
-    CONSTANT vrcr_refresh_on    : INTEGER := 2;
-    CONSTANT vrcr_config_on     : INTEGER := 3;
-    CONSTANT vrcr_vcs           : INTEGER := 1;
+    CONSTANT VRCR_VCKE          : INTEGER := 0;
+    CONSTANT VRCR_REFRESH_ON    : INTEGER := 2;
+    CONSTANT VRCR_CONFIG_ON     : INTEGER := 3;
+    CONSTANT VRCR_VCS           : INTEGER := 1;
     --
-    CONSTANT vrcr_fifo_on       : INTEGER := 24;
-    CONSTANT vrcr_border_on     : INTEGER := 25;
+    CONSTANT VRCR_FIFO_ON       : INTEGER := 24;
+    CONSTANT VRCR_BORDER_ON     : INTEGER := 25;
     
     TYPE access_width_t IS (long_access, word_access, byte_access);
     TYPE ddr_access_t IS (ddr_access_cpu, ddr_access_fifo, ddr_access_blitter, ddr_access_none);
@@ -160,7 +160,7 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL ddr_refresh_cnt  : UNSIGNED(10 DOWNTO 0) := "00000000000";
     SIGNAL ddr_refresh_req  : STD_LOGIC;
     SIGNAL ddr_refresh_sig  : UNSIGNED(3 DOWNTO 0);
-    SIGNAL refresh_time     : STD_LOGIC;
+    SIGNAL need_refresh     : STD_LOGIC;
     SIGNAL video_base_l_d   : STD_LOGIC_VECTOR (7 DOWNTO 0);
     SIGNAL video_base_l     : STD_LOGIC;
     SIGNAL video_base_m_d   : STD_LOGIC_VECTOR (7 DOWNTO 0);
@@ -372,7 +372,7 @@ BEGIN
                 ddr_next_state <= ds_t7f;                                                                      
             
             WHEN ds_t7f =>
-                IF cpu_req = '1' AND fifo_mw > STD_LOGIC_VECTOR (TO_UNSIGNED(fifo_lwm, fifo_mw'LENGTH)) THEN    
+                IF cpu_req = '1' AND fifo_mw > FIFO_LWM THEN    
                     ddr_next_state <= ds_cb8; -- Close bank.
                 ELSIF fifo_req = '1' AND video_adr_cnt(7 DOWNTO 0) = x"FF" THEN -- New page?
                     ddr_next_state <= ds_cb8; -- Close bank.
@@ -383,7 +383,7 @@ BEGIN
                 END IF;
 
             WHEN ds_t8f =>
-                IF fifo_mw < STD_LOGIC_VECTOR (TO_UNSIGNED(fifo_lwm, fifo_mw'LENGTH)) THEN -- Emergency?
+                IF fifo_mw < FIFO_LWM THEN -- Emergency?
                     ddr_next_state <= ds_t5f; -- Yes!
                 ELSE
                     ddr_next_state <= ds_t9f;
@@ -484,24 +484,24 @@ BEGIN
         mcs <= mcs(0) & clk_33m;        -- sync on clk_33m
         
         blitter_req <= blitter_sig AND NOT
-                        video_control_register(vrcr_config_on) AND
-                        video_control_register(vrcr_vcke) AND
-                        video_control_register(vrcr_vcs);
+                        video_control_register(VRCR_CONFIG_ON) AND
+                        video_control_register(VRCR_VCKE) AND
+                        video_control_register(VRCR_VCS);
 
         fifo_clr_sync <= fifo_clr;
         clear_fifo_cnt <= fifo_clr_sync OR NOT fifo_active;
         stop <= fifo_clr_sync OR clear_fifo_cnt;
 
-        IF fifo_mw < STD_LOGIC_VECTOR (TO_UNSIGNED(fifo_mwm, fifo_mw'LENGTH)) THEN
+        IF fifo_mw < fifo_mwm THEN
             fifo_req <= '1';
-        ELSIF fifo_mw < STD_LOGIC_VECTOR (TO_UNSIGNED(fifo_hwm, fifo_mw'LENGTH)) AND fifo_req = '1' THEN
+        ELSIF fifo_mw < FIFO_HWM AND fifo_req = '1' THEN
             fifo_req <= '1';
         ELSIF fifo_active = '1' AND
                 clear_fifo_cnt = '0' AND
                 stop = '0' AND
                 ddr_config = '0' AND
-                video_control_register(vrcr_vcke) = '1' AND
-                video_control_register(vrcr_vcs) = '1' THEN
+                video_control_register(VRCR_VCKE) = '1' AND
+                video_control_register(VRCR_VCS) = '1' THEN
             fifo_req <= '1';
         ELSE
             fifo_req <= '1';
@@ -513,27 +513,27 @@ BEGIN
             video_adr_cnt <= video_adr_cnt + 1;  
         END IF;
 
-        IF mcs = "10" AND video_control_register(vrcr_vcke) = '1' AND video_control_register(vrcr_vcs) = '1' THEN
+        IF mcs = "10" AND video_control_register(VRCR_VCKE) = '1' AND video_control_register(VRCR_VCS) = '1' THEN
             cpu_ddr_sync <= '1';
         ELSE
             cpu_ddr_sync <= '0';
         END IF;
 
-        IF ddr_refresh_sig /= x"0" AND video_control_register(vrcr_refresh_on) = '1' AND ddr_config = '0' AND refresh_time = '1' THEN
+        IF ddr_refresh_sig /= x"0" AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' AND need_refresh = '1' THEN
             ddr_refresh_req <= '1';
         ELSE
             ddr_refresh_req <= '0';
         END IF;
 
         IF ddr_refresh_cnt = 0 AND clk_33m = '0' THEN
-            refresh_time <= '1';
+            need_refresh <= '1';
         ELSE
-            refresh_time <= '0';
+            need_refresh <= '0';
         END IF;
 
-        IF refresh_time = '1' AND video_control_register(vrcr_refresh_on) = '1' AND ddr_config = '0' THEN
+        IF need_refresh = '1' AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' THEN
             ddr_refresh_sig <= x"9";
-        ELSIF ddr_state = ds_r6 AND video_control_register(vrcr_refresh_on) = '1' AND ddr_config = '0' THEN
+        ELSIF ddr_state = ds_r6 AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' THEN
             ddr_refresh_sig <= ddr_refresh_sig - 1;
         ELSE
             ddr_refresh_sig <= x"0";
@@ -662,7 +662,7 @@ BEGIN
             va_s(10) <= '0';
         ELSIF ddr_state = ds_t6f THEN
             sr_fifo_wre_i <= '1';
-        ELSIF ddr_state = ds_t7f AND cpu_req = '1' AND fifo_mw > STD_LOGIC_VECTOR (TO_UNSIGNED(fifo_lwm, fifo_mw'LENGTH)) THEN
+        ELSIF ddr_state = ds_t7f AND cpu_req = '1' AND fifo_mw > FIFO_LWM THEN
             va_s(10) <= '1';
         ELSIF ddr_state = ds_t7f AND fifo_req = '1' AND video_adr_cnt(7 DOWNTO 0) = x"FF" THEN
             va_s(10) <= '1';
@@ -717,13 +717,13 @@ BEGIN
 
         IF ddr_sel = '1' AND fb_wr_n = '1' AND ddr_config = '0' THEN
             cpu_req <= '1';
-        ELSIF ddr_sel = '1' AND access_width /= long_access AND ddr_config = '0' THEN                          -- Start WHEN NOT config AND NOT long_access word_access access.
+        ELSIF ddr_sel = '1' AND access_width /= long_access AND ddr_config = '0' THEN                   -- Start when not config and not longword access.
             cpu_req <= '1';
         ELSIF ddr_sel = '1' AND ddr_config = '1' THEN                                                   -- Config, start immediately.
             cpu_req <= '1';
-        ELSIF fb_regddr = fr_s1 AND fb_wr_n = '0' THEN                                                  -- Long word_access write later.
+        ELSIF fb_regddr = fr_s1 AND fb_wr_n = '0' THEN                                                  -- Longword write later.
             cpu_req <= '1';
-        ELSIF fb_regddr /= fr_s1 AND fb_regddr /= fr_s3 AND bus_cyc_end = '0' AND bus_cyc = '0' THEN    -- Halt, bus cycle IN progress OR ready.
+        ELSIF fb_regddr /= fr_s1 AND fb_regddr /= fr_s3 AND bus_cyc_end = '0' AND bus_cyc = '0' THEN    -- Halt, bus cycle in progress or ready.
             cpu_req <= '0';
         END IF;
     END PROCESS p_cpu_req;
@@ -784,7 +784,7 @@ BEGIN
     -- VIDEO RAM CONTROL REGISTER (IS IN VIDEO_MUX_CTR) 
     -- $F0000400: BIT 0: vcke; 1: NOT nVCS ;2:REFRESH ON , (0=ddr_access_fifo AND CNT CLEAR); 
     -- 3: CONFIG; 8: fifo_active; 
-    vcs_n <= NOT(video_control_register(vrcr_refresh_on));
+    vcs_n <= NOT(video_control_register(VRCR_REFRESH_ON));
     ddr_config <= video_control_register(3);
     fifo_active <= video_control_register(8);
 
@@ -814,7 +814,7 @@ BEGIN
     vdm_sel_i <= video_base_l_d(3 DOWNTO 0);
 
     -- Current video address:
-    video_act_adr(26 DOWNTO 4) <= STD_LOGIC_VECTOR (video_adr_cnt - UNSIGNED(fifo_mw));
+    video_act_adr(26 DOWNTO 4) <= STD_LOGIC_VECTOR (video_adr_cnt - fifo_mw);
     video_act_adr(3 DOWNTO 0) <= vdm_sel_i;
 
     p_video_regs : PROCESS

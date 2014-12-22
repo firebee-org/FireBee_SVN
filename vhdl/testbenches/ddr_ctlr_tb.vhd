@@ -32,7 +32,7 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL blitter_wr       : STD_LOGIC;
     SIGNAL ddrclk0          : STD_LOGIC;
     SIGNAL clk_33m          : STD_LOGIC := '0';
-    SIGNAL fifo_mw          : STD_LOGIC_VECTOR(8 DOWNTO 0);
+    SIGNAL fifo_mw          : UNSIGNED (8 DOWNTO 0) := TO_UNSIGNED(300, 9);
     SIGNAL va               : STD_LOGIC_VECTOR(12 DOWNTO 0);
     SIGNAL vwe_n            : STD_LOGIC;
     SIGNAL vras_n           : STD_LOGIC;
@@ -60,7 +60,7 @@ ARCHITECTURE beh OF ddr_ctlr_tb IS
     SIGNAL bus_state        : bus_state_t := S0;
         
 BEGIN
-    t : DDR_CTRL
+    i_ddr_ctrl : DDR_CTRL
     PORT map
     (
         clk_main => clock,
@@ -104,7 +104,39 @@ BEGIN
         data_en_l => data_en_l
     );
     
-    d1 : ddr2_ram_model
+    i_ddr2_ram_1 : ddr2_ram_model
+    GENERIC MAP
+    (
+        VERBOSE     => TRUE,          -- define if you want additional debug output
+
+        CLOCK_TICK  => (1000000 / 132000) * 1 ps,     -- time for one clock tick
+
+        BA_BITS     => 2,             -- number of banks
+        ADDR_BITS   => 13,            -- number of address bits
+        DM_BITS     => 2,             -- number of data mask bits
+        DQ_BITS     => 8,             -- number of data bits
+        DQS_BITS    => 2              -- number of data strobes
+    )
+    PORT map
+    (
+        ck          => ddrclk0,
+        ck_n        => NOT ddrclk0,
+        cke         => vcke,
+        cs_n        => vcs_n,
+        ras_n       => vras_n,
+        cas_n       => vcas_n,
+        we_n        => vwe_n,
+        dm_rdqs(0)  => data_en_l,
+        dm_rdqs(1)  => data_en_h,
+        ba          => ba,
+        addr        => va,
+        dq          => sr_vdmp,
+        dqs(0)      => data_en_l,
+        dqs(1)      => data_en_h,
+        odt         => '0'
+    );
+
+    i_ddr2_ram_2 : ddr2_ram_model
     GENERIC MAP
     (
         VERBOSE     => TRUE,          -- define if you want additional debug output

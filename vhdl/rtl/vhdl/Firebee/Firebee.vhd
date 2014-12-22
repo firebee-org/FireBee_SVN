@@ -407,7 +407,7 @@ ARCHITECTURE Structure of firebee is
     SIGNAL fdc_cs_n             : STD_LOGIC;
     SIGNAL fdc_wr_n             : STD_LOGIC;
     SIGNAL fifo_clr             : STD_LOGIC;
-    SIGNAL fifo_mw              : STD_LOGIC_VECTOR (8 DOWNTO 0);
+    SIGNAL fifo_mw              : UNSIGNED (8 DOWNTO 0);
     SIGNAL hd_dd_out            : STD_LOGIC;
     SIGNAL hsync_i              : STD_LOGIC;
     SIGNAL ide_cf_ta            : STD_LOGIC;

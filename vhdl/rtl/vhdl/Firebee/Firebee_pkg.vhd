@@ -43,6 +43,7 @@
 --   Initial Release of the second edition.
 LIBRARY IEEE;
     USE IEEE.std_logic_1164.ALL;
+    USE IEEE.numeric_std.ALL;
 
 PACKAGE firebee_pkg IS
 	COMPONENT VIDEO_SYSTEM
@@ -91,7 +92,7 @@ PACKAGE firebee_pkg IS
 			VD_VZ               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
 			SR_FIFO_WRE         : IN STD_LOGIC;
 			SR_VDMP             : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-			FIFO_MW             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
+			FIFO_MW             : OUT UNSIGNED (8 DOWNTO 0);
 			VDM_SEL             : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
 			VIDEO_RAM_CTR       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
 			FIFO_CLR            : OUT STD_LOGIC;
@@ -173,7 +174,7 @@ PACKAGE firebee_pkg IS
 			BLITTER_WR      : IN STD_LOGIC;
 			DDRCLK0         : IN STD_LOGIC;
 			CLK_33M         : IN STD_LOGIC;
-			FIFO_MW         : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+			FIFO_MW         : IN UNSIGNED (8 DOWNTO 0);
 			VA              : OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
 			vwe_n            : OUT STD_LOGIC;
 			vras_n          : OUT STD_LOGIC;

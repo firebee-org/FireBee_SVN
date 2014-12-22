@@ -674,7 +674,7 @@ BEGIN
                     END IF;
                     
                 WHEN "0" & cmd_type_encoding(REFRESH) & cmd_type_encoding(PWR_DOWN) =>
-                    -- 1 tCK_avg
+                    NULL;       -- 1 tCK_avg
                     
                 WHEN "0" & cmd_type_encoding(REFRESH) & cmd_type_encoding(SELF_REF) =>
                     IF NOW - tm_refresh < TRFC_MIN THEN
@@ -745,10 +745,10 @@ BEGIN
                     END IF;
 
                 WHEN "1" & cmd_type_encoding(ACTIVATE) & "010-" =>
-                    -- tRCD is checked outside this task
+                    NULL;       -- tRCD is checked outside this task
 
                 WHEN "1" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(PWR_DOWN) =>
-                    -- 1 tCK
+                    NULL;       -- 1 tCK
 
                 WHEN "1" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PRECHARGE) =>
                     IF ck_cntr - ck_bank_write(TO_INTEGER(UNSIGNED(bank)))
@@ -773,7 +773,8 @@ BEGIN
                 WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PWR_DOWN) =>
                     
                     
-                WHEN OTHERS => -- do nothing
+                WHEN OTHERS =>
+                    NULL;       -- do nothing
                 
             END CASE?;
         END;
