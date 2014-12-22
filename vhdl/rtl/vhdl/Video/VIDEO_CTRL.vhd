@@ -49,9 +49,9 @@ use ieee.numeric_std.all;
 entity VIDEO_CTRL is
 	port(
 		CLK_MAIN        : in std_logic;
-		FB_CSn          : in std_logic_vector(2 downto 1);
+		fb_cs_n          : in std_logic_vector(2 downto 1);
 		fb_wr_n          : in std_logic;
-		FB_OEn          : in std_logic;
+		fb_oe_n          : in std_logic;
 		FB_SIZE         : in std_logic_vector(1 downto 0);
 		FB_ADR          : in std_logic_vector(31 downto 0);
 		CLK33M          : in std_logic;
@@ -71,9 +71,9 @@ entity VIDEO_CTRL is
 		CLUT_MUX_ADR    : out std_logic_vector(3 downto 0);
 		HSYNC           : out std_logic;
 		VSYNC           : out std_logic;
-		BLANKn          : out std_logic;
-		SYNCn           : out std_logic;
-		PD_VGAn         : out std_logic;
+		blank_n          : out std_logic;
+		sync_n           : out std_logic;
+		pd_vga_n         : out std_logic;
 		FIFO_RDE        : out std_logic;
 		COLOR2          : out std_logic;
 		COLOR4          : out std_logic;
@@ -270,8 +270,8 @@ begin
 					'1' when FB_SIZE(1) = '1' and FB_SIZE(0) = '1' else '0'; -- No byte.
 
 	-- Firebee CLUT:
-	FBEE_CLUT_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 10) = "000000000000000000" else '0'; -- 0-3FF/1024
-	FBEE_CLUT_RD <= '1' when FBEE_CLUT_CS = '1' and FB_OEn = '0' else '0';
+	FBEE_CLUT_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 10) = "000000000000000000" else '0'; -- 0-3FF/1024
+	FBEE_CLUT_RD <= '1' when FBEE_CLUT_CS = '1' and fb_oe_n = '0' else '0';
 	FBEE_CLUT_WR <= FB_B when FBEE_CLUT_CS = '1' and fb_wr_n = '0' else x"0";
 
 	P_CLUT_TA : process
@@ -289,24 +289,24 @@ begin
 	end process P_CLUT_TA;
 
 	--Falcon CLUT:
-	FALCON_CLUT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 10) = "1111100110" else '0'; -- $F9800/$400
-	FALCON_CLUT_RDH <= '1' when FALCON_CLUT_CS = '1' and FB_OEn = '0' and FB_ADR(1) = '0' else '0'; -- High word.
-	FALCON_CLUT_RDL <= '1' when FALCON_CLUT_CS = '1' and FB_OEn = '0' and FB_ADR(1) = '1' else '0'; -- Low word.
+	FALCON_CLUT_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 10) = "1111100110" else '0'; -- $F9800/$400
+	FALCON_CLUT_RDH <= '1' when FALCON_CLUT_CS = '1' and fb_oe_n = '0' and FB_ADR(1) = '0' else '0'; -- High word.
+	FALCON_CLUT_RDL <= '1' when FALCON_CLUT_CS = '1' and fb_oe_n = '0' and FB_ADR(1) = '1' else '0'; -- Low word.
 	FALCON_CLUT_WR(1 downto 0) <= FB_16B when FB_ADR(1) = '0' and FALCON_CLUT_CS = '1' and fb_wr_n = '0' else "00";
 	FALCON_CLUT_WR(3 downto 2) <= FB_16B when FB_ADR(1) = '1' and FALCON_CLUT_CS = '1' and fb_wr_n = '0' else "00";
 	
 	-- ST CLUT:
-	ST_CLUT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 5) = "111110000010010" else '0'; -- $F8240/$2
-	CLUT_ST_RD <= '1' when ST_CLUT_CS = '1' and FB_OEn = '0' else '0';
+	ST_CLUT_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 5) = "111110000010010" else '0'; -- $F8240/$2
+	CLUT_ST_RD <= '1' when ST_CLUT_CS = '1' and fb_oe_n = '0' else '0';
 	CLUT_ST_WR <= FB_16B when ST_CLUT_CS = '1' and fb_wr_n = '0' else "00";
 
-	ST_SHIFT_MODE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000100110000" else '0'; -- $F8260/$2.
-	FALCON_SHIFT_MODE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 1) = "1111100000100110011" else '0'; -- $F8266/$2.
-	FBEE_VCTR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000000" else '0'; -- $400/$4
-	ATARI_HH_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000100" else '0'; -- $410/4
-	ATARI_VH_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000101" else '0'; -- $414/4
-	ATARI_HL_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000110" else '0'; -- $418/4
-	ATARI_VL_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000111" else '0'; -- $41C/4
+	ST_SHIFT_MODE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 1) = "1111100000100110000" else '0'; -- $F8260/$2.
+	FALCON_SHIFT_MODE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 1) = "1111100000100110011" else '0'; -- $F8266/$2.
+	FBEE_VCTR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000000" else '0'; -- $400/$4
+	ATARI_HH_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000100" else '0'; -- $410/4
+	ATARI_VH_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000101" else '0'; -- $414/4
+	ATARI_HL_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000110" else '0'; -- $418/4
+	ATARI_VL_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000000000100000111" else '0'; -- $41C/4
 
 	P_VIDEO_CONTROL : process
 	begin
@@ -398,7 +398,7 @@ begin
 	end process P_VIDEO_CONTROL;
     
 	CLUT_OFF <= FALCON_SHIFT_MODE(3 downto 0) when COLOR4_I = '1' else x"0";
-	PD_VGAn <= FBEE_VCTR(1);
+	pd_vga_n <= FBEE_VCTR(1);
 	FBEE_VIDEO_ON <= FBEE_VCTR(0);
 	ATARI_SYNC <= FBEE_VCTR(26); -- If 1 -> automatic resolution.
 
@@ -420,8 +420,8 @@ begin
 	COLOR8 <= COLOR8_I;
 	
 	-- VIDEO PLL config and reconfig:
-	VIDEO_PLL_CONFIG_CS <= '1' when FB_CSn(2) = '0' and FB_B(0) = '1' and FB_B(1) = '1' and FB_ADR(27 downto 9) = "0000000000000000011" else '0'; -- $(F)000'0600-7FF -> 6/2 word and long only.
-	VIDEO_PLL_RECONFIG_CS <= '1' when FB_CSn(2) = '0' and FB_B(0) = '1' and FB_ADR(27 downto 0) = x"0000800" else '0'; -- $(F)000'0800. 
+	VIDEO_PLL_CONFIG_CS <= '1' when fb_cs_n(2) = '0' and FB_B(0) = '1' and FB_B(1) = '1' and FB_ADR(27 downto 9) = "0000000000000000011" else '0'; -- $(F)000'0600-7FF -> 6/2 word and long only.
+	VIDEO_PLL_RECONFIG_CS <= '1' when fb_cs_n(2) = '0' and FB_B(0) = '1' and FB_ADR(27 downto 0) = x"0000800" else '0'; -- $(F)000'0800. 
 	VR_RD_I <= '1' when VIDEO_PLL_CONFIG_CS = '1' and fb_wr_n = '0' and VR_BUSY = '0' else '0';
 
 	P_VIDEO_CONFIG: process
@@ -466,24 +466,24 @@ begin
 	ST_CLUT <= '1' when ST_VIDEO = '1' and FBEE_VIDEO_ON = '0' and FALCON_CLUT = '0' and COLOR1_I = '0' else '0';
 
     -- Several (video)-registers:
-	CCR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR = x"f0000404" else '0';	-- $F0000404 - Firebee video border color
-	SYS_CTR_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8008" else '0';	-- $FF8006 - Falcon monitor type register
-	VDL_LOF_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff820e" else '0'; -- $FF820E/F - line-width hi/lo.
-	VDL_LWD_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8210" else '0'; -- $FF8210/1 - vertical wrap hi/lo.
-	VDL_HHT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8282" else '0'; -- $FF8282/3 - horizontal hold timer hi/lo.
-	VDL_HBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8286" else '0'; -- $FF8286/7 - horizontal border end hi/lo.
-	VDL_HDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8288" else '0'; -- $FF8288/9 - horizontal display begin hi/lo.
-	VDL_HDE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828a" else '0'; -- $FF828A/B - horizontal display end hi/lo.
-	VDL_HBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8284" else '0'; -- $FF8284/5 - horizontal border begin hi/lo.
-	VDL_HSS_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828c" else '0'; -- $FF828C/D - position hsync (HSS).
-	VDL_VFT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a2" else '0'; -- $FF82A2/3 - video frequency timer (VFT).
-	VDL_VBB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a4" else '0'; -- $FF82A4/5 - vertical blank on (in half line steps).
-	VDL_VBE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a6" else '0'; -- $FF82A6/7 - vertical blank off (in half line steps).
-	VDL_VDB_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a8" else '0'; -- $FF82A8/9 - vertical display begin (VDB).
-	VDL_VDE_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82aa" else '0'; -- $FF82AA/B - vertical display end (VDE).
-	VDL_VSS_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82ac" else '0'; -- $FF82AC/D - position vsync (VSS).
-	VDL_VCT_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82c0" else '0'; -- $FF82C0/1 - clock control (VCO).
-	VDL_VMD_CS <= '1' when FB_CSn(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82c2" else '0'; -- $FF82C2/3 - resolution control.
+	CCR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR = x"f0000404" else '0';	-- $F0000404 - Firebee video border color
+	SYS_CTR_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8008" else '0';	-- $FF8006 - Falcon monitor type register
+	VDL_LOF_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff820e" else '0'; -- $FF820E/F - line-width hi/lo.
+	VDL_LWD_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8210" else '0'; -- $FF8210/1 - vertical wrap hi/lo.
+	VDL_HHT_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8282" else '0'; -- $FF8282/3 - horizontal hold timer hi/lo.
+	VDL_HBE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8286" else '0'; -- $FF8286/7 - horizontal border end hi/lo.
+	VDL_HDB_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8288" else '0'; -- $FF8288/9 - horizontal display begin hi/lo.
+	VDL_HDE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828a" else '0'; -- $FF828A/B - horizontal display end hi/lo.
+	VDL_HBB_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff8284" else '0'; -- $FF8284/5 - horizontal border begin hi/lo.
+	VDL_HSS_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff828c" else '0'; -- $FF828C/D - position hsync (HSS).
+	VDL_VFT_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a2" else '0'; -- $FF82A2/3 - video frequency timer (VFT).
+	VDL_VBB_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a4" else '0'; -- $FF82A4/5 - vertical blank on (in half line steps).
+	VDL_VBE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a6" else '0'; -- $FF82A6/7 - vertical blank off (in half line steps).
+	VDL_VDB_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82a8" else '0'; -- $FF82A8/9 - vertical display begin (VDB).
+	VDL_VDE_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82aa" else '0'; -- $FF82AA/B - vertical display end (VDE).
+	VDL_VSS_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82ac" else '0'; -- $FF82AC/D - position vsync (VSS).
+	VDL_VCT_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82c0" else '0'; -- $FF82C0/1 - clock control (VCO).
+	VDL_VMD_CS <= '1' when fb_cs_n(1) = '0' and FB_ADR(23 downto 1) & '0' = x"ff82c2" else '0'; -- $FF82C2/3 - resolution control.
 
 	P_MISC_CTRL : process
 	begin
@@ -657,9 +657,9 @@ begin
 	DATA_EN_H <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or FBEE_VCTR_CS or CCR_CS or SYS_CTR_CS or VDL_LOF_CS or VDL_LWD_CS or
 						VDL_HBE_CS or VDL_HDB_CS or VDL_HDE_CS or VDL_HBB_CS or VDL_HSS_CS or VDL_HHT_CS or
 						ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or VIDEO_PLL_RECONFIG_CS or
-						VDL_VBE_CS or VDL_VDB_CS or VDL_VDE_CS or VDL_VBB_CS or VDL_VSS_CS or VDL_VFT_CS or VDL_VCT_CS or VDL_VMD_CS) and not FB_OEn;
+						VDL_VBE_CS or VDL_VDB_CS or VDL_VDE_CS or VDL_VBB_CS or VDL_VSS_CS or VDL_VFT_CS or VDL_VCT_CS or VDL_VMD_CS) and not fb_oe_n;
 
-	DATA_EN_L <= (FBEE_VCTR_CS or CCR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS ) and not FB_OEn;
+	DATA_EN_L <= (FBEE_VCTR_CS or CCR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS ) and not fb_oe_n;
 
 	VIDEO_MOD_TA_I <= CLUT_TA or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or FBEE_VCTR_CS or SYS_CTR_CS or VDL_LOF_CS or VDL_LWD_CS or
 							VDL_HBE_CS or VDL_HDB_CS or VDL_HDE_CS or VDL_HBB_CS or VDL_HSS_CS or VDL_HHT_CS or
@@ -889,10 +889,10 @@ begin
 
 		VERZ_0 <= VERZ_0(8 downto 0) & DISP_ON;
 
-		BLANKn <=  VERZ_0(8);
+		blank_n <=  VERZ_0(8);
 		HSYNC  <=  VERZ_1(9);
 		VSYNC  <=  VERZ_2(9);
-		SYNCn <= not(VERZ_2(9) or VERZ_1(9));
+		sync_n <= not(VERZ_2(9) or VERZ_1(9));
 
 		-- border colours:
 		BORDER <= BORDER(5 downto 0) & (DISP_ON and not VDTRON and FBEE_VCTR(25));

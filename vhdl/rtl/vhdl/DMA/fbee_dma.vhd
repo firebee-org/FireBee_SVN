@@ -55,8 +55,8 @@ ENTITY FBEE_DMA IS
         FB_ADR                      : IN STD_LOGIC_VECTOR(26 DOWNTO 0);
         FB_ALE                      : IN STD_LOGIC;
         FB_SIZE                     : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        FB_CSn                      : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
-        FB_OEn                      : IN STD_LOGIC;
+        fb_cs_n                      : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+        fb_oe_n                      : IN STD_LOGIC;
         FB_WRn                      : IN STD_LOGIC;
         FB_AD_IN                    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FB_AD_OUT                   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -201,59 +201,59 @@ BEGIN
     FB_B0 <= '1' WHEN FB_ADR(0) = '0' OR BYTE = '0' ELSE '0';
     FB_B1 <= '1' WHEN FB_ADR(0) = '1' OR BYTE = '0' ELSE '0';
 
-    FB_AD_OUT(31 DOWNTO 24) <= dma_top  WHEN dma_top_cs = '1'  AND FB_OEn = '0' ELSE
-                           x"00" WHEN dma_data_cs = '1' AND FB_OEn = '0' ELSE
-                           dma_top WHEN dma_adr_cs = '1'  AND FB_OEn = '0' ELSE
-                           dma_bytecnt(31 DOWNTO 24) WHEN dma_bytecnt_cs = '1'  AND FB_OEn = '0' ELSE
-                           dma_mode(15 DOWNTO 8) WHEN dma_direct_cs = '1' AND FB_OEn = '0' ELSE
-                           x"00" WHEN dma_mode_cs = '1' AND FB_OEn = '0' ELSE
-                           dma_drq11_i & dma_drq_reg & IDE_INT & FD_INT & SCSI_INT & RDF_AZ(9 DOWNTO 8) WHEN dma_az_cs = '1' AND FB_OEn = '0' ELSE
-                           RDF_DOUT(7 DOWNTO 0) WHEN fcf_cs = '1' AND FB_OEn = '0' ELSE x"00";
+    FB_AD_OUT(31 DOWNTO 24) <= dma_top  WHEN dma_top_cs = '1'  AND fb_oe_n = '0' ELSE
+                           x"00" WHEN dma_data_cs = '1' AND fb_oe_n = '0' ELSE
+                           dma_top WHEN dma_adr_cs = '1'  AND fb_oe_n = '0' ELSE
+                           dma_bytecnt(31 DOWNTO 24) WHEN dma_bytecnt_cs = '1'  AND fb_oe_n = '0' ELSE
+                           dma_mode(15 DOWNTO 8) WHEN dma_direct_cs = '1' AND fb_oe_n = '0' ELSE
+                           x"00" WHEN dma_mode_cs = '1' AND fb_oe_n = '0' ELSE
+                           dma_drq11_i & dma_drq_reg & IDE_INT & FD_INT & SCSI_INT & RDF_AZ(9 DOWNTO 8) WHEN dma_az_cs = '1' AND fb_oe_n = '0' ELSE
+                           RDF_DOUT(7 DOWNTO 0) WHEN fcf_cs = '1' AND fb_oe_n = '0' ELSE x"00";
 
-    FB_AD_OUT(23 DOWNTO 16) <= "00000" & dma_status WHEN dma_mode_cs = '1' AND FB_OEn = '0' ELSE
-                               FDC_OUT WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "00" AND FB_OEn = '0' ELSE
-                               DATA_IN_SCSI WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "01" AND FB_OEn = '0' ELSE 
-                               dma_bytecnt(16 DOWNTO 9) WHEN dma_data_cs = '1' AND dma_mode(4) = '1' AND FB_OEn = '0' ELSE
-                               "0000" & (NOT dma_status(1)) & "0" & WDC_BSL(1) & FLOPPY_HD_DD WHEN WDC_BSL_CS = '1' AND FB_OEn = '0' ELSE
-                               RDF_AZ(7 DOWNTO 0) WHEN dma_az_cs = '1' AND FB_OEn = '0' ELSE
-                               SNDMACTL WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"0" AND FB_OEn = '0' ELSE
-                               SNDBASHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"1" AND FB_OEn = '0' ELSE
-                               SNDBASMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"2" AND FB_OEn = '0' ELSE
-                               SNDBASLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"3" AND FB_OEn = '0' ELSE
-                               SNDADRHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"4" AND FB_OEn = '0' ELSE
-                               SNDADRMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"5" AND FB_OEn = '0' ELSE
-                               SNDADRLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"6" AND FB_OEn = '0' ELSE
-                               SNDENDHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"7" AND FB_OEn = '0' ELSE
-                               SNDENDMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"8" AND FB_OEn = '0' ELSE
-                               SNDENDLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"9" AND FB_OEn = '0' ELSE
-                               SNDMODE WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"10" AND FB_OEn = '0' ELSE
-                               dma_high WHEN dma_high_cs = '1' AND FB_OEn = '0' ELSE
-                               dma_mid  WHEN dma_mid_cs = '1'  AND FB_OEn = '0' ELSE
-                               dma_low  WHEN dma_low_cs = '1'  AND FB_OEn = '0' ELSE
-                               dma_mode(7 DOWNTO 0) WHEN dma_direct_cs = '1' AND FB_OEn = '0' ELSE
-                               dma_high WHEN dma_adr_cs = '1'  AND FB_OEn = '0' ELSE
-                               dma_bytecnt(23 DOWNTO 16) WHEN dma_bytecnt_cs = '1'  AND FB_OEn = '0' ELSE
-                               RDF_DOUT(15 DOWNTO 8) WHEN fcf_cs = '1' AND FB_OEn = '0' ELSE x"00";
+    FB_AD_OUT(23 DOWNTO 16) <= "00000" & dma_status WHEN dma_mode_cs = '1' AND fb_oe_n = '0' ELSE
+                               FDC_OUT WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "00" AND fb_oe_n = '0' ELSE
+                               DATA_IN_SCSI WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "01" AND fb_oe_n = '0' ELSE 
+                               dma_bytecnt(16 DOWNTO 9) WHEN dma_data_cs = '1' AND dma_mode(4) = '1' AND fb_oe_n = '0' ELSE
+                               "0000" & (NOT dma_status(1)) & "0" & WDC_BSL(1) & FLOPPY_HD_DD WHEN WDC_BSL_CS = '1' AND fb_oe_n = '0' ELSE
+                               RDF_AZ(7 DOWNTO 0) WHEN dma_az_cs = '1' AND fb_oe_n = '0' ELSE
+                               SNDMACTL WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"0" AND fb_oe_n = '0' ELSE
+                               SNDBASHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"1" AND fb_oe_n = '0' ELSE
+                               SNDBASMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"2" AND fb_oe_n = '0' ELSE
+                               SNDBASLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"3" AND fb_oe_n = '0' ELSE
+                               SNDADRHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"4" AND fb_oe_n = '0' ELSE
+                               SNDADRMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"5" AND fb_oe_n = '0' ELSE
+                               SNDADRLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"6" AND fb_oe_n = '0' ELSE
+                               SNDENDHI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"7" AND fb_oe_n = '0' ELSE
+                               SNDENDMI WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"8" AND fb_oe_n = '0' ELSE
+                               SNDENDLO WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"9" AND fb_oe_n = '0' ELSE
+                               SNDMODE WHEN DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"10" AND fb_oe_n = '0' ELSE
+                               dma_high WHEN dma_high_cs = '1' AND fb_oe_n = '0' ELSE
+                               dma_mid  WHEN dma_mid_cs = '1'  AND fb_oe_n = '0' ELSE
+                               dma_low  WHEN dma_low_cs = '1'  AND fb_oe_n = '0' ELSE
+                               dma_mode(7 DOWNTO 0) WHEN dma_direct_cs = '1' AND fb_oe_n = '0' ELSE
+                               dma_high WHEN dma_adr_cs = '1'  AND fb_oe_n = '0' ELSE
+                               dma_bytecnt(23 DOWNTO 16) WHEN dma_bytecnt_cs = '1'  AND fb_oe_n = '0' ELSE
+                               RDF_DOUT(15 DOWNTO 8) WHEN fcf_cs = '1' AND fb_oe_n = '0' ELSE x"00";
 
-    FB_AD_OUT(15 DOWNTO 8) <= "0" & dma_status & "00" & WRF_AZ(9 DOWNTO 8) WHEN dma_az_cs = '1' AND FB_OEn = '0' ELSE
-                          dma_mid WHEN dma_adr_cs = '1'  AND FB_OEn = '0' ELSE
-                          dma_bytecnt(15 DOWNTO 8) WHEN dma_bytecnt_cs = '1'  AND FB_OEn = '0' ELSE
-                          RDF_DOUT(23 DOWNTO 16) WHEN fcf_cs = '1' AND FB_OEn = '0' ELSE x"00";
+    FB_AD_OUT(15 DOWNTO 8) <= "0" & dma_status & "00" & WRF_AZ(9 DOWNTO 8) WHEN dma_az_cs = '1' AND fb_oe_n = '0' ELSE
+                          dma_mid WHEN dma_adr_cs = '1'  AND fb_oe_n = '0' ELSE
+                          dma_bytecnt(15 DOWNTO 8) WHEN dma_bytecnt_cs = '1'  AND fb_oe_n = '0' ELSE
+                          RDF_DOUT(23 DOWNTO 16) WHEN fcf_cs = '1' AND fb_oe_n = '0' ELSE x"00";
 
-    FB_AD_OUT(7 DOWNTO 0) <= WRF_AZ(7 DOWNTO 0) WHEN dma_az_cs = '1' AND FB_OEn = '0' ELSE
-                         dma_low WHEN dma_adr_cs = '1' AND FB_OEn = '0' ELSE
-                         dma_bytecnt(7 DOWNTO 0) WHEN dma_bytecnt_cs = '1'  AND FB_OEn = '0' ELSE
-                         RDF_DOUT(31 DOWNTO 24) WHEN fcf_cs = '1' AND FB_OEn = '0' ELSE x"00";
+    FB_AD_OUT(7 DOWNTO 0) <= WRF_AZ(7 DOWNTO 0) WHEN dma_az_cs = '1' AND fb_oe_n = '0' ELSE
+                         dma_low WHEN dma_adr_cs = '1' AND fb_oe_n = '0' ELSE
+                         dma_bytecnt(7 DOWNTO 0) WHEN dma_bytecnt_cs = '1'  AND fb_oe_n = '0' ELSE
+                         RDF_DOUT(31 DOWNTO 24) WHEN fcf_cs = '1' AND fb_oe_n = '0' ELSE x"00";
 
     FB_AD_EN_31_24 <= (dma_top_cs OR dma_data_cs OR dma_adr_cs OR dma_bytecnt_cs OR dma_direct_cs OR
-                       dma_mode_cs OR dma_az_cs OR fcf_cs) AND NOT FB_OEn;
+                       dma_mode_cs OR dma_az_cs OR fcf_cs) AND NOT fb_oe_n;
 
     FB_AD_EN_23_16 <= (dma_mode_cs OR dma_data_cs OR WDC_BSL_CS OR dma_az_cs OR DMA_SND_CS OR dma_high_cs OR
-                       dma_mid_cs OR dma_low_cs OR dma_direct_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT FB_OEn;
+                       dma_mid_cs OR dma_low_cs OR dma_direct_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT fb_oe_n;
 
-    FB_AD_EN_15_8 <= (dma_az_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT FB_OEn;
+    FB_AD_EN_15_8 <= (dma_az_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT fb_oe_n;
 
-    FB_AD_EN_7_0 <= (dma_az_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT FB_OEn;
+    FB_AD_EN_7_0 <= (dma_az_cs OR dma_adr_cs OR dma_bytecnt_cs OR fcf_cs) AND NOT fb_oe_n;
 
     INBUFFER: PROCESS(CLK_MAIN)
 	BEGIN
@@ -275,22 +275,22 @@ BEGIN
 
     SCSI_CS <= SCSI_CS_I;
 
-    dma_mode_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C303" ELSE '0';						-- F8606/2
-    dma_data_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C302" ELSE '0';						-- F8604/2 
+    dma_mode_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C303" ELSE '0';						-- F8606/2
+    dma_data_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C302" ELSE '0';						-- F8604/2 
     FDC_CS   <= '1' WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "00" AND FB_B1 = '1' ELSE '0';
     SCSI_CS_I  <= '1' WHEN dma_data_cs = '1' AND dma_mode(4 DOWNTO 3) = "01" AND FB_B1 = '1' ELSE '0';
-    dma_az_cs <= '1' WHEN FB_CSn(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"002010C" ELSE '0'; -- F002'010C LONG
-    dma_top_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C304" AND FB_B0 = '1' ELSE '0'; -- F8608/2
-    dma_high_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C304" AND FB_B1 = '1' ELSE '0'; -- F8609/2		
-    dma_mid_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C305" AND FB_B1 = '1' ELSE '0'; -- F860B/2		
-    dma_low_cs <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C306" AND FB_B1 = '1' ELSE '0'; -- F860D/2	
-    dma_direct_cs <= '1' WHEN FB_CSn(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20100" ELSE '0'; -- F002'0100 WORD 
-    dma_adr_cs  <= '1' WHEN FB_CSn(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20104" ELSE '0'; -- F002'0104 LONG 
-    dma_bytecnt_cs  <= '1' WHEN FB_CSn(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20108" ELSE '0'; -- F002'0108 LONG 
-    DMA_SND_CS <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(20 DOWNTO 6) = 15x"3E24" ELSE '0'; -- F8900-F893F
-    fcf_cs  <= '1' WHEN FB_CSn(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"0020110" AND LONG = '1' ELSE '0'; -- F002'0110 LONG ONLY
+    dma_az_cs <= '1' WHEN fb_cs_n(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"002010C" ELSE '0'; -- F002'010C LONG
+    dma_top_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C304" AND FB_B0 = '1' ELSE '0'; -- F8608/2
+    dma_high_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C304" AND FB_B1 = '1' ELSE '0'; -- F8609/2		
+    dma_mid_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C305" AND FB_B1 = '1' ELSE '0'; -- F860B/2		
+    dma_low_cs <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C306" AND FB_B1 = '1' ELSE '0'; -- F860D/2	
+    dma_direct_cs <= '1' WHEN fb_cs_n(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20100" ELSE '0'; -- F002'0100 WORD 
+    dma_adr_cs  <= '1' WHEN fb_cs_n(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20104" ELSE '0'; -- F002'0104 LONG 
+    dma_bytecnt_cs  <= '1' WHEN fb_cs_n(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"20108" ELSE '0'; -- F002'0108 LONG 
+    DMA_SND_CS <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(20 DOWNTO 6) = 15x"3E24" ELSE '0'; -- F8900-F893F
+    fcf_cs  <= '1' WHEN fb_cs_n(2) = '0' AND FB_ADR(26 DOWNTO 0) = 27x"0020110" AND LONG = '1' ELSE '0'; -- F002'0110 LONG ONLY
     DMA_CS <= fcf_cs OR dma_mode_cs OR DMA_SND_CS OR dma_adr_cs OR dma_direct_cs OR dma_bytecnt_cs;
-    WDC_BSL_CS <= '1' WHEN FB_CSn(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C307" ELSE '0';						-- F860E/2
+    WDC_BSL_CS <= '1' WHEN fb_cs_n(1) = '0' AND FB_ADR(19 DOWNTO 1) = 19x"7C307" ELSE '0';						-- F860E/2
 
     fcf_aph <= '1' WHEN FB_ALE = '1' AND FB_AD_IN(31 DOWNTO 0) = x"F0020110" AND LONG = '1' ELSE '0'; -- ADRESSPHASE F0020110 LONG ONLY
 

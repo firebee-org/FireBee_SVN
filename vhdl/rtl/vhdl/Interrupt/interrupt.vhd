@@ -52,11 +52,11 @@ entity INTHANDLER is
         CLK_MAIN        : in std_logic;
         RESETn          : in std_logic;
         FB_ADR          : in std_logic_vector(31 downto 0);
-        FB_CSn          : in std_logic_vector(2 downto 1);
+        fb_cs_n          : in std_logic_vector(2 downto 1);
         FB_SIZE0        : in std_logic;
         FB_SIZE1        : in std_logic;
         FB_WRn          : in std_logic;
-        FB_OEn          : in std_logic;
+        fb_oe_n          : in std_logic;
         FB_AD_IN        : in std_logic_vector(31 downto 0);
         FB_AD_OUT       : out std_logic_vector(31 downto 0);
         FB_AD_EN_31_24  : out std_logic;
@@ -75,7 +75,7 @@ entity INTHANDLER is
         VSYNC           : in std_logic;
         HSYNC           : in std_logic;
         DRQ_DMA         : in std_logic;
-        IRQn            : out std_logic_vector(7 downto 2);
+        irq_n            : out std_logic_vector(7 downto 2);
         INT_HANDLER_TA  : out std_logic;
         FBEE_CONF       : out std_logic_vector(31 downto 0);
         TIN0            : out std_logic
@@ -121,10 +121,10 @@ begin
 					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else -- Long.
 					'1' when FB_SIZE1 = '1' and FB_SIZE0 = '1' else '0';-- Line.
 
-	INT_CTR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000000" else '0'; -- $10000/4;
-	INT_ENA_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000001" else '0'; -- $10004/4;
-	INT_CLEAR_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000010" else '0'; -- $10008/4;
-	INT_LATCH_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000011" else '0'; -- $1000C/4;
+	INT_CTR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000000" else '0'; -- $10000/4;
+	INT_ENA_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000001" else '0'; -- $10004/4;
+	INT_CLEAR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000010" else '0'; -- $10008/4;
+	INT_LATCH_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000011" else '0'; -- $1000C/4;
 
 	P_INT_CTRL  : process
 		-- Interrupt control register:
@@ -168,31 +168,31 @@ begin
     end process P_INT_CTRL;
 
     -- Interrupt latch register: read only.
-    IRQn(2) <= '0' when HSYNC = '1' and INT_ENA(26) = '1' else '1';
-    IRQn(3) <= '0' when INT_CTR(0) = '1' and INT_ENA(27) = '1' else '1';
-    IRQn(4) <= '0' when VSYNC = '1' and INT_ENA(28) = '1' else '1';
-    IRQn(5) <= '0' when INT_LATCH /= x"00000000" and INT_ENA(29) = '1' else '1';
-    IRQn(6) <= '0' when MFP_INTn = '0' and INT_ENA(30) = '1' else '1';
-    IRQn(7) <= '0' when PSEUDO_BUS_ERROR = '1' and INT_ENA(31) = '1' else '1';
+    irq_n(2) <= '0' when HSYNC = '1' and INT_ENA(26) = '1' else '1';
+    irq_n(3) <= '0' when INT_CTR(0) = '1' and INT_ENA(27) = '1' else '1';
+    irq_n(4) <= '0' when VSYNC = '1' and INT_ENA(28) = '1' else '1';
+    irq_n(5) <= '0' when INT_LATCH /= x"00000000" and INT_ENA(29) = '1' else '1';
+    irq_n(6) <= '0' when MFP_INTn = '0' and INT_ENA(30) = '1' else '1';
+    irq_n(7) <= '0' when PSEUDO_BUS_ERROR = '1' and INT_ENA(31) = '1' else '1';
 
-    PSEUDO_BUS_ERROR <= '1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F8C8" else -- SCC
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F8E0" else -- VME
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F920" else -- PADDLE
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F921" else -- PADDLE
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F922" else -- PADDLE
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFA9" else -- MFP2
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFAA" else -- MFP2
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 8) = x"F87" else -- TT SCSI
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFC2" else -- ST UHR
-								'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"FFC3" else '0'; -- ST UHR
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F890" else -- DMA SOUND
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F891" else -- DMA SOUND
-	--							'1' when FB_CSn(1) = '0' and FB_ADR(19 downto 4) = x"F892" else '0'; -- DMA SOUND
+    PSEUDO_BUS_ERROR <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F8C8" else -- SCC
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F8E0" else -- VME
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F920" else -- PADDLE
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F921" else -- PADDLE
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F922" else -- PADDLE
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA9" else -- MFP2
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFAA" else -- MFP2
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 8) = x"F87" else -- TT SCSI
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFC2" else -- ST UHR
+								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFC3" else '0'; -- ST UHR
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F890" else -- DMA SOUND
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F891" else -- DMA SOUND
+	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F892" else '0'; -- DMA SOUND
 
 	-- IF video ADR changes:
-	TIN0 <= '1' when FB_CSn(1) = '0' and FB_WRn = '0' and FB_ADR(19 downto 1) = 19x"7C100" else '0'; -- Write video base address high 0xFFFF8201/2.
+	TIN0 <= '1' when fb_cs_n(1) = '0' and FB_WRn = '0' and FB_ADR(19 downto 1) = 19x"7C100" else '0'; -- Write video base address high 0xFFFF8201/2.
 
 	P_INT_LATCH  : process
 	begin
@@ -258,7 +258,7 @@ begin
 	INT_IN(30) <= not MFP_INTn; 
 	INT_IN(31) <= DRQ_DMA; 
 
-	FBEE_CONF_CS <= '1' when FB_CSn(2) = '0' and FB_ADR(27 downto 2) = "00000001000000000000000000" else '0'; -- $40000/4.
+	FBEE_CONF_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000001000000000000000000" else '0'; -- $40000/4.
 
 	P_FBEE_CONFIG : process
 		-- Firebee configuration register: BIT 31 -> 0 = CF 1 = IDE 
@@ -277,10 +277,10 @@ begin
 	end process P_FBEE_CONFIG;
     
 	-- Data out multiplexers:
-	FB_AD_EN_31_24 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not FB_OEn;
-	FB_AD_EN_23_16 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not FB_OEn;
-	FB_AD_EN_15_8 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS)  and not FB_OEn;
-	FB_AD_EN_7_0 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not FB_OEn;
+	FB_AD_EN_31_24 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
+	FB_AD_EN_23_16 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
+	FB_AD_EN_15_8 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS)  and not fb_oe_n;
+	FB_AD_EN_7_0 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
 
 	FB_AD_OUT(31 downto 24) <= INT_CTR(31 downto 24) when INT_CTR_CS = '1' else
 										INT_ENA(31 downto 24) when INT_ENA_CS = '1' else

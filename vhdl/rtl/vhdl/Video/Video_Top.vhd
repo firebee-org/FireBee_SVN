@@ -70,8 +70,8 @@ ENTITY VIDEO_SYSTEM IS
         FB_AD_EN_31_16      : OUT STD_LOGIC; -- Hi word.
         FB_AD_EN_15_0       : OUT STD_LOGIC; -- Low word.
         FB_ALE              : IN STD_LOGIC;
-        FB_CSn              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
-        FB_OEn              : IN STD_LOGIC;
+        fb_cs_n              : IN STD_LOGIC_VECTOR(3 DOWNTO 1);
+        fb_oe_n              : IN STD_LOGIC;
         fb_wr_n             : IN STD_LOGIC;
         FB_SIZE1            : IN STD_LOGIC;
         FB_SIZE0            : IN STD_LOGIC;
@@ -87,10 +87,10 @@ ENTITY VIDEO_SYSTEM IS
         BLUE                : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         VSYNC               : OUT STD_LOGIC;
         HSYNC               : OUT STD_LOGIC;
-        SYNCn               : OUT STD_LOGIC;
-        BLANKn              : OUT STD_LOGIC;
+        sync_n               : OUT STD_LOGIC;
+        blank_n              : OUT STD_LOGIC;
         
-        PD_VGAn             : OUT STD_LOGIC;
+        pd_vga_n             : OUT STD_LOGIC;
         VIDEO_MOD_TA        : OUT STD_LOGIC;
 
         VD_VZ               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
@@ -500,10 +500,10 @@ BEGIN
 	I_VIDEO_CTRL: VIDEO_CTRL
 		PORT map(
 			CLK_MAIN            => CLK_MAIN,
-			FB_CSn(1)           => FB_CSn(1),
-			FB_CSn(2)           => FB_CSn(2),
+			fb_cs_n(1)           => fb_cs_n(1),
+			fb_cs_n(2)           => fb_cs_n(2),
 			fb_wr_n             => fb_wr_n,
-			FB_OEn              => FB_OEn,
+			fb_oe_n              => fb_oe_n,
 			FB_SIZE(0)          => FB_SIZE0,
 			FB_SIZE(1)          => FB_SIZE1,
 			FB_ADR              => FB_ADR,
@@ -524,9 +524,9 @@ BEGIN
 			CLUT_MUX_ADR        => CLUT_ADR_MUX,
 			HSYNC               => HSYNC,
 			VSYNC               => VSYNC,
-			BLANKn              => BLANKn,
-			SYNCn               => SYNCn,
-			PD_VGAn             => PD_VGAn,
+			blank_n              => blank_n,
+			sync_n               => sync_n,
+			pd_vga_n             => pd_vga_n,
 			FIFO_RDE            => FIFO_RDE,
 			COLOR2              => COLOR2,
 			COLOR4              => COLOR4,

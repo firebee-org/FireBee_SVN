@@ -94,7 +94,7 @@ entity WF6850IP_CTRL_STATUS is
 		CDS			: out std_logic_vector(1 downto 0); -- Clock control.
 		WS			: out std_logic_vector(2 downto 0); -- Word select.
 		TC			: out std_logic_vector(1 downto 0); -- Transmit control.
-		IRQn		: buffer std_logic -- Interrupt request.
+		irq_n		: buffer std_logic -- Interrupt request.
        );                                              
 end entity WF6850IP_CTRL_STATUS;
 
@@ -109,7 +109,7 @@ begin
 	CTS_In <= CTSn;  
 	DCD_In <= DCDn;  -- immer 0
 
-	STATUS_REG(7) <= not IRQn;
+	STATUS_REG(7) <= not irq_n;
 	STATUS_REG(6) <= PE;
 	STATUS_REG(5) <= OVR;
 	STATUS_REG(4) <= FE;
@@ -133,25 +133,25 @@ begin
 	begin
 		if rising_edge(CLK) then
 			if RESETn = '0'  or MCLR = '1' then
-				IRQn <= '1';
+				irq_n <= '1';
 			else
 				-- Transmitter interrupt:
 				if TDRE = '1' and CTRL_REG(6 downto 5) = "01" then
-					IRQn <= '0';
+					irq_n <= '0';
 				end if;
 				-- Receiver interrupts:
 				if RDRF = '1' and RIE = '1' then
-					IRQn <= '0';
+					irq_n <= '0';
 				end if;
 				-- Overrun
 				if OVR = '1' and RIE = '1' then
-					IRQn <= '0';
+					irq_n <= '0';
 				end if;
 				-- The reset of the IRQ status flag:
 				-- Clear by writing to the transmit data register.
 				-- Clear by reading the receive data register.
 				if  CS = "011" and RS = '1' then
-					IRQn <= '1';
+					irq_n <= '1';
 				end if;
 			end if;
 		end if;

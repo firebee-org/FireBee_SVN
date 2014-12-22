@@ -93,7 +93,7 @@ entity WF68901IP_TOP_SOC is
 			IACKn		: in std_logic;
 			IEIn		: in std_logic;
 			IEOn		: out std_logic;
-			IRQn		: out std_logic;
+			irq_n		: out std_logic;
 			
 			-- Timers and timer control:
 			XTAL1		: in std_logic; -- Use an oszillator instead of a quartz.
@@ -151,7 +151,7 @@ signal TA_PWM_I					: std_logic;
 signal TB_PWM_I					: std_logic;
 begin
 	-- Interrupt request (open drain):
-	IRQn <= IRQ_In;
+	irq_n <= IRQ_In;
 
 	-- Serial data output:
 	SO <= 	SO_I;
@@ -242,7 +242,7 @@ begin
 			IACKn			=> IACKn,
 			IEIn			=> IEIn,
 			IEOn			=> IEOn,
-			IRQn			=> IRQ_In,
+			irq_n			=> IRQ_In,
 			GP_INT			=> GP_INT_I,
 			AER_4			=> AER_4_I,
 			AER_3			=> AER_3_I,

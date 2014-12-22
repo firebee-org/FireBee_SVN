@@ -83,7 +83,7 @@ ENTITY WF6850IP_TOP_SOC IS
 		CTSn					: IN STD_LOGIC;
 		DCDn					: IN STD_LOGIC;
         
-		IRQn					: OUT STD_LOGIC;
+		irq_n					: OUT STD_LOGIC;
 		TXDATA				: OUT STD_LOGIC;   
 		RTSn					: OUT STD_LOGIC
 	);                                              
@@ -113,7 +113,7 @@ ARCHITECTURE STRUCTURE of WF6850IP_TOP_SOC IS
 			CDS		: OUT STD_LOGIC_VECTOR(1 downto 0);
 			WS			: OUT STD_LOGIC_VECTOR(2 downto 0);
 			TC			: OUT STD_LOGIC_VECTOR(1 downto 0);
-			IRQn		: OUT STD_LOGIC
+			irq_n		: OUT STD_LOGIC
 		);                                              
 	END COMPONENT;
 	
@@ -180,7 +180,7 @@ BEGIN
 	DATA_OUT <= (DATA_RX) WHEN DATA_RX_EN = '1' ELSE
 				(DATA_CTRL) WHEN DATA_CTRL_EN = '1' ELSE (others => '0');
 				
-	IRQn <= '0' WHEN IRQ_In = '0' ELSE '1';
+	irq_n <= '0' WHEN IRQ_In = '0' ELSE '1';
 
 	I_UART_CTRL_STATUS: WF6850IP_CTRL_STATUS
 	PORT MAP(
@@ -207,7 +207,7 @@ BEGIN
 		CDS		=> CDS_I,
 		WS			=> WS_I,
 		TC			=> TC_I,
-		IRQn		=> IRQ_In
+		irq_n		=> IRQ_In
 	);                                              
 
 	I_UART_RECEIVE: WF6850IP_RECEIVE

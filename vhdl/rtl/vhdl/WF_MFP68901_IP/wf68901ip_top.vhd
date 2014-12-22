@@ -84,7 +84,7 @@ entity WF68901IP_TOP is
 			IACKn		: in std_logic;
 			IEIn		: in std_logic;
 			IEOn		: out std_logic;
-			IRQn		: out std_logic;
+			irq_n		: out std_logic;
 			
 			-- Timers and timer control:
 			XTAL1		: in std_logic; -- Use an oszillator instead of a quartz.
@@ -125,7 +125,7 @@ component WF68901IP_TOP_SOC
          IACKn		    : in std_logic;
          IEIn		    : in std_logic;
          IEOn		    : out std_logic;
-         IRQn		    : out std_logic;
+         irq_n		    : out std_logic;
          XTAL1		    : in std_logic;
          TAI			: in std_logic;
          TBI			: in std_logic;
@@ -154,7 +154,7 @@ signal SO_I             : std_logic;
 signal SO_EN            : std_logic;
 begin
     DTACKn <= '0' when DTACK_In = '0' else 'Z'; -- Open drain.
-    IRQn <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.
+    irq_n <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.
 
     DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
 
@@ -194,7 +194,7 @@ begin
                  IACKn          => IACKn,
                  IEIn           => IEIn,
                  IEOn           => IEOn,
-                 IRQn           => IRQ_In,
+                 irq_n           => IRQ_In,
                  XTAL1          => XTAL1,
                  TAI            => TAI,
                  TBI            => TBI,

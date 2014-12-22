@@ -192,7 +192,7 @@ component WF68901IP_INTERRUPTS
 		IACKn		: in std_logic;
 		IEIn		: in std_logic;
 		IEOn		: out std_logic;
-		IRQn		: out std_logic;
+		irq_n		: out std_logic;
 		GP_INT		: in std_logic_vector(7 downto 0);
 		AER_4		: in std_logic;
 		AER_3		: in std_logic;

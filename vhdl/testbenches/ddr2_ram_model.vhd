@@ -7,7 +7,6 @@ LIBRARY work;
 PACKAGE ddr2_ram_model_pkg IS
     -- DDR2 RAM timing constants
     
-    CONSTANT TMRD           : TIME := 2 ps;             -- load mode register command cycle time
     CONSTANT TRFC_MIN       : TIME := 105000 ps;        -- refresh to refresh command minimum value
     CONSTANT TRFC_MAX       : TIME := 70000000 ps;      -- refresh to refresh command maximum value
     CONSTANT TRP            : TIME := 13125 ps;         -- precharge period
@@ -16,8 +15,9 @@ PACKAGE ddr2_ram_model_pkg IS
     CONSTANT TRAS_MIN       : TIME := 40000 ps;         -- minimum active to precharge command time
     CONSTANT TRAS_MAX       : TIME := 70000000 ps;      -- maximum active to precharge command time
     CONSTANT TRRD           : TIME := 10000 ps;         -- tRRD: active bank to active bank command time
-    CONSTANT TFAW           : INTEGER := 45000;
-
+    CONSTANT TFAW           : TIME := 45000 ps;         -- four bank activate window
+    CONSTANT TWR            : TIME := 15000 ps;         -- write recovery time
+    
     CONSTANT RANDOM_SEED    : INTEGER := 711689044;     -- seed value for random generator
    
     COMPONENT ddr2_ram_model IS
@@ -68,6 +68,7 @@ ENTITY ddr2_ram_model IS
     GENERIC
     (
         VERBOSE     : BOOLEAN := TRUE;          -- define if you want additional debug output
+        CLOCK_TICK  : TIME := (1000000 / 132000) * 1 ps;     -- time for one clock tick
         
         BA_BITS     : INTEGER := 2;             -- number of banks
         ADDR_BITS   : INTEGER := 13;            -- number of address bits
@@ -100,7 +101,6 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     CONSTANT MEM_BITS       : INTEGER := 10;            -- number of write data bursts can be stored in memory. The default is 2 ** 10 = 1024
     CONSTANT AP             : INTEGER := 10;            -- the address bit that controls auto-precharge and precharge-all
     CONSTANT TDLLK          : INTEGER := 200;
-    CONSTANT BUS_DELAY      : TIME := 0 ps;
     CONSTANT BANKS          : INTEGER := TO_INTEGER(SHIFT_LEFT(TO_UNSIGNED(1, 32), BA_BITS));
     CONSTANT ROW_BITS       : INTEGER := 13;
     CONSTANT COL_BITS       : INTEGER := 10;
@@ -109,6 +109,13 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     CONSTANT BO_BITS        : INTEGER := 2;             -- the number of burst order bits
     CONSTANT MAX_BITS       : INTEGER := BA_BITS + ROW_BITS + COL_BITS - BL_BITS;
     
+
+    -- time constants
+    CONSTANT BUS_DELAY      : TIME := 0 ps;
+
+    -- time constants (in tCK's)
+    CONSTANT TMRD           : INTEGER := 2;             -- load mode register command cycle time
+    CONSTANT TCCD           : INTEGER := 2;             -- CAS to CAS command delay
 
     CONSTANT DQ_PER_DQS     : INTEGER := DQ_BITS / DQS_BITS;
     CONSTANT MAX_SIZE       : INTEGER := TO_INTEGER(SHIFT_LEFT(TO_UNSIGNED(1, 32), BA_BITS + ROW_BITS + COL_BITS - BL_BITS));
@@ -160,10 +167,10 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL dqs_n_en         : STD_LOGIC;
     SIGNAL rdqs_en          : STD_LOGIC;
     SIGNAL out_en           : STD_LOGIC;
-    SIGNAL read_latency     : INTEGER;
+    SIGNAL READ_CMD_latency     : INTEGER;
     SIGNAL write_latency    : INTEGER;
     
-    TYPE cmd_type_t IS (LOAD_MODE, REFRESH, PRECHARGE, ACTIVATE, WRITE_CMD, READ, NOP, PWR_DOWN, SELF_REF);
+    TYPE cmd_type_t IS (LOAD_MODE, REFRESH, PRECHARGE, ACTIVATE, WRITE_CMD, READ_CMD, NOP, PWR_DOWN, SELF_REF);
     TYPE cmd_type_encoding_array_t IS ARRAY(cmd_type_t) OF STD_LOGIC_VECTOR(3 DOWNTO 0);
     CONSTANT cmd_type_encoding : cmd_type_encoding_array_t :=
         (
@@ -205,7 +212,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     -- cmd timers/counters
     SIGNAL ref_cntr             : INTEGER;
     SIGNAL ck_cntr              : INTEGER;
-    SIGNAL ck_load_mode         : TIME;
+    SIGNAL ck_load_mode         : INTEGER;
     SIGNAL ck_write             : INTEGER;
     SIGNAL ck_read              : INTEGER;
     SIGNAL ck_write_ap          : INTEGER;
@@ -310,9 +317,12 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         );
 
     -- memory storage
--- only for MAX_MEM for now
     TYPE mem_t IS ARRAY (INTEGER RANGE <>) OF STD_LOGIC_VECTOR (BL_MAX * DQ_BITS - 1 DOWNTO 0);
-    SIGNAL memory               : mem_t(0 TO MAX_SIZE - 1);
+    SIGNAL memory               : mem_t(0 TO MEM_SIZE - 1);
+    TYPE adr_t IS ARRAY (INTEGER RANGE <>) OF STD_LOGIC_VECTOR (MAX_BITS - 1 DOWNTO 0);
+    SIGNAL address              : adr_t(0 TO MEM_SIZE - 1);
+    SIGNAL memory_index         : STD_LOGIC_VECTOR(MEM_BITS DOWNTO 0);
+    SIGNAL memory_used          : STD_LOGIC_VECTOR(MEM_BITS DOWNTO 0);
     
     SIGNAL ck_in                : STD_LOGIC;
     SIGNAL ck_n_in              : STD_LOGIC;
@@ -376,7 +386,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         -- memory(addr) <= data;
     END memory_write;
     
-    PROCEDURE memory_read(
+    PROCEDURE memory_READ_CMD(
         SIGNAL bank     : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
         SIGNAL row      : IN UNSIGNED (ROW_BITS - 1 DOWNTO 0);
         SIGNAL col      : IN UNSIGNED (COL_BITS - 1 DOWNTO 0);
@@ -387,7 +397,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         addr <= (bank & row & col) / BL_MAX;
         -- TODO: only the MAX_MEM defined functionality defined yet
         -- data <= memory(addr);
-    END memory_read;
+    END memory_READ_CMD;
     
     PROCEDURE cmd_task(
         cke        : IN STD_LOGIC;
@@ -646,31 +656,31 @@ BEGIN
             -- all matching case expression will be evaluated
             
             CASE? (STD_LOGIC_VECTOR'(samebank & fromcmd & cmd)) IS
-                WHEN "1" & cmd_type_encoding(LOAD_MODE) & "0---" =>
+                WHEN "0" & cmd_type_encoding(LOAD_MODE) & "0---" =>
                     IF ck_cntr - ck_load_mode < TMRD THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tMRD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(LOAD_MODE) & "100-" =>
+                WHEN "0" & cmd_type_encoding(LOAD_MODE) & "100-" =>
                     IF ck_cntr - ck_load_mode < TMRD THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Load Mode to Reset Condition");
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(REFRESH) & "0---" =>
+                WHEN "0" & cmd_type_encoding(REFRESH) & "0---" =>
                     IF NOW - tm_refresh < TRFC_MIN THEN
                         REPORT("tRFC violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(REFRESH) & cmd_type_encoding(PWR_DOWN) =>
+                WHEN "0" & cmd_type_encoding(REFRESH) & cmd_type_encoding(PWR_DOWN) =>
                     -- 1 tCK_avg
                     
-                WHEN "1" & cmd_type_encoding(REFRESH) & cmd_type_encoding(SELF_REF) =>
+                WHEN "0" & cmd_type_encoding(REFRESH) & cmd_type_encoding(SELF_REF) =>
                     IF NOW - tm_refresh < TRFC_MIN THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & "INFO: Refresh to Reset condition");
                     END IF;
                     init_done <= '0';
                     
-                WHEN "1" & cmd_type_encoding(PRECHARGE) & "000-" =>
+                WHEN "0" & cmd_type_encoding(PRECHARGE) & "000-" =>
                     IF NOW - tm_precharge_all < TRPA THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRPA violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
                     END IF;
@@ -696,16 +706,16 @@ BEGIN
                             & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(PWR_DOWN) =>
+                WHEN "0" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(PWR_DOWN) =>
                     -- 1 tCK, can be concurrent with auto precharge
                     
-                WHEN "1" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(SELF_REF) =>
+                WHEN "0" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(SELF_REF) =>
                     IF NOW - tm_precharge_all < TRPA OR NOW - tm_precharge < TRP THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Precharge to reset condition");
                         init_done <= '0';
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(REFRESH) =>
+                WHEN "0" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(REFRESH) =>
                     IF NOW - tm_activate < TRC THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRC violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
                     END IF;
@@ -720,7 +730,7 @@ BEGIN
                             " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
                     END IF;
                     
-                WHEN "1" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(ACTIVATE) =>
+                WHEN "0" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(ACTIVATE) =>
                     IF NOW - tm_activate < TRRD THEN
                         REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRRD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
                             " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
@@ -742,20 +752,24 @@ BEGIN
                     IF ck_cntr - ck_bank_write(TO_INTEGER(UNSIGNED(bank)))
                                 <= write_latency + TO_INTEGER(UNSIGNED(burst_length)) + 2 OR
                             NOW - tm_bank_write_end(TO_INTEGER(UNSIGNED(bank))) < TWR THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) & " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
                     END IF;
 
-                WHEN "1" & cmd_type_enconding(WRITE_CMD) & cmd_type_encoding(WRITE_CMD) =>
+                WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(WRITE_CMD) =>
                     IF ck_cntr - ck_write < TCCD THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tCCD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) & " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tCCD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
                     END IF;
 
-                WHEN "1" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(READ) => 
-                    IF ck_load_mode < ck_write AND ck_cntr - ck_write < write_latency + burst_length / 2 + 2 - additive_latency THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWTR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) & " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
+                WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(READ_CMD) => 
+                    IF ck_load_mode < ck_write AND ck_cntr - ck_write < write_latency + TO_INTEGER(UNSIGNED(burst_length)) / 2 + 2 - additive_latency THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWTR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
                     END IF;
 
-                WHEN "1" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PWR_DOWN) =>
+                WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PWR_DOWN) =>
+                    
                     
                 WHEN OTHERS => -- do nothing
                 

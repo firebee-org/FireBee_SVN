@@ -55,7 +55,7 @@ entity RTC is
 		FB_SIZE0        : in std_logic;
 		FB_SIZE1        : in std_logic;
 		FB_WRn          : in std_logic;
-		FB_OEn          : in std_logic;
+		fb_oe_n          : in std_logic;
 		FB_AD_IN        : in std_logic_vector(23 downto 16);
 		FB_AD_OUT       : out std_logic_vector(23 downto 16);
 		FB_AD_EN_23_16  : out std_logic;
@@ -225,7 +225,7 @@ begin
     end process P_1287;
     
     -- Data out multiplexers:
-    FB_AD_EN_23_16 <= (UHR_DS or UHR_AS) and not FB_OEn;
+    FB_AD_EN_23_16 <= (UHR_DS or UHR_AS) and not fb_oe_n;
 
     FB_AD_OUT(23 downto 16) <= VALUES(conv_integer(RTC_ADR)) when UHR_DS = '1' else
                                "00" & RTC_ADR when UHR_AS = '1' else x"00";

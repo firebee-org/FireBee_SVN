@@ -76,7 +76,7 @@ entity WF6850IP_TOP is
         CTSn				: in std_logic;
         DCDn				: in std_logic;
         
-        IRQn				: out std_logic;
+        irq_n               : out std_logic;
         TXDATA				: out std_logic;   
         RTSn				: out std_logic
        );                                              
@@ -99,7 +99,7 @@ component WF6850IP_TOP_SOC
         RXDATA				: in std_logic;
         CTSn				: in std_logic;
         DCDn				: in std_logic;
-        IRQn				: out std_logic;
+        irq_n               : out std_logic;
         TXDATA				: out std_logic;   
         RTSn				: out std_logic
        );                                              
@@ -109,7 +109,7 @@ signal DATA_EN      : std_logic;
 signal IRQ_In       : std_logic;
 begin
     DATA <= DATA_OUT when DATA_EN = '1' else (others => 'Z');
-    IRQn <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.
+    irq_n <= '0' when IRQ_In = '0' else 'Z'; -- Open drain.
 
     I_UART: WF6850IP_TOP_SOC
       port map(CLK          => CLK,
@@ -128,7 +128,7 @@ begin
                RXDATA       => RXDATA,
                CTSn         => CTSn,
                DCDn         => DCDn,
-               IRQn         => IRQ_In,
+               irq_n         => IRQ_In,
                TXDATA       => TXDATA,
                RTSn         => RTSn
            );                                              

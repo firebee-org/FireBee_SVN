@@ -57,8 +57,8 @@ entity FBEE_BLITTER is
 		FB_ALE          : in std_logic;
 		FB_SIZE1        : in std_logic;
 		FB_SIZE0        : in std_logic;
-		FB_CSn          : in std_logic_vector(3 downto 1);
-		FB_OEn          : in std_logic;
+		fb_cs_n          : in std_logic_vector(3 downto 1);
+		fb_oe_n          : in std_logic;
 		FB_WRn          : in std_logic;
 		DATA_IN         : in std_logic_vector(31 downto 0);
 		DATA_OUT        : out std_logic_vector(31 downto 0);

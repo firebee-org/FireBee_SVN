@@ -96,30 +96,30 @@ LIBRARY IEEE;
 
 ENTITY firebee IS
     PORT(
-        RSTO_MCFn           : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
-        CLK_33M             : IN STD_LOGIC;                -- 33 MHz clock
+        rsto_mcf_n           : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
+        clk_33m             : IN STD_LOGIC;                -- 33 MHz clock
         clk_main            : IN STD_LOGIC;                -- 33 MHz clock
 
-        CLK_24M576          : OUT STD_LOGIC;            -- 
-        CLK_25M             : OUT STD_LOGIC;
-        clk_ddr_OUT         : OUT STD_LOGIC;
-        clk_ddr_OUTn        : OUT STD_LOGIC;
+        clk_24m576          : OUT STD_LOGIC;            -- 
+        clk_25m             : OUT STD_LOGIC;
+        clk_ddr_out         : OUT STD_LOGIC;
+        clk_ddr_out_n       : OUT STD_LOGIC;
         clk_usb             : OUT STD_LOGIC;
 
         fb_ad               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         fb_ale              : IN STD_LOGIC;
-        FB_BURSTn           : IN STD_LOGIC;
-        FB_CSn              : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
+        fb_burst_n           : IN STD_LOGIC;
+        fb_cs_n              : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
         fb_size             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
-        FB_OEn              : IN STD_LOGIC;
+        fb_oe_n              : IN STD_LOGIC;
         fb_wr_n             : IN STD_LOGIC;
-        FB_TAn              : OUT STD_LOGIC;
+        fb_ta_n              : OUT STD_LOGIC;
         
-        DACK1n              : IN STD_LOGIC;
-        DREQ1n              : OUT STD_LOGIC;
+        dack1_n              : IN STD_LOGIC;
+        dreq1_n              : OUT STD_LOGIC;
 
-        MASTERn             : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
-        TOUT0n              : IN STD_LOGIC; -- Not used so far.
+        master_n             : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
+        tout0_n              : IN STD_LOGIC; -- Not used so far.
 
         led_fpga_ok         : OUT STD_LOGIC;
         reserved_1          : OUT STD_LOGIC;
@@ -132,10 +132,10 @@ ENTITY firebee IS
         vcs_n                : OUT STD_LOGIC;
 
         clk_pixel           : OUT STD_LOGIC;
-        SYNCn               : OUT STD_LOGIC;
-        VSYNC               : OUT STD_LOGIC;
-        HSYNC               : OUT STD_LOGIC;
-        BLANKn              : OUT STD_LOGIC;
+        sync_n               : OUT STD_LOGIC;
+        vsync               : OUT STD_LOGIC;
+        hsync               : OUT STD_LOGIC;
+        blank_n              : OUT STD_LOGIC;
         
         vr                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
         vg                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
@@ -146,43 +146,43 @@ ENTITY firebee IS
         vd                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         vd_qs               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
 
-        PD_vgAn             : OUT STD_LOGIC;
+        pd_vga_n             : OUT STD_LOGIC;
         vcke                : OUT STD_LOGIC;
         pic_int             : IN STD_LOGIC;
         e0_int              : IN STD_LOGIC;
         dvi_int             : IN STD_LOGIC;
-        PCI_INTAn           : IN STD_LOGIC;
-        PCI_INTBn           : IN STD_LOGIC;
-        PCI_INTCn           : IN STD_LOGIC;
-        PCI_INTDn           : IN STD_LOGIC;
+        pci_inta_n           : IN STD_LOGIC;
+        pci_intb_n           : IN STD_LOGIC;
+        pci_intc_n           : IN STD_LOGIC;
+        pci_intd_n           : IN STD_LOGIC;
 
-        IRQn                : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
+        irq_n                : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
         tin0                : OUT STD_LOGIC;
 
-        YM_QA               : OUT STD_LOGIC;
-        YM_QB               : OUT STD_LOGIC;
-        YM_QC               : OUT STD_LOGIC;
+        ym_qa               : OUT STD_LOGIC;
+        ym_qb               : OUT STD_LOGIC;
+        ym_qc               : OUT STD_LOGIC;
 
-        LP_D                : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-        LP_DIR              : OUT STD_LOGIC;
+        lp_d                : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+        lp_dir              : OUT STD_LOGIC;
 
-        DSA_D               : OUT STD_LOGIC;
-        LP_STR              : OUT STD_LOGIC;
-        DTR                 : OUT STD_LOGIC;
-        RTS                 : OUT STD_LOGIC;
-        CTS                 : IN STD_LOGIC;
-        RI                  : IN STD_LOGIC;
-        DCD                 : IN STD_LOGIC;
-        LP_BUSY             : IN STD_LOGIC;
-        RxD                 : IN STD_LOGIC;
-        TxD                 : OUT STD_LOGIC;
-        MIDI_IN             : IN STD_LOGIC;
-        MIDI_OLR            : OUT STD_LOGIC;
-        MIDI_TLR            : OUT STD_LOGIC;
-        PIC_AMKB_RX         : IN STD_LOGIC;
-        AMKB_RX             : IN STD_LOGIC;
-        AMKB_TX             : OUT STD_LOGIC;
-        DACK0n              : IN STD_LOGIC; -- Not used.
+        dsa_d               : OUT STD_LOGIC;
+        lp_str              : OUT STD_LOGIC;
+        dtr                 : OUT STD_LOGIC;
+        rts                 : OUT STD_LOGIC;
+        cts                 : IN STD_LOGIC;
+        ri                  : IN STD_LOGIC;
+        dcd                 : IN STD_LOGIC;
+        lp_busy             : IN STD_LOGIC;
+        rxd                 : IN STD_LOGIC;
+        txd                 : OUT STD_LOGIC;
+        midi_in             : IN STD_LOGIC;
+        midi_olr            : OUT STD_LOGIC;
+        midi_tlr            : OUT STD_LOGIC;
+        pic_amkb_rx         : IN STD_LOGIC;
+        amkb_rx             : IN STD_LOGIC;
+        amkb_tx             : OUT STD_LOGIC;
+        dack0_n              : IN STD_LOGIC; -- Not used.
         
         scsi_drqn           : IN STD_LOGIC;
         SCSI_MSGn           : IN STD_LOGIC;
@@ -256,7 +256,7 @@ END ENTITY firebee;
 ARCHITECTURE Structure of firebee is
     COMPONENT altpll1
         PORT(
-            INclk0      : IN STD_LOGIC  := '0';
+            inclk0      : IN STD_LOGIC  := '0';
             c0          : OUT STD_LOGIC ;
             c1          : OUT STD_LOGIC ;
             c2          : OUT STD_LOGIC ;
@@ -289,7 +289,7 @@ ARCHITECTURE Structure of firebee is
         PORT(
             areset          : IN STD_LOGIC  := '0';
             configupdate    : IN STD_LOGIC  := '0';
-            INclk0          : IN STD_LOGIC  := '0';
+            inclk0          : IN STD_LOGIC  := '0';
             scanclk         : IN STD_LOGIC  := '1';
             scanclkena      : IN STD_LOGIC  := '0';
             scandata        : IN STD_LOGIC  := '0';
@@ -447,7 +447,7 @@ ARCHITECTURE Structure of firebee is
     SIGNAL scsi_rst_en          : STD_LOGIC;
     SIGNAL scsi_rst_out_n       : STD_LOGIC;
     SIGNAL scsi_sel_en          : STD_LOGIC;
-    SIGNAL SCSI_SEL_OUTn        : STD_LOGIC;
+    SIGNAL scsi_sel_out_n        : STD_LOGIC;
     SIGNAL sd_cd_d3_en          : STD_LOGIC;
     SIGNAL sd_cd_d3_out         : STD_LOGIC;
     SIGNAL sd_cmd_d1_en         : STD_LOGIC;
@@ -492,7 +492,7 @@ BEGIN
         PORT MAP(
             inclk0      => clk_main,
             c0          => clk_2m4576,              -- 2.4576 MHz
-            c1          => CLK_24M576,              -- 24.576 MHz
+            c1          => clk_24m576,              -- 24.576 MHz
             c2          => clk_48m,                 -- 48 MHz
             locked      => locked
         );
@@ -552,11 +552,11 @@ BEGIN
             pll_areset          => pll_areset
         );
 
-    CLK_25M <= clk_25m_i;
+    clk_25m <= clk_25m_i;
     clk_usb <= clk_48m;
     
-    clk_ddr_OUT <= clk_ddr(0);
-    clk_ddr_OUTn <= NOT clk_ddr(0);
+    clk_ddr_out <= clk_ddr(0);
+    clk_ddr_out_n <= NOT clk_ddr(0);
     
     clk_pixel <= clk_pixel_i;
 
@@ -566,23 +566,23 @@ BEGIN
         timebase <= timebase + 1;
     END PROCESS p_timebase;
 
-    reset_n <= RSTO_MCFn and locked;
+    reset_n <= rsto_mcf_n and locked;
     ide_res <= NOT ide_res_i and reset_n;
-    DREQ1n <= DACK1n;
+    dreq1_n <= dack1_n;
     led_fpga_ok <= timebase(17);                                    -- won't work: doesn't seem to be connected
 
     falcon_io_ta <= acia_cs OR sndcs OR NOT dtack_out_mfp_n OR paddle_cs OR ide_cf_ta OR dma_cs;
-    FB_TAn <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' ELSE 'Z';
+    fb_ta_n <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' ELSE 'Z';
 
-    acia_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';           -- FFFC00 - FFFC07
-    mfp_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';         -- FFFA00/40
-    paddle_cs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 6) & "000000"= x"FF9200" ELSE '0';       -- FF9200-FF923F
-    sndcs <= '1' WHEN FB_CSn(1) = '0' and fb_adr(23 DOWNTO 2) & "00" = x"FF8800" ELSE '0';              -- FF8800-FF8803
+    acia_cs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';           -- FFFC00 - FFFC07
+    mfp_cs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';         -- FFFA00/40
+    paddle_cs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 6) & "000000"= x"FF9200" ELSE '0';       -- FF9200-FF923F
+    sndcs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 2) & "00" = x"FF8800" ELSE '0';              -- FF8800-FF8803
     sndcs_i <= '1' WHEN sndcs = '1' and fb_adr (1) = '0' ELSE '0';
     sndir_i <= '1' WHEN sndcs = '1' and fb_wr_n = '0' ELSE '0';
 
-    LP_D <= lp_d_x WHEN lp_dir_x = '0' ELSE (OTHERS => 'Z');
-    LP_DIR <= lp_dir_x;
+    lp_d <= lp_d_x WHEN lp_dir_x = '0' ELSE (OTHERS => 'Z');
+    lp_dir <= lp_dir_x;
     
     ACSI_D <= acsi_d_out WHEN acsi_d_en = '1' ELSE (OTHERS => 'Z');
 
@@ -591,9 +591,9 @@ BEGIN
     SCSI_PAR <= scsi_dbp_out_n WHEN scsi_dbp_en = '1' ELSE 'Z';
     SCSI_RSTn <= scsi_rst_out_n WHEN scsi_rst_en = '1' ELSE 'Z';
     SCSI_BUSYn <= scsi_bsy_out_n WHEN scsi_bsy_en = '1' ELSE 'Z';
-    SCSI_SELn <= SCSI_SEL_OUTn WHEN scsi_sel_en = '1' ELSE 'Z';
+    SCSI_SELn <= scsi_sel_out_n WHEN scsi_sel_en = '1' ELSE 'Z';
 
-    keyb_rxd <= '0' WHEN AMKB_RX = '0' OR PIC_AMKB_RX = '0' ELSE '1';                                       -- get keyboard data either from PIC (PS/2) OR from Atari keyboard
+    keyb_rxd <= '0' WHEN amkb_rx = '0' OR pic_amkb_rx = '0' ELSE '1';                                       -- get keyboard data either from PIC (PS/2) OR from Atari keyboard
 
     SD_D3 <= sd_cd_d3_out WHEN sd_cd_d3_en = '1' ELSE 'Z';
     SD_CMD_D1 <= sd_cmd_d1_out WHEN sd_cmd_d1_en = '1' ELSE 'Z';
@@ -604,13 +604,13 @@ BEGIN
     hd_dd_out <= FDD_HD_DD WHEN fbee_conf(29) = '0' ELSE wdc_bsl0;
     lds <= '1' WHEN mfp_cs = '1' OR mfp_intack = '1' ELSE '0';
     acia_irq_n <= irq_keybd_n and irq_midi_n;
-    mfp_intack <= '1' WHEN FB_CSn(2) = '0' and fb_adr(19 DOWNTO 0) = x"20000" ELSE '0';                     --F002'0000
+    mfp_intack <= '1' WHEN fb_cs_n(2) = '0' and fb_adr(19 DOWNTO 0) = x"20000" ELSE '0';                     --F002'0000
     dint_n <= '0' WHEN ide_int = '1' and fbee_conf(28) = '1' ELSE
                 '0' WHEN fd_int = '1' ELSE
                 '0' WHEN scsi_int = '1' and fbee_conf(28) = '1' ELSE '1';
 
-    MIDI_TLR <= midi_out;
-    MIDI_OLR <= midi_out;
+    midi_tlr <= midi_out;
+    midi_olr <= midi_out;
 
     byte <= '1' WHEN fb_size(1) = '0' and fb_size(0) = '1' ELSE '0';
     fb_b0 <= '1' WHEN fb_adr(0) = '0' OR byte = '0' ELSE '0';
@@ -626,18 +626,18 @@ BEGIN
                                     fb_ad_out_dma(31 DOWNTO 24) WHEN fb_ad_en_31_24_dma = '1' ELSE
                                     vdr(31 DOWNTO 24) WHEN fb_vdoe = x"1" ELSE
                                     data_out_ddr_ctrl(31 DOWNTO 24) WHEN data_en_h_ddr_ctrl = '1' ELSE
-                                    da_out_x WHEN sndcs_i = '1' and FB_OEn = '0' ELSE
-                                    x"00" WHEN mfp_intack = '1' and FB_OEn = '0' ELSE
-                                    data_out_acia_i  WHEN acia_cs = '1' and fb_adr(2) = '0' and FB_OEn = '0' ELSE
-                                    data_out_acia_iI WHEN acia_cs = '1' and fb_adr(2) = '1' and FB_OEn = '0' ELSE
-                                    x"BF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"0" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"1" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"8" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"9" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"A" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"B" and FB_OEn = '0' ELSE
-                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and FB_OEn = '0' ELSE
-                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and FB_OEn = '0' ELSE (OTHERS => 'Z');
+                                    da_out_x WHEN sndcs_i = '1' and fb_oe_n = '0' ELSE
+                                    x"00" WHEN mfp_intack = '1' and fb_oe_n = '0' ELSE
+                                    data_out_acia_i  WHEN acia_cs = '1' and fb_adr(2) = '0' and fb_oe_n = '0' ELSE
+                                    data_out_acia_iI WHEN acia_cs = '1' and fb_adr(2) = '1' and fb_oe_n = '0' ELSE
+                                    x"BF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"0" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"1" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"8" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"9" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"A" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"B" and fb_oe_n = '0' ELSE
+                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and fb_oe_n = '0' ELSE
+                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and fb_oe_n = '0' ELSE (OTHERS => 'Z');
 
     fb_ad(23 DOWNTO 16) <= data_out_blitter(23 DOWNTO 16) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(23 DOWNTO 16) WHEN fb_vdoe = x"2" ELSE
@@ -649,17 +649,17 @@ BEGIN
                                     fb_ad_out_dma(23 DOWNTO 16) WHEN fb_ad_en_23_16_dma = '1' ELSE
                                     vdr(23 DOWNTO 16) WHEN fb_vdoe = x"1" ELSE
                                     data_out_ddr_ctrl(23 DOWNTO 16) WHEN data_en_l_ddr_ctrl = '1' ELSE
-                                    data_out_mfp WHEN mfp_cs = '1' and FB_OEn = '0' ELSE
-                                    x"00" WHEN mfp_intack = '1' and FB_OEn = '0' ELSE
+                                    data_out_mfp WHEN mfp_cs = '1' and fb_oe_n = '0' ELSE
+                                    x"00" WHEN mfp_intack = '1' and fb_oe_n = '0' ELSE
                                     fb_ad_out_rtc WHEN fb_ad_en_rtc = '1' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"0" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"1" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"8" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"9" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"A" and FB_OEn = '0' ELSE
-                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"B" and FB_OEn = '0' ELSE
-                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and FB_OEn = '0' ELSE
-                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and FB_OEn = '0' ELSE (OTHERS => 'Z');
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"0" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"1" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"8" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"9" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"A" and fb_oe_n = '0' ELSE
+                                    x"FF" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"B" and fb_oe_n = '0' ELSE
+                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"10" and fb_oe_n = '0' ELSE
+                                    x"00" WHEN paddle_cs = '1' and fb_adr(5 DOWNTO 1) = 5x"11" and fb_oe_n = '0' ELSE (OTHERS => 'Z');
 
     fb_ad(15 DOWNTO 8) <= data_out_blitter(15 DOWNTO 8) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(15 DOWNTO 8) WHEN fb_vdoe = x"2" ELSE
@@ -670,7 +670,7 @@ BEGIN
                                     fb_ad_out_ih(15 DOWNTO 8) WHEN fb_ad_en_15_8_ih = '1' ELSE
                                     fb_ad_out_dma(15 DOWNTO 8) WHEN fb_ad_en_15_8_dma = '1' ELSE
                                     vdr(15 DOWNTO 8) WHEN fb_vdoe = x"1" ELSE
-                                    "000000" & data_out_mfp(7 DOWNTO 6) WHEN mfp_intack = '1' and FB_OEn = '0' ELSE (OTHERS => 'Z');
+                                    "000000" & data_out_mfp(7 DOWNTO 6) WHEN mfp_intack = '1' and fb_oe_n = '0' ELSE (OTHERS => 'Z');
 
     fb_ad(7 DOWNTO 0) <= data_out_blitter(7 DOWNTO 0) WHEN data_en_blitter = '1' ELSE
                                     vdp_q1(7 DOWNTO 0) WHEN fb_vdoe = x"2" ELSE
@@ -681,7 +681,7 @@ BEGIN
                                     fb_ad_out_ih(7 DOWNTO 0) WHEN fb_ad_en_7_0_ih = '1' ELSE
                                     fb_ad_out_dma(7 DOWNTO 0) WHEN fb_ad_en_7_0_dma = '1' ELSE
                                     vdr(7 DOWNTO 0) WHEN fb_vdoe = x"1" ELSE
-                                    data_out_mfp(5 DOWNTO 0) & "00" WHEN mfp_intack = '1' and FB_OEn = '0' ELSE (OTHERS => 'Z');
+                                    data_out_mfp(5 DOWNTO 0) & "00" WHEN mfp_intack = '1' and fb_oe_n = '0' ELSE (OTHERS => 'Z');
 
     synchronization : PROCESS
     BEGIN
@@ -716,9 +716,9 @@ BEGIN
     video_out : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_pixel_i);
-        VSYNC <= vsync_i;
-        HSYNC <= hsync_i;
-        BLANKn <= blank_i_n;
+        vsync <= vsync_i;
+        hsync <= hsync_i;
+        blank_n <= blank_i_n;
     END PROCESS video_out;
 
     p_ddr_wr: PROCESS
@@ -795,8 +795,8 @@ BEGIN
             clk_main            => clk_main,
             ddr_sync_66m        => ddr_sync_66m,
             fb_adr              => fb_adr,
-            fb_cs1_n            => FB_CSn(1),
-            fb_oe_n             => FB_OEn,
+            fb_cs1_n            => fb_cs_n(1),
+            fb_oe_n             => fb_oe_n,
             fb_size0            => fb_size(0),
             fb_size1            => fb_size(1),
             fb_ale              => fb_ale,
@@ -808,7 +808,7 @@ BEGIN
             ba                  => ba,
             va                  => va,
             fb_le               => fb_le,
-            CLK_33M             => CLK_33M,
+            clk_33m             => clk_33m,
             vras_n              => vras_n,
             vcas_n              => vcas_n,
             vwe_n                => vwe_n,
@@ -842,8 +842,8 @@ BEGIN
 --            fb_ale              => fb_ale,
 --            fb_size1            => fb_size(1),
 --            fb_size0            => fb_size(0),
---            FB_CSn              => FB_CSn,
---            FB_OEn              => FB_OEn,
+--            fb_cs_n              => fb_cs_n,
+--            fb_oe_n              => fb_oe_n,
 --            fb_wr_n              => fb_wr_n,
 --            DATA_IN             => fb_ad,
 --            DATA_OUT            => data_out_blitter,
@@ -862,8 +862,8 @@ BEGIN
     I_VIDEOSYSTEM: VIDEO_SYSTEM
         PORT MAP(
             clk_main            => clk_main,
-            CLK_33M             => CLK_33M,
-            CLK_25M             => clk_25m_i,
+            clk_33m             => clk_33m,
+            clk_25m             => clk_25m_i,
             clk_video           => clk_video,
             clk_ddr3            => clk_ddr(3),
             clk_ddr2            => clk_ddr(2),
@@ -879,8 +879,8 @@ BEGIN
             fb_ad_en_31_16      => fb_ad_en_31_16_video,
             fb_ad_en_15_0       => fb_ad_en_15_0_video,
             fb_ale              => fb_ale,
-            FB_CSn              => FB_CSn,
-            FB_OEn              => FB_OEn,
+            fb_cs_n              => fb_cs_n,
+            fb_oe_n              => fb_oe_n,
             fb_wr_n             => FB_WR_n,
             fb_size1            => fb_size(1),
             fb_size0            => fb_size(0),
@@ -894,12 +894,12 @@ BEGIN
             RED                 => vr,
             GREEN               => vg,
             BLUE                => vb,
-            VSYNC               => vsync_i,
-            HSYNC               => hsync_i,
-            SYNCn               => SYNCn,
-            BLANKn              => blank_i_n,
+            vsync               => vsync_i,
+            hsync               => hsync_i,
+            sync_n               => sync_n,
+            blank_n              => blank_i_n,
 
-            PD_vgAn             => PD_vgAn,
+            pd_vga_n             => pd_vga_n,
             video_mod_ta        => video_mod_ta,
 
             vd_vz               => vd_vz,
@@ -919,8 +919,8 @@ BEGIN
 --            clk_main            => clk_main,
 --            resetn              => reset_n,
 --            fb_adr              => fb_adr,
---            FB_CSn              => FB_CSn(2 DOWNTO 1),
---            FB_OEn              => FB_OEn,
+--            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
+--            fb_oe_n              => fb_oe_n,
 --            fb_size0            => fb_size(0),
 --            fb_size1            => fb_size(1),
 --            fb_wr_n              => fb_wr_n,
@@ -933,16 +933,16 @@ BEGIN
 --            pic_int             => pic_int,
 --            e0_int              => e0_int,
 --            dvi_int             => dvi_int,
---            PCI_INTAn           => PCI_INTAn,
---            PCI_INTBn           => PCI_INTBn,
---            PCI_INTCn           => PCI_INTCn,
---            PCI_INTDn           => PCI_INTDn,
+--            pci_inta_n           => pci_inta_n,
+--            pci_intb_n           => pci_intb_n,
+--            pci_intc_n           => pci_intc_n,
+--            pci_intd_n           => pci_intd_n,
 --            mfp_intn            => mfp_int_n,
 --            dsp_int             => dsp_int,
---            VSYNC               => vsync_i,
---            HSYNC               => hsync_i,
+--            vsync               => vsync_i,
+--            hsync               => hsync_i,
 --            drq_dma             => drq_dma,
---            IRQn                => IRQn,
+--            irq_n                => irq_n,
 --            int_handler_ta      => int_handler_ta,
 --            fbee_conf           => fbee_conf,
 --            tin0                => tin0
@@ -957,8 +957,8 @@ BEGIN
 --            fb_adr              => fb_adr(26 DOWNTO 0),
 --            fb_ale              => fb_ale,
 --            fb_size             => fb_size,
---            FB_CSn              => FB_CSn(2 DOWNTO 1),
---            FB_OEn              => FB_OEn,
+--            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
+--            fb_oe_n              => fb_oe_n,
 --            fb_wr_n              => fb_wr_n,
 --            fb_ad_IN            => fb_ad,
 --            fb_ad_OUT           => fb_ad_out_dma,
@@ -1007,7 +1007,7 @@ BEGIN
 --            clk_main            => clk_main,
 --
 --            fb_adr              => fb_adr(19 DOWNTO 5),
---            FB_CS1n             => FB_CSn(1),
+--            FB_CS1n             => fb_cs_n(1),
 --            fb_wr_n              => fb_wr_n,
 --            fb_b0               => fb_b0,
 --            fb_b1               => fb_b1,
@@ -1046,18 +1046,18 @@ BEGIN
 
 --    I_DSP: DSP
 --        PORT MAP(
---            CLK_33M             => CLK_33M,
+--            clk_33m             => clk_33m,
 --            clk_main            => clk_main,
---            FB_OEn              => FB_OEn,
+--            fb_oe_n              => fb_oe_n,
 --            fb_wr_n              => fb_wr_n,
---            FB_CS1n             => FB_CSn(1),
---            FB_CS2n             => FB_CSn(2),
+--            FB_CS1n             => fb_cs_n(1),
+--            FB_CS2n             => fb_cs_n(2),
 --            fb_size0            => fb_size(0),
 --            fb_size1            => fb_size(1),
---            FB_BURSTn           => FB_BURSTn,
+--            fb_burst_n           => fb_burst_n,
 --            fb_adr              => fb_adr,
 --            resetn              => reset_n,
---            FB_CS3n             => FB_CSn(3),
+--            FB_CS3n             => fb_cs_n(3),
 --            SRCSn               => DSP_SRCSn,
 --            SRBLEn              => DSP_SRBLEn,
 --            SRBHEn              => DSP_SRBHEn,
@@ -1096,20 +1096,20 @@ BEGIN
 --            IO_A_IN             => x"00", -- All port pINs are dedicated OUTputs.
 --            IO_A_OUT(7)         => ide_res_i,
 --            IO_A_OUT(6)         => lp_dir_x,
---            IO_A_OUT(5)         => LP_STR,
---            IO_A_OUT(4)         => DTR,
---            IO_A_OUT(3)         => RTS,
+--            IO_A_OUT(5)         => lp_str,
+--            IO_A_OUT(4)         => dtr,
+--            IO_A_OUT(3)         => rts,
 --            IO_A_OUT(2)         => reserved_1,
---            IO_A_OUT(1)         => DSA_D,
+--            IO_A_OUT(1)         => dsa_d,
 --            IO_A_OUT(0)         => FDD_SDSELn,
---            -- IO_A_EN          => TOUT0n, -- Not required.
---            IO_B_IN             => LP_D,
+--            -- IO_A_EN          => tout0_n, -- Not required.
+--            IO_B_IN             => lp_d,
 --            IO_B_OUT            => lp_d_x,
 --            -- IO_B_EN          => -- Not used.
 --
---            OUT_A               => YM_QA,
---            OUT_B               => YM_QB,
---            OUT_C               => YM_QC
+--            OUT_A               => ym_qa,
+--            OUT_B               => ym_qb,
+--            OUT_C               => ym_qc
 --        );
 
     I_MFP: WF68901IP_TOP_SOC
@@ -1128,20 +1128,20 @@ BEGIN
             DATA_OUT            => data_out_mfp,
             -- DATA_EN          => DATA_EN_MFP, -- Not used.
             GPIP_IN(7)          => NOT drq11_dma,
-            GPIP_IN(6)          => NOT RI,
+            GPIP_IN(6)          => NOT ri,
             GPIP_IN(5)          => dint_n,
             GPIP_IN(4)          => acia_irq_n,
             GPIP_IN(3)          => dsp_int,
-            GPIP_IN(2)          => NOT CTS,
-            GPIP_IN(1)          => NOT DCD,
-            GPIP_IN(0)          => LP_BUSY,
+            GPIP_IN(2)          => NOT cts,
+            GPIP_IN(1)          => NOT dcd,
+            GPIP_IN(0)          => lp_busy,
             -- GPIP_OUT           =>, -- Not used; all GPIPs are direction INput.
             -- GPIP_EN            =>, -- Not used; all GPIPs are direction INput.
             -- Interrupt control:
             IACKn               => NOT mfp_intack,
             IEIn                => '0',
             -- IEOn             =>, -- Not used.
-            IRQn                => mfp_int_n,
+            irq_n                => mfp_int_n,
             -- Timers and timer control:
             XTAL1               => clk_2m4576,
             TAI                 => '0',
@@ -1153,8 +1153,8 @@ BEGIN
             -- Serial I/O control:
             RC                  => tdo,
             TC                  => tdo,
-            SI                  => RxD, 
-            SO                  => TxD
+            SI                  => rxd, 
+            SO                  => txd
             -- SO_EN            => -- Not used.
             -- DMA control:
             -- RRn              => -- Not used.
@@ -1179,11 +1179,11 @@ BEGIN
 --
 --            TXCLK               => clk_500k,
 --            RXCLK               => clk_500k,
---            RXDATA              => MIDI_IN,
+--            RXDATA              => midi_in,
 --            CTSn                => '0',
 --            DCDn                => '0',
 --
---            IRQn                => irq_midi_n,
+--            irq_n                => irq_midi_n,
 --            TXDATA              => midi_out
 --            --RTSn                => -- Not used.
 --        );                                              
@@ -1211,8 +1211,8 @@ BEGIN
             CTSn                => '0',
             DCDn                => '0',
 
-            IRQn                => irq_keybd_n,
-            TXDATA              => AMKB_TX
+            irq_n                => irq_keybd_n,
+            TXDATA              => amkb_tx
             --RTSn                => -- Not used.
         );                                              
 
@@ -1247,7 +1247,7 @@ BEGIN
 --            BSY_OUTn            => scsi_bsy_out_n,
 --            BSY_EN              => scsi_bsy_en,
 --            SEL_INn             => SCSI_SELn,
---            SEL_OUTn            => SCSI_SEL_OUTn,
+--            SEL_OUTn            => scsi_sel_out_n,
 --            SEL_EN              => scsi_sel_en,
 --            ACK_INn             => '1',
 --            ACK_OUTn            => SCSI_ACKn,
@@ -1299,11 +1299,11 @@ BEGIN
 --        PORT MAP(
 --            clk_main            => clk_main,
 --            fb_adr              => fb_adr(19 DOWNTO 0),
---            FB_CS1n             => FB_CSn(1),
+--            FB_CS1n             => fb_cs_n(1),
 --            fb_size0            => fb_size(0),
 --            fb_size1            => fb_size(1),
 --            fb_wr_n              => fb_wr_n,
---            FB_OEn              => FB_OEn,
+--            fb_oe_n              => fb_oe_n,
 --            fb_ad_IN            => fb_ad(23 DOWNTO 16),
 --            fb_ad_OUT           => fb_ad_out_rtc,
 --            fb_ad_EN_23_16      => fb_ad_en_rtc,

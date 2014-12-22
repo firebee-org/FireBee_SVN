@@ -80,7 +80,7 @@ entity WF68901IP_INTERRUPTS is
 			IACKn		: in std_logic;
 			IEIn		: in std_logic;
 			IEOn		: out std_logic;
-			IRQn		: out std_logic;
+			irq_n		: out std_logic;
 			
 			-- Interrupt sources:
 			GP_INT		: in std_logic_vector(7 downto 0);
@@ -157,7 +157,7 @@ begin
 	IEOn <= '0' when INT_OUT = x"0000" and INT_STATE = SCAN else '1';
 
 	-- Interrupt request:
-	IRQn <= '0' when INT_OUT /= x"0000" and INT_STATE = REQUEST else '1';
+	irq_n <= '0' when INT_OUT /= x"0000" and INT_STATE = REQUEST else '1';
 
 	EDGE_ENA: process(RESETn, CLK)
 	-- These are the 16 edge detectors of the 16 interrupt input sources. This
