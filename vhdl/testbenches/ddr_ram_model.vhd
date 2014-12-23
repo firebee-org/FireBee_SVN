@@ -4,8 +4,8 @@ LIBRARY IEEE;
 
 LIBRARY work;
 
-PACKAGE ddr2_ram_model_pkg IS
-    -- DDR2 RAM timing constants
+PACKAGE ddr_ram_model_pkg IS
+    -- DDR RAM timing constants
     
     CONSTANT TRFC_MIN       : TIME := 105000 ps;        -- refresh to refresh command minimum value
     CONSTANT TRFC_MAX       : TIME := 70000000 ps;      -- refresh to refresh command maximum value
@@ -20,7 +20,7 @@ PACKAGE ddr2_ram_model_pkg IS
     
     CONSTANT RANDOM_SEED    : INTEGER := 711689044;     -- seed value for random generator
    
-    COMPONENT ddr2_ram_model IS
+    COMPONENT ddr_ram_model IS
         GENERIC
         (
             VERBOSE         : BOOLEAN := TRUE;          -- define if you want additional debug output
@@ -54,9 +54,9 @@ PACKAGE ddr2_ram_model_pkg IS
     END COMPONENT;
 END PACKAGE;
 
-PACKAGE BODY ddr2_ram_model_pkg IS
+PACKAGE BODY ddr_ram_model_pkg IS
     
-END PACKAGE BODY ddr2_ram_model_pkg;
+END PACKAGE BODY ddr_ram_model_pkg;
 ---------------------------------------------------------------------------------------------------------------------------------------    
 
 LIBRARY IEEE;
@@ -64,9 +64,9 @@ LIBRARY IEEE;
     USE IEEE.numeric_std.ALL;
 
 LIBRARY work;
-    USE work.ddr2_ram_model_pkg.ALL;
+    USE work.ddr_ram_model_pkg.ALL;
     
-ENTITY ddr2_ram_model IS
+ENTITY ddr_ram_model IS
     GENERIC
     (
         VERBOSE     : BOOLEAN := TRUE;          -- define if you want additional debug output
@@ -96,10 +96,10 @@ ENTITY ddr2_ram_model IS
         rdqs_n      : OUT UNSIGNED (DQS_BITS - 1 DOWNTO 0);
         odt         : IN STD_LOGIC
     );
-END ENTITY ddr2_ram_model;
+END ENTITY ddr_ram_model;
 
-ARCHITECTURE rtl OF ddr2_ram_model IS
-    -- DDR2 RAM size constants
+ARCHITECTURE rtl OF ddr_ram_model IS
+    -- DDR RAM size constants
     CONSTANT MEM_BITS       : INTEGER := 10;            -- number of write data bursts can be stored in memory. The default is 2 ** 10 = 1024
     CONSTANT AP             : INTEGER := 10;            -- the address bit that controls auto-precharge and precharge-all
     CONSTANT TDLLK          : INTEGER := 200;

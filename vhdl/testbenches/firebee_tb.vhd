@@ -1,6 +1,6 @@
 LIBRARY work;
     USE work.firebee_pkg.ALL;
---    USE work.ddr2_ram_model_pkg.ALL;
+    USE work.ddr_ram_model_pkg.ALL;
     
 LIBRARY IEEE;
     USE IEEE.std_logic_1164.ALL;
@@ -464,5 +464,20 @@ BEGIN
         IDE_WRn         => ide_wrn,
         IDE_RDn         => ide_rdn,
         IDE_CSn         => ide_csn
+    );
+    
+    I_DDR_1 : ddr_ram_model
+    PORT MAP
+    (
+        ck              => clk_ddr_out,
+        ck_n            => clk_ddr_out_n,
+        cke             => vcke,
+        cs_n            => vcs_n,
+        ras_n           => vras_n,
+        cas_n           => vcas_n,
+        we_n            => vwe_n,
+        ba              => UNSIGNED(ba),
+        addr            => UNSIGNED(va),
+        odt             => '1'
     );
 END beh;
