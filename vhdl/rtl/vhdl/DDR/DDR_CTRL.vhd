@@ -56,7 +56,7 @@ ENTITY DDR_CTRL IS
         fb_size0        : IN STD_LOGIC;
         fb_size1        : IN STD_LOGIC;
         fb_ale          : IN STD_LOGIC;
-        fb_wr_n          : IN STD_LOGIC;
+        fb_wr_n         : IN STD_LOGIC;
         fifo_clr        : IN STD_LOGIC;
         video_control_register   : IN UNSIGNED (15 DOWNTO 0);
         blitter_adr     : IN UNSIGNED (31 DOWNTO 0);

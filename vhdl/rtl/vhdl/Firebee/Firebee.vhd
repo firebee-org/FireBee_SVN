@@ -102,8 +102,10 @@ ENTITY firebee IS
 
         clk_24m576          : OUT STD_LOGIC;            -- 
         clk_25m             : OUT STD_LOGIC;
+        
         clk_ddr_out         : OUT STD_LOGIC;
         clk_ddr_out_n       : OUT STD_LOGIC;
+        
         clk_usb             : OUT STD_LOGIC;
 
         fb_ad               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
