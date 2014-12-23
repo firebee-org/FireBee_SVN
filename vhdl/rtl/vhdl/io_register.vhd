@@ -44,8 +44,8 @@ ARCHITECTURE rtl OF io_register IS
 BEGIN
     register_select : PROCESS
     BEGIN
-        IF address_bus AND address_mask = address AND address_mask THEN
+        /* IF (address_bus AND address_mask) = (address AND address_mask) THEN
             sel <= '1';
-        END IF;
+        END IF; */
     END PROCESS register_select;
 END rtl;

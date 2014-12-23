@@ -914,135 +914,135 @@ BEGIN
             blitter_run         => blitter_run
         );
 
---    I_INTHANDLER: INTHANDLER
---        PORT MAP(
---            clk_main            => clk_main,
---            resetn              => reset_n,
---            fb_adr              => fb_adr,
---            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
---            fb_oe_n              => fb_oe_n,
---            fb_size0            => fb_size(0),
---            fb_size1            => fb_size(1),
---            fb_wr_n              => fb_wr_n,
---            fb_ad_IN            => fb_ad,
---            fb_ad_OUT           => fb_ad_out_ih,
---            fb_ad_EN_31_24      => fb_ad_en_31_24_ih,
---            fb_ad_EN_23_16      => fb_ad_en_23_16_ih,
---            fb_ad_EN_15_8       => fb_ad_en_15_8_ih,
---            fb_ad_EN_7_0        => fb_ad_en_7_0_ih,
---            pic_int             => pic_int,
---            e0_int              => e0_int,
---            dvi_int             => dvi_int,
---            pci_inta_n           => pci_inta_n,
---            pci_intb_n           => pci_intb_n,
---            pci_intc_n           => pci_intc_n,
---            pci_intd_n           => pci_intd_n,
---            mfp_intn            => mfp_int_n,
---            dsp_int             => dsp_int,
---            vsync               => vsync_i,
---            hsync               => hsync_i,
---            drq_dma             => drq_dma,
---            irq_n                => irq_n,
---            int_handler_ta      => int_handler_ta,
---            fbee_conf           => fbee_conf,
---            tin0                => tin0
---        );
+    I_INTHANDLER: INTHANDLER
+        PORT MAP(
+            clk_main            => clk_main,
+            reset_n              => reset_n,
+            fb_adr              => fb_adr,
+            fb_cs_n             => fb_cs_n(2 DOWNTO 1),
+            fb_oe_n             => fb_oe_n,
+            fb_size0            => fb_size(0),
+            fb_size1            => fb_size(1),
+            fb_wr_n             => fb_wr_n,
+            fb_ad_IN            => fb_ad,
+            fb_ad_OUT           => fb_ad_out_ih,
+            fb_ad_EN_31_24      => fb_ad_en_31_24_ih,
+            fb_ad_EN_23_16      => fb_ad_en_23_16_ih,
+            fb_ad_EN_15_8       => fb_ad_en_15_8_ih,
+            fb_ad_EN_7_0        => fb_ad_en_7_0_ih,
+            pic_int             => pic_int,
+            e0_int              => e0_int,
+            dvi_int             => dvi_int,
+            pci_inta_n          => pci_inta_n,
+            pci_intb_n          => pci_intb_n,
+            pci_intc_n          => pci_intc_n,
+            pci_intd_n          => pci_intd_n,
+            mfp_int_n           => mfp_int_n,
+            dsp_int             => dsp_int,
+            vsync               => vsync_i,
+            hsync               => hsync_i,
+            drq_dma             => drq_dma,
+            irq_n               => irq_n,
+            int_handler_ta      => int_handler_ta,
+            fbee_conf           => fbee_conf,
+            tin0                => tin0
+        );
 
---    I_DMA: FBEE_DMA
---        PORT MAP(
---            RESET               => NOT reset_n,
---            clk_main            => clk_main,
---            clk_fdc             => clk_fdc,
---
---            fb_adr              => fb_adr(26 DOWNTO 0),
---            fb_ale              => fb_ale,
---            fb_size             => fb_size,
---            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
---            fb_oe_n              => fb_oe_n,
---            fb_wr_n              => fb_wr_n,
---            fb_ad_IN            => fb_ad,
---            fb_ad_OUT           => fb_ad_out_dma,
---            fb_ad_EN_31_24      => fb_ad_en_31_24_dma,
---            fb_ad_EN_23_16      => fb_ad_en_23_16_dma,
---            fb_ad_EN_15_8       => fb_ad_en_15_8_dma,
---            fb_ad_EN_7_0        => fb_ad_en_7_0_dma,
---
---            ACSI_DIR            => ACSI_DIR,
---            ACSI_D_IN           => ACSI_D,
---            acsi_d_out          => acsi_d_out,
---            acsi_d_en           => acsi_d_en,
---            ACSI_CSn            => ACSI_CSn,
---            ACSI_A1             => ACSI_A1,
---            ACSI_resetn         => ACSI_reset_n,
---            ACSI_DRQn           => ACSI_DRQn,
---            ACSI_ACKn           => ACSI_ACKn,
---
---            DATA_IN_FDC         => data_out_fdc,
---            DATA_IN_SCSI        => data_out_scsi,
---            data_out_fdc_SCSI    => data_in_fdc_scsi,
---
---            DMA_DRQ_IN          => drq_fdc,
---            DMA_DRQ_OUT         => drq_dma,            
---            DMA_DRQ11           => drq11_dma,
---
---            scsi_drq            => scsi_drq,
---            scsi_dackn          => scsi_dack_n,
---            scsi_int            => scsi_int,
---            scsi_csn            => scsi_csn,
---            scsi_cs             => scsi_cs,
---
---            ca                  => ca,
---            FLOPPY_HD_DD        => FDD_HD_DD,
---            wdc_bsl0            => wdc_bsl0,
---            fdc_csn             => fdc_cs_n,
---            fdc_wrn             => fdc_wr_n,
---            fd_int              => fd_int,
---            ide_int             => ide_int,
---            dma_cs              => dma_cs
---        );
+    I_DMA: FBEE_DMA
+        PORT MAP(
+            RESET               => NOT reset_n,
+            clk_main            => clk_main,
+            clk_fdc             => clk_fdc,
 
---    I_IDE_CF_SD_ROM: IDE_CF_SD_ROM
---        PORT MAP(
---            RESET               => NOT reset_n,
---            clk_main            => clk_main,
---
---            fb_adr              => fb_adr(19 DOWNTO 5),
---            FB_CS1n             => fb_cs_n(1),
---            fb_wr_n              => fb_wr_n,
---            fb_b0               => fb_b0,
---            fb_b1               => fb_b1,
---
---            fbee_conf           => fbee_conf(31 DOWNTO 30),
---
---            RP_UDSn             => RP_UDSn,
---            RP_ldsn             => RP_ldsn,
---
---            SD_CLK              => SD_CLK,
---            SD_D0               => SD_D0,
---            SD_D1               => SD_D1,
---            SD_D2               => SD_D2,
---            SD_CD_D3_IN         => SD_D3,
---            sd_cd_d3_out        => sd_cd_d3_out,
---            sd_cd_d3_en         => sd_cd_d3_en,
---            SD_CMD_D1_IN        => SD_CMD_D1,
---            sd_cmd_d1_out       => sd_cmd_d1_out,
---            sd_cmd_d1_en        => sd_cmd_d1_en,
---            SD_caRD_DETECT      => SD_caRD_DETECT,
---            SD_WP               => SD_WP,
---
---            ide_rdy             => ide_rdy,
---            IDE_WRn             => IDE_WRn,
---            IDE_RDn             => IDE_RDn,
---            IDE_CSn             => IDE_CSn,
---            -- IDE_DRQn         =>, -- Not used.
---            ide_cf_ta           => ide_cf_ta,
---
---            ROM4n               => ROM4n,
---            ROM3n               => ROM3n,
---
---            CF_WP               => CF_WP,
---            CF_CSn              => CF_CSn
---        );
+            fb_adr              => fb_adr(26 DOWNTO 0),
+            fb_ale              => fb_ale,
+            fb_size             => fb_size,
+            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
+            fb_oe_n              => fb_oe_n,
+            fb_wr_n              => fb_wr_n,
+            fb_ad_IN            => fb_ad,
+            fb_ad_OUT           => fb_ad_out_dma,
+            fb_ad_EN_31_24      => fb_ad_en_31_24_dma,
+            fb_ad_EN_23_16      => fb_ad_en_23_16_dma,
+            fb_ad_EN_15_8       => fb_ad_en_15_8_dma,
+            fb_ad_EN_7_0        => fb_ad_en_7_0_dma,
+
+            ACSI_DIR            => ACSI_DIR,
+            ACSI_D_IN           => ACSI_D,
+            acsi_d_out          => acsi_d_out,
+            acsi_d_en           => acsi_d_en,
+            ACSI_CSn            => ACSI_CSn,
+            ACSI_A1             => ACSI_A1,
+            ACSI_resetn         => ACSI_reset_n,
+            ACSI_DRQn           => ACSI_DRQn,
+            ACSI_ACKn           => ACSI_ACKn,
+
+            DATA_IN_FDC         => data_out_fdc,
+            DATA_IN_SCSI        => data_out_scsi,
+            data_out_fdc_SCSI    => data_in_fdc_scsi,
+
+            DMA_DRQ_IN          => drq_fdc,
+            DMA_DRQ_OUT         => drq_dma,            
+            DMA_DRQ11           => drq11_dma,
+
+            scsi_drq            => scsi_drq,
+            scsi_dackn          => scsi_dack_n,
+            scsi_int            => scsi_int,
+            scsi_csn            => scsi_csn,
+            scsi_cs             => scsi_cs,
+
+            ca                  => ca,
+            FLOPPY_HD_DD        => FDD_HD_DD,
+            wdc_bsl0            => wdc_bsl0,
+            fdc_csn             => fdc_cs_n,
+            fdc_wrn             => fdc_wr_n,
+            fd_int              => fd_int,
+            ide_int             => ide_int,
+            dma_cs              => dma_cs
+        );
+
+    I_IDE_CF_SD_ROM: IDE_CF_SD_ROM
+        PORT MAP(
+            RESET               => NOT reset_n,
+            clk_main            => clk_main,
+
+            fb_adr              => fb_adr(19 DOWNTO 5),
+            FB_CS1n             => fb_cs_n(1),
+            fb_wr_n             => fb_wr_n,
+            fb_b0               => fb_b0,
+            fb_b1               => fb_b1,
+
+            fbee_conf           => fbee_conf(31 DOWNTO 30),
+
+            RP_UDSn             => RP_UDSn,
+            RP_ldsn             => RP_ldsn,
+
+            SD_CLK              => SD_CLK,
+            SD_D0               => SD_D0,
+            SD_D1               => SD_D1,
+            SD_D2               => SD_D2,
+            SD_CD_D3_IN         => SD_D3,
+            sd_cd_d3_out        => sd_cd_d3_out,
+            sd_cd_d3_en         => sd_cd_d3_en,
+            SD_CMD_D1_IN        => SD_CMD_D1,
+            sd_cmd_d1_out       => sd_cmd_d1_out,
+            sd_cmd_d1_en        => sd_cmd_d1_en,
+            SD_caRD_DETECT      => SD_caRD_DETECT,
+            SD_WP               => SD_WP,
+
+            ide_rdy             => ide_rdy,
+            IDE_WRn             => IDE_WRn,
+            IDE_RDn             => IDE_RDn,
+            IDE_CSn             => IDE_CSn,
+            -- IDE_DRQn         =>, -- Not used.
+            ide_cf_ta           => ide_cf_ta,
+
+            ROM4n               => ROM4n,
+            ROM3n               => ROM3n,
+
+            CF_WP               => CF_WP,
+            CF_CSn              => CF_CSn
+        );
 
 --    I_DSP: DSP
 --        PORT MAP(
@@ -1054,7 +1054,7 @@ BEGIN
 --            FB_CS2n             => fb_cs_n(2),
 --            fb_size0            => fb_size(0),
 --            fb_size1            => fb_size(1),
---            fb_burst_n           => fb_burst_n,
+--            fb_burst_n          => fb_burst_n,
 --            fb_adr              => fb_adr,
 --            resetn              => reset_n,
 --            FB_CS3n             => fb_cs_n(3),
@@ -1076,41 +1076,41 @@ BEGIN
 --            SRD_EN              => dsp_srd_en
 --        );
 
---    I_SOUND: WF2149IP_TOP_SOC
---        PORT MAP(
---            SYS_CLK             => clk_main,
---            resetn              => reset_n,
---
---            WAV_CLK             => clk_2m0,
---            SELn                => '1',
---
---            BDIR                => sndir_i,
---            BC2                 => '1',
---            BC1                 => sndcs_i,
---
---            A9n                 => '0',
---            A8                  => '1',
---            DA_IN               => fb_ad(31 DOWNTO 24),
---            DA_OUT              => da_out_x,
---
---            IO_A_IN             => x"00", -- All port pINs are dedicated OUTputs.
---            IO_A_OUT(7)         => ide_res_i,
---            IO_A_OUT(6)         => lp_dir_x,
---            IO_A_OUT(5)         => lp_str,
---            IO_A_OUT(4)         => dtr,
---            IO_A_OUT(3)         => rts,
---            IO_A_OUT(2)         => reserved_1,
---            IO_A_OUT(1)         => dsa_d,
---            IO_A_OUT(0)         => FDD_SDSELn,
---            -- IO_A_EN          => tout0_n, -- Not required.
---            IO_B_IN             => lp_d,
---            IO_B_OUT            => lp_d_x,
---            -- IO_B_EN          => -- Not used.
---
---            OUT_A               => ym_qa,
---            OUT_B               => ym_qb,
---            OUT_C               => ym_qc
---        );
+    I_SOUND: WF2149IP_TOP_SOC
+        PORT MAP(
+            SYS_CLK             => clk_main,
+            resetn              => reset_n,
+
+            WAV_CLK             => clk_2m0,
+            SELn                => '1',
+
+            BDIR                => sndir_i,
+            BC2                 => '1',
+            BC1                 => sndcs_i,
+
+            A9n                 => '0',
+            A8                  => '1',
+            DA_IN               => fb_ad(31 DOWNTO 24),
+            DA_OUT              => da_out_x,
+
+            IO_A_IN             => x"00", -- All port pins are dedicated outputs.
+            IO_A_OUT(7)         => ide_res_i,
+            IO_A_OUT(6)         => lp_dir_x,
+            IO_A_OUT(5)         => lp_str,
+            IO_A_OUT(4)         => dtr,
+            IO_A_OUT(3)         => rts,
+            IO_A_OUT(2)         => reserved_1,
+            IO_A_OUT(1)         => dsa_d,
+            IO_A_OUT(0)         => FDD_SDSELn,
+            -- IO_A_EN          => tout0_n, -- Not required.
+            IO_B_IN             => lp_d,
+            IO_B_OUT            => lp_d_x,
+            -- IO_B_EN          => -- Not used.
+
+            OUT_A               => ym_qa,
+            OUT_B               => ym_qb,
+            OUT_C               => ym_qc
+        );
 
     I_MFP: WF68901IP_TOP_SOC
         PORT MAP(  
@@ -1135,8 +1135,8 @@ BEGIN
             gpip_in(2)          => NOT cts,
             gpip_in(1)          => NOT dcd,
             gpip_in(0)          => lp_busy,
-            -- GPIP_OUT           =>, -- Not used; all GPIPs are direction INput.
-            -- GPIP_EN            =>, -- Not used; all GPIPs are direction INput.
+            -- GPIP_OUT           =>, -- Not used; all GPIPs are direction input.
+            -- GPIP_EN            =>, -- Not used; all GPIPs are direction in   put.
             -- Interrupt control:
             IACKn               => NOT mfp_intack,
             IEIn                => '0',

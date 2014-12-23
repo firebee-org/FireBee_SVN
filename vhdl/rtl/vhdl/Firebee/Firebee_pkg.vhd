@@ -208,7 +208,7 @@ PACKAGE firebee_pkg IS
 	COMPONENT INTHANDLER
 		PORT(
 			clk_main        : IN STD_LOGIC;
-			RESETn          : IN STD_LOGIC;
+			reset_n          : IN STD_LOGIC;
 			fb_adr          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 			fb_cs_n         : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
 			fb_size0        : IN STD_LOGIC;

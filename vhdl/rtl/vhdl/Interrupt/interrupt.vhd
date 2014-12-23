@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- This file is part of the 'Firebee' project.                  ----
+---- This file is part OF the 'Firebee' project.                  ----
 ---- http://acp.atari.org                                         ----
 ----                                                              ----
 ---- Description:                                                 ----
----- This design unit provides the interruptlogic of the 'Firebee'----
----- computer. It is optimized for the use of an Altera Cyclone   ----
+---- This design unit provides the interruptlogic OF the 'Firebee'----
+---- computer. It is optimized FOR the use of an Altera Cyclone   ----
 ---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----
----- tion of the Firebee configware originally provided by Fredi  ----
----- Ashwanden  and Wolfgang Förster. This release is in compa-   ----
----- rision to the first edition completely written in VHDL.      ----
+---- tion OF the Firebee configware originally provided by Fredi  ----
+---- Aschwanden  AND Wolfgang Förster. This release is in compa-  ----
+---- rision TO the first edition completely written in VHDL.      ----
 ----                                                              ----
 ---- Author(s):                                                   ----
 ---- - Wolfgang Foerster, wf@experiment-s.de; wf@inventronik.de   ----
@@ -19,19 +19,19 @@
 ---- Copyright (C) 2012 Fredi Aschwanden, Wolfgang Förster        ----
 ----                                                              ----
 ---- This source file is free software; you can redistribute it   ----
----- and/or modify it under the terms of the GNU General Public   ----
+---- AND/or modify it under the terms OF the GNU General Public   ----
 ---- License as published by the Free Software Foundation; either ----
 ---- version 2 of the License, or (at your option) any later      ----
 ---- version.                                                     ----
 ----                                                              ----
----- This program is distributed in the hope that it will be      ----
+---- This program IS distributed in the hope that it will be      ----
 ---- useful, but WITHOUT ANY WARRANTY; without even the implied   ----
----- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      ----
----- PURPOSE.  See the GNU General Public License for more        ----
+---- warranty OF MERCHANTABILITY or FITNESS FOR A PARTICULAR      ----
+---- PURPOSE.  See the GNU General Public License FOR more        ----
 ---- details.                                                     ----
 ----                                                              ----
 ---- You should have received a copy of the GNU General Public    ----
----- License along with this program; if not, write to the Free   ----
+---- License along with this program; IF NOT, write TO the Free   ----
 ---- Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  ----
 ---- Boston, MA 02110-1301, USA.                                  ----
 ----                                                              ----
@@ -40,267 +40,267 @@
 -- Revision History
 -- 
 -- Revision 2K12B  20120801 WF
---   Initial Release of the second edition.
+--   Initial Release OF the second edition.
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
--- use ieee.std_logic_arith.all;
+LIBRARY IEEE;
+    USE IEEE.std_logic_1164.ALL;
+    USE IEEE.numeric_std.all;
+-- USE ieee.std_logic_arith.ALL;
 
-entity INTHANDLER is
-    port(
-        CLK_MAIN        : in std_logic;
-        RESETn          : in std_logic;
-        FB_ADR          : in std_logic_vector(31 downto 0);
-        fb_cs_n          : in std_logic_vector(2 downto 1);
-        FB_SIZE0        : in std_logic;
-        FB_SIZE1        : in std_logic;
-        FB_WRn          : in std_logic;
-        fb_oe_n          : in std_logic;
-        FB_AD_IN        : in std_logic_vector(31 downto 0);
-        FB_AD_OUT       : out std_logic_vector(31 downto 0);
-        FB_AD_EN_31_24  : out std_logic;
-        FB_AD_EN_23_16  : out std_logic;
-        FB_AD_EN_15_8   : out std_logic;
-        FB_AD_EN_7_0    : out std_logic;
-        PIC_INT         : in std_logic;
-        E0_INT          : in std_logic;
-        DVI_INT         : in std_logic;
-        PCI_INTAn       : in std_logic;
-        PCI_INTBn       : in std_logic;
-        PCI_INTCn       : in std_logic;
-        PCI_INTDn       : in std_logic;
-        MFP_INTn        : in std_logic;
-        DSP_INT         : in std_logic;
-        VSYNC           : in std_logic;
-        HSYNC           : in std_logic;
-        DRQ_DMA         : in std_logic;
-        irq_n            : out std_logic_vector(7 downto 2);
-        INT_HANDLER_TA  : out std_logic;
-        FBEE_CONF       : out std_logic_vector(31 downto 0);
-        TIN0            : out std_logic
+ENTITY inthandler IS
+    PORT(
+        clk_main        : IN STD_LOGIC;
+        reset_n         : IN STD_LOGIC;
+        fb_adr          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        fb_cs_n         : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+        fb_size0        : IN STD_LOGIC;
+        fb_size1        : IN STD_LOGIC;
+        fb_wr_n         : IN STD_LOGIC;
+        fb_oe_n         : IN STD_LOGIC;
+        fb_ad_in        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        fb_ad_out       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        fb_ad_en_31_24  : OUT STD_LOGIC;
+        fb_ad_en_23_16  : OUT STD_LOGIC;
+        fb_ad_en_15_8   : OUT STD_LOGIC;
+        fb_ad_en_7_0    : OUT STD_LOGIC;
+        pic_int         : IN STD_LOGIC;
+        e0_int          : IN STD_LOGIC;
+        dvi_int         : IN STD_LOGIC;
+        pci_inta_n      : IN STD_LOGIC;
+        pci_intb_n      : IN STD_LOGIC;
+        pci_intc_n      : IN STD_LOGIC;
+        pci_intd_n      : IN STD_LOGIC;
+        mfp_int_n       : IN STD_LOGIC;
+        dsp_int         : IN STD_LOGIC;
+        vsync           : IN STD_LOGIC;
+        hsync           : IN STD_LOGIC;
+        drq_dma         : IN STD_LOGIC;
+        irq_n           : OUT STD_LOGIC_VECTOR(7 DOWNTO 2);
+        int_handler_ta  : OUT STD_LOGIC;
+        fbee_conf       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        tin0            : OUT STD_LOGIC
     );
-end entity INTHANDLER;
+END ENTITY inthandler;
 
-architecture BEHAVIOUR of INTHANDLER is
-	type INT_LA_TYPE is array(9 downto 0) of std_logic_vector(3 downto 0);
-	signal INT_LA                  : INT_LA_TYPE;
-	signal FB_B                    : std_logic_vector(3 downto 0);
-	signal INT_CTR                 : std_logic_vector(31 downto 0);
-	signal INT_CTR_CS              : std_logic;
-	signal INT_LATCH               : std_logic_vector(31 downto 0);
-	signal INT_LATCH_CS            : std_logic;
-	signal INT_CLEAR               : std_logic_vector(31 downto 0);
-	signal INT_CLEAR_CS            : std_logic;
-	signal INT_IN                  : std_logic_vector(31 downto 0);
-	signal INT_ENA                 : std_logic_vector(31 downto 0);
-	signal INT_ENA_CS              : std_logic;
-	signal INT_L                   : std_logic_vector(9 downto 0);
-	signal FBEE_CONF_REG           : std_logic_vector(31 downto 0);
-	signal FBEE_CONF_CS            : std_logic;
-	signal PSEUDO_BUS_ERROR        : std_logic;
-begin
+ARCHITECTURE BEHAVIOUR OF inthandler IS
+	type int_la_t IS array(9 DOWNTO 0) OF STD_LOGIC_VECTOR(3 DOWNTO 0);
+	signal int_la                  : int_la_t;
+	signal fb_b                    : STD_LOGIC_VECTOR(3 DOWNTO 0);
+	signal int_ctr                 : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal int_ctr_cs              : STD_LOGIC;
+	signal int_latch               : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal int_latch_cs            : STD_LOGIC;
+	signal int_clear               : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal int_clear_cs            : STD_LOGIC;
+	signal int_in                  : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal int_ena                 : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal int_ena_cs              : STD_LOGIC;
+	signal int_l                   : STD_LOGIC_VECTOR(9 DOWNTO 0);
+	signal fbee_conf_reg           : STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal fbee_conf_cs            : STD_LOGIC;
+	signal pseudo_bus_error        : STD_LOGIC;
+BEGIN
 	-- Byte selectors:
-	FB_B(0) <= '1' when FB_SIZE1 = '1' and FB_SIZE0 = '0' and FB_ADR(1) = '0' else -- High word.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '1' and FB_ADR(1 downto 0) = "00" else -- HH Byte.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else -- Long.
-					'1' when FB_SIZE1 = '1' and FB_SIZE0 = '1' else '0';-- Line.
+	fb_b(0) <= '1' WHEN fb_size1 = '1' AND fb_size0 = '0' AND fb_adr(1) = '0' ELSE -- High word.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '1' AND fb_adr(1 DOWNTO 0) = "00" ELSE -- HH Byte.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '0' ELSE -- Long.
+					'1' WHEN fb_size1 = '1' AND fb_size0 = '1' ELSE '0';-- Line.
 
-	FB_B(1) <= '1' when FB_SIZE1 = '1' and FB_SIZE0 = '0' and FB_ADR(1) = '0' else -- High word.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '1' and FB_ADR(1 downto 0) = "01" else -- HL Byte.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else -- Long.
-					'1' when FB_SIZE1 = '1' and FB_SIZE0 = '1' else '0';-- Line.
+	fb_b(1) <= '1' WHEN fb_size1 = '1' AND fb_size0 = '0' AND fb_adr(1) = '0' ELSE -- High word.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '1' AND fb_adr(1 DOWNTO 0) = "01" ELSE -- HL Byte.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '0' ELSE -- Long.
+					'1' WHEN fb_size1 = '1' AND fb_size0 = '1' ELSE '0';-- Line.
              
-	FB_B(2) <= '1' when FB_SIZE1 = '1' and FB_SIZE0 = '0' and FB_ADR(1) = '1' else -- Low word.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '1' and FB_ADR(1 downto 0) = "10" else -- LH Byte.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else -- Long.
-					'1' when FB_SIZE1 = '1' and FB_SIZE0 = '1' else '0';-- Line.
+	fb_b(2) <= '1' WHEN fb_size1 = '1' AND fb_size0 = '0' AND fb_adr(1) = '1' ELSE -- Low word.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '1' AND fb_adr(1 DOWNTO 0) = "10" ELSE -- LH Byte.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '0' ELSE -- Long.
+					'1' WHEN fb_size1 = '1' AND fb_size0 = '1' ELSE '0';-- Line.
              
-	FB_B(3) <= '1' when FB_SIZE1 = '1' and FB_SIZE0 = '0' and FB_ADR(1) = '1' else -- Low word.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '1' and FB_ADR(1 downto 0) = "11" else -- LL Byte.
-					'1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else -- Long.
-					'1' when FB_SIZE1 = '1' and FB_SIZE0 = '1' else '0';-- Line.
+	fb_b(3) <= '1' WHEN fb_size1 = '1' AND fb_size0 = '0' AND fb_adr(1) = '1' ELSE -- Low word.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '1' AND fb_adr(1 DOWNTO 0) = "11" ELSE -- LL Byte.
+					'1' WHEN fb_size1 = '0' AND fb_size0 = '0' ELSE -- Long.
+					'1' WHEN fb_size1 = '1' AND fb_size0 = '1' ELSE '0';-- Line.
 
-	INT_CTR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000000" else '0'; -- $10000/4;
-	INT_ENA_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000001" else '0'; -- $10004/4;
-	INT_CLEAR_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000010" else '0'; -- $10008/4;
-	INT_LATCH_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000000000100000000000011" else '0'; -- $1000C/4;
+	int_ctr_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000100000000000000" ELSE '0'; -- $10000/4;
+	int_ena_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000100000000000001" ELSE '0'; -- $10004/4;
+	int_clear_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000100000000000010" ELSE '0'; -- $10008/4;
+	int_latch_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000100000000000011" ELSE '0'; -- $1000C/4;
 
-	P_INT_CTRL  : process
+	P_INT_CTRL  : PROCESS
 		-- Interrupt control register:
 		-- BIT0 = INT5, Bit1 = INT7.
 		-- Interrupt enabe register:
 		-- BIT31 = INT7, Bit30 = INT6, Bit29 = INT5, Bit28 = INT4, Bit27 = INT3, Bit26 = INT2
-		-- The interrupt clear register is write only; 1 = interrupt clear.
-	begin
-		wait until rising_edge(CLK_MAIN);
-		if INT_CTR_CS = '1' and FB_B(0) = '1' and FB_WRn = '0' then
-			INT_CTR(31 downto 24) <= FB_AD_IN(31 downto 24);
-		elsif INT_CTR_CS = '1' and FB_B(1) = '1' and FB_WRn = '0' then
-			INT_CTR(23 downto 16) <= FB_AD_IN(23 downto 16);
-		elsif INT_CTR_CS = '1' and FB_B(2) = '1' and FB_WRn = '0' then
-			INT_CTR(15 downto 8) <= FB_AD_IN(15 downto 8);
-		elsif INT_CTR_CS = '1' and FB_B(3) = '1' and FB_WRn = '0' then
-			INT_CTR(7 downto 0) <= FB_AD_IN(7 downto 0);
-		end if;
+		-- The interrupt clear register IS write only; 1 = interrupt clear.
+	BEGIN
+		WAIT UNTIL RISING_EDGE(clk_main);
+		IF int_ctr_cs = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
+			int_ctr(31 DOWNTO 24) <= fb_ad_in(31 DOWNTO 24);
+		ELSIF int_ctr_cs = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
+			int_ctr(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16);
+		ELSIF int_ctr_cs = '1' AND fb_b(2) = '1' AND fb_wr_n = '0' THEN
+			int_ctr(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8);
+		ELSIF int_ctr_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
+			int_ctr(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0);
+		END IF;
 		--
-		if RESETn = '0' then
-			INT_ENA <= (others => '0');
-		elsif INT_ENA_CS = '1' and FB_B(0) = '1' and FB_WRn = '0' then
-			INT_ENA(31 downto 24) <= FB_AD_IN(31 downto 24);
-		elsif INT_ENA_CS = '1' and FB_B(1) = '1' and FB_WRn = '0' then
-			INT_ENA(23 downto 16) <= FB_AD_IN(23 downto 16);
-		elsif INT_ENA_CS = '1' and FB_B(2) = '1' and FB_WRn = '0' then
-			INT_ENA(15 downto 8) <= FB_AD_IN(15 downto 8);
-		elsif INT_ENA_CS = '1' and FB_B(3) = '1' and FB_WRn = '0' then
-			INT_ENA(7 downto 0) <= FB_AD_IN(7 downto 0);
-		end if;
+		IF reset_n = '0' THEN
+			int_ena <= (OTHERS => '0');
+		ELSIF int_ena_cs = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
+			int_ena(31 DOWNTO 24) <= fb_ad_in(31 DOWNTO 24);
+		ELSIF int_ena_cs = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
+			int_ena(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16);
+		ELSIF int_ena_cs = '1' AND fb_b(2) = '1' AND fb_wr_n = '0' THEN
+			int_ena(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8);
+		ELSIF int_ena_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
+			int_ena(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0);
+		END IF;
 		--
-		if INT_CLEAR_CS = '1' and FB_B(0) = '1' and FB_WRn = '0' then
-			INT_CLEAR(31 downto 24) <= FB_AD_IN(31 downto 24);
-		elsif INT_CLEAR_CS = '1' and FB_B(1) = '1' and FB_WRn = '0' then
-			INT_CLEAR(23 downto 16) <= FB_AD_IN(23 downto 16);
-		elsif INT_CLEAR_CS = '1' and FB_B(2) = '1' and FB_WRn = '0' then
-			INT_CLEAR(15 downto 8) <= FB_AD_IN(15 downto 8);
-		elsif INT_CLEAR_CS = '1' and FB_B(3) = '1' and FB_WRn = '0' then
-			INT_CLEAR(7 downto 0) <= FB_AD_IN(7 downto 0);
-		end if;
-    end process P_INT_CTRL;
+		IF int_clear_cs = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
+			int_clear(31 DOWNTO 24) <= fb_ad_in(31 DOWNTO 24);
+		ELSIF int_clear_cs = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
+			int_clear(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16);
+		ELSIF int_clear_cs = '1' AND fb_b(2) = '1' AND fb_wr_n = '0' THEN
+			int_clear(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8);
+		ELSIF int_clear_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
+			int_clear(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0);
+		END IF;
+    END PROCESS P_INT_CTRL;
 
     -- Interrupt latch register: read only.
-    irq_n(2) <= '0' when HSYNC = '1' and INT_ENA(26) = '1' else '1';
-    irq_n(3) <= '0' when INT_CTR(0) = '1' and INT_ENA(27) = '1' else '1';
-    irq_n(4) <= '0' when VSYNC = '1' and INT_ENA(28) = '1' else '1';
-    irq_n(5) <= '0' when INT_LATCH /= x"00000000" and INT_ENA(29) = '1' else '1';
-    irq_n(6) <= '0' when MFP_INTn = '0' and INT_ENA(30) = '1' else '1';
-    irq_n(7) <= '0' when PSEUDO_BUS_ERROR = '1' and INT_ENA(31) = '1' else '1';
+    irq_n(2) <= '0' WHEN hsync = '1' AND int_ena(26) = '1' ELSE '1';
+    irq_n(3) <= '0' WHEN int_ctr(0) = '1' AND int_ena(27) = '1' ELSE '1';
+    irq_n(4) <= '0' WHEN vsync = '1' AND int_ena(28) = '1' ELSE '1';
+    irq_n(5) <= '0' WHEN int_latch /= x"00000000" AND int_ena(29) = '1' ELSE '1';
+    irq_n(6) <= '0' WHEN mfp_int_n = '0' AND int_ena(30) = '1' ELSE '1';
+    irq_n(7) <= '0' WHEN pseudo_bus_error = '1' AND int_ena(31) = '1' ELSE '1';
 
-    PSEUDO_BUS_ERROR <= '1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F8C8" else -- SCC
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F8E0" else -- VME
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F920" else -- PADDLE
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F921" else -- PADDLE
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F922" else -- PADDLE
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA9" else -- MFP2
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFAA" else -- MFP2
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFA8" else -- MFP2
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 8) = x"F87" else -- TT SCSI
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFC2" else -- ST UHR
-								'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"FFC3" else '0'; -- ST UHR
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F890" else -- DMA SOUND
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F891" else -- DMA SOUND
-	--							'1' when fb_cs_n(1) = '0' and FB_ADR(19 downto 4) = x"F892" else '0'; -- DMA SOUND
+    pseudo_bus_error <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F8C8" ELSE -- SCC
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F8E0" ELSE -- VME
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F920" ELSE -- PADDLE
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F921" ELSE -- PADDLE
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F922" ELSE -- PADDLE
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFA8" ELSE -- MFP2
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFA9" ELSE -- MFP2
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFAA" ELSE -- MFP2
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFA8" ELSE -- MFP2
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 8) = x"F87" ELSE -- TT SCSI
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFC2" ELSE -- ST UHR
+								'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"FFC3" ELSE '0'; -- ST UHR
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F890" ELSE -- DMA SOUND
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F891" ELSE -- DMA SOUND
+	--							'1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 4) = x"F892" ELSE '0'; -- DMA SOUND
 
 	-- IF video ADR changes:
-	TIN0 <= '1' when fb_cs_n(1) = '0' and FB_WRn = '0' and FB_ADR(19 downto 1) = 19x"7C100" else '0'; -- Write video base address high 0xFFFF8201/2.
+	tin0 <= '1' WHEN fb_cs_n(1) = '0' AND fb_wr_n = '0' AND fb_adr(19 DOWNTO 1) = 19x"7C100" ELSE '0'; -- Write video base address high 0xFFFF8201/2.
 
-	P_INT_LATCH  : process
-	begin
-		wait until rising_edge(CLK_MAIN);
-		if RESETn = '0' then
-			INT_L <= (others => '0');
-		else
-			INT_L(0) <= PIC_INT and INT_ENA(0);
-			INT_L(1) <= E0_INT and INT_ENA(1);
-			INT_L(2) <= DVI_INT and INT_ENA(2);
-			INT_L(3) <= not PCI_INTAn and INT_ENA(3);
-			INT_L(4) <= not PCI_INTBn and INT_ENA(4);
-			INT_L(5) <= not PCI_INTCn and INT_ENA(5);
-			INT_L(6) <= not PCI_INTDn and INT_ENA(6);
-			INT_L(7) <= DSP_INT and INT_ENA(7);
-			INT_L(8) <= VSYNC and INT_ENA(8);
-			INT_L(9) <= HSYNC and INT_ENA(9);
-		end if;
+	P_INT_LATCH  : PROCESS
+	BEGIN
+		WAIT UNTIL RISING_EDGE(clk_main);
+		IF reset_n = '0' THEN
+			int_l <= (OTHERS => '0');
+		ELSE
+			int_l(0) <= pic_int AND int_ena(0);
+			int_l(1) <= e0_int AND int_ena(1);
+			int_l(2) <= dvi_int AND int_ena(2);
+			int_l(3) <= NOT pci_inta_n AND int_ena(3);
+			int_l(4) <= NOT pci_intb_n AND int_ena(4);
+			int_l(5) <= NOT pci_intc_n AND int_ena(5);
+			int_l(6) <= NOT pci_intd_n AND int_ena(6);
+			int_l(7) <= dsp_int AND int_ena(7);
+			int_l(8) <= vsync AND int_ena(8);
+			int_l(9) <= hsync AND int_ena(9);
+		END IF;
         
-		for i in 0 to 9 loop
-			if INT_ENA(i) = '1' and RESETn = '1' then
-				INT_LA(i) <= x"0";
-			elsif INT_L(i) = '1' and INT_LA(i) < x"7" then
-				INT_LA(i) <= std_logic_vector(unsigned(INT_LA(i)) + 1);
-			elsif INT_L(i) = '0' and INT_LA(i) > x"8" then
-				INT_LA(i) <= std_logic_vector(unsigned(INT_LA(i)) - 1);
-			elsif INT_L(i) = '1' and INT_LA(i) > x"6" then
-				INT_LA(i) <= x"F";
-			elsif INT_L(i) = '0' and INT_LA(i) > x"9" then
-				INT_LA(i) <= x"0";
-			end if;
-		end loop;
+		FOR i IN 0 TO 9 LOOP
+			IF int_ena(i) = '1' AND reset_n = '1' THEN
+				int_la(i) <= x"0";
+			ELSIF int_l(i) = '1' AND int_la(i) < x"7" THEN
+				int_la(i) <= STD_LOGIC_VECTOR(UNSIGNED(int_la(i)) + 1);
+			ELSIF int_l(i) = '0' AND int_la(i) > x"8" THEN
+				int_la(i) <= STD_LOGIC_VECTOR(UNSIGNED(int_la(i)) - 1);
+			ELSIF int_l(i) = '1' AND int_la(i) > x"6" THEN
+				int_la(i) <= x"F";
+			ELSIF int_l(i) = '0' AND int_la(i) > x"9" THEN
+				int_la(i) <= x"0";
+			END IF;
+		END LOOP;
         
-		for i in 0 to 31 loop
-			if INT_CLEAR(i) = '0' and RESETn = '1' then
-				INT_LATCH(i) <= '0';
-			end if;
-		end loop;
+		FOR i IN 0 TO 31 LOOP
+			IF int_clear(i) = '0' AND reset_n = '1' THEN
+				int_latch(i) <= '0';
+			END IF;
+		END LOOP;
 
-		for i in 0 to 9 loop
-			if INT_LA(i)(3) = '1' then
-				INT_LATCH(i) <= '1';
-			end if;
-		end loop;
-	end process P_INT_LATCH;
+		FOR i IN 0 TO 9 LOOP
+			IF int_la(i)(3) = '1' THEN
+				int_latch(i) <= '1';
+			END IF;
+		END LOOP;
+	END PROCESS P_INT_LATCH;
 
-	-- INT_IN:
-	INT_IN(0) <= PIC_INT;
-	INT_IN(1) <= E0_INT;
-	INT_IN(2) <= DVI_INT;
-	INT_IN(3) <= not PCI_INTAn;
-	INT_IN(4) <= not PCI_INTBn;
-	INT_IN(5) <= not PCI_INTCn;
-	INT_IN(6) <= not PCI_INTDn;
-	INT_IN(7) <= DSP_INT;
-	INT_IN(8) <= VSYNC;
-	INT_IN(9) <= HSYNC;
-	INT_IN(25 downto 10) <= x"0000";
-	INT_IN(26) <= HSYNC; 
-	INT_IN(27) <= INT_CTR(0); 
-	INT_IN(28) <= VSYNC; 
-	INT_IN(29) <= '1' when INT_LATCH /= x"00000000";
-	INT_IN(30) <= not MFP_INTn; 
-	INT_IN(31) <= DRQ_DMA; 
+	-- int_in:
+	int_in(0) <= pic_int;
+	int_in(1) <= e0_int;
+	int_in(2) <= dvi_int;
+	int_in(3) <= NOT pci_inta_n;
+	int_in(4) <= NOT pci_intb_n;
+	int_in(5) <= NOT pci_intc_n;
+	int_in(6) <= NOT pci_intd_n;
+	int_in(7) <= dsp_int;
+	int_in(8) <= vsync;
+	int_in(9) <= hsync;
+	int_in(25 DOWNTO 10) <= x"0000";
+	int_in(26) <= hsync; 
+	int_in(27) <= int_ctr(0); 
+	int_in(28) <= vsync; 
+	int_in(29) <= '1' WHEN int_latch /= x"00000000";
+	int_in(30) <= NOT mfp_int_n; 
+	int_in(31) <= drq_dma; 
 
-	FBEE_CONF_CS <= '1' when fb_cs_n(2) = '0' and FB_ADR(27 downto 2) = "00000001000000000000000000" else '0'; -- $40000/4.
+	fbee_conf_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000001000000000000000000" ELSE '0'; -- $40000/4.
 
-	P_FBEE_CONFIG : process
+	p_fbee_config : PROCESS
 		-- Firebee configuration register: BIT 31 -> 0 = CF 1 = IDE 
-	begin
-		wait until rising_edge(CLK_MAIN);
-		if FBEE_CONF_CS = '1' and FB_B(0) = '1' and FB_WRn = '0' then
-			FBEE_CONF_REG(31 downto 24) <= FB_AD_IN(31 downto 24);
-		elsif FBEE_CONF_CS = '1' and FB_B(1) = '1' and FB_WRn = '0' then
-			FBEE_CONF_REG(23 downto 16) <= FB_AD_IN(23 downto 16);
-		elsif FBEE_CONF_CS = '1' and FB_B(2) = '1' and FB_WRn = '0' then
-			FBEE_CONF_REG(15 downto 8) <= FB_AD_IN(15 downto 8);
-		elsif FBEE_CONF_CS = '1' and FB_B(3) = '1' and FB_WRn = '0' then
-			FBEE_CONF_REG(7 downto 0) <= FB_AD_IN(7 downto 0);
-		end if;
-		FBEE_CONF <= FBEE_CONF_REG;
-	end process P_FBEE_CONFIG;
+	BEGIN
+		WAIT UNTIL RISING_EDGE(clk_main);
+		IF fbee_conf_cs = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
+			fbee_conf_reg(31 DOWNTO 24) <= fb_ad_in(31 DOWNTO 24);
+		ELSIF fbee_conf_cs = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
+			fbee_conf_reg(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16);
+		ELSIF fbee_conf_cs = '1' AND fb_b(2) = '1' AND fb_wr_n = '0' THEN
+			fbee_conf_reg(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8);
+		ELSIF fbee_conf_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
+			fbee_conf_reg(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0);
+		END IF;
+		fbee_conf <= fbee_conf_reg;
+	END PROCESS p_fbee_config;
     
-	-- Data out multiplexers:
-	FB_AD_EN_31_24 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
-	FB_AD_EN_23_16 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
-	FB_AD_EN_15_8 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS)  and not fb_oe_n;
-	FB_AD_EN_7_0 <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or FBEE_CONF_CS) and not fb_oe_n;
+	-- Data OUT multiplexers:
+	fb_ad_en_31_24 <= (int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs or fbee_conf_cs) AND NOT fb_oe_n;
+	fb_ad_en_23_16 <= (int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs or fbee_conf_cs) AND NOT fb_oe_n;
+	fb_ad_en_15_8 <= (int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs or fbee_conf_cs)  AND NOT fb_oe_n;
+	fb_ad_en_7_0 <= (int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs or fbee_conf_cs) AND NOT fb_oe_n;
 
-	FB_AD_OUT(31 downto 24) <= INT_CTR(31 downto 24) when INT_CTR_CS = '1' else
-										INT_ENA(31 downto 24) when INT_ENA_CS = '1' else
-										INT_LATCH(31 downto 24) when INT_LATCH_CS = '1' else
-										INT_IN(31 downto 24) when INT_CLEAR_CS = '1' else FBEE_CONF_REG(31 downto 24);
+	fb_ad_out(31 DOWNTO 24) <= int_ctr(31 DOWNTO 24) WHEN int_ctr_cs = '1' ELSE
+										int_ena(31 DOWNTO 24) WHEN int_ena_cs = '1' ELSE
+										int_latch(31 DOWNTO 24) WHEN int_latch_cs = '1' ELSE
+										int_in(31 DOWNTO 24) WHEN int_clear_cs = '1' ELSE fbee_conf_reg(31 DOWNTO 24);
 
-	FB_AD_OUT(23 downto 16) <= INT_CTR(23 downto 16) when INT_CTR_CS = '1' else
-										INT_ENA(23 downto 16) when INT_ENA_CS = '1' else
-										INT_LATCH(23 downto 16) when INT_LATCH_CS = '1' else
-										INT_IN(23 downto 16) when INT_CLEAR_CS = '1' else FBEE_CONF_REG(23 downto 16);
+	fb_ad_out(23 DOWNTO 16) <= int_ctr(23 DOWNTO 16) WHEN int_ctr_cs = '1' ELSE
+										int_ena(23 DOWNTO 16) WHEN int_ena_cs = '1' ELSE
+										int_latch(23 DOWNTO 16) WHEN int_latch_cs = '1' ELSE
+										int_in(23 DOWNTO 16) WHEN int_clear_cs = '1' ELSE fbee_conf_reg(23 DOWNTO 16);
 
-	FB_AD_OUT(15 downto 8) <= INT_CTR(15 downto 8) when INT_CTR_CS = '1' else
-										INT_ENA(15 downto 8) when INT_ENA_CS = '1' else
-										INT_LATCH(15 downto 8) when INT_LATCH_CS = '1' else
-										INT_CLEAR(15 downto 8) when INT_CLEAR_CS = '1' else FBEE_CONF_REG(15 downto 8);
+	fb_ad_out(15 DOWNTO 8) <= int_ctr(15 DOWNTO 8) WHEN int_ctr_cs = '1' ELSE
+										int_ena(15 DOWNTO 8) WHEN int_ena_cs = '1' ELSE
+										int_latch(15 DOWNTO 8) WHEN int_latch_cs = '1' ELSE
+										int_clear(15 DOWNTO 8) WHEN int_clear_cs = '1' ELSE fbee_conf_reg(15 DOWNTO 8);
                               
-	FB_AD_OUT(7 downto 0) <= INT_CTR(7 downto 0) when INT_CTR_CS = '1' else
-										INT_ENA(7 downto 0) when INT_ENA_CS = '1' else
-										INT_LATCH(7 downto 0) when INT_LATCH_CS = '1' else
-										INT_CLEAR(7 downto 0) when INT_CLEAR_CS = '1' else FBEE_CONF_REG(7 downto 0);
+	fb_ad_out(7 DOWNTO 0) <= int_ctr(7 DOWNTO 0) WHEN int_ctr_cs = '1' ELSE
+										int_ena(7 DOWNTO 0) WHEN int_ena_cs = '1' ELSE
+										int_latch(7 DOWNTO 0) WHEN int_latch_cs = '1' ELSE
+										int_clear(7 DOWNTO 0) WHEN int_clear_cs = '1' ELSE fbee_conf_reg(7 DOWNTO 0);
 
-	INT_HANDLER_TA <= INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS;
-end architecture BEHAVIOUR;
+	int_handler_ta <= int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs;
+END ARCHITECTURE BEHAVIOUR;

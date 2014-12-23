@@ -1,45 +1,45 @@
 ----------------------------------------------------------------------
 ----                                                              ----
----- ThIS file IS part of the 'Firebee' project.                  ----
----- http://acp.atari.ORg                                         ----
+---- This file is part of the 'Firebee' project.                  ----
+---- http://acp.atari.org                                         ----
 ----                                                              ----
 ---- Description:                                                 ----
----- ThIS design unit provides the DMA controller of the 'Firebee'----
----- computer. It IS optimized fOR the use of an Altera Cyclone   ----
----- FPGA (EP3C40F484). ThIS IP-CORe IS based on the first edi-   ----
----- tion of the Firebee configware ORigINally provided by Fredi  ----
----- AshwANDen  AND Wolfgang Förster. ThIS release IS IN compa-   ----
----- rISion to the first edition completely written IN VHDL.      ----
+---- This design unit provides the DMA controller of the 'Firebee'----
+---- computer. It is optimized for the use of an Altera Cyclone   ----
+---- FPGA (EP3C40F484). This IP-Core is based on the first edi-   ----
+---- tion of the Firebee configware originally provided by Fredi  ----
+---- Aschwanden and Wolfgang Förster. This release is in compa-   ----
+---- rision to the first edition completely written in VHDL.      ----
 ----                                                              ----
----- AuthOR(s):                                                   ----
----- - Wolfgang Foerster, wf@experiment-s.de; wf@INventronik.de   ----
+---- Author(s):                                                   ----
+---- - Wolfgang Foerster, wf@experiment-s.de; wf@inventronik.de   ----
 ----                                                              ----
 ----------------------------------------------------------------------
 ----                                                              ----
----- Copyright (C) 2012 Fredi AschwANDen, Wolfgang Förster        ----
+---- Copyright (C) 2012 Fredi Aschwanden, Wolfgang Förster        ----
 ----                                                              ----
----- ThIS source file IS free software; you can redIStribute it   ----
+---- This source file is free software; you can redistribute it   ----
 ---- AND/OR modIFy it under the terms of the GNU General Public   ----
----- License as publIShed by the Free Software Foundation; either ----
+---- License as published by the Free Software Foundation; either ----
 ---- version 2 of the License, OR (at your option) any later      ----
 ---- version.                                                     ----
 ----                                                              ----
----- ThIS program IS dIStributed IN the hope that it will be      ----
----- useful, but WITHOUT ANY WARRANTY; withOUT even the implied   ----
+---- This program is distributed in the hope that it will be      ----
+---- useful, but WITHOUT ANY WARRANTY; without even the implied   ----
 ---- warranty of MERCHANTABILITY OR FITNESS FOR A PARTICULAR      ----
----- PURPOSE.  See the GNU General Public License fOR mORe        ----
+---- PURPOSE.  See the GNU General Public License for more        ----
 ---- details.                                                     ----
 ----                                                              ----
 ---- You should have received a copy of the GNU General Public    ----
----- License along with thIS program; IF NOT, write to the Free   ----
----- Software Foundation, Inc., 51 FranklIN Street, FIFth FloOR,  ----
+---- License along with this program; If not, write to the Free   ----
+---- Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  ----
 ---- Boston, MA 02110-1301, USA.                                  ----
 ----                                                              ----
 ----------------------------------------------------------------------
 -- 
--- RevISion HIStORy
+-- Revision History
 -- 
--- RevISion 2K12B  20120801 WF
+-- Revision 2K12B  20120801 WF
 --   Initial Release of the second edition.
 
 LIBRARY IEEE;
@@ -55,9 +55,9 @@ ENTITY FBEE_DMA IS
         FB_ADR                      : IN STD_LOGIC_VECTOR(26 DOWNTO 0);
         FB_ALE                      : IN STD_LOGIC;
         FB_SIZE                     : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        fb_cs_n                      : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
-        fb_oe_n                      : IN STD_LOGIC;
-        FB_WRn                      : IN STD_LOGIC;
+        fb_cs_n                     : IN STD_LOGIC_VECTOR(2 DOWNTO 1);
+        fb_oe_n                     : IN STD_LOGIC;
+        fb_wr_n                     : IN STD_LOGIC;
         FB_AD_IN                    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FB_AD_OUT                   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         FB_AD_EN_31_24              : OUT STD_LOGIC;
@@ -194,7 +194,7 @@ ARCHITECTURE BEHAVIOUR of FBEE_DMA IS
 	SIGNAL FB_B0                : STD_LOGIC;
 	SIGNAL WRF_DOUT				: STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL FB_AD_I              : STD_LOGIC_VECTOR(7 DOWNTO 0);
-  SIGNAL d : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL d                    : STD_LOGIC_VECTOR(31 DOWNTO 0);
 BEGIN
     LONG <= '1' WHEN FB_SIZE(1) = '0' AND FB_SIZE(0) = '0' ELSE '0';
     BYTE <= '1' WHEN FB_SIZE(1) = '0' AND FB_SIZE(0) = '1' ELSE '0';
@@ -258,7 +258,7 @@ BEGIN
     INBUFFER: PROCESS(CLK_MAIN)
 	BEGIN
 		IF RISING_EDGE(CLK_MAIN) THEN
-			IF FB_WRn = '0' THEN
+			IF fb_wr_n = '0' THEN
 				FB_AD_I <= FB_AD_IN(23 DOWNTO 16); 
 			END IF;
 		END IF;
@@ -295,7 +295,7 @@ BEGIN
     fcf_aph <= '1' WHEN FB_ALE = '1' AND FB_AD_IN(31 DOWNTO 0) = x"F0020110" AND LONG = '1' ELSE '0'; -- ADRESSPHASE F0020110 LONG ONLY
 
     RDF_DIN <= DATA_IN_FDC WHEN dma_mode(7) = '1' ELSE DATA_IN_SCSI;
-    RDF_RDE <= '1' WHEN fcf_aph = '1' AND FB_WRn = '1' ELSE '0';										-- AKTIVIEREN IN ADRESSPHASE
+    RDF_RDE <= '1' WHEN fcf_aph = '1' AND fb_wr_n = '1' ELSE '0';										-- AKTIVIEREN IN ADRESSPHASE
 
     DATA_OUT_FDC_SCSI <=  WRF_DOUT WHEN dma_active = '1' AND dma_mode(8) = '1' ELSE FB_AD_I; 							-- BEI DMA WRITE <-FIFO SONST <-FB
 
@@ -304,16 +304,16 @@ BEGIN
     CA_I(2) <= '1' WHEN dma_active = '1' ELSE dma_mode(2);
     CA <= CA_I;
     
-    FDC_WRn <= (NOT dma_mode(8)) WHEN dma_active = '1' ELSE FB_WRn;
+    FDC_WRn <= (NOT dma_mode(8)) WHEN dma_active = '1' ELSE fb_wr_n;
     
 	dma_mode_REGISTER: PROCESS(RESET, CLK_MAIN)
 	BEGIN
 		IF RESET = '1' THEN
 			dma_mode <= x"0000";
 		ELSIF RISING_EDGE(CLK_MAIN) THEN
-            IF dma_mode_cs = '1' AND FB_WRn = '0' AND FB_B0 = '1' THEN
+            IF dma_mode_cs = '1' AND fb_wr_n = '0' AND FB_B0 = '1' THEN
 				dma_mode(15 DOWNTO 8) <= FB_AD_IN(31 DOWNTO 24);
-            ELSIF dma_mode_cs = '1' AND FB_WRn = '0' AND FB_B1 = '1' THEN
+            ELSIF dma_mode_cs = '1' AND fb_wr_n = '0' AND FB_B1 = '1' THEN
 				dma_mode(7 DOWNTO 0) <= FB_AD_IN(23 DOWNTO 16);
             END IF;
 		END IF;
@@ -324,11 +324,11 @@ BEGIN
 		IF RESET = '1' OR CLR_FIFO = '1' THEN
 			dma_bytecnt <= x"00000000";											 
 		ELSIF RISING_EDGE(CLK_MAIN) THEN
-            IF dma_data_cs = '1' AND FB_WRn = '0' AND dma_mode(4) = '1' AND FB_B1 = '1' THEN
+            IF dma_data_cs = '1' AND fb_wr_n = '0' AND dma_mode(4) = '1' AND FB_B1 = '1' THEN
 				dma_bytecnt(31 DOWNTO 17) <= "000000000000000";
 				dma_bytecnt(16 DOWNTO 9) <= FB_AD_IN(23 DOWNTO 16);
 				dma_bytecnt(8 DOWNTO 0) <= "000000000";
-			ELSIF dma_bytecnt_cs = '1' AND FB_WRn = '0' THEN
+			ELSIF dma_bytecnt_cs = '1' AND fb_wr_n = '0' THEN
 					dma_bytecnt <= FB_AD_IN;
 			END IF;
         END IF;
@@ -339,7 +339,7 @@ BEGIN
 		IF RESET = '1' THEN
 			WDC_BSL <= "00";
 		ELSIF RISING_EDGE(CLK_MAIN) THEN
-			IF WDC_BSL_CS = '1' AND FB_WRn = '0' AND FB_B0 = '1' THEN
+			IF WDC_BSL_CS = '1' AND fb_wr_n = '0' AND FB_B0 = '1' THEN
 				WDC_BSL <= FB_AD_IN(25 DOWNTO 24);
 			END IF;
             WDC_BSL0 <= WDC_BSL(0);
@@ -367,20 +367,20 @@ BEGIN
 			dma_mid <= x"00";
 			dma_low <= x"00";
 		ELSIF RISING_EDGE(CLK_MAIN) THEN
-            IF FB_WRn = '0' AND (dma_top_cs = '1' OR dma_adr_cs = '1') THEN
+            IF fb_wr_n = '0' AND (dma_top_cs = '1' OR dma_adr_cs = '1') THEN
 				dma_top <= FB_AD_IN(31 DOWNTO 24);
 			END IF;
-            IF FB_WRn = '0' AND (dma_high_cs = '1' OR dma_adr_cs = '1') THEN
+            IF fb_wr_n = '0' AND (dma_high_cs = '1' OR dma_adr_cs = '1') THEN
 				dma_high <= FB_AD_IN(23 DOWNTO 16);
 			END IF;
-			IF FB_WRn = '0' AND dma_mid_cs = '1' THEN
+			IF fb_wr_n = '0' AND dma_mid_cs = '1' THEN
 				dma_mid <= FB_AD_IN(23 DOWNTO 16);
-			ELSIF FB_WRn = '0' AND dma_adr_cs = '1' THEN
+			ELSIF fb_wr_n = '0' AND dma_adr_cs = '1' THEN
 				dma_mid <= FB_AD_IN(15 DOWNTO 8);
 			END IF;
-			IF FB_WRn = '0' AND dma_low_cs = '1' THEN
+			IF fb_wr_n = '0' AND dma_low_cs = '1' THEN
 				dma_low <= FB_AD_IN(23 DOWNTO 16);
-			ELSIF FB_WRn = '0' AND dma_adr_cs = '1' THEN
+			ELSIF fb_wr_n = '0' AND dma_adr_cs = '1' THEN
 				dma_low <= FB_AD_IN(7 DOWNTO 0);
 			END IF;
         END IF;
@@ -424,7 +424,7 @@ BEGIN
 		IF RESET = '1' THEN
 			WRF_WRE <= '0';
 		ELSIF RISING_EDGE(CLK_MAIN) THEN
-            IF fcf_aph = '1' AND FB_WRn = '0' THEN
+            IF fcf_aph = '1' AND fb_wr_n = '0' THEN
                 WRF_WRE <= '1';
             ELSE
                 WRF_WRE <= '0';
@@ -462,27 +462,27 @@ BEGIN
             SNDENDLO <= x"00";
             SNDMODE <= x"00";
 		ELSIF CLK_MAIN = '1' AND CLK_MAIN' event THEN
-            IF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"0" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            IF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"0" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
 				SNDMACTL <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"1" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"1" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDBASHI <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"2" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"2" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDBASMI <= FB_AD_IN(23DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"3" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"3" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDBASLO <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"4" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"4" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDADRHI <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"5" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"5" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDADRMI <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"6" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"6" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDADRLO <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"7" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"7" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDENDHI <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"8" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"8" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDENDMI <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"9" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"9" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDENDLO <= FB_AD_IN(23 DOWNTO 16);
-            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"10" AND FB_WRn = '0' AND FB_B1 ='1' THEN
+            ELSIF DMA_SND_CS = '1' AND FB_ADR(5 DOWNTO 1) = 5x"10" AND fb_wr_n = '0' AND FB_B1 ='1' THEN
                 SNDMODE <= FB_AD_IN(23 DOWNTO 16);
 			END IF;
         END IF;

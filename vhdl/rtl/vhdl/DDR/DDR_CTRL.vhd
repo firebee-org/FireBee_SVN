@@ -67,7 +67,7 @@ ENTITY DDR_CTRL IS
         clk_33m         : IN STD_LOGIC;
         fifo_mw         : IN UNSIGNED (8 DOWNTO 0);
         
-        va              : OUT UNSIGNED (12 DOWNTO 0);               -- video Adress bus at the DDR chips
+        va              : OUT UNSIGNED (12 DOWNTO 0);                       -- video Adress bus at the DDR chips
         vwe_n           : OUT STD_LOGIC;                                    -- video memory write enable
         vras_n          : OUT STD_LOGIC;                                    -- video memory RAS
         vcs_n           : OUT STD_LOGIC;                                    -- video memory chip SELECT
@@ -101,14 +101,18 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     CONSTANT FIFO_MWM : INTEGER := 200;     -- medium water mark
     CONSTANT FIFO_HWM : INTEGER := 500;     -- high water mark
     
-    -- constants for bits in video_control_register
-    CONSTANT vrcr_vcke          : INTEGER := 0;
-    CONSTANT VRCR_REFRESH_ON    : INTEGER := 2;
-    CONSTANT VRCR_CONFIG_ON     : INTEGER := 3;
-    CONSTANT vrcr_vcs           : INTEGER := 1;
-    --
-    CONSTANT VRCR_FIFO_ON       : INTEGER := 24;
-    CONSTANT VRCR_BORDER_ON     : INTEGER := 25;
+    -- DDR2 RAM controller bits:
+    -- $F0000400:
+    --          BIT 0: vcke;
+    --              1: NOT nVC
+    --              2: REFRESH ON (0=ddr_access_fifo AND CNT CLEAR); 
+    --              3: CONFIG
+    --              8: vmem_fifo_enable
+    ALIAS vmem_clock_enable IS video_control_register(0);
+    ALIAS vmem_cs_enable IS video_control_register(1);
+    ALIAS vmem_refresh_enable IS video_control_register(2);
+    ALIAS vmem_config_enable IS video_control_register(3);
+    ALIAS vmem_fifo_enable IS video_control_register(8);
     
     TYPE access_width_t IS (long_access, word_access, byte_access);
     TYPE ddr_access_t IS (ddr_access_cpu, ddr_access_fifo, ddr_access_blitter, ddr_access_none);
@@ -146,12 +150,10 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL cpu_req          : STD_LOGIC;
     SIGNAL ddr_sel          : STD_LOGIC;
     SIGNAL ddr_cs           : STD_LOGIC;
-    SIGNAL ddr_config       : STD_LOGIC;
     SIGNAL fifo_req         : STD_LOGIC;
     SIGNAL fifo_row_adr     : UNSIGNED (12 DOWNTO 0);
     SIGNAL fifo_ba          : UNSIGNED (1 DOWNTO 0);
     SIGNAL fifo_col_adr     : UNSIGNED(9 DOWNTO 0);
-    SIGNAL fifo_active      : STD_LOGIC;
     SIGNAL fifo_clr_sync    : STD_LOGIC;
     SIGNAL vdm_sel_i        : UNSIGNED (3 DOWNTO 0);
     SIGNAL clear_fifo_cnt   : STD_LOGIC;
@@ -268,11 +270,11 @@ BEGIN
     -- fb_vdoe # VIDEO_OE.
 
     -- Write access for video data:
-    fb_vdoe(0) <= '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' AND fb_oe_n = '0' AND ddr_config = '0' AND access_width = long_access ELSE
-                  '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' AND fb_oe_n = '0' AND ddr_config = '0' AND access_width /= long_access AND clk_33m = '0' ELSE '0';
-    fb_vdoe(1) <= '1' WHEN fb_regddr = fr_s1 AND ddr_cs = '1' AND fb_oe_n = '0' AND ddr_config = '0' ELSE '0';
-    fb_vdoe(2) <= '1' WHEN fb_regddr = fr_s2 AND ddr_cs = '1' AND fb_oe_n = '0' AND ddr_config = '0' ELSE '0';
-    fb_vdoe(3) <= '1' WHEN fb_regddr = fr_s3 AND ddr_cs = '1' AND fb_oe_n = '0' AND ddr_config = '0' AND clk_33m = '0' ELSE '0';
+    fb_vdoe(0) <= '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' AND fb_oe_n = '0' AND vmem_config_enable = '0' AND access_width = long_access ELSE
+                  '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' AND fb_oe_n = '0' AND vmem_config_enable = '0' AND access_width /= long_access AND clk_33m = '0' ELSE '0';
+    fb_vdoe(1) <= '1' WHEN fb_regddr = fr_s1 AND ddr_cs = '1' AND fb_oe_n = '0' AND vmem_config_enable = '0' ELSE '0';
+    fb_vdoe(2) <= '1' WHEN fb_regddr = fr_s2 AND ddr_cs = '1' AND fb_oe_n = '0' AND vmem_config_enable = '0' ELSE '0';
+    fb_vdoe(3) <= '1' WHEN fb_regddr = fr_s3 AND ddr_cs = '1' AND fb_oe_n = '0' AND vmem_config_enable = '0' AND clk_33m = '0' ELSE '0';
 
     bus_cyc_end <= '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' AND access_width /= long_access ELSE
                    '1' WHEN fb_regddr = fr_s3 AND ddr_cs = '1' ELSE '0';
@@ -285,14 +287,14 @@ BEGIN
         ddr_state <= ddr_next_state;
     END PROCESS ddr_state_reg;
 
-    ddr_state_dec: PROCESS(ddr_state, ddr_refresh_req, cpu_ddr_sync, ddr_config, fb_wr_n, ddr_access, blitter_wr, fifo_req, fifo_bank_ok,
+    ddr_state_dec: PROCESS(ddr_state, ddr_refresh_req, cpu_ddr_sync, vmem_config_enable, fb_wr_n, ddr_access, blitter_wr, fifo_req, fifo_bank_ok,
                                     fifo_mw, cpu_req, video_adr_cnt, ddr_sel, tsiz, data_in, fifo_ba, ddr_refresh_sig)
     BEGIN
         CASE ddr_state IS
             WHEN ds_t1 =>
                 IF ddr_refresh_req = '1' THEN
                     ddr_next_state <= ds_r2;
-                ELSIF cpu_ddr_sync = '1' AND ddr_config = '1' THEN -- Synchronous start.
+                ELSIF cpu_ddr_sync = '1' AND vmem_config_enable = '1' THEN -- Synchronous start.
                     ddr_next_state <= ds_c2;
                 ELSIF cpu_ddr_sync = '1' AND cpu_req = '1' THEN -- Synchronous start.
                     ddr_next_state <= ds_t2b;
@@ -482,26 +484,26 @@ BEGIN
         sr_ddrwr_d_sel <= '0';
 
         mcs <= mcs(0) & clk_33m;        -- sync on clk_33m
-        
-        blitter_req <= blitter_sig AND NOT
-                        video_control_register(VRCR_CONFIG_ON) AND
-                        video_control_register(vrcr_vcke) AND
-                        video_control_register(vrcr_vcs);
+                
+        blitter_req <= blitter_sig AND 
+                        (NOT vmem_config_enable) AND
+                        vmem_clock_enable AND
+                        vmem_cs_enable;
 
         fifo_clr_sync <= fifo_clr;
-        clear_fifo_cnt <= fifo_clr_sync OR NOT fifo_active;
+        clear_fifo_cnt <= fifo_clr_sync OR NOT vmem_fifo_enable;
         stop <= fifo_clr_sync OR clear_fifo_cnt;
 
         IF fifo_mw < fifo_mwm THEN
             fifo_req <= '1';
         ELSIF fifo_mw < FIFO_HWM AND fifo_req = '1' THEN
             fifo_req <= '1';
-        ELSIF fifo_active = '1' AND
+        ELSIF vmem_fifo_enable = '1' AND
                 clear_fifo_cnt = '0' AND
                 stop = '0' AND
-                ddr_config = '0' AND
-                video_control_register(vrcr_vcke) = '1' AND
-                video_control_register(vrcr_vcs) = '1' THEN
+                vmem_config_enable = '0' AND
+                vmem_clock_enable = '1' AND
+                vmem_cs_enable = '1' THEN
             fifo_req <= '1';
         ELSE
             fifo_req <= '1';
@@ -513,13 +515,13 @@ BEGIN
             video_adr_cnt <= video_adr_cnt + 1;  
         END IF;
 
-        IF mcs = "10" AND video_control_register(vrcr_vcke) = '1' AND video_control_register(vrcr_vcs) = '1' THEN
+        IF mcs = "10" AND vmem_clock_enable = '1' AND vmem_cs_enable = '1' THEN
             cpu_ddr_sync <= '1';
         ELSE
             cpu_ddr_sync <= '0';
         END IF;
 
-        IF ddr_refresh_sig /= x"0" AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' AND need_refresh = '1' THEN
+        IF ddr_refresh_sig /= x"0" AND vmem_refresh_enable = '1' AND vmem_config_enable = '0' AND need_refresh = '1' THEN
             ddr_refresh_req <= '1';
         ELSE
             ddr_refresh_req <= '0';
@@ -531,9 +533,9 @@ BEGIN
             need_refresh <= '0';
         END IF;
 
-        IF need_refresh = '1' AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' THEN
+        IF need_refresh = '1' AND vmem_refresh_enable = '1' AND vmem_config_enable = '0' THEN
             ddr_refresh_sig <= x"9";
-        ELSIF ddr_state = ds_r6 AND video_control_register(VRCR_REFRESH_ON) = '1' AND ddr_config = '0' THEN
+        ELSIF ddr_state = ds_r6 AND vmem_refresh_enable = '1' AND vmem_config_enable = '0' THEN
             ddr_refresh_sig <= ddr_refresh_sig - 1;
         ELSE
             ddr_refresh_sig <= x"0";
@@ -576,14 +578,12 @@ BEGIN
             va_s(10) <= '1';
             ddr_access <= ddr_access_cpu;
         ELSIF ddr_state = ds_t2a THEN
-            -- ?? mfro
-            va_s(10) <= NOT (fifo_active AND fifo_req);
+            va_s(10) <= NOT (vmem_fifo_enable AND fifo_req);
             ddr_access <= ddr_access_fifo;
-            fifo_bank_ok <= fifo_active AND fifo_req;
+            fifo_bank_ok <= vmem_fifo_enable AND fifo_req;
             IF ddr_access = ddr_access_blitter AND blitter_req = '1' THEN
                 ddr_access <= ddr_access_blitter;
             END IF;
-            -- ?? mfro BLITTER_AC <= BLITTER_ACTIVE AND blitter_req;
         ELSIF ddr_state = ds_t2b THEN
             fifo_bank_ok <= '0';
         ELSIF ddr_state = ds_t3 THEN
@@ -591,7 +591,7 @@ BEGIN
             IF (fb_wr_n = '0' AND ddr_access = ddr_access_cpu) OR (blitter_wr = '1' AND ddr_access = ddr_access_blitter) THEN
                 va_s(9 DOWNTO 0) <= cpu_col_adr;
                 ba_s <= cpu_ba;
-            ELSIF fifo_active = '1' THEN
+            ELSIF vmem_fifo_enable = '1' THEN
                 va_s(9 DOWNTO 0) <= UNSIGNED (fifo_col_adr);
                 ba_s <= fifo_ba;
             ELSIF ddr_access = ddr_access_blitter THEN
@@ -705,7 +705,7 @@ BEGIN
 
     p_ddr_cs: PROCESS
     BEGIN
-        WAIT UNTIL RISING_EDGE(clk_33m);
+        WAIT UNTIL RISING_EDGE(clk_main);
         IF fb_ale = '1' THEN
             ddr_cs <= ddr_sel;
         END IF;
@@ -715,11 +715,11 @@ BEGIN
     BEGIN
         WAIT UNTIL RISING_EDGE(ddr_sync_66m);
 
-        IF ddr_sel = '1' AND fb_wr_n = '1' AND ddr_config = '0' THEN
+        IF ddr_sel = '1' AND fb_wr_n = '1' AND vmem_config_enable = '0' THEN
             cpu_req <= '1';
-        ELSIF ddr_sel = '1' AND access_width /= long_access AND ddr_config = '0' THEN                   -- Start when not config and not longword access.
+        ELSIF ddr_sel = '1' AND access_width /= long_access AND vmem_config_enable = '0' THEN                   -- Start when not config and not longword access.
             cpu_req <= '1';
-        ELSIF ddr_sel = '1' AND ddr_config = '1' THEN                                                   -- Config, start immediately.
+        ELSIF ddr_sel = '1' AND vmem_config_enable = '1' THEN                                                   -- Config, start immediately.
             cpu_req <= '1';
         ELSIF fb_regddr = fr_s1 AND fb_wr_n = '0' THEN                                                  -- Longword write later.
             cpu_req <= '1';
@@ -780,13 +780,8 @@ BEGIN
            '1' WHEN ddr_state = ds_cb8 ELSE
            '1' WHEN ddr_state = ds_r2 AND ddr_refresh_sig = x"9" ELSE '0';
 
-    -- DDR controller:
-    -- VIDEO RAM CONTROL REGISTER (IS IN VIDEO_MUX_CTR) 
-    -- $F0000400: BIT 0: vcke; 1: NOT nVCS ;2:REFRESH ON , (0=ddr_access_fifo AND CNT CLEAR); 
-    -- 3: CONFIG; 8: fifo_active; 
-    vcs_n <= NOT(video_control_register(VRCR_REFRESH_ON));
-    ddr_config <= video_control_register(3);
-    fifo_active <= video_control_register(8);
+    vcs_n <= NOT(vmem_cs_enable);
+    vcke <= vmem_clock_enable;
 
     cpu_row_adr <= fb_adr(26 DOWNTO 14);
     cpu_ba <= fb_adr(13 DOWNTO 12);

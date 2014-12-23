@@ -53,7 +53,7 @@ entity IDE_CF_SD_ROM is
 
         FB_ADR              : in std_logic_vector(19 downto 5);
         FB_CS1n             : in std_logic;
-        FB_WRn              : in std_logic;
+        fb_wr_n              : in std_logic;
         FB_B0               : in std_logic;
         FB_B1               : in std_logic;
 
@@ -100,10 +100,10 @@ architecture BEHAVIOUR of IDE_CF_SD_ROM is
 	signal NEXT_IDE_RDn			: std_logic;
 	signal NEXT_IDE_WRn			: std_logic;
 begin
-	ROM_CS <= '1' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = "101" else '0'; -- FFF A'0000/2'0000
+	ROM_CS <= '1' when FB_CS1n = '0' and fb_wr_n = '1' and FB_ADR(19 downto 17) = "101" else '0'; -- FFF A'0000/2'0000
 
-    RP_UDSn <= '0' when FB_WRn = '1' and FB_B0 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
-    RP_LDSn <= '0' when FB_WRn = '1' and FB_B1 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
+    RP_UDSn <= '0' when fb_wr_n = '1' and FB_B0 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
+    RP_LDSn <= '0' when fb_wr_n = '1' and FB_B1 = '1' and (ROM_CS = '1' or IDE_CF_CS = '1' or IDE_WRn = '0') else '1'; 
 
     IDE_CF_CS <= '1' when FB_CS1n = '0' and FB_ADR(19 downto 7) = 13x"1" else '0'; -- FFF0'0000/80
 
@@ -130,14 +130,14 @@ begin
 		end if;
 	end process IDE_CMD_REG;
 
-	IDE_CMD_DECODER: process(CMD_STATE, IDE_CF_CS, FB_WRn, IDE_RDY)
+	IDE_CMD_DECODER: process(CMD_STATE, IDE_CF_CS, fb_wr_n, IDE_RDY)
 	begin
 		case CMD_STATE is
 			when IDLE =>
 				IDE_CF_TA <= '0';
 				if IDE_CF_CS = '1' then
-					NEXT_IDE_RDn <= not FB_WRn;
-					NEXT_IDE_WRn <= FB_WRn;
+					NEXT_IDE_RDn <= not fb_wr_n;
+					NEXT_IDE_WRn <= fb_wr_n;
 					NEXT_CMD_STATE <= T1;
 				else
 					NEXT_IDE_RDn <= '1';
@@ -146,8 +146,8 @@ begin
 				end if;
 			when T1 =>
 				IDE_CF_TA <= '0';
-				NEXT_IDE_RDn <= not FB_WRn;
-				NEXT_IDE_WRn <= FB_WRn;
+				NEXT_IDE_RDn <= not fb_wr_n;
+				NEXT_IDE_WRn <= fb_wr_n;
 				NEXT_CMD_STATE <= T6;
 			when T6 =>
 				IF IDE_RDY = '1' then
@@ -157,8 +157,8 @@ begin
 					NEXT_CMD_STATE <= T7;
 				else
 					IDE_CF_TA <= '0';
-					NEXT_IDE_RDn <= not FB_WRn;
-					NEXT_IDE_WRn <= FB_WRn;
+					NEXT_IDE_RDn <= not fb_wr_n;
+					NEXT_IDE_WRn <= fb_wr_n;
 					NEXT_CMD_STATE <= T6;
 				end if;
 			when T7 => 
@@ -175,6 +175,6 @@ begin
     SD_CMD_D1_OUT <= '0';
     SD_CMD_D1_EN <= '0';
 
-    ROM4n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '0' else '1'; -- FFF A'0000/2'0000
-    ROM3n <= '0' when FB_CS1n = '0' and FB_WRn = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '1' else '1'; -- FFF A'0000/2'0000	
+    ROM4n <= '0' when FB_CS1n = '0' and fb_wr_n = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '0' else '1'; -- FFF A'0000/2'0000
+    ROM3n <= '0' when FB_CS1n = '0' and fb_wr_n = '1' and FB_ADR(19 downto 17) = 3x"5" and FB_ADR(16) = '1' else '1'; -- FFF A'0000/2'0000	
 end architecture BEHAVIOUR;
