@@ -55,7 +55,7 @@ set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
 set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
 set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH ddr_ctlr_tb -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH firebee_tb -section_id eda_simulation
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
@@ -639,8 +639,6 @@ set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_DDR_OUT
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to CLK_25M
 
 
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr2_ram_model.vhd -section_id ddr_ctlr_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
 set_location_assignment PIN_AB18 -to VCAS_n
 set_location_assignment PIN_W17 -to VRAS_n
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VRAS_n
@@ -691,3 +689,11 @@ set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[4]
 set_global_assignment -name FLOW_ENABLE_IO_ASSIGNMENT_ANALYSIS ON
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/io_register.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VHDL_FILE ../../../testbenches/firebee_tb.vhd
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr2_ram_model.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
+set_global_assignment -name EDA_TEST_BENCH_NAME firebee_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME firebee_tb -section_id firebee_tb
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 s" -section_id firebee_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME firebee_tb -section_id firebee_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/firebee_tb.vhd -section_id firebee_tb

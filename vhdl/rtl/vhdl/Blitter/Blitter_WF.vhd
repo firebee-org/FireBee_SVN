@@ -50,7 +50,7 @@ use ieee.numeric_std.all;
 
 entity FBEE_BLITTER is
 	port(
-		RESETn          : in std_logic;
+		reset_n          : in std_logic;
 		CLK_MAIN        : in std_logic;
 		CLK_DDR0        : in std_logic;
 		FB_ADR          : in std_logic_vector(31 downto 0);
@@ -59,7 +59,7 @@ entity FBEE_BLITTER is
 		FB_SIZE0        : in std_logic;
 		fb_cs_n          : in std_logic_vector(3 downto 1);
 		fb_oe_n          : in std_logic;
-		FB_WRn          : in std_logic;
+		fb_wr_n          : in std_logic;
 		DATA_IN         : in std_logic_vector(31 downto 0);
 		DATA_OUT        : out std_logic_vector(31 downto 0);
 		DATA_EN         : out std_logic;

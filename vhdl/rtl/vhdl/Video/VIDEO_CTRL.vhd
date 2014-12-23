@@ -242,7 +242,7 @@ BEGIN
 	ccr <= ccr_i;
 	inter_zei <= inter_zei_i;
 	video_mod_ta <= video_mod_ta_i;
-	vr_rd <= vr_rd_i;
+    vr_rd <= vr_rd_i;
 	clk_pixel <= clk_pixel_i;
 	
 	-- Byte selectors:

@@ -340,7 +340,7 @@ PACKAGE firebee_pkg IS
 
 	COMPONENT FBEE_BLITTER is
 		PORT(
-			RESETn          : IN STD_LOGIC;
+			reset_n         : IN STD_LOGIC;
 			clk_main        : IN STD_LOGIC;
 			CLK_DDR0        : IN STD_LOGIC;
 			fb_adr          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);

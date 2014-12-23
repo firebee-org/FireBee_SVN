@@ -262,11 +262,11 @@ BEGIN
     fb_le(3) <= NOT fb_wr_n WHEN fb_regddr = fr_s3 AND ddr_cs = '1' ELSE '0';
 
     -- video data access:
+
     video_ddr_ta <= '1' WHEN fb_regddr = fr_s0 AND ddr_cs = '1' ELSE
                     '1' WHEN fb_regddr = fr_s1 AND ddr_cs = '1' ELSE
                     '1' WHEN fb_regddr = fr_s2 AND fb_regddr_next = fr_s3 ELSE
                     '1' WHEN fb_regddr = fr_s3 AND ddr_cs = '1' ELSE '0';
-
     -- fb_vdoe # VIDEO_OE.
 
     -- Write access for video data:

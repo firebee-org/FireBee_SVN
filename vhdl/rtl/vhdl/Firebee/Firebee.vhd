@@ -833,31 +833,31 @@ BEGIN
             ddrwr_d_sel1                => ddrwr_d_sel(1)
         );
 
---    I_BLITTER: FBEE_BLITTER
---        PORT MAP(
---            resetn               => reset_n,
---            clk_main            => clk_main,
---            clk_ddr0            => clk_ddr(0),
---            fb_adr              => fb_adr,
---            fb_ale              => fb_ale,
---            fb_size1            => fb_size(1),
---            fb_size0            => fb_size(0),
---            fb_cs_n              => fb_cs_n,
---            fb_oe_n              => fb_oe_n,
---            fb_wr_n              => fb_wr_n,
---            data_in             => fb_ad,
---            data_out            => data_out_blitter,
---            DATA_EN             => data_en_blitter,
---            blitter_adr         => blitter_adr,
---            blitter_sig         => blitter_sig,
---            blitter_wr          => blitter_wr,
---            blitter_on          => blitter_on,
---            blitter_run         => blitter_run,
---            BLITTER_DIN         => vd_vz,
---            blitter_dout        => blitter_dout,
---            blitter_ta          => blitter_ta,
---            blitter_dack_sr     => blitter_dack_sr
---        );
+    I_BLITTER: FBEE_BLITTER
+        PORT MAP(
+            reset_n             => reset_n,
+            clk_main            => clk_main,
+            clk_ddr0            => clk_ddr(0),
+            fb_adr              => fb_adr,
+            fb_ale              => fb_ale,
+            fb_size1            => fb_size(1),
+            fb_size0            => fb_size(0),
+            fb_cs_n             => fb_cs_n,
+            fb_oe_n             => fb_oe_n,
+            fb_wr_n             => fb_wr_n,
+            data_in             => fb_ad,
+            data_out            => data_out_blitter,
+            DATA_EN             => data_en_blitter,
+            blitter_adr         => blitter_adr,
+            blitter_sig         => blitter_sig,
+            blitter_wr          => blitter_wr,
+            blitter_on          => blitter_on,
+            blitter_run         => blitter_run,
+            BLITTER_DIN         => vd_vz,
+            blitter_dout        => blitter_dout,
+            blitter_ta          => blitter_ta,
+            blitter_dack_sr     => blitter_dack_sr
+        );
 
     I_VIDEOSYSTEM: VIDEO_SYSTEM
         PORT MAP(
@@ -879,8 +879,8 @@ BEGIN
             fb_ad_en_31_16      => fb_ad_en_31_16_video,
             fb_ad_en_15_0       => fb_ad_en_15_0_video,
             fb_ale              => fb_ale,
-            fb_cs_n              => fb_cs_n,
-            fb_oe_n              => fb_oe_n,
+            fb_cs_n             => fb_cs_n,
+            fb_oe_n             => fb_oe_n,
             fb_wr_n             => FB_WR_n,
             fb_size1            => fb_size(1),
             fb_size0            => fb_size(0),
@@ -896,10 +896,10 @@ BEGIN
             blue                => vb,
             vsync               => vsync_i,
             hsync               => hsync_i,
-            sync_n               => sync_n,
-            blank_n              => blank_i_n,
+            sync_n              => sync_n,
+            blank_n             => blank_i_n,
 
-            pd_vga_n             => pd_vga_n,
+            pd_vga_n            => pd_vga_n,
             video_mod_ta        => video_mod_ta,
 
             vd_vz               => vd_vz,
@@ -917,7 +917,7 @@ BEGIN
     I_INTHANDLER: INTHANDLER
         PORT MAP(
             clk_main            => clk_main,
-            reset_n              => reset_n,
+            reset_n             => reset_n,
             fb_adr              => fb_adr,
             fb_cs_n             => fb_cs_n(2 DOWNTO 1),
             fb_oe_n             => fb_oe_n,
@@ -957,9 +957,9 @@ BEGIN
             fb_adr              => fb_adr(26 DOWNTO 0),
             fb_ale              => fb_ale,
             fb_size             => fb_size,
-            fb_cs_n              => fb_cs_n(2 DOWNTO 1),
-            fb_oe_n              => fb_oe_n,
-            fb_wr_n              => fb_wr_n,
+            fb_cs_n             => fb_cs_n(2 DOWNTO 1),
+            fb_oe_n             => fb_oe_n,
+            fb_wr_n             => fb_wr_n,
             fb_ad_IN            => fb_ad,
             fb_ad_OUT           => fb_ad_out_dma,
             fb_ad_EN_31_24      => fb_ad_en_31_24_dma,
@@ -979,7 +979,7 @@ BEGIN
 
             DATA_IN_FDC         => data_out_fdc,
             DATA_IN_SCSI        => data_out_scsi,
-            data_out_fdc_SCSI    => data_in_fdc_scsi,
+            data_out_fdc_SCSI   => data_in_fdc_scsi,
 
             DMA_DRQ_IN          => drq_fdc,
             DMA_DRQ_OUT         => drq_dma,            
