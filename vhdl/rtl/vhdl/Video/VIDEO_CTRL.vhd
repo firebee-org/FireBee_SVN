@@ -49,11 +49,11 @@ LIBRARY IEEE;
 ENTITY VIDEO_CTRL IS
 	PORT(
 		clk_main        : IN STD_LOGIC;
-		fb_cs_n         : IN UNSIGNED (2 DOWNTO 1);
+		fb_cs_n         : IN STD_LOGIC_VECTOR (2 DOWNTO 1);
 		fb_wr_n         : IN STD_LOGIC;
 		fb_oe_n         : IN STD_LOGIC;
-		fb_size         : IN UNSIGNED (1 DOWNTO 0);
-		fb_adr          : IN UNSIGNED (31 DOWNTO 0);
+		fb_size         : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
+		fb_adr          : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
 		clk33m          : IN STD_LOGIC;
 		clk25m          : IN STD_LOGIC;
 		blitter_run     : IN STD_LOGIC;

@@ -96,7 +96,7 @@ ENTITY VIDEO_SYSTEM IS
         vd_vz               : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         sr_fifo_wre         : IN STD_LOGIC;
         sr_vdmp             : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        fifo_mw             : OUT STD_LOGIC_VECTOR(8 DOWNTO 0);
+        fifo_mw             : OUT UNSIGNED (8 DOWNTO 0);
         vdm_sel             : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
         video_ram_ctr       : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         fifo_clr            : OUT STD_LOGIC;
@@ -484,7 +484,7 @@ BEGIN
 		wrreq       => fifo_wre,
 		q           => fifo_d_out_512,
 		--rdempty   =>, -- Not  d.
-		wrusedw     => fifo_mw
+		UNSIGNED(wrusedw)     => fifo_mw
 	);
 
 	I_FIFO_DZ: lpm_fifoDZ
@@ -511,17 +511,17 @@ BEGIN
 			CLK25M              => clk_25m,
 			blitter_run         => blitter_run,
 			clk_video           => clk_video,
-			vr_d                => vr_d,
+			vr_d                => UNSIGNED(vr_d),
 			vr_busy             => vr_busy,
 			color8              => color8,
 			FBEE_CLUT_RD        => clut_fbee_rd,
 			COLOR1              => COLOR1,
 			FALCON_CLUT_RDH     => clut_fa_rdh,
 			FALCON_CLUT_RDL     => clut_fa_rdl,
-			FALCON_CLUT_WR      => clut_fa_wr,
+			STD_LOGIC_VECTOR(FALCON_CLUT_WR)      => clut_fa_wr,
 			clut_st_rd          => clut_st_rd,
-			clut_st_wr          => clut_st_wr,
-			CLUT_MUX_ADR        => clut_adr_mux,
+			STD_LOGIC_VECTOR(clut_st_wr)          => clut_st_wr,
+			STD_LOGIC_VECTOR(CLUT_MUX_ADR)        => clut_adr_mux,
 			hsync               => hsync,
 			vsync               => vsync,
 			blank_n             => blank_n,
@@ -531,21 +531,21 @@ BEGIN
 			color2              => color2,
 			color4              => color4,
 			clk_pixel           => clk_pixel_i,
-			clut_off            => clut_off,
+			STD_LOGIC_VECTOR(clut_off)            => clut_off,
 			blitter_on          => blitter_on,
-			video_ram_ctr       => video_ram_ctr,
+			STD_LOGIC_VECTOR(video_ram_ctr)       => video_ram_ctr,
 			video_mod_ta        => video_mod_ta,
-			ccr                 => ccr,
-			CCSEL               => CC_SEL,
-			FBEE_CLUT_WR        => clut_fbee_wr,
+			STD_LOGIC_VECTOR(ccr)                 => ccr,
+			STD_LOGIC_VECTOR(CCSEL)               => CC_SEL,
+			STD_LOGIC_VECTOR(FBEE_CLUT_WR)        => clut_fbee_wr,
 			inter_zei           => inter_zei,
 			dop_fifo_clr        => dop_fifo_clr,
 			video_reconfig      => video_reconfig,
 			vr_wr               => vr_wr,
 			vr_rd               => vr_rd,
 			fifo_clr            => fifo_clr_i,
-			DATA_IN             => fb_ad_in,
-			DATA_OUT            => data_out_video_ctrl,
+			DATA_IN             => UNSIGNED(fb_ad_in),
+			STD_LOGIC_VECTOR(DATA_OUT)            => data_out_video_ctrl,
 			DATA_EN_H           => data_en_h_video_ctrl,
 			DATA_EN_L           => data_en_l_video_ctrl
 		);

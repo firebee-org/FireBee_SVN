@@ -688,7 +688,6 @@ set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[3]
 set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[4]
 set_global_assignment -name FLOW_ENABLE_IO_ASSIGNMENT_ANALYSIS ON
 set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/io_register.vhd
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VHDL_FILE ../../../testbenches/firebee_tb.vhd
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr2_ram_model.vhd -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
@@ -697,3 +696,4 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME firebee_tb -section_id fire
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1 s" -section_id firebee_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME firebee_tb -section_id firebee_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/firebee_tb.vhd -section_id firebee_tb
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
