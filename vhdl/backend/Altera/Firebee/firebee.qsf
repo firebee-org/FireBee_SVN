@@ -283,9 +283,6 @@ set_location_assignment PIN_J1 -to CLK_USB
 set_location_assignment PIN_T4 -to CLK_25M
 set_location_assignment PIN_U8 -to FB_SIZE[0]
 set_location_assignment PIN_Y4 -to FB_SIZE[1]
-set_location_assignment PIN_T8 -to FB_CSn[1]
-set_location_assignment PIN_T9 -to FB_CSn[2]
-set_location_assignment PIN_V6 -to FB_CSn[3]
 set_location_assignment PIN_AB17 -to CLK_DDR_OUT
 set_location_assignment PIN_AA15 -to VD_QS[0]
 set_location_assignment PIN_W15 -to VD_QS[1]
@@ -696,4 +693,7 @@ set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_mod
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id firebee_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/firebee_tb.vhd -section_id firebee_tb
+set_location_assignment PIN_T8 -to FB_CS_n[1]
+set_location_assignment PIN_T9 -to FB_CS_n[2]
+set_location_assignment PIN_V6 -to FB_CS_n[3]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
