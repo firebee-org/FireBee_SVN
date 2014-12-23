@@ -469,15 +469,17 @@ BEGIN
     I_DDR_1 : ddr_ram_model
     PORT MAP
     (
-        ck              => clk_ddr_out,
-        ck_n            => clk_ddr_out_n,
+        clk             => clk_ddr_out,
+        clkb            => clk_ddr_out_n,
         cke             => vcke,
-        cs_n            => vcs_n,
-        ras_n           => vras_n,
-        cas_n           => vcas_n,
-        we_n            => vwe_n,
+        csb             => vcs_n,
+        rasb            => vras_n,
+        casb            => vcas_n,
+        web             => vwe_n,
         ba              => UNSIGNED(ba),
-        addr            => UNSIGNED(va),
-        odt             => '1'
+        ad              => va (12 DOWNTO 0),
+        dqi             => vd (30 DOWNTO 15),
+        dm              => UNSIGNED(vdm (3 DOWNTO 2)),
+        dqs             => vd_qs (3 DOWNTO 2)
     );
 END beh;
