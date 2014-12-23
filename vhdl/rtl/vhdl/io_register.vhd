@@ -26,7 +26,9 @@ END PACKAGE;
 LIBRARY IEEE;
     USE IEEE.std_logic_1164.ALL;
     USE IEEE.numeric_std.ALL;
-
+LIBRARY work;
+    USE work.io_register_pkg.ALL;
+    
 ENTITY io_register IS
 /*
     GENERIC

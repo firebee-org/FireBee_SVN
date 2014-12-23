@@ -235,7 +235,7 @@ ARCHITECTURE BEHAVIOUR OF VIDEO_CTRL IS
 	SIGNAL clk_pixel_i              : STD_LOGIC;
 	SIGNAL mul1                     : UNSIGNED (16 DOWNTO 0);
 	SIGNAL mul2                     : UNSIGNED (16 DOWNTO 0);
-	SIGNAL mul3                     : UNSIGNED (16 DOWNTO 0);
+	SIGNAL mul3                     : UNSIGNED (16 DOWNTO 0) := (OTHERS => 'Z');
 BEGIN
 	vr_wr <= vr_wr_i;
 	video_reconfig <= video_reconfig_i;

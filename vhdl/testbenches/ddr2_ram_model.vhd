@@ -169,7 +169,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
     SIGNAL dqs_n_en         : STD_LOGIC;
     SIGNAL rdqs_en          : STD_LOGIC;
     SIGNAL out_en           : STD_LOGIC;
-    SIGNAL READ_CMD_latency     : INTEGER;
+    SIGNAL read_latency     : INTEGER;
     SIGNAL write_latency    : INTEGER;
     
     TYPE cmd_type_t IS (LOAD_MODE, REFRESH, PRECHARGE, ACTIVATE, WRITE_CMD, READ_CMD, NOP, PWR_DOWN, SELF_REF);
@@ -388,7 +388,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         -- memory(addr) <= data;
     END memory_write;
     
-    PROCEDURE memory_READ_CMD(
+    PROCEDURE memory_read(
         SIGNAL bank     : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
         SIGNAL row      : IN UNSIGNED (ROW_BITS - 1 DOWNTO 0);
         SIGNAL col      : IN UNSIGNED (COL_BITS - 1 DOWNTO 0);
@@ -399,7 +399,7 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         addr <= (bank & row & col) / BL_MAX;
         -- TODO: only the MAX_MEM defined functionality defined yet
         -- data <= memory(addr);
-    END memory_READ_CMD;
+    END memory_read;
     
     PROCEDURE cmd_task(
         cke        : IN STD_LOGIC;
@@ -421,22 +421,22 @@ ARCHITECTURE rtl OF ddr2_ram_model IS
         SIGNAL mode_reg2    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0);
         SIGNAL mode_reg3    : IN UNSIGNED (ADDR_BITS - 1 DOWNTO 0)) IS
         
-        CONSTANT AP_BIT     : UNSIGNED (ADDR_BITS - 1 DOWNTO 0) := UNSIGNED(TO_UNSIGNED(2 ** AP, ADDR_BITS));
+        CONSTANT AP_BIT     : UNSIGNED (ADDR_BITS - 1 DOWNTO 0) := TO_UNSIGNED(2 ** AP, ADDR_BITS);
     BEGIN
         REPORT("at time " & TIME'IMAGE(NOW) & "INFO: performing initialization sequence");
         
         cmd_task('1', cmd_type_encoding(NOP),  (OTHERS => 'X'), (OTHERS => 'X'));
         cmd_task('1', cmd_type_encoding(PRECHARGE), (OTHERS => 'X'), AP_BIT);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(3, BA_BITS)), mode_reg3);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(2, BA_BITS)), mode_reg2);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(0, BA_BITS)), mode_reg0 OR "100");  -- DLL reset
-        cmd_task('1', cmd_type_encoding(PRECHARGE), (OTHERS => 'X'), AP_BIT);           -- Precharge all
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), RESIZE(2D"3", BA_BITS), mode_reg3);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), RESIZE(2D"2", BA_BITS), mode_reg2);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), RESIZE(2D"1", BA_BITS), mode_reg1);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), (OTHERS => '0'), mode_reg0 OR "100");   -- DLL reset
+        cmd_task('1', cmd_type_encoding(PRECHARGE), (OTHERS => 'X'), AP_BIT);               -- Precharge all
         cmd_task('1', cmd_type_encoding(REFRESH), (OTHERS => 'X'), (OTHERS => 'X'));
         cmd_task('1', cmd_type_encoding(REFRESH), (OTHERS => 'X'), (OTHERS => 'X'));
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(0, BA_BITS)), mode_reg0);
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1 OR x"380"); -- OCD default
-        cmd_task('1', cmd_type_encoding(LOAD_MODE), UNSIGNED(TO_UNSIGNED(1, BA_BITS)), mode_reg1);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), (OTHERS => '0'), mode_reg0);
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), RESIZE(2D"1", BA_BITS), mode_reg1 OR x"380"); -- OCD default
+        cmd_task('1', cmd_type_encoding(LOAD_MODE), RESIZE(2D"1", BA_BITS), mode_reg1);
         cmd_task('1', cmd_type_encoding(NOP), (OTHERS => 'X'), (OTHERS => 'X'));
     END initialize;
         
@@ -487,27 +487,27 @@ BEGIN
     
     PROCESS (dm_rdqs)
     BEGIN
-        dm_in <= UNSIGNED(RESIZE(UNSIGNED(dm_rdqs), dm_in'LENGTH)) AFTER BUS_DELAY;
+        dm_in <= RESIZE(dm_rdqs, dm_in'LENGTH) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (ba)
     BEGIN
-        ba_in <= UNSIGNED(RESIZE(UNSIGNED(ba), ba_in'LENGTH)) AFTER BUS_DELAY;
+        ba_in <= RESIZE(ba, ba_in'LENGTH) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (addr)
     BEGIN
-        addr_in <= UNSIGNED(RESIZE(UNSIGNED(addr), addr_in'LENGTH)) AFTER BUS_DELAY;
+        addr_in <= RESIZE(addr, addr_in'LENGTH) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (dq)
     BEGIN
-        dq_in <= UNSIGNED(RESIZE(UNSIGNED(dq), dq_in'LENGTH)) AFTER BUS_DELAY;
+        dq_in <= RESIZE(dq, dq_in'LENGTH) AFTER BUS_DELAY;
     END PROCESS;
     
     PROCESS (dqs, dqs_n)
     BEGIN
-        dqs_in <= UNSIGNED(SHIFT_LEFT(RESIZE(UNSIGNED(dqs_n), dqs_in'LENGTH), 18)) OR UNSIGNED(RESIZE(UNSIGNED(dqs), dqs_in'LENGTH));
+        dqs_in <= SHIFT_LEFT(RESIZE(dqs_n, dqs_in'LENGTH), 18) OR RESIZE(dqs, dqs_in'LENGTH);
     END PROCESS;
     
     PROCESS (odt)
@@ -651,16 +651,16 @@ BEGIN
             bank        : IN UNSIGNED (BA_BITS - 1 DOWNTO 0);
             fromcmd     : IN UNSIGNED (3 DOWNTO 0);
             cmd         : IN UNSIGNED (3 DOWNTO 0)
-            ) IS
+        ) IS
             
             VARIABLE err         : STD_LOGIC;
         BEGIN
             -- all matching case expression will be evaluated
             
-            CASE? (UNSIGNED'(samebank & fromcmd & cmd)) IS
+            CASE? (samebank & fromcmd & cmd) IS
                 WHEN "0" & cmd_type_encoding(LOAD_MODE) & "0---" =>
                     IF ck_cntr - ck_load_mode < TMRD THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tMRD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tMRD violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     
                 WHEN "0" & cmd_type_encoding(LOAD_MODE) & "100-" =>
@@ -670,7 +670,7 @@ BEGIN
                     
                 WHEN "0" & cmd_type_encoding(REFRESH) & "0---" =>
                     IF NOW - tm_refresh < TRFC_MIN THEN
-                        REPORT("tRFC violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("tRFC violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     
                 WHEN "0" & cmd_type_encoding(REFRESH) & cmd_type_encoding(PWR_DOWN) =>
@@ -684,28 +684,28 @@ BEGIN
                     
                 WHEN "0" & cmd_type_encoding(PRECHARGE) & "000-" =>
                     IF NOW - tm_precharge_all < TRPA THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRPA violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRPA violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     IF NOW - tm_precharge < TRP THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRP violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRP violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     
                 WHEN "1" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(PRECHARGE) =>
                     IF VERBOSE = TRUE AND NOW - tm_precharge_all < TRPA THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Precharge All interruption during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Precharge All interruption during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
-                    IF VERBOSE = TRUE AND NOW - tm_bank_precharge(TO_INTEGER(UNSIGNED(bank))) < TRP THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Precharge Bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))) & " interruption during "
-                            & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                    IF VERBOSE = TRUE AND NOW - tm_bank_precharge(TO_INTEGER(bank)) < TRP THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " INFO: Precharge Bank " & INTEGER'IMAGE(TO_INTEGER(bank)) & " interruption during "
+                            & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     
                 WHEN "1" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(ACTIVATE) =>
                     IF NOW - tm_precharge_all < TRPA THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRPA violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRPA violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
-                    IF NOW - tm_bank_precharge(TO_INTEGER(UNSIGNED(bank))) < TRP THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " tRP violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) & " to bank "
-                            & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF NOW - tm_bank_precharge(TO_INTEGER(bank)) < TRP THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " tRP violation during " & cmd_string(TO_INTEGER(cmd)) & " to bank "
+                            & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
                     
                 WHEN "0" & cmd_type_encoding(PRECHARGE) & cmd_type_encoding(PWR_DOWN) =>
@@ -719,29 +719,29 @@ BEGIN
                     
                 WHEN "0" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(REFRESH) =>
                     IF NOW - tm_activate < TRC THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRC violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRC violation during " & cmd_string(TO_INTEGER(cmd)));
                     END IF;
                     
                 WHEN "1" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(PRECHARGE) =>
-                    IF NOW - tm_bank_activate(TO_INTEGER(UNSIGNED(bank))) > TRAS_MAX AND active_bank(TO_INTEGER(UNSIGNED(bank))) = '1' THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRAS maximum violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                            " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF NOW - tm_bank_activate(TO_INTEGER(bank)) > TRAS_MAX AND active_bank(TO_INTEGER(bank)) = '1' THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRAS maximum violation during " & cmd_string(TO_INTEGER(cmd)) &
+                            " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
-                    IF NOW - tm_bank_activate(TO_INTEGER(UNSIGNED(bank))) < TRAS_MIN THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRAS minimum violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                            " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF NOW - tm_bank_activate(TO_INTEGER(bank)) < TRAS_MIN THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRAS minimum violation during " & cmd_string(TO_INTEGER(cmd)) &
+                            " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
                     
                 WHEN "0" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(ACTIVATE) =>
                     IF NOW - tm_activate < TRRD THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRRD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                            " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRRD violation during " & cmd_string(TO_INTEGER(cmd)) &
+                            " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
                     
                 WHEN "1" & cmd_type_encoding(ACTIVATE) & cmd_type_encoding(ACTIVATE) =>
-                    IF NOW - tm_bank_activate(TO_INTEGER(UNSIGNED(bank))) < TRC THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRC violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) & " to bank " &
-                                INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF NOW - tm_bank_activate(TO_INTEGER(bank)) < TRC THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tRC violation during " & cmd_string(TO_INTEGER(cmd)) & " to bank " &
+                                INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
 
                 WHEN "1" & cmd_type_encoding(ACTIVATE) & "010-" =>
@@ -751,23 +751,23 @@ BEGIN
                     NULL;       -- 1 tCK
 
                 WHEN "1" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PRECHARGE) =>
-                    IF ck_cntr - ck_bank_write(TO_INTEGER(UNSIGNED(bank)))
-                                <= write_latency + TO_INTEGER(UNSIGNED(burst_length)) + 2 OR
-                            NOW - tm_bank_write_end(TO_INTEGER(UNSIGNED(bank))) < TWR THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF ck_cntr - ck_bank_write(TO_INTEGER(bank))
+                                <= write_latency + TO_INTEGER(burst_length) + 2 OR
+                            NOW - tm_bank_write_end(TO_INTEGER(bank)) < TWR THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWR violation during " & cmd_string(TO_INTEGER(cmd)) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
 
                 WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(WRITE_CMD) =>
                     IF ck_cntr - ck_write < TCCD THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tCCD violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tCCD violation during " & cmd_string(TO_INTEGER(cmd)) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
 
                 WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(READ_CMD) => 
-                    IF ck_load_mode < ck_write AND ck_cntr - ck_write < write_latency + TO_INTEGER(UNSIGNED(burst_length)) / 2 + 2 - additive_latency THEN
-                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWTR violation during " & cmd_string(TO_INTEGER(UNSIGNED(cmd))) &
-                                " to bank " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(bank))));
+                    IF ck_load_mode < ck_write AND ck_cntr - ck_write < write_latency + TO_INTEGER(burst_length) / 2 + 2 - additive_latency THEN
+                        REPORT("at time " & TIME'IMAGE(NOW) & " ERROR: tWTR violation during " & cmd_string(TO_INTEGER(cmd)) &
+                                " to bank " & INTEGER'IMAGE(TO_INTEGER(bank)));
                     END IF;
 
                 WHEN "0" & cmd_type_encoding(WRITE_CMD) & cmd_type_encoding(PWR_DOWN) =>
