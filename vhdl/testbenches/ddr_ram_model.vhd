@@ -64,7 +64,7 @@ ENTITY ddr_ram_model IS
         ADDRTOP         : INTEGER := 12;
         A10_LESS        : BOOLEAN := TRUE;          -- top column address is less than A10
         B               : INTEGER := 16;            -- number of bit (x16)
-        NCOL            : INTEGER := 10;            -- top column address is CA9 (NCOL- 1)
+        NCOL            : INTEGER := 10;            -- top column address is CA9 (NCOL - 1)
         PAGEDEPTH       : INTEGER := 1024;
         NDM             : INTEGER := 2;
         NDQS            : INTEGER := 2
