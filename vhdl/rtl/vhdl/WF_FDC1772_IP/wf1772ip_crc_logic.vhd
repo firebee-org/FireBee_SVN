@@ -96,8 +96,8 @@ entity WF1772IP_CRC_LOGIC is
 		-- Preset controls:
 		DDEn		: in std_logic;
 		ID_AM		: in std_logic;
-		DATA_AM		: in Bit;
-		DDATA_AM	: in Bit;
+		DATA_AM		: in STD_LOGIC;
+		DDATA_AM	: in STD_LOGIC;
 		
 		-- CRC unit:
 		SD			: in std_logic; -- Serial data input.

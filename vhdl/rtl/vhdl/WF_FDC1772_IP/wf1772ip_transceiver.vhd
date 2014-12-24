@@ -77,8 +77,8 @@ entity WF1772IP_TRANSCEIVER is
 		HDTYPE			: in std_logic; -- Floppy type HD or DD.
 		DDEn			: in std_logic; -- Double density select (FM or MFM).
 		ID_AM			: in std_logic; -- ID addressmark strobe.
-		DATA_AM			: in Bit; -- Data addressmark strobe.
-		DDATA_AM		: in Bit; -- Deleted data addressmark strobe.
+		DATA_AM			: in STD_LOGIC; -- Data addressmark strobe.
+		DDATA_AM		: in STD_LOGIC; -- Deleted data addressmark strobe.
 		SHFT_LOAD_SD	: in std_logic; -- Indication for shift register load time.
 		DR				: in std_logic_vector(7 downto 0); -- Content of the data register.
 
