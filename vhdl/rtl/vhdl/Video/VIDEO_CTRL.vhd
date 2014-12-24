@@ -46,7 +46,7 @@ LIBRARY IEEE;
     USE IEEE.std_logic_1164.ALL;
     USE ieee.numeric_std.ALL;
 
-ENTITY VIDEO_CTRL IS
+ENTITY video_ctrl IS
 	PORT(
 		clk_main        : IN STD_LOGIC;
 		fb_cs_n         : IN STD_LOGIC_VECTOR (2 DOWNTO 1);
@@ -96,9 +96,9 @@ ENTITY VIDEO_CTRL IS
 		data_en_h       : OUT STD_LOGIC;
 		data_en_l       : OUT STD_LOGIC
 	);
-END ENTITY VIDEO_CTRL;
+END ENTITY video_ctrl;
 
-ARCHITECTURE BEHAVIOUR OF VIDEO_CTRL IS
+ARCHITECTURE behaviour OF video_ctrl IS
 	SIGNAL clk17m                   : STD_LOGIC; 
 	SIGNAL clk13m                   : STD_LOGIC;
 	SIGNAL fbee_clut_cs             : STD_LOGIC;
@@ -274,7 +274,7 @@ BEGIN
 	fbee_clut_rd <= '1' WHEN fbee_clut_cs = '1' AND fb_oe_n = '0' ELSE '0';
 	fbee_clut_wr <= fb_b WHEN fbee_clut_cs = '1' AND fb_wr_n = '0' ELSE x"0";
 
-	P_CLUT_TA : PROCESS
+	p_clut_ta : PROCESS
 	BEGIN
 		WAIT UNTIL clk_main = '1' AND clk_main' EVENT;
 		IF video_mod_ta_i = '0' AND fbee_clut_cs = '1' THEN
@@ -286,7 +286,7 @@ BEGIN
 		ELSE
 			clut_ta <= '0';
 		END IF;
-	END PROCESS P_CLUT_TA;
+	END PROCESS p_clut_ta;
 
 	--Falcon CLUT:
 	falcon_clut_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 10) = "1111100110" ELSE '0'; -- $F9800/$400
@@ -308,7 +308,7 @@ BEGIN
 	atari_hl_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000000000100000110" ELSE '0'; -- $418/4
 	atari_vl_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 2) = "00000000000000000100000111" ELSE '0'; -- $41C/4
 
-	P_VIDEO_CONTROL : PROCESS
+	p_video_control : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk_main);
 		IF st_shift_mode_cs = '1' AND fb_wr_n = '0' AND fb_b(0) = '1' THEN
@@ -395,7 +395,7 @@ BEGIN
 		ELSIF atari_vl_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
 			atari_vl(7 DOWNTO 0) <= data_in(7 DOWNTO 0);
 		END IF;
-	END PROCESS P_VIDEO_CONTROL;
+	END PROCESS p_video_control;
     
 	clut_off <= falcon_shift_mode(3 DOWNTO 0) WHEN color4_i = '1' ELSE x"0";
 	pd_vga_n <= fbee_vctr(1);
@@ -424,8 +424,8 @@ BEGIN
 	video_pll_reconfig_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_b(0) = '1' AND fb_adr(27 DOWNTO 0) = x"0000800" ELSE '0'; -- $(F)000'0800. 
 	vr_rd_i <= '1' WHEN video_pll_config_cs = '1' AND fb_wr_n = '0' AND vr_busy = '0' ELSE '0';
 
-	P_VIDEO_CONFIG: PROCESS
-		variable LOCK : boolean;
+	p_video_config: PROCESS
+		variable lock : boolean;
 	BEGIN
 		WAIT UNTIL rising_edge(clk_main);
 
@@ -443,16 +443,16 @@ BEGIN
 			vr_frq <= data_in(23 DOWNTO 16);
 		END IF;
 
-		IF video_pll_reconfig_cs = '1' AND fb_wr_n = '0' AND vr_busy = '0' AND LOCK = false THEN
+		IF video_pll_reconfig_cs = '1' AND fb_wr_n = '0' AND vr_busy = '0' AND lock = false THEN
 			video_reconfig_i <= '1'; -- This is a strobe.
-			LOCK := true;
+			lock := true;
 		ELSIF video_pll_reconfig_cs = '0' or fb_wr_n = '1' or vr_busy = '1' THEN
 			video_reconfig_i <= '0';
-			LOCK := false;
+			lock := false;
 		ELSE
 			video_reconfig_i <= '0';
 		END IF;
-	END PROCESS P_VIDEO_CONFIG;
+	END PROCESS p_video_config;
     
 	video_ram_ctr <= fbee_vctr(31 DOWNTO 16);
     
@@ -485,7 +485,7 @@ BEGIN
 	vdl_vct_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82c0" ELSE '0'; -- $FF82C0/1 - clock control (VCO).
 	vdl_vmd_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82c2" ELSE '0'; -- $FF82C2/3 - resolution control.
 
-	P_MISC_CTRL : PROCESS
+	p_misc_ctrl : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk_main);
         
@@ -614,7 +614,7 @@ BEGIN
 		IF vdl_vmd_cs = '1' AND fb_b(3) = '1' AND fb_wr_n = '0' THEN
 			vdl_vmd <= data_in(19 DOWNTO 16);
 		END IF;
-	END PROCESS P_MISC_CTRL;
+	END PROCESS p_misc_ctrl;
 
 	blitter_on <= NOT sys_ctr(3);
     
@@ -666,17 +666,17 @@ BEGIN
 							atari_hh_cs or atari_vh_cs or atari_hl_cs or atari_vl_cs or
 							vdl_vbe_cs or VDL_VDB_CS or vdl_vde_cs or vdl_vbb_cs or vdl_vss_cs or vdl_vft_cs or vdl_vct_cs or vdl_vmd_cs;
     
-	P_CLK_16M5 : PROCESS
+	p_clk_16m5 : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk33m);
 		clk17m <= NOT clk17m;
-	END PROCESS P_CLK_16M5;
+	END PROCESS p_clk_16m5;
 
-	P_CLK_12M5 : PROCESS
+	p_clk_12m5 : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk25m);
 		clk13m <= NOT clk13m;
-	END PROCESS P_CLK_12M5;
+	END PROCESS p_clk_12m5;
 
 	clk_pixel_i <= clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' ELSE
 						clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' ELSE
@@ -777,7 +777,7 @@ BEGIN
 
 	last <= '1' WHEN vhcnt  = h_total - 10 ELSE '0';
 
-	VIDEO_CLOCK_DOMAIN   : PROCESS
+	video_clock_domain : PROCESS
 	BEGIN
 		WAIT UNTIL rising_edge(clk_pixel_i);
 		IF st_clut = '1' THEN
@@ -955,5 +955,5 @@ BEGIN
 		clut_mux_av_0 <= sub_pixel_cnt(3 DOWNTO 0);
 		clut_mux_av_1 <= clut_mux_av_0;
 		clut_mux_adr <= clut_mux_av_1;
-	END PROCESS VIDEO_CLOCK_DOMAIN;
-END architecture BEHAVIOUR;
+	END PROCESS video_clock_domain;
+END ARCHITECTURE behaviour;
