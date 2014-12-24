@@ -1046,37 +1046,37 @@ BEGIN
             CF_CSn              => CF_CSn
         );
 
---    I_DSP: DSP
---        PORT MAP(
---            clk_33m             => clk_33m,
---            clk_main            => clk_main,
---            fb_oe_n              => fb_oe_n,
---            fb_wr_n              => fb_wr_n,
---            FB_CS1n             => fb_cs_n(1),
---            FB_CS2n             => fb_cs_n(2),
---            fb_size0            => fb_size(0),
---            fb_size1            => fb_size(1),
---            fb_burst_n          => fb_burst_n,
---            fb_adr              => fb_adr,
---            resetn              => reset_n,
---            FB_CS3n             => fb_cs_n(3),
---            SRCSn               => DSP_SRCSn,
---            SRBLEn              => DSP_SRBLEn,
---            SRBHEn              => DSP_SRBHEn,
---            SRWEn               => DSP_SRWEn,
---            SROEn               => DSP_SROEn,
---            dsp_int             => dsp_int,
---            dsp_ta              => dsp_ta,
---            fb_ad_IN            => fb_ad,
---            fb_ad_OUT           => fb_ad_out_dsp,
---            fb_ad_EN            => fb_ad_en_dsp,
---            IO_IN               => DSP_IO,
---            IO_OUT              => dsp_io_out,
---            IO_EN               => dsp_io_en,
---            SRD_IN              => DSP_SRD,
---            SRD_OUT             => dsp_srd_out,
---            SRD_EN              => dsp_srd_en
---        );
+    I_DSP: DSP
+        PORT MAP(
+            clk_33m             => clk_33m,
+            clk_main            => clk_main,
+            fb_oe_n              => fb_oe_n,
+            fb_wr_n              => fb_wr_n,
+            FB_CS1n             => fb_cs_n(1),
+            FB_CS2n             => fb_cs_n(2),
+            fb_size0            => fb_size(0),
+            fb_size1            => fb_size(1),
+            fb_burstn          => fb_burst_n,
+            fb_adr              => fb_adr,
+            resetn              => reset_n,
+            FB_CS3n             => fb_cs_n(3),
+            SRCSn               => DSP_SRCSn,
+            SRBLEn              => DSP_SRBLEn,
+            SRBHEn              => DSP_SRBHEn,
+            SRWEn               => DSP_SRWEn,
+            SROEn               => DSP_SROEn,
+            dsp_int             => dsp_int,
+            dsp_ta              => dsp_ta,
+            fb_ad_IN            => fb_ad,
+            fb_ad_OUT           => fb_ad_out_dsp,
+            fb_ad_EN            => fb_ad_en_dsp,
+            IO_IN               => DSP_IO,
+            IO_OUT              => dsp_io_out,
+            IO_EN               => dsp_io_en,
+            SRD_IN              => DSP_SRD,
+            SRD_OUT             => dsp_srd_out,
+            SRD_EN              => dsp_srd_en
+        );
 
     I_SOUND: WF2149IP_TOP_SOC
         PORT MAP(
@@ -1163,32 +1163,32 @@ BEGIN
             -- TRn              => -- Not used.
         );
 
---    I_ACIA_MIDI: WF6850IP_TOP_SOC
---        PORT MAP(
---            clk                 => clk_main,
---            resetn              => reset_n,
---
---            CS2n                => '0',
---            cs1                 => fb_adr(2),
---            cs0                 => acia_cs,
---            E                   => acia_cs,
---            RWn                 => fb_wr_n,
---            rs                  => fb_adr(1),
---
---            data_in             => fb_ad(31 DOWNTO 24),
---            data_out            => data_out_acia_iI,
---            -- DATA_EN                => -- Not used.
---
---            txclk               => clk_500k,
---            rxclk               => clk_500k,
---            rxdata              => midi_in,
---            CTSn                => '0',
---            DCDn                => '0',
---
---            irq_n                => irq_midi_n,
---            txdata              => midi_out
---            --RTSn                => -- Not used.
---        );                                              
+    I_ACIA_MIDI: WF6850IP_TOP_SOC
+        PORT MAP(
+            clk                 => clk_main,
+            resetn              => reset_n,
+
+            CS2n                => '0',
+            cs1                 => fb_adr(2),
+            cs0                 => acia_cs,
+            E                   => acia_cs,
+            RWn                 => fb_wr_n,
+            rs                  => fb_adr(1),
+
+            data_in             => fb_ad(31 DOWNTO 24),
+            data_out            => data_out_acia_iI,
+            -- DATA_EN                => -- Not used.
+
+            txclk               => clk_500k,
+            rxclk               => clk_500k,
+            rxdata              => midi_in,
+            CTSn                => '0',
+            DCDn                => '0',
+
+            irq_n                => irq_midi_n,
+            txdata              => midi_out
+            --RTSn                => -- Not used.
+        );                                              
 
     I_ACIA_KEYBOARD: WF6850IP_TOP_SOC
         PORT MAP(
@@ -1218,98 +1218,98 @@ BEGIN
             --RTSn                => -- Not used.
         );                                              
 
---    I_SCSI: WF5380_TOP_SOC
---        PORT MAP(
---            clk                 => clk_fdc,
---            resetn              => reset_n,
---            ADR                 => ca,
---            data_in             => data_in_fdc_scsi,
---            data_out            => data_out_scsi,
---            --DATA_EN           =>,
---            -- Bus and DMA controls:
---            CSn                 => scsi_csn,
---            RDn                 => NOT fdc_wr_n OR NOT scsi_cs,
---            WRn                 => fdc_wr_n  OR NOT scsi_cs,
---            EOPn                => '1',
---            DACKn               => scsi_dack_n,
---            DRQ                 => scsi_drq,
---            INT                 => scsi_int,
---            -- READY            =>, 
---            -- SCSI bus:
---            DB_INn              => SCSI_D,
---            DB_OUTn             => scsi_d_out_n,
---            DB_EN               => scsi_d_en,
---            DBP_INn             => SCSI_PAR,
---            DBP_OUTn            => scsi_dbp_out_n,
---            DBP_EN              => scsi_dbp_en,                -- wenn 1 dann OUTput
---            RST_INn             => SCSI_RSTn,
---            RST_OUTn            => scsi_rst_out_n,
---            RST_EN              => scsi_rst_en,
---            BSY_INn             => SCSI_BUSYn,
---            BSY_OUTn            => scsi_bsy_out_n,
---            BSY_EN              => scsi_bsy_en,
---            SEL_INn             => SCSI_SELn,
---            SEL_OUTn            => scsi_sel_out_n,
---            SEL_EN              => scsi_sel_en,
---            ACK_INn             => '1',
---            ACK_OUTn            => SCSI_ACKn,
---            -- ACK_EN           => ACK_EN,
---            ATN_INn             => '1',
---            ATN_OUTn            => SCSI_ATNn,
---            -- ATN_EN           => ATN_EN,
---            REQ_INn             => scsi_drqn,
---            -- REQ_OUTn         => REQ_OUTn,
---            -- REQ_EN           => REQ_EN,
---            IOn_IN              => SCSI_IOn,
---            -- IOn_OUT          => IOn_OUT,
---            -- IO_EN            => IO_EN,
---            CDn_IN              => SCSI_CDn,
---            -- CDn_OUT          => CDn_OUT,
---            -- CD_EN            => CD_EN,
---            MSG_INn             => SCSI_MSGn
---            -- MSG_OUTn         => MSG_OUTn,
---            -- MSG_EN           => MSG_EN
---        );              
---
---    I_FDC: WF1772IP_TOP_SOC
---        PORT MAP(
---            clk                 => clk_fdc,
---            resetn              => reset_n,
---            CSn                 => fdc_cs_n,
---            RWn                 => fdc_wr_n,
---            A1                  => ca(2),
---            A0                  => ca(1),
---            data_in             => data_in_fdc_scsi,
---            data_out            => data_out_fdc,
---            -- DATA_EN          => CD_EN_FDC,
---            RDn                 => FDD_RDn,
---            TR00n               => FDD_TRACK00,
---            IPn                 => FDD_INDEXn,
---            WPRTn               => FDD_WPn,
---            DDEn                => '0', -- Fixed to MFM.
---            HDTYPE              => hd_dd_out,  
---            MO                  => FDD_MOT_ON,
---            WG                  => FDD_WR_GATE,
---            WD                  => FDD_WDn,
---            STEP                => FDD_STEP,
---            DIRC                => FDD_STEP_DIR,
---            DRQ                 => drq_fdc,
---            INTRQ               => fd_int 
---        );
+    I_SCSI: WF5380_TOP_SOC
+        PORT MAP(
+            clk                 => clk_fdc,
+            resetn              => reset_n,
+            ADR                 => ca,
+            data_in             => data_in_fdc_scsi,
+            data_out            => data_out_scsi,
+            --DATA_EN           =>,
+            -- Bus and DMA controls:
+            CSn                 => scsi_csn,
+            RDn                 => NOT fdc_wr_n OR NOT scsi_cs,
+            WRn                 => fdc_wr_n  OR NOT scsi_cs,
+            EOPn                => '1',
+            DACKn               => scsi_dack_n,
+            DRQ                 => scsi_drq,
+            INT                 => scsi_int,
+            -- READY            =>, 
+            -- SCSI bus:
+            DB_INn              => SCSI_D,
+            DB_OUTn             => scsi_d_out_n,
+            DB_EN               => scsi_d_en,
+            DBP_INn             => SCSI_PAR,
+            DBP_OUTn            => scsi_dbp_out_n,
+            DBP_EN              => scsi_dbp_en,                -- wenn 1 dann OUTput
+            RST_INn             => SCSI_RSTn,
+            RST_OUTn            => scsi_rst_out_n,
+            RST_EN              => scsi_rst_en,
+            BSY_INn             => SCSI_BUSYn,
+            BSY_OUTn            => scsi_bsy_out_n,
+            BSY_EN              => scsi_bsy_en,
+            SEL_INn             => SCSI_SELn,
+            SEL_OUTn            => scsi_sel_out_n,
+            SEL_EN              => scsi_sel_en,
+            ACK_INn             => '1',
+            ACK_OUTn            => SCSI_ACKn,
+            -- ACK_EN           => ACK_EN,
+            ATN_INn             => '1',
+            ATN_OUTn            => SCSI_ATNn,
+            -- ATN_EN           => ATN_EN,
+            REQ_INn             => scsi_drqn,
+            -- REQ_OUTn         => REQ_OUTn,
+            -- REQ_EN           => REQ_EN,
+            IOn_IN              => SCSI_IOn,
+            -- IOn_OUT          => IOn_OUT,
+            -- IO_EN            => IO_EN,
+            CDn_IN              => SCSI_CDn,
+            -- CDn_OUT          => CDn_OUT,
+            -- CD_EN            => CD_EN,
+            MSG_INn             => SCSI_MSGn
+            -- MSG_OUTn         => MSG_OUTn,
+            -- MSG_EN           => MSG_EN
+        );              
 
---    I_RTC: RTC
---        PORT MAP(
---            clk_main            => clk_main,
---            fb_adr              => fb_adr(19 DOWNTO 0),
---            FB_CS1n             => fb_cs_n(1),
---            fb_size0            => fb_size(0),
---            fb_size1            => fb_size(1),
---            fb_wr_n              => fb_wr_n,
---            fb_oe_n              => fb_oe_n,
---            fb_ad_IN            => fb_ad(23 DOWNTO 16),
---            fb_ad_OUT           => fb_ad_out_rtc,
---            fb_ad_EN_23_16      => fb_ad_en_rtc,
---            pic_int             => pic_int
---        );
+    I_FDC: WF1772IP_TOP_SOC
+        PORT MAP(
+            clk                 => clk_fdc,
+            resetn              => reset_n,
+            CSn                 => fdc_cs_n,
+            RWn                 => fdc_wr_n,
+            A1                  => ca(2),
+            A0                  => ca(1),
+            data_in             => data_in_fdc_scsi,
+            data_out            => data_out_fdc,
+            -- DATA_EN          => CD_EN_FDC,
+            RDn                 => FDD_RDn,
+            TR00n               => FDD_TRACK00,
+            IPn                 => FDD_INDEXn,
+            WPRTn               => FDD_WPn,
+            DDEn                => '0', -- Fixed to MFM.
+            HDTYPE              => hd_dd_out,  
+            MO                  => FDD_MOT_ON,
+            WG                  => FDD_WR_GATE,
+            WD                  => FDD_WDn,
+            STEP                => FDD_STEP,
+            DIRC                => FDD_STEP_DIR,
+            DRQ                 => drq_fdc,
+            INTRQ               => fd_int 
+        );
+
+    I_RTC: RTC
+        PORT MAP(
+            clk_main            => clk_main,
+            fb_adr              => fb_adr(19 DOWNTO 0),
+            FB_CS1n             => fb_cs_n(1),
+            fb_size0            => fb_size(0),
+            fb_size1            => fb_size(1),
+            fb_wr_n              => fb_wr_n,
+            fb_oe_n              => fb_oe_n,
+            fb_ad_IN            => fb_ad(23 DOWNTO 16),
+            fb_ad_OUT           => fb_ad_out_rtc,
+            fb_ad_EN_23_16      => fb_ad_en_rtc,
+            pic_int             => pic_int
+        );
 END ARCHITECTURE;
 

@@ -54,7 +54,7 @@ entity RTC is
 		FB_CS1n         : in std_logic;
 		FB_SIZE0        : in std_logic;
 		FB_SIZE1        : in std_logic;
-		FB_WRn          : in std_logic;
+		FB_WR_n          : in std_logic;
 		fb_oe_n          : in std_logic;
 		FB_AD_IN        : in std_logic_vector(23 downto 16);
 		FB_AD_OUT       : out std_logic_vector(23 downto 16);
@@ -116,13 +116,13 @@ begin
     variable ADRVAR : std_logic_vector(5 downto 0);
     begin
         wait until CLK_MAIN = '1' and CLK_MAIN' event;
-        if UHR_AS = '1' and FB_WRn = '0' then
+        if UHR_AS = '1' and fb_wr_n = '0' then
             RTC_ADR <= FB_AD_IN(21 downto 16);
         end if;
 
         for i in 0 to 63 loop
             ADRVAR := conv_std_logic_vector(i,6);
-            if RTC_ADR = ADRVAR and UHR_DS = '1' and FB_WRn = '0' then
+            if RTC_ADR = ADRVAR and UHR_DS = '1' and fb_wr_n = '0' then
                 VALUES(i) <= FB_AD_IN(23 downto 16);
             end if;
         end loop;
@@ -160,7 +160,7 @@ begin
         end if;
         
         -- Seconds:
-        if INC_SEC = '1' and (RTC_ADR /= "000000" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_SEC = '1' and (RTC_ADR /= "000000" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(0) = x"3B" then -- 59.
                 VALUES(0) <= (others => '0');
             else
@@ -169,7 +169,7 @@ begin
         end if;
 
         -- Minutes:
-        if INC_MIN = '1' and (RTC_ADR /= "000010" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_MIN = '1' and (RTC_ADR /= "000010" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(2) = x"3B" then -- 59.
                 VALUES(2) <= (others => '0');
             else
@@ -178,7 +178,7 @@ begin
         end if;
 
         -- Hours:
-        if INC_HOUR = '1' and (WINTERTIME = '0' or VALUES(12)(0) = '0') and (RTC_ADR /= "000100" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_HOUR = '1' and (WINTERTIME = '0' or VALUES(12)(0) = '0') and (RTC_ADR /= "000100" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(4) = x"17" then -- 23.
                 VALUES(4) <= (others => '0');
             elsif SUMMERTIME = '1' then
@@ -189,7 +189,7 @@ begin
         end if;
 
         -- Day and day of the week: 
-        if INC_DAY = '1' and (RTC_ADR /= "000110" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_DAY = '1' and (RTC_ADR /= "000110" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(6) = x"07" then
                 VALUES(6) <= x"01";
             else
@@ -197,7 +197,7 @@ begin
             end if;
         end if;
 
-        if INC_DAY = '1' and (RTC_ADR /= "000111" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_DAY = '1' and (RTC_ADR /= "000111" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(7) = DAYs_PER_MONTH then
                 VALUES(7) <= x"01";
             else
@@ -206,7 +206,7 @@ begin
         end if;
 
         -- Month:
-        if INC_MONAT = '1' and (RTC_ADR /= "001000" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_MONAT = '1' and (RTC_ADR /= "001000" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(8) = x"0C" then
                 VALUES(8) <= x"01";
             else
@@ -215,7 +215,7 @@ begin
         end if;
 
         -- Year:
-        if INC_JAHR = '1' and (RTC_ADR /= "001001" or UHR_DS = '0' or FB_WRn = '1') then
+        if INC_JAHR = '1' and (RTC_ADR /= "001001" or UHR_DS = '0' or fb_wr_n = '1') then
             if VALUES(9) = x"63" then -- 99.
                 VALUES(9) <= (others => '0');
             else

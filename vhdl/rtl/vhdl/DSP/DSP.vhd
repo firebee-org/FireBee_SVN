@@ -30,8 +30,8 @@ ENTITY DSP IS
 	port(
 		CLK_33M         : in std_logic;
 		CLK_MAIN        : in std_logic;
-		fb_oe_n          : in std_logic;
-		FB_WRn          : in std_logic;
+		fb_oe_n         : in std_logic;
+		fb_wr_n         : in std_logic;
 		FB_CS1n         : in std_logic;
 		FB_CS2n         : in std_logic;
 		FB_SIZE0        : in std_logic;
@@ -67,14 +67,14 @@ BEGIN
 	SRCSn  <= '0' when FB_CS2n = '0' and FB_ADR(27 downto 24) = x"4" else '1';	--FB_CS3n;
 	SRBHEn <= '0' when FB_ADR(0 downto 0) = "0" else '1';
 	SRBLEn <= '1' when FB_ADR(0 downto 0) = "0" and FB_SIZE1 = '0' and FB_SIZE0 = '1' else '0'; 
-	SRWEn <= '0' when FB_WRn = '0' and SRCSn = '0' and CLK_MAIN = '0' else '1';
+	SRWEn <= '0' when fb_wr_n = '0' and SRCSn = '0' and CLK_MAIN = '0' else '1';
 	SROEn <= '0' when fb_oe_n = '0' and SRCSn = '0' else '1';
 	DSP_INT <= '0';
 	DSP_TA <= '0';
 	IO_OUT(17 downto 0) <= FB_ADR(18 downto 1);
 	IO_EN <= '1';
-	SRD_OUT(15 downto 0) <= FB_AD_IN(31 downto 16) when FB_WRn = '0' and SRCSn = '0' else x"0000";
-	SRD_EN <= '1' when FB_WRn = '0' and SRCSn = '0' else '0';
+	SRD_OUT(15 downto 0) <= FB_AD_IN(31 downto 16) when fb_wr_n = '0' and SRCSn = '0' else x"0000";
+	SRD_EN <= '1' when fb_wr_n = '0' and SRCSn = '0' else '0';
 	FB_AD_OUT(31 downto 16) <= SRD_IN(15 downto 0) when fb_oe_n = '0' and SRCSn = '0' else x"0000";
 	FB_AD_OUT(15 downto 0) <= SRD_IN(15 downto 0) when fb_oe_n = '0' and SRCSn = '0' else x"0000";
 	FB_AD_EN <= '1' when fb_oe_n = '0' and SRCSn = '0' else '0';
