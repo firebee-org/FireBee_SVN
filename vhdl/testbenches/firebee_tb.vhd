@@ -172,12 +172,10 @@ ARCHITECTURE beh OF firebee_tb IS
             IDE_CSn             : OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
         );
     END COMPONENT firebee;
-
-    SIGNAL clock            : STD_LOGIC := '0';    -- main clock
     
-    SIGNAL rsto_mcf_n       : STD_LOGIC;                -- reset SIGNAL from Coldfire
-    SIGNAL clk_33m          : STD_LOGIC;                -- 33 MHz clock
-    SIGNAL clk_main         : STD_LOGIC;                -- 33 MHz clock
+    SIGNAL rsto_mcf_n       : STD_LOGIC := '0';                -- reset SIGNAL from Coldfire
+    SIGNAL clk_33m          : STD_LOGIC := '0';                -- 33 MHz clock
+    SIGNAL clk_main         : STD_LOGIC := '0';                -- 33 MHz clock
     
     SIGNAL clk_24m576       : STD_LOGIC;            -- 
     SIGNAL clk_25m          : STD_LOGIC;
@@ -187,17 +185,17 @@ ARCHITECTURE beh OF firebee_tb IS
     
     SIGNAL fb_ad            : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL fb_ale           : STD_LOGIC;
-    SIGNAL fb_burst_n       : STD_LOGIC;
-    SIGNAL fb_cs_n          : STD_LOGIC_VECTOR (3 DOWNTO 1);
-    SIGNAL fb_size          : STD_LOGIC_VECTOR (1 DOWNTO 0);
-    SIGNAL fb_oe_n          : STD_LOGIC;
-    SIGNAL fb_wr_n          : STD_LOGIC;
-    SIGNAL fb_ta_n          : STD_LOGIC;
+    SIGNAL fb_burst_n       : STD_LOGIC := '1';
+    SIGNAL fb_cs_n          : STD_LOGIC_VECTOR (3 DOWNTO 1) := "111";
+    SIGNAL fb_size          : STD_LOGIC_VECTOR (1 DOWNTO 0) := "00";
+    SIGNAL fb_oe_n          : STD_LOGIC := '1';
+    SIGNAL fb_wr_n          : STD_LOGIC := '1';
+    SIGNAL fb_ta_n          : STD_LOGIC := '1';
             
     SIGNAL dack1_n          : STD_LOGIC;
     SIGNAL dreq1_n          : STD_LOGIC;
     
-    SIGNAL master_n         : STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
+    SIGNAL master_n         : STD_LOGIC := '0'; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
     SIGNAL tout0_n          : STD_LOGIC; -- Not used so far.
     
     SIGNAL led_fpga_ok      : STD_LOGIC;
@@ -329,6 +327,8 @@ ARCHITECTURE beh OF firebee_tb IS
     SIGNAL IDE_WRn          : STD_LOGIC;
     SIGNAL IDE_RDn          : STD_LOGIC;
     SIGNAL IDE_CSn          : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    
+    SIGNAL a                : UNSIGNED (31 DOWNTO 0) := (OTHERS => '0');
 
 BEGIN
     I_FIREBEE : firebee
@@ -482,4 +482,26 @@ BEGIN
         dm              => UNSIGNED(vdm (3 DOWNTO 2)),
         dqs             => vd_qs (3 DOWNTO 2)
     );
+    
+    rsto_mcf_n <= '1' AFTER 1 ns;
+    
+    p_main_clk : PROCESS
+    BEGIN
+        WAIT FOR 30.03 ns;
+        clk_main <= NOT clk_main;
+    END PROCESS;
+    
+    stimulate_33mHz_clock : PROCESS
+    BEGIN
+        WAIT FOR 30.3 ns;
+        clk_33m <= NOT clk_33m;
+    END PROCESS;
+    
+    stimulate_bus : PROCESS
+    BEGIN
+        WAIT UNTIL RISING_EDGE(clk_main);
+        fb_ad <= STD_LOGIC_VECTOR (a);      -- put something (rather meaningless) on the FlexBus
+        a <= a + 1;
+        fb_ale <= a(0);                     -- just toggle for now
+    END PROCESS;
 END beh;

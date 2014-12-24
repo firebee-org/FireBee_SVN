@@ -212,7 +212,7 @@ BEGIN
 	clk_pixel <= clk_pixel_i;
 	fifo_clr <= fifo_clr_i;
 		
-	P_CLUT_ST_MC: PROCESS
+	p_clut_st_mc : PROCESS
 		-- This is the dual ported ram FOR the ST colour lookup tables.
 	 	VARIABLE clut_fa_index			: INTEGER;
 		VARIABLE clut_st_index			: INTEGER;
@@ -223,6 +223,7 @@ BEGIN
 		clut_fi_index := TO_INTEGER(UNSIGNED(fb_adr(9 DOWNTO 2)));
 
 		WAIT UNTIL RISING_EDGE(clk_main);
+        
 		IF clut_st_wr(0) = '1' THEN
 			clut_st(clut_st_index)(11 DOWNTO 8) <= fb_ad_in(27 DOWNTO 24);
 		END IF;
@@ -253,9 +254,9 @@ BEGIN
 		clut_st_out <= clut_st(clut_st_index);
 		clut_fa_out <= clut_fa(clut_fa_index);
 		clut_fbee_out <= clut_fi(clut_fi_index);
-	END PROCESS P_CLUT_ST_MC;
+	END PROCESS p_clut_st_mc;
 
-	P_CLUT_ST_PX: PROCESS
+	p_clut_st_px : PROCESS
 		VARIABLE clut_fa_index			: INTEGER;
 		VARIABLE clut_st_index			: INTEGER;
 		VARIABLE clut_fi_index			: INTEGER;
@@ -278,9 +279,9 @@ BEGIN
 		clut_fbee_r <= clut_fi(clut_fi_index)(23 DOWNTO 16);
 		clut_fbee_g <= clut_fi(clut_fi_index)(15 DOWNTO 8);
 		clut_fbee_b <= clut_fi(clut_fi_index)(7 DOWNTO 0);
-	END PROCESS P_CLUT_ST_PX;
+	END PROCESS p_clut_st_px;
 
-	P_VIDEO_OUT: PROCESS
+	p_video_out : PROCESS
 		VARIABLE video_out  : STD_LOGIC_VECTOR(23 DOWNTO 0);
 	BEGIN
 		WAIT UNTIL RISING_EDGE(clk_pixel_i);
@@ -296,7 +297,7 @@ BEGIN
 		red <= video_out(23 DOWNTO 16);
 		green <= video_out(15 DOWNTO 8);
 		blue <= video_out(7 DOWNTO 0);
-	END PROCESS P_VIDEO_OUT;
+	END PROCESS p_video_out;
 
 	P_CC: PROCESS
         VARIABLE cc24_i : STD_LOGIC_VECTOR(31 DOWNTO 0);
