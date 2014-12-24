@@ -751,14 +751,14 @@ BEGIN
 						x"015" WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
 						x"02A" WHEN atari_sync = '1' ELSE mul1(16 DOWNTO 5);
 	hdis_start <= vdl_hdb WHEN fbee_video_on = '1' ELSE border_left + 1;
-	hdis_end <= VDL_HDE WHEN fbee_video_on = '1' ELSE UNSIGNED (UNSIGNED(border_left) + UNSIGNED(hdis_len));
-	border_right <= vdl_hbb WHEN fbee_video_on = '1' ELSE UNSIGNED (UNSIGNED(hdis_end) + 1);
+	hdis_end <= VDL_HDE WHEN fbee_video_on = '1' ELSE border_left + hdis_len;
+	border_right <= vdl_hbb WHEN fbee_video_on = '1' ELSE hdis_end + 1;
 	hs_start <= vdl_hss WHEN fbee_video_on = '1' ELSE
 					atari_hl(11 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-					atari_hh(11 DOWNTO 0) WHEN vdl_vmd(2) = '1' ELSE UNSIGNED (mul2(16 DOWNTO 5));
+					atari_hh(11 DOWNTO 0) WHEN vdl_vmd(2) = '1' ELSE mul2(16 DOWNTO 5);
 	h_total <= vdl_hht WHEN fbee_video_on = '1' ELSE
 					atari_hl(27 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-					atari_hh(27 DOWNTO 16) WHEN atari_sync = '1' ELSE UNSIGNED (mul3(16 DOWNTO 5));
+					atari_hh(27 DOWNTO 16) WHEN atari_sync = '1' ELSE mul3(16 DOWNTO 5);
 	border_top <= vdl_vbe WHEN fbee_video_on = '1' ELSE
 						"00000011111" WHEN atari_sync = '1' ELSE '0' & vdl_vbe(10 DOWNTO 1);
 	vdis_start <= vdl_vdb WHEN fbee_video_on = '1' ELSE
@@ -767,7 +767,7 @@ BEGIN
 					"00110101111" WHEN atari_sync = '1' AND st_video = '1' ELSE -- 431.
 					"00111111111" WHEN atari_sync = '1' ELSE '0' & vdl_vde(10 DOWNTO 1); -- 511.
 	border_bottom <= vdl_vbb WHEN fbee_video_on = '1' ELSE
-						UNSIGNED (UNSIGNED(vdis_end) + 1) WHEN atari_sync = '1' ELSE ('0' & UNSIGNED (UNSIGNED(vdl_vbb(10 DOWNTO 1)) + 1));
+						vdis_end + 1 WHEN atari_sync = '1' ELSE ('0' & vdl_vbb(10 DOWNTO 1) + 1);
 	vs_start <= vdl_vss WHEN fbee_video_on = '1' ELSE
 					atari_vl(10 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
 					atari_vh(10 DOWNTO 0) WHEN atari_sync = '1' ELSE '0' & vdl_vss(10 DOWNTO 1);
@@ -775,7 +775,7 @@ BEGIN
 					atari_vl(26 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
 					atari_vh(26 DOWNTO 16) WHEN atari_sync = '1' ELSE '0' & vdl_vft(10 DOWNTO 1);
 
-	last <= '1' WHEN vhcnt  = UNSIGNED (UNSIGNED(h_total) - 10) ELSE '0';
+	last <= '1' WHEN vhcnt  = h_total - 10 ELSE '0';
 
 	VIDEO_CLOCK_DOMAIN   : PROCESS
 	BEGIN
@@ -795,19 +795,19 @@ BEGIN
 		END IF;
 
 		IF last = '0' THEN
-			vhcnt <= UNSIGNED (UNSIGNED(vhcnt) + 1);
+			vhcnt <= vhcnt + 1;
 		ELSE
 			vhcnt <= (OTHERS => '0');
 		END IF;
 
-		IF last = '1' AND vvcnt = UNSIGNED (UNSIGNED(v_total) - 1) THEN
+		IF last = '1' AND vvcnt = v_total - 1 THEN
 			vvcnt <= (OTHERS => '0');
 		ELSIF last = '1' THEN
-			vvcnt <= UNSIGNED (UNSIGNED(vvcnt) + 1);
+			vvcnt <= vvcnt + 1;
 		END IF;
 
 		-- Display on/off:
-		IF last = '1' AND vvcnt > UNSIGNED (UNSIGNED(border_top) - 1) AND vvcnt < UNSIGNED (UNSIGNED(border_bottom) - 1) THEN
+		IF last = '1' AND vvcnt > border_top - 1 AND vvcnt < border_bottom - 1 THEN
 			dpo_zl <= '1';
 		ELSIF last = '1' THEN
 			dpo_zl <= '0';
@@ -819,7 +819,7 @@ BEGIN
 			dpo_on <= '0';
 		END IF;
 
-		IF vhcnt = UNSIGNED (UNSIGNED(border_right) - 1) THEN
+		IF vhcnt = border_right - 1 THEN
 			dpo_off <= '1';
 		ELSE
 			dpo_off <= '0';
@@ -828,7 +828,7 @@ BEGIN
 		disp_on <= (disp_on AND NOT dpo_off) or (dpo_on AND dpo_zl);
 
 		-- Data transfer on/off:
-		IF vhcnt = UNSIGNED (UNSIGNED(hdis_start) - 1) THEN
+		IF vhcnt = hdis_start - 1 THEN
 			vdo_on <= '1'; -- BESSER EINZELN WEGEN TIMING.
 		ELSE
 			vdo_on <= '0';
@@ -840,7 +840,7 @@ BEGIN
 			vdo_off <= '0';
 		END IF;
 
-		IF last = '1' AND vvcnt >= UNSIGNED (UNSIGNED(vdis_start) - 1) AND vvcnt < vdis_end THEN
+		IF last = '1' AND vvcnt >= vdis_start - 1 AND vvcnt < vdis_end THEN
 			vdo_zl <= '1'; -- Take over at the END of the line.
 		ELSIF last = '1' THEN
 			vdo_zl <= '0'; -- 1 ZEILE DAVOR ON OFF
@@ -849,19 +849,19 @@ BEGIN
 		vdtron <= (vdtron AND NOT vdo_off) or (vdo_on AND vdo_zl);
 
 		-- Delay AND SYNC
-		IF vhcnt = UNSIGNED (UNSIGNED(hs_start) - 11) THEN
+		IF vhcnt = hs_start - 11 THEN
 			hsync_start <= '1';
 		ELSE
 			hsync_start <= '0';
 		END IF;
         
 		IF hsync_start = '1' THEN
-			hsync_i <= UNSIGNED (UNSIGNED(hsync_len));
+			hsync_i <= hsync_len;
 		ELSIF hsync_i > x"00" THEN
-			hsync_i <= UNSIGNED (UNSIGNED(hsync_i) - 1);
+			hsync_i <= hsync_i - 1;
 		END IF;
 
-		IF last = '1' AND vvcnt = UNSIGNED (UNSIGNED(vs_start) - 11) THEN
+		IF last = '1' AND vvcnt = vs_start - 11 THEN
 			vsync_start <= '1'; -- start am ende der Zeile vor dem vsync
 		ELSE
 			vsync_start <= '0';
@@ -870,7 +870,7 @@ BEGIN
 		IF last = '1' AND vsync_start = '1' THEN -- Start at the END of the line before vsync.
 			vsync_i <= "011"; -- 3 lines vsync length.
 		ELSIF last = '1' AND vsync_i > "000" THEN
-			vsync_i <= UNSIGNED (UNSIGNED(vsync_i) - 1); -- Count down.
+			vsync_i <= vsync_i - 1; -- Count down.
 		END IF;
 
 		IF fbee_vctr(15) = '1' AND vdl_vct(5) = '1' AND vsync_i = "000" THEN
@@ -898,7 +898,7 @@ BEGIN
 		border <= border(5 DOWNTO 0) & (disp_on AND NOT vdtron AND fbee_vctr(25));
 		border_on <= border(6);
 
-		IF last = '1' AND vvcnt = UNSIGNED (UNSIGNED(v_total) - 10) THEN
+		IF last = '1' AND vvcnt = v_total - 10 THEN
 			fifo_clr <= '1';
 		ELSIF last = '1' THEN
 			fifo_clr <= '0';
@@ -929,7 +929,7 @@ BEGIN
 		END IF;
         
 		IF vdtron = '1' AND sync_pix = '0' THEN
-			sub_pixel_cnt <= UNSIGNED (UNSIGNED(sub_pixel_cnt) + 1);
+			sub_pixel_cnt <= sub_pixel_cnt + 1;
 		ELSIF vdtron = '1' THEN
 			sub_pixel_cnt <= (OTHERS => '0');
 		END IF;
