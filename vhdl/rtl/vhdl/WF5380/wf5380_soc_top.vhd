@@ -43,64 +43,64 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity WF5380_TOP_SOC is
-	port (
+ port (
         -- System controls:
-		CLK			: in std_logic; -- Use a 16MHz Clock.
-		RESETn		: in std_logic;
-		
-		-- Address and data:
-		ADR			: in std_logic_vector(2 downto 0);
-		DATA_IN		: in std_logic_vector(7 downto 0);
-		DATA_OUT		: out std_logic_vector(7 downto 0);
-		DATA_EN		: out std_logic;
+  CLK   : in std_logic; -- Use a 16MHz Clock.
+  RESETn  : in std_logic;
+  
+  -- Address and data:
+  ADR   : in std_logic_vector(2 downto 0);
+  DATA_IN  : in std_logic_vector(7 downto 0);
+  DATA_OUT : out std_logic_vector(7 downto 0);
+  DATA_EN  : out std_logic;
 
-		-- Bus and DMA controls:
-		CSn			: in std_logic;
-		RDn			: in std_logic;
-		WRn			: in std_logic;
-		EOPn        : in std_logic;
-		DACKn	    : in std_logic;
-		DRQ		    : out std_logic;
-		INT		    : out std_logic;
-		READY       : out std_logic;
-		
-		-- SCSI bus:
-		DB_INn		: in std_logic_vector(7 downto 0);
-		DB_OUTn		: out std_logic_vector(7 downto 0);
-		DB_EN       : out std_logic;
-		DBP_INn		: in std_logic;
-		DBP_OUTn	: out std_logic;
-		DBP_EN      : out std_logic;
-		RST_INn     : in std_logic;
-		RST_OUTn    : out std_logic;
-		RST_EN      : out std_logic;
-		BSY_INn     : in std_logic;
-		BSY_OUTn    : out std_logic;
-		BSY_EN      : out std_logic;
-		SEL_INn     : in std_logic;
-		SEL_OUTn    : out std_logic;
-		SEL_EN      : out std_logic;
-		ACK_INn     : in std_logic;
-		ACK_OUTn    : out std_logic;
-		ACK_EN      : out std_logic;
-		ATN_INn     : in std_logic;
-		ATN_OUTn    : out std_logic;
-		ATN_EN      : out std_logic;
-		REQ_INn     : in std_logic;
-		REQ_OUTn    : out std_logic;
-		REQ_EN      : out std_logic;
-		IOn_IN      : in std_logic;
-		IOn_OUT     : out std_logic;
-		IO_EN       : out std_logic;
-		CDn_IN      : in std_logic;
-		CDn_OUT     : out std_logic;
-		CD_EN       : out std_logic;
-		MSG_INn     : in std_logic;
-		MSG_OUTn    : out std_logic;
-		MSG_EN      : out std_logic
-	);
+  -- Bus and DMA controls:
+  CSn   : in std_logic;
+  RDn   : in std_logic;
+  WRn   : in std_logic;
+  EOPn        : in std_logic;
+  DACKn     : in std_logic;
+  DRQ      : out std_logic;
+  INT      : out std_logic;
+  READY       : out std_logic;
+  
+  -- SCSI bus:
+  DB_INn  : in std_logic_vector(7 downto 0);
+  DB_OUTn  : out std_logic_vector(7 downto 0);
+  DB_EN       : out std_logic;
+  DBP_INn  : in std_logic;
+  DBP_OUTn : out std_logic;
+  DBP_EN      : out std_logic;
+  RST_INn     : in std_logic;
+  RST_OUTn    : out std_logic;
+  RST_EN      : out std_logic;
+  BSY_INn     : in std_logic;
+  BSY_OUTn    : out std_logic;
+  BSY_EN      : out std_logic;
+  SEL_INn     : in std_logic;
+  SEL_OUTn    : out std_logic;
+  SEL_EN      : out std_logic;
+  ACK_INn     : in std_logic;
+  ACK_OUTn    : out std_logic;
+  ACK_EN      : out std_logic;
+  ATN_INn     : in std_logic;
+  ATN_OUTn    : out std_logic;
+  ATN_EN      : out std_logic;
+  REQ_INn     : in std_logic;
+  REQ_OUTn    : out std_logic;
+  REQ_EN      : out std_logic;
+  IOn_IN      : in std_logic;
+  IOn_OUT     : out std_logic;
+  IO_EN       : out std_logic;
+  CDn_IN      : in std_logic;
+  CDn_OUT     : out std_logic;
+  CD_EN       : out std_logic;
+  MSG_INn     : in std_logic;
+  MSG_OUTn    : out std_logic;
+  MSG_EN      : out std_logic
+ );
 end entity WF5380_TOP_SOC;
-	
+ 
 architecture STRUCTURE of WF5380_TOP_SOC is
 signal ACK_OUT_CTRLn    : std_logic;
 signal AIP              : std_logic;
@@ -198,16 +198,16 @@ begin
 
     I_REGISTERS: WF5380_REGISTERS
         port map(
-            CLK			=> CLK,
-            RESETn	    => RESETn,
-            ADR			=> ADR,
-            DATA_IN		=> DATA_IN,
-            DATA_OUT	=> DATA_OUT,
-            DATA_EN		=> DATA_EN,
-            CSn			=> CSn,
-            RDn		    => RDn,
-            WRn	        => WRn,
-            RSTn	    => RST_INn,
+            CLK   => CLK,
+            RESETn     => RESETn,
+            ADR   => ADR,
+            DATA_IN  => DATA_IN,
+            DATA_OUT => DATA_OUT,
+            DATA_EN  => DATA_EN,
+            CSn   => CSn,
+            RDn      => RDn,
+            WRn         => WRn,
+            RSTn     => RST_INn,
             RST         => RST,
             ARB_EN      => ARB_EN,
             DMA_ACTIVE  => DMA_ACTIVE,
@@ -240,15 +240,15 @@ begin
 
     I_CONTROL: WF5380_CONTROL
         port map(
-            CLK			=> CLK,
-            RESETn	    => RESETn,
+            CLK   => CLK,
+            RESETn     => RESETn,
             BSY_INn     => BSY_INn,
             BSY_OUTn    => BSY_OUT_CTRLn,
             DATA_EN     => DATA_EN_CTRL,
             SEL_INn     => SEL_INn,
             ARB_EN      => ARB_EN,
             BSY_DISn    => BSY_DISn,
-            RSTn	    => RST_INn,
+            RSTn     => RST_INn,
             ARB         => ARB,
             AIP         => AIP,
             LA          => LA,

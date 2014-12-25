@@ -135,11 +135,76 @@ ARCHITECTURE rtl OF ddr_ram_model IS
     CONSTANT TBITS          : INTEGER := 512 * M1;
 
     --SIGNAL BITs           : UNSIGNED (B - 1 DOWNTO 0);
-    SIGNAL BIT_C            : UNSIGNED (NCOL - 1 DOWNTO 0);
+    CONSTANT BIT_C          : INTEGER := NCOL - 1;
     CONSTANT NWORD          : INTEGER := TBITS / B / NBANK;
-    SIGNAL BIT_T            : UNSIGNED (NCOL + ADDRTOP DOWNTO 0);
-    SIGNAL WORD             : UNSIGNED (NWORD - 1 DOWNTO 0);
+    CONSTANT BIT_T          : INTEGER := NCOL + ADDRTOP;
+    CONSTANT WORD           : INTEGER := NWORD - 1;
 
     CONSTANT HB             : INTEGER := B / 2;
+    
+    CONSTANT PWRUP_TIME     : INTEGER := 0;
+    CONSTANT PWUP_CHECK     : STD_LOGIC := '1';
+    
+    CONSTANT INITIAL        : INTEGER := 0;
+    CONSTANT HIGH           : INTEGER := 1;
+    CONSTANT LOW            : INTEGER := 0;
+    
+    SIGNAL addr             : STD_LOGIC_VECTOR (NBANK / 2 + ADDRTOP DOWNTO 0);
+    
+    TYPE mem_array_t IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR(B - 1 DOWNTO 0);
+    SIGNAL mem_a            : mem_array_t (NWORD - 1 DOWNTO 0);                         -- memory cell array of a bank
+    SIGNAL mem_b            : mem_array_t (NWORD - 1 DOWNTO 0);                         -- memory cell array of b bank
+    SIGNAL mem_c            : mem_array_t (NWORD - 1 DOWNTO 0);                         -- memory cell array of c bank
+    SIGNAL mem_d            : mem_array_t (NWORD - 1 DOWNTO 0);                         -- memory cell array of d bank
+    
+    SIGNAL t_dqi            : UNSIGNED (B - 1 DOWNTO 0);
+    SIGNAL dqsi             : UNSIGNED (NDQS - 1 DOWNTO 0);
+    SIGNAL dqsi_n           : UNSIGNED (NDQS - 1 DOWNTO 0);
+    
+    SIGNAL dqo              : UNSIGNED (B - 1 DOWNTO 0);        -- output temp register declaration
+    SIGNAL t_tqo            : UNSIGNED (B - 1 DOWNTO 0);
+    
+    TYPE r_addr_t IS ARRAY (NATURAL RANGE <>) OF UNSIGNED (NBANK - 1 DOWNTO 0);
+    SIGNAL r_addr_n             : r_addr_t (ADDRTOP DOWNTO 0);
+    SIGNAL r_addr               : UNSIGNED (ADDRTOP DOWNTO 0);
+    SIGNAL c_addr               : UNSIGNED (BIT_C DOWNTO 0);
+    SIGNAL c_addr_delay         : UNSIGNED (BIT_C DOWNTO 0);
+    SIGNAL c_addr_delay_bf      : UNSIGNED (BIT_C DOWNTO 0);
+    SIGNAL m_addr               : UNSIGNED (BIT_T DOWNTO 0);        -- merge row and column address
+    SIGNAL m1_addr              : UNSIGNED (BIT_T DOWNTO 0);        -- merge row and column address pseudo
+    
+    TYPE d_reg_t IS ARRAY (NATURAL RANGE <>) OF UNSIGNED (PAGEDEPTH DOWNTO 0);
+    SIGNAL dout_reg             : UNSIGNED (B - 1 DOWNTO 0);
+    SIGNAL din_reg              : UNSIGNED (B - 1 DOWNTO 0);
+    SIGNAL clk_dq               : UNSIGNED (B - 1 DOWNTO 0);
+    SIGNAL ptr                  : STD_LOGIC;
+    SIGNAL zdata                : UNSIGNED(B - 1 DOWNTO 0);
+    SIGNAL zbyte                : UNSIGNED(7 DOWNTO 0);
+    
+    -- we know the phase of external signal by examining the state of its flag
+    SIGNAL r_bank_addr          : STD_LOGIC;
+    SIGNAL c_bank_addr          : UNSIGNED (NBANK / 2 - 1 DOWNTO 0);    -- column bank check flag
+    SIGNAL c_bank_addr_delay    : UNSIGNED (NBANK / 2 - 1 DOWNTO 0);    -- column bank check flag 
+    SIGNAL c_bank_addr_delay_bf : UNSIGNED (NBANK / 2 - 1 DOWNTO 0);    -- column bank check flag
+    SIGNAL prech_reg            : UNSIGNED (NBANK / 2 DOWNTO 0);        -- precharge mode (addr (13 DOWNTO 12) AND (addr(10))
+    
+    SIGNAL auto_flag            : UNSIGNED (NBANK - 1 DOWNTO 0);
+    SIGNAL burst_type           : STD_LOGIC;                            -- burst type flag
+    SIGNAL auto_flagx           : STD_LOGIC;                            -- auto refresh flag
+    SIGNAL self_flag            : STD_LOGIC;                            -- self refresh flag
+    SIGNAL kill_bank            : INTEGER;
+    SIGNAL k                    : INTEGER;
+    
+    SIGNAL precharge_flag       : UNSIGNED (NBANK - 1 DOWNTO 0);        -- precharge bank check flag
+    SIGNAL autoprech_reg        : UNSIGNED (1 DOWNTO 0);
+    SIGNAL pwrup_done           : STD_LOGIC;
+    SIGNAL first_pre            : UNSIGNED (NBANK - 1 DOWNTO 0);
+    
+    SIGNAL auto_cnt             : INTEGER;
+    SIGNAL i                    : INTEGER;
+    
+    SIGNAL rfu                  : UNSIGNED (6 DOWNTO 0);
 BEGIN  
+    addr <= STD_LOGIC_VECTOR(ba) & ad;
+    rfu <= UNSIGNED(addr(14 DOWNTO 9)) & UNSIGNED(addr(7 DOWNTO 7)); 
 END rtl;
