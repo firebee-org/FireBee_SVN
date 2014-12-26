@@ -387,67 +387,6 @@ set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
 set_global_assignment -name RTLV_REMOVE_FANOUT_FREE_REGISTERS OFF
 set_global_assignment -name RTLV_SIMPLIFIED_LOGIC OFF
 set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp.stp
-set_global_assignment -name SDC_FILE firebee.sdc
-set_global_assignment -name SOURCE_FILE firebee.qsf
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DDR/DDR_CTRL.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/Video_Top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/RTC/rtc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_soc_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_registers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_control.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_tx.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_rx.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_ctrl.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_timers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_interrupts.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_gpio.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_transmit.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_receive.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_ctrl_status.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_transceiver.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_registers.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_digital_pll.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_crc_logic.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_control.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_am_detector.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_wave.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top_soc.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DSP/DSP.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Peripherals/ide_cf_sd_rom.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/fbee_dma.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Blitter/Blitter_WF.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Interrupt/interrupt.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/VIDEO_CTRL.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo1.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo0.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll4.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll3.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll3.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll2.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll2.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll1.vhd
-set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll1.cmp
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee_pkg.vhd
-set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.qip
 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
@@ -684,7 +623,6 @@ set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[2]
 set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[3]
 set_instance_assignment -name IO_STANDARD "3.0-V LVCMOS" -to IRQ_n[4]
 set_global_assignment -name FLOW_ENABLE_IO_ASSIGNMENT_ANALYSIS ON
-set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/io_register.vhd
 set_global_assignment -name EDA_TEST_BENCH_NAME firebee_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME firebee_tb -section_id firebee_tb
 set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "10 ms" -section_id firebee_tb
@@ -696,4 +634,66 @@ set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_mod
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ctlr_tb.vhd -section_id ddr_ctlr_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/ddr_ram_model.vhd -section_id firebee_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE ../../../testbenches/firebee_tb.vhd -section_id firebee_tb
+set_global_assignment -name SDC_FILE firebee.sdc
+set_global_assignment -name SOURCE_FILE firebee.qsf
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DDR/DDR_CTRL.vhd -hdl_version VHDL_2008
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/Video_Top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/RTC/rtc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_soc_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_registers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF5380/wf5380_control.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_tx.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_rx.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_usart_ctrl.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_timers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_interrupts.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_MFP68901_IP/wf68901ip_gpio.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_transmit.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_receive.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_UART6850_IP/wf6850ip_ctrl_status.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_transceiver.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_registers.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_digital_pll.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_crc_logic.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_control.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_FDC1772_IP/wf1772ip_am_detector.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_wave.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top_soc.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_top.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/WF_SND2149_IP/wf2149ip_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DSP/DSP.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Peripherals/ide_cf_sd_rom.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/fbee_dma.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Blitter/Blitter_WF.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Interrupt/interrupt.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/VIDEO_CTRL.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo1.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/DMA/dcfifo0.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifoDZ.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Video/lpm_fifo_dc0.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll4.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll3.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll3.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll2.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll2.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/altpll1.vhd
+set_global_assignment -name SOURCE_FILE ../../../rtl/vhdl/Firebee/altpll1.cmp
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/Firebee/Firebee_pkg.vhd
+set_global_assignment -name QIP_FILE ../../../rtl/vhdl/Firebee/altpll_reconfig1.qip
+set_global_assignment -name VHDL_FILE ../../../rtl/vhdl/io_register.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
