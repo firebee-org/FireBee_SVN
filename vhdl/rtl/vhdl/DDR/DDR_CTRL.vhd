@@ -183,41 +183,50 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL va_p             : unsigned(12 DOWNTO 0);
     SIGNAL ba_s             : unsigned(1 DOWNTO 0) ;
     SIGNAL ba_p             : unsigned(1 DOWNTO 0);
-BEGIN
-    access_width <= long_access WHEN fb_size1 = '0' AND fb_size0 = '0' ELSE
-                    word_access WHEN fb_size1 = '1' AND fb_size0 = '0' ELSE
-                    byte_access WHEN fb_size1 = '0' AND fb_size0 = '1' ELSE
-                    line_access;
-  
-    -- Byte selectors:
-    byte_sel(0) <= '1' WHEN fb_adr(1 DOWNTO 0) = "00" OR
-                            access_width = line_access OR 
-                            access_width = long_access 
-                            ELSE '0';
-
-    byte_sel(1) <= '1' WHEN fb_adr(1 DOWNTO 0) = "01" OR
-                            (access_width = word_access AND fb_adr(1) = '0') OR
-                            access_width = line_access OR 
-                            access_width = long_access
-                            ELSE '0';
-             
-    byte_sel(2) <= '1' WHEN fb_adr(1 DOWNTO 0) = "10" OR
-                            access_width = line_access OR
-                            access_width = long_access
-                            ELSE '0';
-             
-    byte_sel(3) <= '1' WHEN fb_adr(1 DOWNTO 0) = "11" OR
-                            (access_width = word_access AND fb_adr(1) = '1') OR
-                            access_width = line_access OR
-                            access_width = long_access
-                            ELSE '0';
-                                             
+BEGIN                                             
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     ------------------------------------ ddr_access_cpu READ (REG DDR => ddr_access_cpu) AND WRITE (ddr_access_cpu => REG DDR) ---------------------------------------------------------------------
     fbctrl_reg : PROCESS
+        VARIABLE aw : access_width_t;
+        
     BEGIN
         WAIT UNTIL rising_edge(clk_main);
+        
+        -- determine access type
+        CASE std_logic_vector'(fb_size1 & fb_size0) IS
+            WHEN "00"   => aw := long_access;
+            WHEN "01"   => aw := byte_access;
+            WHEN "10"   => aw := word_access;
+            WHEN OTHERS => aw := line_access;
+        END CASE;
+        
+        -- determine byte selectors
+        IF fb_adr(1 DOWNTO 0) = "00" OR aw = line_access OR aw = long_access THEN
+            byte_sel(0) <= '1';
+        ELSE
+            byte_sel(0) <= '0';
+        END IF;
+        
+        IF fb_adr(1 DOWNTO 0) = "01" OR (aw = word_access AND fb_adr(1) = '0') OR aw = line_access OR aw = long_access THEN
+            byte_sel(1) <= '1';
+        ELSE
+            byte_sel(1) <= '0';
+        END IF;
+        
+        IF fb_adr(1 DOWNTO 0) = "10" OR aw = line_access OR aw = long_access THEN
+            byte_sel(2) <= '1';
+        ELSE
+            byte_sel(2) <= '0';
+        END IF;
+        
+        IF fb_adr(1 DOWNTO 0) = "11" OR (aw = word_access AND fb_adr(1) = '1') OR aw = line_access OR aw = long_access THEN
+            byte_sel(3) <= '1';
+        ELSE
+            byte_sel(3) <= '0';
+        END IF;
+        
         fb_regddr <= fb_regddr_next;
+        access_width <= aw;
     END PROCESS FBCTRL_REG;
     
     fbctrl_dec : PROCESS(fb_regddr, bus_cyc, ddr_sel, access_width, fb_wr_n, ddr_cs)
