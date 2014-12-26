@@ -153,15 +153,15 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL fifo_req         : std_logic;
     SIGNAL fifo_row_adr     : unsigned(12 DOWNTO 0);
     SIGNAL fifo_ba          : unsigned(1 DOWNTO 0);
-    SIGNAL fifo_col_adr     : UNSIGNED(9 DOWNTO 0);
+    SIGNAL fifo_col_adr     : unsigned(9 DOWNTO 0);
     SIGNAL fifo_clr_sync    : std_logic;
     SIGNAL vdm_sel_i        : unsigned(3 DOWNTO 0);
     SIGNAL clear_fifo_cnt   : std_logic;
     SIGNAL stop             : std_logic;
     SIGNAL fifo_bank_ok     : std_logic;
-    SIGNAL ddr_refresh_cnt  : UNSIGNED(10 DOWNTO 0) := "00000000000";
+    SIGNAL ddr_refresh_cnt  : unsigned(10 DOWNTO 0) := "00000000000";
     SIGNAL ddr_refresh_req  : std_logic;
-    SIGNAL ddr_refresh_sig  : UNSIGNED(3 DOWNTO 0);
+    SIGNAL ddr_refresh_sig  : unsigned(3 DOWNTO 0);
     SIGNAL need_refresh     : std_logic;
     SIGNAL video_base_l_d   : unsigned(7 DOWNTO 0);
     SIGNAL video_base_l     : std_logic;
@@ -170,7 +170,7 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL video_base_h_d   : unsigned(7 DOWNTO 0);
     SIGNAL video_base_h     : std_logic;
     SIGNAL video_base_x_d   : unsigned(2 DOWNTO 0);
-    SIGNAL video_adr_cnt    : UNSIGNED(22 DOWNTO 0);
+    SIGNAL video_adr_cnt    : unsigned(22 DOWNTO 0);
     SIGNAL video_cnt_l      : std_logic;
     SIGNAL video_cnt_m      : std_logic;
     SIGNAL video_cnt_h      : std_logic;
@@ -226,6 +226,7 @@ BEGIN
         END IF;
         
         fb_regddr <= fb_regddr_next;
+        
         access_width <= aw;
     END PROCESS FBCTRL_REG;
     
