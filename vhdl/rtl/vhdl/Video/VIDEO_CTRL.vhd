@@ -62,7 +62,7 @@ ENTITY video_ctrl IS
         vr_busy         : IN std_logic;
         color8          : OUT std_logic;
         fbee_clut_rd    : OUT std_logic;
-        COLOR1          : OUT std_logic;
+        color1          : OUT std_logic;
         falcon_clut_rdh : OUT std_logic;
         falcon_clut_rdl : OUT std_logic;
         falcon_clut_wr  : OUT unsigned(3 DOWNTO 0);
@@ -130,13 +130,13 @@ ARCHITECTURE behaviour OF video_ctrl IS
     SIGNAL sys_ctr_cs               : std_logic;
     SIGNAL vdl_lof                  : unsigned(15 DOWNTO 0);
     SIGNAL vdl_lof_cs               : std_logic;
-    SIGNAL VDL_LWD                  : unsigned(15 DOWNTO 0);
-    SIGNAL VDL_LWD_CS               : std_logic;
+    SIGNAL vdl_lwd                  : unsigned(15 DOWNTO 0);
+    SIGNAL vdl_lwd_cs               : std_logic;
 
     -- Miscellaneous control registers:
     SIGNAL clut_ta                  : std_logic;                -- Requires one wait state.
     SIGNAL hsync_i                  : unsigned(7 DOWNTO 0);
-    SIGNAL hsync_len                : unsigned(7 DOWNTO 0);    -- Length of a hsync pulse IN clk_pixel cycles.
+    SIGNAL hsync_len                : unsigned(7 DOWNTO 0);     -- Length of a hsync pulse IN clk_pixel cycles.
     SIGNAL hsync_start              : std_logic;
     SIGNAL last                     : std_logic;                -- Last pixel of a line indicator.
     SIGNAL vsync_start              : std_logic;
@@ -245,29 +245,29 @@ BEGIN
     vr_rd <= vr_rd_i;
     clk_pixel <= clk_pixel_i;
     
-    -- Byte selectors:
+    -- Byte selectORs:
     fb_b(0) <= '1' WHEN fb_adr(1 DOWNTO 0) = "00" ELSE '0'; -- Byte 0.
 
-    fb_b(1) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long word.
-                    '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
-                    '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' AND fb_adr(1) = '0' ELSE -- High word.
-                    '1' WHEN fb_adr(1 DOWNTO 0) = "01" ELSE '0'; -- Byte 1.
+    fb_b(1) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long wORd.
+               '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
+               '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' AND fb_adr(1) = '0' ELSE -- High wORd.
+               '1' WHEN fb_adr(1 DOWNTO 0) = "01" ELSE '0'; -- Byte 1.
              
-    fb_b(2) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long word.
-                    '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
-                    '1' WHEN fb_adr(1 DOWNTO 0) = "10" ELSE '0'; -- Byte 2.
+    fb_b(2) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long wORd.
+               '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
+               '1' WHEN fb_adr(1 DOWNTO 0) = "10" ELSE '0'; -- Byte 2.
              
-    fb_b(3) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long word.
-                    '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
-                    '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' AND fb_adr(1) = '1' ELSE -- Low word.
-                    '1' WHEN fb_adr(1 DOWNTO 0) = "11" ELSE '0'; -- Byte 3.
+    fb_b(3) <= '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE -- Long wORd.
+               '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- Long.
+               '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' AND fb_adr(1) = '1' ELSE -- Low wORd.
+               '1' WHEN fb_adr(1 DOWNTO 0) = "11" ELSE '0'; -- Byte 3.
              
-    -- 16 bit selectors:
+    -- 16 bit selectORs:
     fb_16b(0) <= NOT fb_adr(0);
     fb_16b(1) <= '1'WHEN fb_adr(0) = '1' ELSE
-                    '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- No byte.
-                    '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' ELSE -- No byte.
-                    '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE '0'; -- No byte.
+                 '1' WHEN fb_size(1) = '0' AND fb_size(0) = '0' ELSE -- No byte.
+                 '1' WHEN fb_size(1) = '1' AND fb_size(0) = '0' ELSE -- No byte.
+                 '1' WHEN fb_size(1) = '1' AND fb_size(0) = '1' ELSE '0'; -- No byte.
 
     -- Firebee CLUT:
     fbee_clut_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr(27 DOWNTO 10) = "000000000000000000" ELSE '0'; -- 0-3FF/1024
@@ -276,7 +276,7 @@ BEGIN
 
     p_clut_ta : PROCESS
     BEGIN
-        WAIT UNTIL clk_main = '1' AND clk_main' EVENT;
+        WAIT UNTIL rising_edge(clk_main);
         IF video_mod_ta_i = '0' AND fbee_clut_cs = '1' THEN
             clut_ta <= '1';
         ELSIF video_mod_ta_i = '0' AND falcon_clut_cs = '1' THEN
@@ -290,8 +290,8 @@ BEGIN
 
     --Falcon CLUT:
     falcon_clut_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(19 DOWNTO 10) = "1111100110" ELSE '0'; -- $F9800/$400
-    falcon_clut_rdh <= '1' WHEN falcon_clut_cs = '1' AND fb_oe_n = '0' AND fb_adr(1) = '0' ELSE '0'; -- High word.
-    falcon_clut_rdl <= '1' WHEN falcon_clut_cs = '1' AND fb_oe_n = '0' AND fb_adr(1) = '1' ELSE '0'; -- Low word.
+    falcon_clut_rdh <= '1' WHEN falcon_clut_cs = '1' AND fb_oe_n = '0' AND fb_adr(1) = '0' ELSE '0'; -- High wORd.
+    falcon_clut_rdl <= '1' WHEN falcon_clut_cs = '1' AND fb_oe_n = '0' AND fb_adr(1) = '1' ELSE '0'; -- Low wORd.
     falcon_clut_wr(1 DOWNTO 0) <= fb_16b WHEN fb_adr(1) = '0' AND falcon_clut_cs = '1' AND fb_wr_n = '0' ELSE "00";
     falcon_clut_wr(3 DOWNTO 2) <= fb_16b WHEN fb_adr(1) = '1' AND falcon_clut_cs = '1' AND fb_wr_n = '0' ELSE "00";
     
@@ -322,11 +322,19 @@ BEGIN
         END IF;
 
         -- Firebee VIDEO CONTROL:
-        -- Bit 0 = FBEE VIDEO ON, 1 = POWER ON VIDEO DAC, 2 = FBEE 24BIT,
-        -- Bit 3 = FBEE 16BIT, 4 = FBEE 8BIT, 5 = FBEE 1BIT, 
-        -- Bit 6 = FALCON SHIFT MODE, 7 = ST SHIFT MODE, 9..8 = VCLK frequency,
-        -- Bit 15 = SYNC ALLOWED, 31..16 = video_ram_ctr,
-        -- Bit 25 = RANDFARBE EINSCHALTEN, 26 = STANDARD ATARI SYNCS.
+        --      Bit 0 = FBEE VIDEO ON,
+        --      Bit 1 = POWER ON VIDEO DAC,
+        --      Bit 2 = FBEE 24BIT,
+        --      Bit 3 = FBEE 16BIT,
+        --      Bit 4 = FBEE 8BIT,
+        --      Bit 5 = FBEE 1BIT, 
+        --      Bit 6 = FALCON SHIFT MODE,
+        --      Bit 7 = ST SHIFT MODE,
+        --      Bit 9..8 = VCLK frequency,
+        --      Bit 15 = SYNC ALLOWED,
+        --      Bit 31..16 = video_ram_ctr,
+        --      Bit 25 = enable border color,
+        --      Bit 26 = STANDARD ATARI SYNCS.
         IF fbee_vctr_cs = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
             fbee_vctr(31 DOWNTO 24) <= data_in(31 DOWNTO 24);
         ELSIF fbee_vctr_cs = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
@@ -337,7 +345,7 @@ BEGIN
             fbee_vctr(5 DOWNTO 0) <= data_in(5 DOWNTO 0);
         END IF;
         
-        -- ST or Falcon shift mode: assert WHEN X..shift register:
+        -- ST or Falcon shift mode: assert when X..shift register:
         IF falcon_shift_mode_cs = '1' AND fb_wr_n = '0' THEN
             fbee_vctr(7) <= falcon_shift_mode_cs AND NOT fb_wr_n AND NOT fbee_video_on;
             fbee_vctr(6) <= st_shift_mode_cs AND NOT fb_wr_n AND NOT fbee_video_on;
@@ -414,13 +422,13 @@ BEGIN
                     '1' WHEN fbee_video_on = '1' AND fbee_vctr(3 DOWNTO 2) = "10" ELSE '0'; -- Firebee mode.
     color24_i <= '1' WHEN fbee_video_on = '1' AND fbee_vctr(2) = '1' ELSE '0'; -- Firebee mode.
     
-    COLOR1 <= color1_i;
+    color1 <= color1_i;
     color2 <= color2_i;
     color4 <= color4_i;
     color8 <= color8_i;
     
     -- VIDEO PLL config AND reconfig:
-    video_pll_config_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_b(0) = '1' AND fb_b(1) = '1' AND fb_adr(27 DOWNTO 9) = "0000000000000000011" ELSE '0'; -- $(F)000'0600-7FF -> 6/2 word AND long only.
+    video_pll_config_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_b(0) = '1' AND fb_b(1) = '1' AND fb_adr(27 DOWNTO 9) = "0000000000000000011" ELSE '0'; -- $(F)000'0600-7FF -> 6/2 wORd AND long only.
     video_pll_reconfig_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_b(0) = '1' AND fb_adr(27 DOWNTO 0) = x"0000800" ELSE '0'; -- $(F)000'0800. 
     vr_rd_i <= '1' WHEN video_pll_config_cs = '1' AND fb_wr_n = '0' AND vr_busy = '0' ELSE '0';
 
@@ -446,7 +454,7 @@ BEGIN
         IF video_pll_reconfig_cs = '1' AND fb_wr_n = '0' AND vr_busy = '0' AND lock = false THEN
             video_reconfig_i <= '1'; -- This is a strobe.
             lock := true;
-        ELSIF video_pll_reconfig_cs = '0' or fb_wr_n = '1' or vr_busy = '1' THEN
+        ELSIF video_pll_reconfig_cs = '0' OR fb_wr_n = '1' OR vr_busy = '1' THEN
             video_reconfig_i <= '0';
             lock := false;
         ELSE
@@ -457,7 +465,7 @@ BEGIN
     video_ram_ctr <= fbee_vctr(31 DOWNTO 16);
     
     -- Firebee colour modi: 
-    fbee_clut <= '1' WHEN fbee_video_on = '1' AND (color1_i = '1' or color8_i = '1') ELSE
+    fbee_clut <= '1' WHEN fbee_video_on = '1' AND (color1_i = '1' OR color8_i = '1') ELSE
                         '1' WHEN st_video = '1' AND color1_i = '1';
                  
     falcon_video <= fbee_vctr(7);
@@ -467,14 +475,14 @@ BEGIN
 
     -- Several (video)-registers:
     ccr_cs <= '1' WHEN fb_cs_n(2) = '0' AND fb_adr = x"f0000404" ELSE '0';  -- $F0000404 - Firebee video border color
-    sys_ctr_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8008" ELSE '0'; -- $FF8006 - Falcon monitor type register
+    sys_ctr_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8008" ELSE '0'; -- $FF8006 - Falcon monitOR type register
     vdl_lof_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff820e" ELSE '0'; -- $FF820E/F - line-width hi/lo.
-    VDL_LWD_CS <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8210" ELSE '0'; -- $FF8210/1 - vertical wrap hi/lo.
-    vdl_hht_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8282" ELSE '0'; -- $FF8282/3 - horizontal hold timer hi/lo.
-    vdl_hbe_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8286" ELSE '0'; -- $FF8286/7 - horizontal border END hi/lo.
-    vdl_hdb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8288" ELSE '0'; -- $FF8288/9 - horizontal display BEGIN hi/lo.
-    vdl_hde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828a" ELSE '0'; -- $FF828A/B - horizontal display END hi/lo.
-    vdl_hbb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8284" ELSE '0'; -- $FF8284/5 - horizontal border BEGIN hi/lo.
+    vdl_lwd_CS <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8210" ELSE '0'; -- $FF8210/1 - vertical wrap hi/lo.
+    vdl_hht_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8282" ELSE '0'; -- $FF8282/3 - hORizontal hold timer hi/lo.
+    vdl_hbe_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8286" ELSE '0'; -- $FF8286/7 - hORizontal border END hi/lo.
+    vdl_hdb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8288" ELSE '0'; -- $FF8288/9 - hORizontal display BEGIN hi/lo.
+    vdl_hde_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828a" ELSE '0'; -- $FF828A/B - hORizontal display END hi/lo.
+    vdl_hbb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff8284" ELSE '0'; -- $FF8284/5 - hORizontal border BEGIN hi/lo.
     vdl_hss_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff828c" ELSE '0'; -- $FF828C/D - position hsync (HSS).
     vdl_vft_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a2" ELSE '0'; -- $FF82A2/3 - video frequency timer (VFT).
     vdl_vbb_cs <= '1' WHEN fb_cs_n(1) = '0' AND fb_adr(23 DOWNTO 1) & '0' = x"ff82a4" ELSE '0'; -- $FF82A4/5 - vertical blank on (IN half line steps).
@@ -510,14 +518,14 @@ BEGIN
             vdl_lof(7 DOWNTO 0) <= data_in(23 DOWNTO 16);
         END IF;
 
-        --VDL_LWD
-        IF VDL_LWD_CS = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
-            VDL_LWD(15 DOWNTO 8) <= data_in(31 DOWNTO 24);
-        ELSIF VDL_LWD_CS = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
-            VDL_LWD(7 DOWNTO 0) <= data_in(23 DOWNTO 16);
+        --vdl_lwd
+        IF vdl_lwd_CS = '1' AND fb_b(0) = '1' AND fb_wr_n = '0' THEN
+            vdl_lwd(15 DOWNTO 8) <= data_in(31 DOWNTO 24);
+        ELSIF vdl_lwd_CS = '1' AND fb_b(1) = '1' AND fb_wr_n = '0' THEN
+            vdl_lwd(7 DOWNTO 0) <= data_in(23 DOWNTO 16);
         END IF;
 
-        -- Horizontal:
+        -- HORizontal:
         -- vdl_hht:
         IF vdl_hht_cs = '1' AND fb_b(2) = '1' AND fb_wr_n = '0' THEN
             vdl_hht(11 DOWNTO 8) <= data_in(27 DOWNTO 24);
@@ -620,51 +628,51 @@ BEGIN
     
     -- Register OUT:
     data_out(31 DOWNTO 16) <= "000000" & st_shift_mode & x"00" WHEN st_shift_mode_cs = '1' ELSE
-                                        "00000" & falcon_shift_mode WHEN falcon_shift_mode_cs = '1' ELSE
-                                        "100000000" & sys_ctr(6 DOWNTO 4) & NOT blitter_run & sys_ctr(2 DOWNTO 0) WHEN sys_ctr_cs = '1' ELSE
-                                        vdl_lof WHEN vdl_lof_cs = '1' ELSE
-                                        VDL_LWD WHEN VDL_LWD_CS = '1' ELSE
-                                        x"0" & vdl_hbe WHEN vdl_hbe_cs = '1' ELSE
-                                        x"0" & vdl_hdb WHEN vdl_hdb_cs = '1' ELSE
-                                        x"0" & VDL_HDE WHEN vdl_hde_cs = '1' ELSE
-                                        x"0" & vdl_hbb WHEN vdl_hbb_cs = '1' ELSE
-                                        x"0" & vdl_hss WHEN vdl_hss_cs = '1' ELSE
-                                        x"0" & vdl_hht WHEN vdl_hht_cs = '1' ELSE
-                                        "00000" & vdl_vbe WHEN vdl_vbe_cs = '1' ELSE
-                                        "00000" & vdl_vdb WHEN VDL_VDB_CS = '1' ELSE
-                                        "00000" & vdl_vde WHEN vdl_vde_cs = '1' ELSE
-                                        "00000" & vdl_vbb WHEN vdl_vbb_cs = '1' ELSE
-                                        "00000" & vdl_vss WHEN vdl_vss_cs = '1' ELSE
-                                        "00000" & vdl_vft WHEN vdl_vft_cs = '1' ELSE
-                                        "0000000" & vdl_vct WHEN vdl_vct_cs = '1' ELSE    
-                                        x"000" & vdl_vmd WHEN vdl_vmd_cs = '1' ELSE
-                                        fbee_vctr(31 DOWNTO 16) WHEN fbee_vctr_cs = '1' ELSE
-                                        atari_hh(31 DOWNTO 16) WHEN atari_hh_cs = '1' ELSE
-                                        atari_vh(31 DOWNTO 16) WHEN atari_vh_cs = '1' ELSE
-                                        atari_hl(31 DOWNTO 16) WHEN atari_hl_cs = '1' ELSE
-                                        atari_vl(31 DOWNTO 16) WHEN atari_vl_cs = '1' ELSE
-                                        x"00" & ccr_i(23 DOWNTO 16) WHEN ccr_cs = '1' ELSE 
-                                        "0000000" & vr_dout WHEN video_pll_config_cs = '1' ELSE
-                                        vr_busy & "0000" & vr_wr_i & vr_rd_i & video_reconfig_i & x"FA" WHEN video_pll_reconfig_cs = '1' ELSE (OTHERS => '0');
+                              "00000" & falcon_shift_mode WHEN falcon_shift_mode_cs = '1' ELSE
+                              "100000000" & sys_ctr(6 DOWNTO 4) & NOT blitter_run & sys_ctr(2 DOWNTO 0) WHEN sys_ctr_cs = '1' ELSE
+                              vdl_lof WHEN vdl_lof_cs = '1' ELSE
+                              vdl_lwd WHEN vdl_lwd_CS = '1' ELSE
+                              x"0" & vdl_hbe WHEN vdl_hbe_cs = '1' ELSE
+                              x"0" & vdl_hdb WHEN vdl_hdb_cs = '1' ELSE
+                              x"0" & VDL_HDE WHEN vdl_hde_cs = '1' ELSE
+                              x"0" & vdl_hbb WHEN vdl_hbb_cs = '1' ELSE
+                              x"0" & vdl_hss WHEN vdl_hss_cs = '1' ELSE
+                              x"0" & vdl_hht WHEN vdl_hht_cs = '1' ELSE
+                              "00000" & vdl_vbe WHEN vdl_vbe_cs = '1' ELSE
+                              "00000" & vdl_vdb WHEN VDL_VDB_CS = '1' ELSE
+                              "00000" & vdl_vde WHEN vdl_vde_cs = '1' ELSE
+                              "00000" & vdl_vbb WHEN vdl_vbb_cs = '1' ELSE
+                              "00000" & vdl_vss WHEN vdl_vss_cs = '1' ELSE
+                              "00000" & vdl_vft WHEN vdl_vft_cs = '1' ELSE
+                              "0000000" & vdl_vct WHEN vdl_vct_cs = '1' ELSE    
+                              x"000" & vdl_vmd WHEN vdl_vmd_cs = '1' ELSE
+                              fbee_vctr(31 DOWNTO 16) WHEN fbee_vctr_cs = '1' ELSE
+                              atari_hh(31 DOWNTO 16) WHEN atari_hh_cs = '1' ELSE
+                              atari_vh(31 DOWNTO 16) WHEN atari_vh_cs = '1' ELSE
+                              atari_hl(31 DOWNTO 16) WHEN atari_hl_cs = '1' ELSE
+                              atari_vl(31 DOWNTO 16) WHEN atari_vl_cs = '1' ELSE
+                              x"00" & ccr_i(23 DOWNTO 16) WHEN ccr_cs = '1' ELSE 
+                              "0000000" & vr_dout WHEN video_pll_config_cs = '1' ELSE
+                              vr_busy & "0000" & vr_wr_i & vr_rd_i & video_reconfig_i & x"FA" WHEN video_pll_reconfig_cs = '1' ELSE (OTHERS => '0');
     
     data_out(15 DOWNTO 0) <= fbee_vctr(15 DOWNTO 0) WHEN fbee_vctr_cs = '1' ELSE
-                                        atari_hh(15 DOWNTO 0) WHEN atari_hh_cs = '1' ELSE
-                                        atari_vh(15 DOWNTO 0) WHEN atari_vh_cs = '1' ELSE
-                                        atari_hl(15 DOWNTO 0) WHEN atari_hl_cs = '1' ELSE
-                                        atari_vl(15 DOWNTO 0) WHEN atari_vl_cs = '1' ELSE
-                                        ccr_i(15 DOWNTO 0) WHEN ccr_cs = '1' ELSE (OTHERS => '0');
+                             atari_hh(15 DOWNTO 0) WHEN atari_hh_cs = '1' ELSE
+                             atari_vh(15 DOWNTO 0) WHEN atari_vh_cs = '1' ELSE
+                             atari_hl(15 DOWNTO 0) WHEN atari_hl_cs = '1' ELSE
+                             atari_vl(15 DOWNTO 0) WHEN atari_vl_cs = '1' ELSE
+                             ccr_i(15 DOWNTO 0) WHEN ccr_cs = '1' ELSE (OTHERS => '0');
 
-    data_en_h <= (st_shift_mode_cs or falcon_shift_mode_cs or fbee_vctr_cs or ccr_cs or sys_ctr_cs or vdl_lof_cs or VDL_LWD_CS or
-                        vdl_hbe_cs or vdl_hdb_cs or vdl_hde_cs or vdl_hbb_cs or vdl_hss_cs or vdl_hht_cs or
-                        atari_hh_cs or atari_vh_cs or atari_hl_cs or atari_vl_cs or video_pll_config_cs or video_pll_reconfig_cs or
-                        vdl_vbe_cs or VDL_VDB_CS or vdl_vde_cs or vdl_vbb_cs or vdl_vss_cs or vdl_vft_cs or vdl_vct_cs or vdl_vmd_cs) AND NOT fb_oe_n;
+    data_en_h <= (st_shift_mode_cs OR falcon_shift_mode_cs OR fbee_vctr_cs OR ccr_cs OR sys_ctr_cs OR vdl_lof_cs OR vdl_lwd_CS OR
+                        vdl_hbe_cs OR vdl_hdb_cs OR vdl_hde_cs OR vdl_hbb_cs OR vdl_hss_cs OR vdl_hht_cs OR
+                        atari_hh_cs OR atari_vh_cs OR atari_hl_cs OR atari_vl_cs OR video_pll_config_cs OR video_pll_reconfig_cs OR
+                        vdl_vbe_cs OR VDL_VDB_CS OR vdl_vde_cs OR vdl_vbb_cs OR vdl_vss_cs OR vdl_vft_cs OR vdl_vct_cs OR vdl_vmd_cs) AND NOT fb_oe_n;
 
-    data_en_l <= (fbee_vctr_cs or ccr_cs or atari_hh_cs or atari_vh_cs or atari_hl_cs or atari_vl_cs ) AND NOT fb_oe_n;
+    data_en_l <= (fbee_vctr_cs OR ccr_cs OR atari_hh_cs OR atari_vh_cs OR atari_hl_cs OR atari_vl_cs ) AND NOT fb_oe_n;
 
-    video_mod_ta_i <= clut_ta or st_shift_mode_cs or falcon_shift_mode_cs or fbee_vctr_cs or sys_ctr_cs or vdl_lof_cs or VDL_LWD_CS or
-                            vdl_hbe_cs or vdl_hdb_cs or vdl_hde_cs or vdl_hbb_cs or vdl_hss_cs or vdl_hht_cs or
-                            atari_hh_cs or atari_vh_cs or atari_hl_cs or atari_vl_cs or
-                            vdl_vbe_cs or VDL_VDB_CS or vdl_vde_cs or vdl_vbb_cs or vdl_vss_cs or vdl_vft_cs or vdl_vct_cs or vdl_vmd_cs;
+    video_mod_ta_i <= clut_ta OR st_shift_mode_cs OR falcon_shift_mode_cs OR fbee_vctr_cs OR sys_ctr_cs OR vdl_lof_cs OR vdl_lwd_CS OR
+                            vdl_hbe_cs OR vdl_hdb_cs OR vdl_hde_cs OR vdl_hbb_cs OR vdl_hss_cs OR vdl_hht_cs OR
+                            atari_hh_cs OR atari_vh_cs OR atari_hl_cs OR atari_vl_cs OR
+                            vdl_vbe_cs OR VDL_VDB_CS OR vdl_vde_cs OR vdl_vbb_cs OR vdl_vss_cs OR vdl_vft_cs OR vdl_vct_cs OR vdl_vmd_cs;
     
     p_clk_16m5 : PROCESS
     BEGIN
@@ -678,68 +686,68 @@ BEGIN
         clk13m <= NOT clk13m;
     END PROCESS p_clk_12m5;
 
-    clk_pixel_i <= clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' ELSE
-                        clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' ELSE
-                        clk17m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '0' ELSE
-                        clk17m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '0' ELSE
-                        clk25m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '1' AND vdl_vct(0) = '0' ELSE
-                        clk33m WHEN fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '0' AND vdl_vct(0) = '0' ELSE
+    clk_pixel_i <= clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' ELSE
+                        clk13m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' ELSE
+                        clk17m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '0' ELSE
+                        clk17m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '0' ELSE
+                        clk25m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '1' AND vdl_vct(0) = '0' ELSE
+                        clk33m WHEN fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '0' AND vdl_vct(0) = '0' ELSE
                         clk25m WHEN fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "00" ELSE
                         clk33m WHEN fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "01" ELSE
                         clk_video WHEN fbee_video_on = '1' AND fbee_vctr(9) = '1' ELSE '0';
 
     p_hsyn_len  : PROCESS
-        -- Horizontal SYNC IN clk_pixel:
+        -- horizontal sync IN clk_pixel:
     BEGIN
         WAIT UNTIL rising_edge(clk_main);
-        IF fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' THEN
+        IF fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(2) = '1' THEN
             hsync_len <= 8D"14";
-        ELSIF fbee_video_on = '0' AND (falcon_video = '1' or st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' THEN
+        ELSIF fbee_video_on = '0' AND (falcon_video = '1' OR st_video = '1') AND vdl_vmd(2) = '1' AND vdl_vct(0) = '1' THEN
             hsync_len <= 8D"14";
-        ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(2) = '0' THEN
+        ELSIF fbee_video_on = '0' AND (falcon_video OR st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(2) = '0' THEN
             hsync_len <= 8D"16";
-        ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(0) = '0' THEN
+        ELSIF fbee_video_on = '0' AND (falcon_video OR st_video) = '1' AND vdl_vmd(2) = '1' AND vdl_vct(0) = '0' THEN
             hsync_len <= 8D"16";
-        ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '1' AND vdl_vct(0) = '0' THEN
+        ELSIF fbee_video_on = '0' AND (falcon_video OR st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '1' AND vdl_vct(0) = '0' THEN
             hsync_len <= 8D"28";
-        ELSIF fbee_video_on = '0' AND (falcon_video or st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '0' AND vdl_vct(0) = '0' THEN
+        ELSIF fbee_video_on = '0' AND (falcon_video OR st_video) = '1' AND  vdl_vmd(2) = '0' AND vdl_vct(2) = '0' AND vdl_vct(0) = '0' THEN
             hsync_len <= 8D"32";
         ELSIF fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "00" THEN
             hsync_len <= 8D"28";
         ELSIF fbee_video_on = '1' AND fbee_vctr(9 DOWNTO 8) = "01" THEN
             hsync_len <= 8D"32";
         ELSIF fbee_video_on = '1' AND fbee_vctr(9) = '1' THEN
-            hsync_len <= 8D"16" + vr_frq / 2; -- hsync pulse length IN pixels = frequency/500ns.
+            hsync_len <= 8D"16" + vr_frq / 2; -- hsync pulse length in pixels = frequency/500ns.
         ELSE
             hsync_len <= x"00";
         END IF;
     END PROCESS p_hsyn_len;
 
-    mulf <= "000010" WHEN st_video = '0' AND vdl_vmd(2) = '1' ELSE -- Multiplier.
+    mulf <= "000010" WHEN st_video = '0' AND vdl_vmd(2) = '1' ELSE -- multiplier.
                 "000100" WHEN st_video = '0' AND vdl_vmd(2) = '0' ELSE
                 "010000" WHEN st_video = '1' AND vdl_vmd(2) = '1' ELSE
                 "100000" WHEN st_video = '1' AND vdl_vmd(2) = '0' ELSE "000000";
 
-    hdis_len <= x"140" WHEN vdl_vmd(2) = '1' ELSE x"280"; -- Width IN pixels (320 / 640).
+    hdis_len <= x"140" WHEN vdl_vmd(2) = '1' ELSE x"280"; -- width in pixels (320 / 640).
 
     p_double_line_1   : PROCESS
     BEGIN
         WAIT UNTIL rising_edge(clk_main);
-        dop_zei <= vdl_vmd(0) AND st_video; -- Line doubling on off.
+        dop_zei <= vdl_vmd(0) AND st_video; -- line doubling on off.
     END PROCESS p_double_line_1;
 
     p_double_line_2   : PROCESS
     BEGIN
         WAIT UNTIL rising_edge(clk_pixel_i);
         IF dop_zei = '1' AND vvcnt(0) /= vdis_start(0) AND vvcnt /= "00000000000" AND vhcnt < hdis_end - 1 THEN        
-            inter_zei_i <= '1'; -- Switch insertion line to "double". Line zero due to SYNC.
+            inter_zei_i <= '1'; -- Switch insertion line to "double". Line zero due to sync.
         ELSIF dop_zei = '1' AND vvcnt(0) = vdis_start(0) AND vvcnt /= "00000000000" AND vhcnt > hdis_end - 10 THEN
-            inter_zei_i <= '1'; -- Switch insertion mode to "normal". Lines AND line zero due to SYNC.
+            inter_zei_i <= '1'; -- Switch insertion mode to "normal". Lines and line zero due to sync.
         ELSE
             inter_zei_i <= '0';
         END IF;
         --
-        dop_fifo_clr <= inter_zei_i AND hsync_start AND sync_pix; -- Double line info erase at the END of a double line AND at main FIFO start.
+        dop_fifo_clr <= inter_zei_i AND hsync_start AND sync_pix; -- Double line info erase at the end of a double line and at main fifo start.
     END PROCESS p_double_line_2;
 
     -- The following multiplications change every time the video resolution is changed.
@@ -748,32 +756,32 @@ BEGIN
     mul3 <= RESIZE(vdl_hht + 10 * mulf(5 DOWNTO 1), mul3'LENGTH);
 
     border_left <= vdl_hbe WHEN fbee_video_on = '1' ELSE 
-                        x"015" WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-                        x"02A" WHEN atari_sync = '1' ELSE mul1(16 DOWNTO 5);
+                   x"015" WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
+                   x"02A" WHEN atari_sync = '1' ELSE mul1(16 DOWNTO 5);
     hdis_start <= vdl_hdb WHEN fbee_video_on = '1' ELSE border_left + 1;
     hdis_end <= VDL_HDE WHEN fbee_video_on = '1' ELSE border_left + hdis_len;
     border_right <= vdl_hbb WHEN fbee_video_on = '1' ELSE hdis_end + 1;
     hs_start <= vdl_hss WHEN fbee_video_on = '1' ELSE
-                    atari_hl(11 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-                    atari_hh(11 DOWNTO 0) WHEN vdl_vmd(2) = '1' ELSE mul2(16 DOWNTO 5);
+                atari_hl(11 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
+                atari_hh(11 DOWNTO 0) WHEN vdl_vmd(2) = '1' ELSE mul2(16 DOWNTO 5);
     h_total <= vdl_hht WHEN fbee_video_on = '1' ELSE
-                    atari_hl(27 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-                    atari_hh(27 DOWNTO 16) WHEN atari_sync = '1' ELSE mul3(16 DOWNTO 5);
+               atari_hl(27 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
+               atari_hh(27 DOWNTO 16) WHEN atari_sync = '1' ELSE mul3(16 DOWNTO 5);
     border_top <= vdl_vbe WHEN fbee_video_on = '1' ELSE
-                        "00000011111" WHEN atari_sync = '1' ELSE '0' & vdl_vbe(10 DOWNTO 1);
+                  "00000011111" WHEN atari_sync = '1' ELSE '0' & vdl_vbe(10 DOWNTO 1);
     vdis_start <= vdl_vdb WHEN fbee_video_on = '1' ELSE
-                        "00000100000" WHEN atari_sync = '1' ELSE '0' & vdl_vdb(10 DOWNTO 1);
+                  "00000100000" WHEN atari_sync = '1' ELSE '0' & vdl_vdb(10 DOWNTO 1);
     vdis_end <= vdl_vde WHEN fbee_video_on = '1' ELSE
-                    "00110101111" WHEN atari_sync = '1' AND st_video = '1' ELSE -- 431.
-                    "00111111111" WHEN atari_sync = '1' ELSE '0' & vdl_vde(10 DOWNTO 1); -- 511.
+                "00110101111" WHEN atari_sync = '1' AND st_video = '1' ELSE -- 431.
+                "00111111111" WHEN atari_sync = '1' ELSE '0' & vdl_vde(10 DOWNTO 1); -- 511.
     border_bottom <= vdl_vbb WHEN fbee_video_on = '1' ELSE
-                        vdis_end + 1 WHEN atari_sync = '1' ELSE ('0' & vdl_vbb(10 DOWNTO 1) + 1);
+                     vdis_end + 1 WHEN atari_sync = '1' ELSE ('0' & vdl_vbb(10 DOWNTO 1) + 1);
     vs_start <= vdl_vss WHEN fbee_video_on = '1' ELSE
-                    atari_vl(10 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-                    atari_vh(10 DOWNTO 0) WHEN atari_sync = '1' ELSE '0' & vdl_vss(10 DOWNTO 1);
+                atari_vl(10 DOWNTO 0) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
+                atari_vh(10 DOWNTO 0) WHEN atari_sync = '1' ELSE '0' & vdl_vss(10 DOWNTO 1);
     v_total <= vdl_vft WHEN fbee_video_on = '1' ELSE
-                    atari_vl(26 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
-                    atari_vh(26 DOWNTO 16) WHEN atari_sync = '1' ELSE '0' & vdl_vft(10 DOWNTO 1);
+               atari_vl(26 DOWNTO 16) WHEN atari_sync = '1' AND vdl_vmd(2) = '1' ELSE
+               atari_vh(26 DOWNTO 16) WHEN atari_sync = '1' ELSE '0' & vdl_vft(10 DOWNTO 1);
 
     last <= '1' WHEN vhcnt  = h_total - 10 ELSE '0';
 
@@ -781,7 +789,7 @@ BEGIN
     BEGIN
         WAIT UNTIL rising_edge(clk_pixel_i);
         IF st_clut = '1' THEN
-            ccsel <= "000"; -- For information only.
+            ccsel <= "000"; -- for information only.
         ELSIF falcon_clut = '1' THEN
             ccsel <= "001";
         ELSIF fbee_clut = '1' THEN
@@ -825,7 +833,7 @@ BEGIN
             dpo_off <= '0';
         END IF;
 
-        disp_on <= (disp_on AND NOT dpo_off) or (dpo_on AND dpo_zl);
+        disp_on <= (disp_on AND NOT dpo_off) OR (dpo_on AND dpo_zl);
 
         -- Data transfer on/off:
         IF vhcnt = hdis_start - 1 THEN
@@ -841,14 +849,14 @@ BEGIN
         END IF;
 
         IF last = '1' AND vvcnt >= vdis_start - 1 AND vvcnt < vdis_end THEN
-            vdo_zl <= '1'; -- Take over at the END of the line.
+            vdo_zl <= '1';                  -- Take over at the END of the line.
         ELSIF last = '1' THEN
-            vdo_zl <= '0'; -- 1 ZEILE DAVOR ON OFF
+            vdo_zl <= '0';                  -- 1 ZEILE DAVOR ON OFF
         END IF;
 
-        vdtron <= (vdtron AND NOT vdo_off) or (vdo_on AND vdo_zl);
+        vdtron <= (vdtron AND NOT vdo_off) OR (vdo_on AND vdo_zl);
 
-        -- Delay AND SYNC
+        -- Delay and sync
         IF vhcnt = hs_start - 11 THEN
             hsync_start <= '1';
         ELSE
@@ -867,15 +875,15 @@ BEGIN
             vsync_start <= '0';
         END IF;
         
-        IF last = '1' AND vsync_start = '1' THEN -- Start at the END of the line before vsync.
-            vsync_i <= "011"; -- 3 lines vsync length.
+        IF last = '1' AND vsync_start = '1' THEN    -- Start at the end of the line before vsync.
+            vsync_i <= "011";                       -- 3 lines vsync length.
         ELSIF last = '1' AND vsync_i > "000" THEN
             vsync_i <= vsync_i - 1; -- Count down.
         END IF;
 
         IF fbee_vctr(15) = '1' AND vdl_vct(5) = '1' AND vsync_i = "000" THEN
             verz_2 <= verz_2(8 DOWNTO 0) & '1';
-        ELSIF (fbee_vctr(15) = '0' or vdl_vct(5) = '0') AND vsync_i /= "000" THEN
+        ELSIF (fbee_vctr(15) = '0' OR vdl_vct(5) = '0') AND vsync_i /= "000" THEN
             verz_2 <= verz_2(8 DOWNTO 0) & '1';
         ELSE
             verz_2 <= verz_2(8 DOWNTO 0) & '0';
@@ -892,7 +900,7 @@ BEGIN
         blank_n <=  verz_0(8);
         hsync  <=  verz_1(9);
         vsync  <=  verz_2(9);
-        sync_n <= NOT(verz_2(9) or verz_1(9));
+        sync_n <= NOT(verz_2(9) OR verz_1(9));
 
         -- border colours:
         border <= border(5 DOWNTO 0) & (disp_on AND NOT vdtron AND fbee_vctr(25));
@@ -946,7 +954,7 @@ BEGIN
             fifo_rde <= '1';
         ELSIF vdtron = '1' AND sub_pixel_cnt(1 DOWNTO 0) = "01" AND color24_i = '1' THEN
             fifo_rde <= '1';
-        ELSIF sync_pix = '1' or sync_pix1 = '1' or sync_pix2 = '1' THEN
+        ELSIF sync_pix = '1' OR sync_pix1 = '1' OR sync_pix2 = '1' THEN
             fifo_rde <= '1'; -- 3 CLOCK ZUSï¿½TZLICH Fï¿½R FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
         ELSE
             fifo_rde <= '0';

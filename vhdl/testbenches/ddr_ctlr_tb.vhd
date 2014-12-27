@@ -14,47 +14,47 @@ END ddr_ctlr_tb;
 
 
 ARCHITECTURE beh OF ddr_ctlr_tb IS
-    SIGNAL clock            : STD_LOGIC := '0';    -- main clock
-    SIGNAL ddr_clk          : STD_LOGIC := '0';    -- ddr clock
+    SIGNAL clock            : std_logic := '0';    -- main clock
+    SIGNAL ddr_clk          : std_logic := '0';    -- ddr clock
             
-    SIGNAL fb_adr           : UNSIGNED(31 DOWNTO 0);
-    SIGNAL ddr_sync_66m     : STD_LOGIC := '0';
-    SIGNAL fb_cs1_n         : STD_LOGIC;
-    SIGNAL fb_oe_n          : STD_LOGIC := '1';    -- only write cycles for now
-    SIGNAL fb_size0         : STD_LOGIC := '1';
-    SIGNAL fb_size1         : STD_LOGIC := '1';    -- long word access
-    SIGNAL fb_ale           : STD_LOGIC := 'Z';    -- defined reset state
-    SIGNAL fb_wr_n          : STD_LOGIC;
-    SIGNAL fifo_clr         : STD_LOGIC;
-    SIGNAL video_ram_ctr    : UNSIGNED(15 DOWNTO 0);
-    SIGNAL blitter_adr      : UNSIGNED(31 DOWNTO 0);
-    SIGNAL blitter_sig      : STD_LOGIC;
-    SIGNAL blitter_wr       : STD_LOGIC;
-    SIGNAL ddrclk0          : STD_LOGIC;
-    SIGNAL clk_33m          : STD_LOGIC := '0';
-    SIGNAL fifo_mw          : UNSIGNED (8 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL va               : UNSIGNED(12 DOWNTO 0);
-    SIGNAL vwe_n            : STD_LOGIC;
-    SIGNAL vras_n           : STD_LOGIC;
-    SIGNAL vcs_n            : STD_LOGIC;
-    SIGNAL vcke             : STD_LOGIC;
-    SIGNAL vcas_n           : STD_LOGIC;
-    SIGNAL fb_le            : UNSIGNED(3 DOWNTO 0);
-    SIGNAL fb_vdoe          : UNSIGNED(3 DOWNTO 0);
-    SIGNAL sr_fifo_wre      : STD_LOGIC;
-    SIGNAL sr_ddr_fb        : STD_LOGIC;
-    SIGNAL sr_ddr_wr        : STD_LOGIC;
-    SIGNAL sr_ddrwr_d_sel   : STD_LOGIC;
-    SIGNAL sr_vdmp          : UNSIGNED(7 DOWNTO 0);
-    SIGNAL video_ddr_ta     : STD_LOGIC;
-    SIGNAL sr_blitter_dack  : STD_LOGIC;
-    SIGNAL ba               : UNSIGNED(1 DOWNTO 0);
-    SIGNAL ddrwr_d_sel1     : STD_LOGIC;
-    SIGNAL vdm_sel          : UNSIGNED(3 DOWNTO 0);
-    SIGNAL data_in          : UNSIGNED(31 DOWNTO 0);
-    SIGNAL data_out         : UNSIGNED(31 DOWNTO 16);
-    SIGNAL data_en_h        : STD_LOGIC;
-    SIGNAL data_en_l        : STD_LOGIC;
+    SIGNAL fb_adr           : unsigned(31 DOWNTO 0);
+    SIGNAL ddr_sync_66m     : std_logic := '0';
+    SIGNAL fb_cs1_n         : std_logic;
+    SIGNAL fb_oe_n          : std_logic := '1';    -- only write cycles for now
+    SIGNAL fb_size0         : std_logic := '1';
+    SIGNAL fb_size1         : std_logic := '1';    -- long word access
+    SIGNAL fb_ale           : std_logic := 'Z';    -- defined reset state
+    SIGNAL fb_wr_n          : std_logic;
+    SIGNAL fifo_clr         : std_logic;
+    SIGNAL video_ram_ctr    : unsigned(15 DOWNTO 0);
+    SIGNAL blitter_adr      : unsigned(31 DOWNTO 0);
+    SIGNAL blitter_sig      : std_logic;
+    SIGNAL blitter_wr       : std_logic;
+    SIGNAL ddrclk0          : std_logic;
+    SIGNAL clk_33m          : std_logic := '0';
+    SIGNAL fifo_mw          : unsigned (8 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL va               : unsigned(12 DOWNTO 0);
+    SIGNAL vwe_n            : std_logic;
+    SIGNAL vras_n           : std_logic;
+    SIGNAL vcs_n            : std_logic;
+    SIGNAL vcke             : std_logic;
+    SIGNAL vcas_n           : std_logic;
+    SIGNAL fb_le            : unsigned(3 DOWNTO 0);
+    SIGNAL fb_vdoe          : unsigned(3 DOWNTO 0);
+    SIGNAL sr_fifo_wre      : std_logic;
+    SIGNAL sr_ddr_fb        : std_logic;
+    SIGNAL sr_ddr_wr        : std_logic;
+    SIGNAL sr_ddrwr_d_sel   : std_logic;
+    SIGNAL sr_vdmp          : unsigned(7 DOWNTO 0);
+    SIGNAL video_ddr_ta     : std_logic;
+    SIGNAL sr_blitter_dack  : std_logic;
+    SIGNAL ba               : unsigned(1 DOWNTO 0);
+    SIGNAL ddrwr_d_sel1     : std_logic;
+    SIGNAL vdm_sel          : unsigned(3 DOWNTO 0);
+    SIGNAL data_in          : unsigned(31 DOWNTO 0);
+    SIGNAL data_out         : unsigned(31 DOWNTO 16);
+    SIGNAL data_en_h        : std_logic;
+    SIGNAL data_en_l        : std_logic;
     
     TYPE bus_state_t IS (S0, S1, S2, S3);               -- according to state machine description on p 17-14 of the MCF ref manual
     SIGNAL bus_state        : bus_state_t := S0;
@@ -188,7 +188,7 @@ BEGIN
     END process;
     
     stimulate : process
-        VARIABLE adr : UNSIGNED (31 DOWNTO 0) := x"00000000";
+        VARIABLE adr : unsigned (31 DOWNTO 0) := x"00000000";
     BEGIN
         WAIT UNTIL RISING_EDGE(clock);
         CASE bus_state IS

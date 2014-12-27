@@ -185,7 +185,7 @@ ARCHITECTURE BEHAVIOUR of DDR_CTRL IS
     SIGNAL ba_p             : unsigned(1 DOWNTO 0);
 BEGIN                                             
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ------------------------------------ ddr_access_cpu READ (REG DDR => ddr_access_cpu) AND WRITE (ddr_access_cpu => REG DDR) ---------------------------------------------------------------------
+    ------------------------------------ ddr_access cpu read (REG DDR => ddr_access_cpu) AND write (ddr_access_cpu => REG DDR) ---------------------------------------------------------------------
     fbctrl_reg : PROCESS
         VARIABLE aw : access_width_t;
         
@@ -257,7 +257,7 @@ BEGIN
                 END IF;
             
             WHEN fr_s2 => 
-                IF ddr_cs = '1' AND bus_cyc = '0' AND access_width = long_access AND fb_wr_n = '0' THEN -- wait during long_access word_access access if needed
+                IF ddr_cs = '1' AND bus_cyc = '0' AND access_width = long_access AND fb_wr_n = '0' THEN -- wait during longword access if needed
                     fb_regddr_next <= fr_s2;
                 ELSIF ddr_cs = '1' THEN
                     fb_regddr_next <= fr_s3;
@@ -304,7 +304,7 @@ BEGIN
     END PROCESS ddr_state_reg;
 
     ddr_state_dec: PROCESS(ddr_state, ddr_refresh_req, cpu_ddr_sync, vmem_config_enable, fb_wr_n, ddr_access, blitter_wr, fifo_req, fifo_bank_ok,
-                                    fifo_mw, cpu_req, video_adr_cnt, ddr_sel, data_in, fifo_ba, ddr_refresh_sig)
+                           fifo_mw, cpu_req, video_adr_cnt, ddr_sel, data_in, fifo_ba, ddr_refresh_sig)
     BEGIN
         CASE ddr_state IS
             WHEN ds_t1 =>

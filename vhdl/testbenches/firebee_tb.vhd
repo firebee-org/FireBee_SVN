@@ -16,319 +16,319 @@ END firebee_tb;
 ARCHITECTURE beh OF firebee_tb IS
     COMPONENT firebee IS
         PORT(
-            rsto_mcf_n          : IN STD_LOGIC;                -- reset SIGNAL from Coldfire
-            clk_33m             : IN STD_LOGIC;                -- 33 MHz clock
-            clk_main            : IN STD_LOGIC;                -- 33 MHz clock
+            rsto_mcf_n          : IN std_logic;                -- reset SIGNAL from Coldfire
+            clk_33m             : IN std_logic;                -- 33 MHz clock
+            clk_main            : IN std_logic;                -- 33 MHz clock
     
-            clk_24m576          : OUT STD_LOGIC;            -- 
-            clk_25m             : OUT STD_LOGIC;
-            clk_ddr_out         : OUT STD_LOGIC;
-            clk_ddr_out_n       : OUT STD_LOGIC;
-            clk_usb             : OUT STD_LOGIC;
+            clk_24m576          : OUT std_logic;            -- 
+            clk_25m             : OUT std_logic;
+            clk_ddr_out         : OUT std_logic;
+            clk_ddr_out_n       : OUT std_logic;
+            clk_usb             : OUT std_logic;
     
-            fb_ad               : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-            fb_ale              : IN STD_LOGIC;
-            fb_burst_n          : IN STD_LOGIC;
-            fb_cs_n             : IN STD_LOGIC_VECTOR (3 DOWNTO 1);
-            fb_size             : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
-            fb_oe_n             : IN STD_LOGIC;
-            fb_wr_n             : IN STD_LOGIC;
-            fb_ta_n             : OUT STD_LOGIC;
+            fb_ad               : INOUT std_logic_vector (31 DOWNTO 0);
+            fb_ale              : IN std_logic;
+            fb_burst_n          : IN std_logic;
+            fb_cs_n             : IN std_logic_vector (3 DOWNTO 1);
+            fb_size             : IN std_logic_vector (1 DOWNTO 0);
+            fb_oe_n             : IN std_logic;
+            fb_wr_n             : IN std_logic;
+            fb_ta_n             : OUT std_logic;
             
-            dack1_n             : IN STD_LOGIC;
-            dreq1_n             : OUT STD_LOGIC;
+            dack1_n             : IN std_logic;
+            dreq1_n             : OUT std_logic;
     
-            master_n            : IN STD_LOGIC; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
-            tout0_n             : IN STD_LOGIC; -- Not used so far.
+            master_n            : IN std_logic; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
+            tout0_n             : IN std_logic; -- Not used so far.
     
-            led_fpga_ok         : OUT STD_LOGIC;
-            reserved_1          : OUT STD_LOGIC;
+            led_fpga_ok         : OUT std_logic;
+            reserved_1          : OUT std_logic;
     
-            va                  : OUT STD_LOGIC_VECTOR (12 DOWNTO 0);
-            ba                  : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
-            vwe_n               : OUT STD_LOGIC;
-            vcas_n              : OUT STD_LOGIC;
-            vras_n              : OUT STD_LOGIC;
-            vcs_n               : OUT STD_LOGIC;
+            va                  : OUT std_logic_vector (12 DOWNTO 0);
+            ba                  : OUT std_logic_vector (1 DOWNTO 0);
+            vwe_n               : OUT std_logic;
+            vcas_n              : OUT std_logic;
+            vras_n              : OUT std_logic;
+            vcs_n               : OUT std_logic;
     
-            clk_pixel           : OUT STD_LOGIC;
-            sync_n              : OUT STD_LOGIC;
-            vsync               : OUT STD_LOGIC;
-            hsync               : OUT STD_LOGIC;
-            blank_n             : OUT STD_LOGIC;
+            clk_pixel           : OUT std_logic;
+            sync_n              : OUT std_logic;
+            vsync               : OUT std_logic;
+            hsync               : OUT std_logic;
+            blank_n             : OUT std_logic;
             
-            vr                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-            vg                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-            vb                  : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+            vr                  : OUT std_logic_vector (7 DOWNTO 0);
+            vg                  : OUT std_logic_vector (7 DOWNTO 0);
+            vb                  : OUT std_logic_vector (7 DOWNTO 0);
     
-            vdm                 : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            vdm                 : OUT std_logic_vector (3 DOWNTO 0);
     
-            vd                  : INOUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-            vd_qs               : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
+            vd                  : INOUT std_logic_vector (31 DOWNTO 0);
+            vd_qs               : OUT std_logic_vector (3 DOWNTO 0);
     
-            pd_vga_n            : OUT STD_LOGIC;
-            vcke                : OUT STD_LOGIC;
-            pic_int             : IN STD_LOGIC;
-            e0_int              : IN STD_LOGIC;
-            dvi_int             : IN STD_LOGIC;
-            pci_inta_n          : IN STD_LOGIC;
-            pci_intb_n          : IN STD_LOGIC;
-            pci_intc_n          : IN STD_LOGIC;
-            pci_intd_n          : IN STD_LOGIC;
+            pd_vga_n            : OUT std_logic;
+            vcke                : OUT std_logic;
+            pic_int             : IN std_logic;
+            e0_int              : IN std_logic;
+            dvi_int             : IN std_logic;
+            pci_inta_n          : IN std_logic;
+            pci_intb_n          : IN std_logic;
+            pci_intc_n          : IN std_logic;
+            pci_intd_n          : IN std_logic;
     
-            irq_n               : OUT STD_LOGIC_VECTOR (7 DOWNTO 2);
-            tin0                : OUT STD_LOGIC;
+            irq_n               : OUT std_logic_vector (7 DOWNTO 2);
+            tin0                : OUT std_logic;
     
-            ym_qa               : OUT STD_LOGIC;
-            ym_qb               : OUT STD_LOGIC;
-            ym_qc               : OUT STD_LOGIC;
+            ym_qa               : OUT std_logic;
+            ym_qb               : OUT std_logic;
+            ym_qc               : OUT std_logic;
     
-            lp_d                : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-            lp_dir              : OUT STD_LOGIC;
+            lp_d                : INOUT std_logic_vector (7 DOWNTO 0);
+            lp_dir              : OUT std_logic;
     
-            dsa_d               : OUT STD_LOGIC;
-            lp_str              : OUT STD_LOGIC;
-            dtr                 : OUT STD_LOGIC;
-            rts                 : OUT STD_LOGIC;
-            cts                 : IN STD_LOGIC;
-            ri                  : IN STD_LOGIC;
-            dcd                 : IN STD_LOGIC;
-            lp_busy             : IN STD_LOGIC;
-            rxd                 : IN STD_LOGIC;
-            txd                 : OUT STD_LOGIC;
-            midi_in             : IN STD_LOGIC;
-            midi_olr            : OUT STD_LOGIC;
-            midi_tlr            : OUT STD_LOGIC;
-            pic_amkb_rx         : IN STD_LOGIC;
-            amkb_rx             : IN STD_LOGIC;
-            amkb_tx             : OUT STD_LOGIC;
-            dack0_n             : IN STD_LOGIC; -- Not used.
+            dsa_d               : OUT std_logic;
+            lp_str              : OUT std_logic;
+            dtr                 : OUT std_logic;
+            rts                 : OUT std_logic;
+            cts                 : IN std_logic;
+            ri                  : IN std_logic;
+            dcd                 : IN std_logic;
+            lp_busy             : IN std_logic;
+            rxd                 : IN std_logic;
+            txd                 : OUT std_logic;
+            midi_in             : IN std_logic;
+            midi_olr            : OUT std_logic;
+            midi_tlr            : OUT std_logic;
+            pic_amkb_rx         : IN std_logic;
+            amkb_rx             : IN std_logic;
+            amkb_tx             : OUT std_logic;
+            dack0_n             : IN std_logic; -- Not used.
             
-            scsi_drqn           : IN STD_LOGIC;
-            SCSI_MSGn           : IN STD_LOGIC;
-            SCSI_CDn            : IN STD_LOGIC;
-            SCSI_IOn            : IN STD_LOGIC;
-            SCSI_ACKn           : OUT STD_LOGIC;
-            SCSI_ATNn           : OUT STD_LOGIC;
-            SCSI_SELn           : INOUT STD_LOGIC;
-            SCSI_BUSYn          : INOUT STD_LOGIC;
-            SCSI_RSTn           : INOUT STD_LOGIC;
-            SCSI_DIR            : OUT STD_LOGIC;
-            SCSI_D              : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-            SCSI_PAR            : INOUT STD_LOGIC;
+            scsi_drqn           : IN std_logic;
+            SCSI_MSGn           : IN std_logic;
+            SCSI_CDn            : IN std_logic;
+            SCSI_IOn            : IN std_logic;
+            SCSI_ACKn           : OUT std_logic;
+            SCSI_ATNn           : OUT std_logic;
+            SCSI_SELn           : INOUT std_logic;
+            SCSI_BUSYn          : INOUT std_logic;
+            SCSI_RSTn           : INOUT std_logic;
+            SCSI_DIR            : OUT std_logic;
+            SCSI_D              : INOUT std_logic_vector (7 DOWNTO 0);
+            SCSI_PAR            : INOUT std_logic;
     
-            ACSI_DIR            : OUT STD_LOGIC;
-            ACSI_D              : INOUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-            ACSI_CSn            : OUT STD_LOGIC;
-            ACSI_A1             : OUT STD_LOGIC;
-            ACSI_reset_n        : OUT STD_LOGIC;
-            ACSI_ACKn           : OUT STD_LOGIC;
-            ACSI_DRQn           : IN STD_LOGIC;
-            ACSI_INTn           : IN STD_LOGIC;
+            ACSI_DIR            : OUT std_logic;
+            ACSI_D              : INOUT std_logic_vector (7 DOWNTO 0);
+            ACSI_CSn            : OUT std_logic;
+            ACSI_A1             : OUT std_logic;
+            ACSI_reset_n        : OUT std_logic;
+            ACSI_ACKn           : OUT std_logic;
+            ACSI_DRQn           : IN std_logic;
+            ACSI_INTn           : IN std_logic;
     
-            FDD_DCHGn           : IN STD_LOGIC;
-            FDD_SDSELn          : OUT STD_LOGIC;
-            FDD_HD_DD           : IN STD_LOGIC;
-            FDD_RDn             : IN STD_LOGIC;
-            FDD_TRACK00         : IN STD_LOGIC;
-            FDD_INDEXn          : IN STD_LOGIC;
-            FDD_WPn             : IN STD_LOGIC;
-            FDD_MOT_ON          : OUT STD_LOGIC;
-            FDD_WR_GATE         : OUT STD_LOGIC;
-            FDD_WDn             : OUT STD_LOGIC;
-            FDD_STEP            : OUT STD_LOGIC;
-            FDD_STEP_DIR        : OUT STD_LOGIC;
+            FDD_DCHGn           : IN std_logic;
+            FDD_SDSELn          : OUT std_logic;
+            FDD_HD_DD           : IN std_logic;
+            FDD_RDn             : IN std_logic;
+            FDD_TRACK00         : IN std_logic;
+            FDD_INDEXn          : IN std_logic;
+            FDD_WPn             : IN std_logic;
+            FDD_MOT_ON          : OUT std_logic;
+            FDD_WR_GATE         : OUT std_logic;
+            FDD_WDn             : OUT std_logic;
+            FDD_STEP            : OUT std_logic;
+            FDD_STEP_DIR        : OUT std_logic;
     
-            ROM4n               : OUT STD_LOGIC;
-            ROM3n               : OUT STD_LOGIC;
+            ROM4n               : OUT std_logic;
+            ROM3n               : OUT std_logic;
     
-            RP_UDSn             : OUT STD_LOGIC;
-            RP_ldsn             : OUT STD_LOGIC;
-            SD_CLK              : OUT STD_LOGIC;
-            SD_D3               : INOUT STD_LOGIC;
-            SD_CMD_D1           : INOUT STD_LOGIC;
-            SD_D0               : IN STD_LOGIC;
-            SD_D1               : IN STD_LOGIC;
-            SD_D2               : IN STD_LOGIC;
-            SD_caRD_DETECT      : IN STD_LOGIC;
-            SD_WP               : IN STD_LOGIC;
+            RP_UDSn             : OUT std_logic;
+            RP_ldsn             : OUT std_logic;
+            SD_CLK              : OUT std_logic;
+            SD_D3               : INOUT std_logic;
+            SD_CMD_D1           : INOUT std_logic;
+            SD_D0               : IN std_logic;
+            SD_D1               : IN std_logic;
+            SD_D2               : IN std_logic;
+            SD_caRD_DETECT      : IN std_logic;
+            SD_WP               : IN std_logic;
     
-            CF_WP               : IN STD_LOGIC;
-            CF_CSn              : OUT STD_LOGIC_VECTOR (1 DOWNTO 0);
+            CF_WP               : IN std_logic;
+            CF_CSn              : OUT std_logic_vector (1 DOWNTO 0);
     
-            DSP_IO              : INOUT STD_LOGIC_VECTOR (17 DOWNTO 0);
-            DSP_SRD             : INOUT STD_LOGIC_VECTOR (15 DOWNTO 0);
-            DSP_SRCSn           : OUT STD_LOGIC;
-            DSP_SRBLEn          : OUT STD_LOGIC;
-            DSP_SRBHEn          : OUT STD_LOGIC;
-            DSP_SRWEn           : OUT STD_LOGIC;
-            DSP_SROEn           : OUT STD_LOGIC;
+            DSP_IO              : INOUT std_logic_vector (17 DOWNTO 0);
+            DSP_SRD             : INOUT std_logic_vector (15 DOWNTO 0);
+            DSP_SRCSn           : OUT std_logic;
+            DSP_SRBLEn          : OUT std_logic;
+            DSP_SRBHEn          : OUT std_logic;
+            DSP_SRWEn           : OUT std_logic;
+            DSP_SROEn           : OUT std_logic;
     
-            ide_int             : IN STD_LOGIC;
-            ide_rdy             : IN STD_LOGIC;
-            ide_res             : OUT STD_LOGIC;
-            IDE_WRn             : OUT STD_LOGIC;
-            IDE_RDn             : OUT STD_LOGIC;
-            IDE_CSn             : OUT STD_LOGIC_VECTOR (1 DOWNTO 0)
+            ide_int             : IN std_logic;
+            ide_rdy             : IN std_logic;
+            ide_res             : OUT std_logic;
+            IDE_WRn             : OUT std_logic;
+            IDE_RDn             : OUT std_logic;
+            IDE_CSn             : OUT std_logic_vector (1 DOWNTO 0)
         );
     END COMPONENT firebee;
     
-    SIGNAL rsto_mcf_n       : STD_LOGIC := '0';                -- reset SIGNAL from Coldfire
-    SIGNAL clk_33m          : STD_LOGIC := '0';                -- 33 MHz clock
-    SIGNAL clk_main         : STD_LOGIC := '0';                -- 33 MHz clock
+    SIGNAL rsto_mcf_n       : std_logic := '0';                -- reset SIGNAL from Coldfire
+    SIGNAL clk_33m          : std_logic := '0';                -- 33 MHz clock
+    SIGNAL clk_main         : std_logic := '0';                -- 33 MHz clock
     
-    SIGNAL clk_24m576       : STD_LOGIC;            -- 
-    SIGNAL clk_25m          : STD_LOGIC;
-    SIGNAL clk_ddr_out      : STD_LOGIC;
-    SIGNAL clk_ddr_out_n    : STD_LOGIC;
-    SIGNAL clk_usb          : STD_LOGIC;
+    SIGNAL clk_24m576       : std_logic;            -- 
+    SIGNAL clk_25m          : std_logic;
+    SIGNAL clk_ddr_out      : std_logic;
+    SIGNAL clk_ddr_out_n    : std_logic;
+    SIGNAL clk_usb          : std_logic;
     
-    SIGNAL fb_ad            : STD_LOGIC_VECTOR (31 DOWNTO 0);
-    SIGNAL fb_ale           : STD_LOGIC;
-    SIGNAL fb_burst_n       : STD_LOGIC := '1';
-    SIGNAL fb_cs_n          : STD_LOGIC_VECTOR (3 DOWNTO 1) := "111";
-    SIGNAL fb_size          : STD_LOGIC_VECTOR (1 DOWNTO 0) := "00";
-    SIGNAL fb_oe_n          : STD_LOGIC := '1';
-    SIGNAL fb_wr_n          : STD_LOGIC := '1';
-    SIGNAL fb_ta_n          : STD_LOGIC := '1';
+    SIGNAL fb_ad            : std_logic_vector (31 DOWNTO 0);
+    SIGNAL fb_ale           : std_logic;
+    SIGNAL fb_burst_n       : std_logic := '1';
+    SIGNAL fb_cs_n          : std_logic_vector (3 DOWNTO 1) := "111";
+    SIGNAL fb_size          : std_logic_vector (1 DOWNTO 0) := "00";
+    SIGNAL fb_oe_n          : std_logic := '1';
+    SIGNAL fb_wr_n          : std_logic := '1';
+    SIGNAL fb_ta_n          : std_logic := '1';
             
-    SIGNAL dack1_n          : STD_LOGIC;
-    SIGNAL dreq1_n          : STD_LOGIC;
+    SIGNAL dack1_n          : std_logic;
+    SIGNAL dreq1_n          : std_logic;
     
-    SIGNAL master_n         : STD_LOGIC := '0'; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
-    SIGNAL tout0_n          : STD_LOGIC; -- Not used so far.
+    SIGNAL master_n         : std_logic := '0'; -- determines if the Firebee is PCI master (='0') OR slave. Not used so far.
+    SIGNAL tout0_n          : std_logic; -- Not used so far.
     
-    SIGNAL led_fpga_ok      : STD_LOGIC;
-    SIGNAL reserved_1       : STD_LOGIC;
+    SIGNAL led_fpga_ok      : std_logic;
+    SIGNAL reserved_1       : std_logic;
     
-    SIGNAL va               : STD_LOGIC_VECTOR (12 DOWNTO 0);
-    SIGNAL ba               : STD_LOGIC_VECTOR (1 DOWNTO 0);
-    SIGNAL vwe_n            : STD_LOGIC;
-    SIGNAL vcas_n           : STD_LOGIC;
-    SIGNAL vras_n           : STD_LOGIC;
-    SIGNAL vcs_n            : STD_LOGIC;
+    SIGNAL va               : std_logic_vector (12 DOWNTO 0);
+    SIGNAL ba               : std_logic_vector (1 DOWNTO 0);
+    SIGNAL vwe_n            : std_logic;
+    SIGNAL vcas_n           : std_logic;
+    SIGNAL vras_n           : std_logic;
+    SIGNAL vcs_n            : std_logic;
     
-    SIGNAL clk_pixel        : STD_LOGIC;
-    SIGNAL sync_n           : STD_LOGIC;
-    SIGNAL vsync            : STD_LOGIC;
-    SIGNAL hsync            : STD_LOGIC;
-    SIGNAL blank_n          : STD_LOGIC;
+    SIGNAL clk_pixel        : std_logic;
+    SIGNAL sync_n           : std_logic;
+    SIGNAL vsync            : std_logic;
+    SIGNAL hsync            : std_logic;
+    SIGNAL blank_n          : std_logic;
             
-    SIGNAL vr               : STD_LOGIC_VECTOR (7 DOWNTO 0);
-    SIGNAL vg               : STD_LOGIC_VECTOR (7 DOWNTO 0);
-    SIGNAL vb               : STD_LOGIC_VECTOR (7 DOWNTO 0);
+    SIGNAL vr               : std_logic_vector (7 DOWNTO 0);
+    SIGNAL vg               : std_logic_vector (7 DOWNTO 0);
+    SIGNAL vb               : std_logic_vector (7 DOWNTO 0);
     
-    SIGNAL vdm              : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL vdm              : std_logic_vector (3 DOWNTO 0);
     
-    SIGNAL vd               : STD_LOGIC_VECTOR (31 DOWNTO 0);
-    SIGNAL vd_qs            : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    SIGNAL vd               : std_logic_vector (31 DOWNTO 0);
+    SIGNAL vd_qs            : std_logic_vector (3 DOWNTO 0);
     
-    SIGNAL pd_vga_n         : STD_LOGIC;
-    SIGNAL vcke             : STD_LOGIC;
-    SIGNAL pic_int          : STD_LOGIC;
-    SIGNAL e0_int           : STD_LOGIC;
-    SIGNAL dvi_int          : STD_LOGIC;
-    SIGNAL pci_inta_n       : STD_LOGIC;
-    SIGNAL pci_intb_n       : STD_LOGIC;
-    SIGNAL pci_intc_n       : STD_LOGIC;
-    SIGNAL pci_intd_n       : STD_LOGIC;
+    SIGNAL pd_vga_n         : std_logic;
+    SIGNAL vcke             : std_logic;
+    SIGNAL pic_int          : std_logic;
+    SIGNAL e0_int           : std_logic;
+    SIGNAL dvi_int          : std_logic;
+    SIGNAL pci_inta_n       : std_logic;
+    SIGNAL pci_intb_n       : std_logic;
+    SIGNAL pci_intc_n       : std_logic;
+    SIGNAL pci_intd_n       : std_logic;
     
-    SIGNAL irq_n            : STD_LOGIC_VECTOR (7 DOWNTO 2);
-    SIGNAL tin0             : STD_LOGIC;
+    SIGNAL irq_n            : std_logic_vector (7 DOWNTO 2);
+    SIGNAL tin0             : std_logic;
     
-    SIGNAL ym_qa            : STD_LOGIC;
-    SIGNAL ym_qb            : STD_LOGIC;
-    SIGNAL ym_qc            : STD_LOGIC;
+    SIGNAL ym_qa            : std_logic;
+    SIGNAL ym_qb            : std_logic;
+    SIGNAL ym_qc            : std_logic;
     
-    SIGNAL lp_d             : STD_LOGIC_VECTOR (7 DOWNTO 0);
-    SIGNAL lp_dir           : STD_LOGIC;
+    SIGNAL lp_d             : std_logic_vector (7 DOWNTO 0);
+    SIGNAL lp_dir           : std_logic;
     
-    SIGNAL dsa_d            : STD_LOGIC;
-    SIGNAL lp_str           : STD_LOGIC;
-    SIGNAL dtr              : STD_LOGIC;
-    SIGNAL rts              : STD_LOGIC;
-    SIGNAL cts              : STD_LOGIC;
-    SIGNAL ri               : STD_LOGIC;
-    SIGNAL dcd              : STD_LOGIC;
-    SIGNAL lp_busy          : STD_LOGIC;
-    SIGNAL rxd              : STD_LOGIC;
-    SIGNAL txd              : STD_LOGIC;
-    SIGNAL midi_in          : STD_LOGIC;
-    SIGNAL midi_olr         : STD_LOGIC;
-    SIGNAL midi_tlr         : STD_LOGIC;
-    SIGNAL pic_amkb_rx      : STD_LOGIC;
-    SIGNAL amkb_rx          : STD_LOGIC;
-    SIGNAL amkb_tx          : STD_LOGIC;
-    SIGNAL dack0_n          : STD_LOGIC; -- Not used.
+    SIGNAL dsa_d            : std_logic;
+    SIGNAL lp_str           : std_logic;
+    SIGNAL dtr              : std_logic;
+    SIGNAL rts              : std_logic;
+    SIGNAL cts              : std_logic;
+    SIGNAL ri               : std_logic;
+    SIGNAL dcd              : std_logic;
+    SIGNAL lp_busy          : std_logic;
+    SIGNAL rxd              : std_logic;
+    SIGNAL txd              : std_logic;
+    SIGNAL midi_in          : std_logic;
+    SIGNAL midi_olr         : std_logic;
+    SIGNAL midi_tlr         : std_logic;
+    SIGNAL pic_amkb_rx      : std_logic;
+    SIGNAL amkb_rx          : std_logic;
+    SIGNAL amkb_tx          : std_logic;
+    SIGNAL dack0_n          : std_logic; -- Not used.
             
-    SIGNAL scsi_drqn        : STD_LOGIC;
-    SIGNAL SCSI_MSGn        : STD_LOGIC;
-    SIGNAL SCSI_CDn         : STD_LOGIC;
-    SIGNAL SCSI_IOn         : STD_LOGIC;
-    SIGNAL SCSI_ACKn        : STD_LOGIC;
-    SIGNAL SCSI_ATNn        : STD_LOGIC;
-    SIGNAL SCSI_SELn        : STD_LOGIC;
-    SIGNAL SCSI_BUSYn       : STD_LOGIC;
-    SIGNAL SCSI_RSTn        : STD_LOGIC;
-    SIGNAL SCSI_DIR         : STD_LOGIC;
-    SIGNAL SCSI_D           : STD_LOGIC_VECTOR (7 DOWNTO 0);
-    SIGNAL SCSI_PAR         : STD_LOGIC;
+    SIGNAL scsi_drqn        : std_logic;
+    SIGNAL SCSI_MSGn        : std_logic;
+    SIGNAL SCSI_CDn         : std_logic;
+    SIGNAL SCSI_IOn         : std_logic;
+    SIGNAL SCSI_ACKn        : std_logic;
+    SIGNAL SCSI_ATNn        : std_logic;
+    SIGNAL SCSI_SELn        : std_logic;
+    SIGNAL SCSI_BUSYn       : std_logic;
+    SIGNAL SCSI_RSTn        : std_logic;
+    SIGNAL SCSI_DIR         : std_logic;
+    SIGNAL SCSI_D           : std_logic_vector (7 DOWNTO 0);
+    SIGNAL SCSI_PAR         : std_logic;
     
-    SIGNAL ACSI_DIR         : STD_LOGIC;
-    SIGNAL ACSI_D           : STD_LOGIC_VECTOR (7 DOWNTO 0);
-    SIGNAL ACSI_CSn         : STD_LOGIC;
-    SIGNAL ACSI_A1          : STD_LOGIC;
-    SIGNAL ACSI_reset_n     : STD_LOGIC;
-    SIGNAL ACSI_ACKn        : STD_LOGIC;
-    SIGNAL ACSI_DRQn        : STD_LOGIC;
-    SIGNAL ACSI_INTn        : STD_LOGIC;
+    SIGNAL ACSI_DIR         : std_logic;
+    SIGNAL ACSI_D           : std_logic_vector (7 DOWNTO 0);
+    SIGNAL ACSI_CSn         : std_logic;
+    SIGNAL ACSI_A1          : std_logic;
+    SIGNAL ACSI_reset_n     : std_logic;
+    SIGNAL ACSI_ACKn        : std_logic;
+    SIGNAL ACSI_DRQn        : std_logic;
+    SIGNAL ACSI_INTn        : std_logic;
     
-    SIGNAL FDD_DCHGn        : STD_LOGIC;
-    SIGNAL FDD_SDSELn       : STD_LOGIC;
-    SIGNAL FDD_HD_DD        : STD_LOGIC;
-    SIGNAL FDD_RDn          : STD_LOGIC;
-    SIGNAL FDD_TRACK00      : STD_LOGIC;
-    SIGNAL FDD_INDEXn       : STD_LOGIC;
-    SIGNAL FDD_WPn          : STD_LOGIC;
-    SIGNAL FDD_MOT_ON       : STD_LOGIC;
-    SIGNAL FDD_WR_GATE      : STD_LOGIC;
-    SIGNAL FDD_WDn          : STD_LOGIC;
-    SIGNAL FDD_STEP         : STD_LOGIC;
-    SIGNAL FDD_STEP_DIR     : STD_LOGIC;
+    SIGNAL FDD_DCHGn        : std_logic;
+    SIGNAL FDD_SDSELn       : std_logic;
+    SIGNAL FDD_HD_DD        : std_logic;
+    SIGNAL FDD_RDn          : std_logic;
+    SIGNAL FDD_TRACK00      : std_logic;
+    SIGNAL FDD_INDEXn       : std_logic;
+    SIGNAL FDD_WPn          : std_logic;
+    SIGNAL FDD_MOT_ON       : std_logic;
+    SIGNAL FDD_WR_GATE      : std_logic;
+    SIGNAL FDD_WDn          : std_logic;
+    SIGNAL FDD_STEP         : std_logic;
+    SIGNAL FDD_STEP_DIR     : std_logic;
     
-    SIGNAL ROM4n            : STD_LOGIC;
-    SIGNAL ROM3n            : STD_LOGIC;
+    SIGNAL ROM4n            : std_logic;
+    SIGNAL ROM3n            : std_logic;
     
-    SIGNAL RP_UDSn          : STD_LOGIC;
-    SIGNAL RP_ldsn          : STD_LOGIC;
-    SIGNAL SD_CLK           : STD_LOGIC;
-    SIGNAL SD_D3            : STD_LOGIC;
-    SIGNAL SD_CMD_D1        : STD_LOGIC;
-    SIGNAL SD_D0            : STD_LOGIC;
-    SIGNAL SD_D1            : STD_LOGIC;
-    SIGNAL SD_D2            : STD_LOGIC;
-    SIGNAL SD_caRD_DETECT   : STD_LOGIC;
-    SIGNAL SD_WP            : STD_LOGIC;
+    SIGNAL RP_UDSn          : std_logic;
+    SIGNAL RP_ldsn          : std_logic;
+    SIGNAL SD_CLK           : std_logic;
+    SIGNAL SD_D3            : std_logic;
+    SIGNAL SD_CMD_D1        : std_logic;
+    SIGNAL SD_D0            : std_logic;
+    SIGNAL SD_D1            : std_logic;
+    SIGNAL SD_D2            : std_logic;
+    SIGNAL SD_caRD_DETECT   : std_logic;
+    SIGNAL SD_WP            : std_logic;
     
-    SIGNAL CF_WP            : STD_LOGIC;
-    SIGNAL CF_CSn           : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL CF_WP            : std_logic;
+    SIGNAL CF_CSn           : std_logic_vector (1 DOWNTO 0);
     
-    SIGNAL DSP_IO           : STD_LOGIC_VECTOR (17 DOWNTO 0);
-    SIGNAL DSP_SRD          : STD_LOGIC_VECTOR (15 DOWNTO 0);
-    SIGNAL DSP_SRCSn        : STD_LOGIC;
-    SIGNAL DSP_SRBLEn       : STD_LOGIC;
-    SIGNAL DSP_SRBHEn       : STD_LOGIC;
-    SIGNAL DSP_SRWEn        : STD_LOGIC;
-    SIGNAL DSP_SROEn        : STD_LOGIC;
+    SIGNAL DSP_IO           : std_logic_vector (17 DOWNTO 0);
+    SIGNAL DSP_SRD          : std_logic_vector (15 DOWNTO 0);
+    SIGNAL DSP_SRCSn        : std_logic;
+    SIGNAL DSP_SRBLEn       : std_logic;
+    SIGNAL DSP_SRBHEn       : std_logic;
+    SIGNAL DSP_SRWEn        : std_logic;
+    SIGNAL DSP_SROEn        : std_logic;
     
-    SIGNAL ide_int          : STD_LOGIC;
-    SIGNAL ide_rdy          : STD_LOGIC;
-    SIGNAL ide_res          : STD_LOGIC;
-    SIGNAL IDE_WRn          : STD_LOGIC;
-    SIGNAL IDE_RDn          : STD_LOGIC;
-    SIGNAL IDE_CSn          : STD_LOGIC_VECTOR (1 DOWNTO 0);
+    SIGNAL ide_int          : std_logic;
+    SIGNAL ide_rdy          : std_logic;
+    SIGNAL ide_res          : std_logic;
+    SIGNAL IDE_WRn          : std_logic;
+    SIGNAL IDE_RDn          : std_logic;
+    SIGNAL IDE_CSn          : std_logic_vector (1 DOWNTO 0);
     
-    SIGNAL a                : UNSIGNED (31 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL a                : unsigned (31 DOWNTO 0) := (OTHERS => '0');
 
 BEGIN
     I_FIREBEE : firebee
@@ -476,10 +476,10 @@ BEGIN
         rasb            => vras_n,
         casb            => vcas_n,
         web             => vwe_n,
-        ba              => UNSIGNED(ba),
+        ba              => unsigned(ba),
         ad              => va (12 DOWNTO 0),
         dqi             => vd (30 DOWNTO 15),
-        dm              => UNSIGNED(vdm (3 DOWNTO 2)),
+        dm              => unsigned(vdm (3 DOWNTO 2)),
         dqs             => vd_qs (3 DOWNTO 2)
     );
     
@@ -500,7 +500,7 @@ BEGIN
     stimulate_bus : PROCESS
     BEGIN
         WAIT UNTIL RISING_EDGE(clk_main);
-        fb_ad <= STD_LOGIC_VECTOR (a);      -- put something (rather meaningless) on the FlexBus
+        fb_ad <= std_logic_vector (a);      -- put something (rather meaningless) on the FlexBus
         a <= a + 1;
         fb_ale <= a(0);                     -- just toggle for now
     END PROCESS;
