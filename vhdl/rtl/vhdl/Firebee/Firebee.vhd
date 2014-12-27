@@ -574,7 +574,17 @@ BEGIN
     led_fpga_ok <= timebase(17);                                    -- won't work: doesn't seem to be connected
 
     falcon_io_ta <= acia_cs OR sndcs OR NOT dtack_out_mfp_n OR paddle_cs OR ide_cf_ta OR dma_cs;
-    fb_ta_n <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' ELSE 'Z';
+    
+    p_transfer_acknowledge : PROCESS
+    BEGIN
+        WAIT UNTIL rising_edge(clk_main);
+        IF (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' THEN
+            fb_ta_n <= '0';
+        ELSE
+            fb_ta_n <= '1';
+        END IF;
+    END PROCESS p_transfer_acknowledge;
+    -- see above: fb_ta_n <= '0' WHEN (blitter_ta OR video_ddr_ta OR video_mod_ta OR falcon_io_ta OR dsp_ta OR int_handler_ta) = '1' ELSE 'Z';
 
     acia_cs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 3) & "000" = x"FFFC00" ELSE '0';           -- FFFC00 - FFFC07
     mfp_cs <= '1' WHEN fb_cs_n(1) = '0' and fb_adr(23 DOWNTO 6) & "000000" = x"FFFA00" ELSE '0';         -- FFFA00/40

@@ -304,7 +304,7 @@ BEGIN
     END PROCESS ddr_state_reg;
 
     ddr_state_dec: PROCESS(ddr_state, ddr_refresh_req, cpu_ddr_sync, vmem_config_enable, fb_wr_n, ddr_access, blitter_wr, fifo_req, fifo_bank_ok,
-                           fifo_mw, cpu_req, video_adr_cnt, ddr_sel, data_in, fifo_ba, ddr_refresh_sig)
+                           fifo_mw, cpu_req, video_adr_cnt, ddr_sel, data_in, fifo_ba, ddr_refresh_sig, access_width)
     BEGIN
         CASE ddr_state IS
             WHEN ds_t1 =>

@@ -195,7 +195,7 @@ ARCHITECTURE rtl OF ddr_ram_model IS
     SIGNAL kill_bank            : INTEGER;
     SIGNAL k                    : INTEGER;
     
-    SIGNAL precharge_flag       : unsigned (NBANK - 1 DOWNTO 0);        -- precharge bank check flag
+    SIGNAL precharge_flag       : boolean_vector(NBANK - 1 DOWNTO 0);        -- precharge bank check flag
     SIGNAL autoprech_reg        : unsigned (1 DOWNTO 0);
     SIGNAL pwrup_done           : BOOLEAN;
     SIGNAL first_pre            : BOOLEAN_VECTOR (NBANK - 1 DOWNTO 0);
@@ -274,7 +274,7 @@ BEGIN
             dqs(i) <= '1';
         END LOOP;
         
-        FOR i IN 0 TO NBANK LOOP
+        FOR i IN 0 TO NBANK - 1 LOOP
             auto_flag(i) <= FALSE;
         END LOOP;
         
@@ -290,18 +290,30 @@ BEGIN
         mode <= TO_UNSIGNED(0, mode'LENGTH) OR TO_UNSIGNED(NBANK, 3)(0);
         prdl <= TO_UNSIGNED(0, mode'LENGTH) OR TO_UNSIGNED(NBANK, 3)(0);
         
-        FOR i IN 0 TO NBANK LOOP
+        FOR i IN 0 TO NBANK - 1 LOOP
             first_pre(i) <= FALSE;
             precharge_flag(i) <= FALSE;
         END LOOP;
         zbyte <= (OTHERS => 'Z');
         
-        FOR i IN 0 TO B LOOP
+        FOR i IN 0 TO B - 1 LOOP
             zdata(i) <= '1';
         END LOOP;
         
         WAIT;
     END PROCESS p_initial;
+    
+    p_stupid_data_out : PROCESS
+    BEGIN
+        WAIT UNTIL rising_edge(clk);
+        dqs <= (OTHERS => '1');
+    END PROCESS p_stupid_data_out;
+    
+    p_stupid_data_out2 : PROCESS
+    BEGIN
+        WAIT UNTIL falling_edge(clkb);
+        dqs <= (OTHERS => '0');
+    END PROCESS p_stupid_data_out2;
     
     addr <= std_logic_vector(ba) & ad;
     rfu <= unsigned(addr(14 DOWNTO 9)) & unsigned(addr(7 DOWNTO 7)); 
