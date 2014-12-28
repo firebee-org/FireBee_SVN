@@ -78,7 +78,7 @@ ENTITY ddr_ctrl IS
         SR_DDR_WR       : OUT std_logic;
         SR_DDRWR_D_SEL  : OUT std_logic;
         SR_VDMP         : OUT std_logic_vector(7 DOWNTO 0);
-        VIDEO_DDR_TA    : OUT std_logic;
+        video_ddr_ta    : OUT std_logic;
         SR_BLITTER_DACK : OUT std_logic;
         BA              : OUT std_logic_vector(1 DOWNTO 0);
         DDRWR_D_SEL1    : OUT std_logic;
@@ -96,18 +96,16 @@ ARCHITECTURE behaviour OF ddr_ctrl IS
     CONSTANT FIFO_MWM : unsigned(8 DOWNTO 0) := 9D"200"; -- 200.
     CONSTANT FIFO_HWM : unsigned(8 DOWNTO 0) := 9D"500"; -- 500.
     
-    type ACCESS_WIDTH_TYPE is(LONG, WORD, BYTE);
     type DDR_ACCESS_TYPE is(CPU, FIFO, BLITTER, NONE);
     type FB_REGDDR_TYPE is(FR_WAIT,FR_S0,FR_S1,FR_S2,FR_S3);    
     type DDR_SM_TYPE is(DS_T1, DS_T2A, DS_T2B, DS_T3, DS_N5, DS_N6, DS_N7, DS_N8,   -- Start (normal 8 cycles total = 60ns).
-                              DS_C2, DS_C3, DS_C4, DS_C5, DS_C6, DS_C7,                   -- Configuration. 
-                              DS_T4R, DS_T5R,                                             -- Read CPU or BLITTER.
-                              DS_T4W, DS_T5W, DS_T6W, DS_T7W, DS_T8W, DS_T9W,             -- Write CPU or BLITTER.
-                              DS_T4F, DS_T5F, DS_T6F, DS_T7F, DS_T8F, DS_T9F, DS_T10F,    -- Read FIFO.
-                              DS_CB6, DS_CB8,                                             -- Close FIFO bank.
-                              DS_R2, DS_R3, DS_R4, DS_R5, DS_R6);                         -- Refresh: 10 x 7.5ns = 75ns.
+                        DS_C2, DS_C3, DS_C4, DS_C5, DS_C6, DS_C7,                   -- Configuration. 
+                        DS_T4R, DS_T5R,                                             -- Read CPU or BLITTER.
+                        DS_T4W, DS_T5W, DS_T6W, DS_T7W, DS_T8W, DS_T9W,             -- Write CPU or BLITTER.
+                        DS_T4F, DS_T5F, DS_T6F, DS_T7F, DS_T8F, DS_T9F, DS_T10F,    -- Read FIFO.
+                        DS_CB6, DS_CB8,                                             -- Close FIFO bank.
+                        DS_R2, DS_R3, DS_R4, DS_R5, DS_R6);                         -- Refresh: 10 x 7.5ns = 75ns.
     
-    signal ACCESS_WIDTH     : ACCESS_WIDTH_TYPE;
     signal FB_REGDDR        : FB_REGDDR_TYPE;
     signal FB_REGDDR_NEXT   : FB_REGDDR_TYPE;
     signal DDR_ACCESS       : DDR_ACCESS_TYPE;
@@ -170,107 +168,122 @@ ARCHITECTURE behaviour OF ddr_ctrl IS
     signal VA_P             : std_logic_vector(12 DOWNTO 0);
     signal BA_S             : std_logic_vector(1 DOWNTO 0) ;
     signal BA_P             : std_logic_vector(1 DOWNTO 0);
-    signal TSIZ             : std_logic_vector(1 DOWNTO 0);
+    SIGNAL line             : std_logic;
 begin
-    TSIZ <= FB_SIZE1 & FB_SIZE0;
-    with TSIZ select
-        ACCESS_WIDTH <= LONG when "11",
-                        WORD when "00",
-                        BYTE when others;
-
-    -- Byte selectors:
-    BYTE_SEL(0) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when FB_ADR(1 DOWNTO 0) = "00" else '0'; -- Byte 0.
-
-    BYTE_SEL(1) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '0' else -- High word.
-                   '1' when FB_ADR(1 DOWNTO 0) = "01" else '0'; -- Byte 1.
-             
-    BYTE_SEL(2) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when FB_ADR(1 DOWNTO 0) = "10" else '0'; -- Byte 2.
-             
-    BYTE_SEL(3) <= '1' when ACCESS_WIDTH = LONG or ACCESS_WIDTH = WORD else
-                   '1' when ACCESS_WIDTH = BYTE and FB_ADR(1) = '1' else -- Low word.
-                   '1' when FB_ADR(1 DOWNTO 0) = "11" else '0'; -- Byte 3.
+    line <= fb_size1 AND fb_size0;
+    
+    -- Byte selectors (changed to literal copy of Fredi's code):
+    byte_sel(0) <= '1' WHEN fb_adr(1 DOWNTO 0) = "00" OR
+                            (?? (fb_size1 AND fb_size0)) OR
+                            (?? (NOT fb_size1 AND NOT fb_size0))
+                       ELSE '0';
+                       
+    byte_sel(1) <= '1' WHEN fb_adr(1 DOWNTO 0) = "01" OR
+                            (?? (fb_size1 AND NOT fb_size0 AND NOT fb_adr(1))) OR
+                            (?? (fb_size1 AND fb_size0)) OR
+                            (?? (NOT fb_size1 AND NOT fb_size0))
+                       ELSE '0';
+                       
+    byte_sel(2) <= '1' WHEN fb_adr(1 DOWNTO 0) = "10" OR
+                            (??(fb_size1 AND fb_size0)) OR
+                            (??(NOT fb_size1 AND NOT fb_size0))
+                       ELSE '0';
+    byte_sel(3) <= '1' WHEN fb_adr(1 DOWNTO 0) = "11" OR
+                            (??(fb_size1 AND NOT fb_size0 AND fb_adr(1))) OR
+                            (??(fb_size1 AND fb_size0)) OR
+                            (??(NOT fb_size1 AND NOT fb_size0))
+                       ELSE '0';
              
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     ------------------------------------ CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR) ---------------------------------------------------------------------
-    FBCTRL_REG: process
-    begin
-        wait until CLK_MAIN = '1' and CLK_MAIN' event;
-        FB_REGDDR <= FB_REGDDR_NEXT;
-    end process FBCTRL_REG;
+    fbctrl_reg : PROCESS
+    BEGIN
+        WAIT UNTIL rising_edge(clk_main);
+        fb_regddr <= fb_regddr_next;
+    END PROCESS fbctrl_reg;
     
-    FBCTRL_DEC: process(FB_REGDDR, BUS_CYC, DDR_SEL, ACCESS_WIDTH, fb_wr_n, DDR_CS)
-    begin
+    fbctrl_dec : PROCESS(ALL)
+    BEGIN
+        -- avoid latches - assign defaults
+        bus_cyc_end <= '0';
+        video_ddr_ta <= '0';
+        fb_vdoe(3 DOWNTO 0) <= "0000";
+        fb_le(3 DOWNTO 0) <= "0000";
+
+        -- mfro: replaced with literal copy of Fredi's original
+        
         case FB_REGDDR is
-            when FR_WAIT => 
-                if BUS_CYC = '1' then
-                    FB_REGDDR_NEXT <= FR_S0;
-                elsif DDR_SEL = '1' and ACCESS_WIDTH = LONG and fb_wr_n = '0' then
-                    FB_REGDDR_NEXT <= FR_S0;
-                else
-                    FB_REGDDR_NEXT <= FR_WAIT;
-                end if;
-            when FR_S0 =>
-                if DDR_CS = '1' and ACCESS_WIDTH = LONG then
-                    FB_REGDDR_NEXT <= FR_S1;
-                else
-                    FB_REGDDR_NEXT <= FR_WAIT; 
-                end if;
-            when FR_S1 => 
-                if DDR_CS = '1' then
-                    FB_REGDDR_NEXT <= FR_S2;
-                else
-                    FB_REGDDR_NEXT <= FR_WAIT; 
-                end if;
-            when FR_S2 => 
-                if DDR_CS = '1' and BUS_CYC = '0' and ACCESS_WIDTH = LONG and fb_wr_n = '0' then -- Eventually wait during long word access.
-                    FB_REGDDR_NEXT <= FR_S2;
-                elsif DDR_CS = '1' then
-                    FB_REGDDR_NEXT <= FR_S3;
-                else
-                    FB_REGDDR_NEXT <= FR_WAIT;
-                end if;
-            when FR_S3 => 
-                FB_REGDDR_NEXT <= FR_WAIT;
-        end case;
-    end process FBCTRL_DEC;
+            WHEN FR_WAIT =>
+                fb_le(0) <= NOT fb_wr_n;
+                IF bus_cyc = '1' OR (??(ddr_sel AND line AND NOT fb_wr_n)) THEN
+                    fb_regddr_next <= FR_S0;
+                ELSE
+                    fb_regddr_next <= FR_WAIT;
+                END IF;
+                
+            WHEN FR_S0 =>
+                IF ddr_cs THEN
+                    fb_le(0) <= NOT fb_wr_n;
+                    video_ddr_ta <= '1';
+                    IF line THEN
+                        fb_vdoe(0) <= NOT fb_oe_n AND NOT ddr_config;
+                        fb_regddr_next <= FR_S1;
+                    ELSE
+                        bus_cyc_end <= '1';
+                        fb_vdoe(0) <= NOT fb_oe_n AND NOT clk_main AND NOT ddr_config;
+                        fb_regddr_next <= FR_S0;
+                    END IF;
+                ELSE
+                    fb_regddr_next <= FR_WAIT;
+                END IF;
+                
+            WHEN FR_S1 => 
+                IF ddr_cs THEN
+                    fb_vdoe(1) <= NOT fb_oe_n AND NOT ddr_config;
+                    fb_le(1) <= NOT fb_wr_n;
+                    video_ddr_ta <= '1';
+                    fb_regddr_next <= FR_S2;
+                ELSE
+                    fb_regddr_next <= FR_WAIT;
+                END IF;
 
-    -- Coldfire CPU access:
-    FB_LE(0) <= not fb_wr_n when FB_REGDDR = FR_WAIT else
-                not fb_wr_n when FB_REGDDR = FR_S0 and DDR_CS = '1' else '0';
-    FB_LE(1) <= not fb_wr_n when FB_REGDDR = FR_S1 and DDR_CS = '1' else '0';
-    FB_LE(2) <= not fb_wr_n when FB_REGDDR = FR_S2 and DDR_CS = '1' else '0';
-    FB_LE(3) <= not fb_wr_n when FB_REGDDR = FR_S3 and DDR_CS = '1' else '0';
-
-    -- Video data access:
-    VIDEO_DDR_TA <= '1' when FB_REGDDR = FR_S0 and DDR_CS = '1' else
-                    '1' when FB_REGDDR = FR_S1 and DDR_CS = '1' else
-                    '1' when FB_REGDDR = FR_S2 and FB_REGDDR_NEXT = FR_S3 else
-                    '1' when FB_REGDDR = FR_S3 and DDR_CS = '1' else '0';
-
-    -- FB_VDOE # VIDEO_OE.
-    -- Write access for video data:
-    FB_VDOE(0) <= '1' when FB_REGDDR = FR_S0 and DDR_CS = '1' and fb_oe_n = '0' and DDR_CONFIG = '0' and ACCESS_WIDTH = LONG else
-                  '1' when FB_REGDDR = FR_S0 and DDR_CS = '1' and fb_oe_n = '0' and DDR_CONFIG = '0' and ACCESS_WIDTH /= LONG and CLK_MAIN = '0' else '0';
-    FB_VDOE(1) <= '1' when FB_REGDDR = FR_S1 and DDR_CS = '1' and fb_oe_n = '0' and DDR_CONFIG = '0' else '0';
-    FB_VDOE(2) <= '1' when FB_REGDDR = FR_S2 and DDR_CS = '1' and fb_oe_n = '0' and DDR_CONFIG = '0' else '0';
-    FB_VDOE(3) <= '1' when FB_REGDDR = FR_S3 and DDR_CS = '1' and fb_oe_n = '0' and DDR_CONFIG = '0' and CLK_MAIN = '0' else '0';
-
-    BUS_CYC_END <= '1' when FB_REGDDR = FR_S0 and DDR_CS = '1' and ACCESS_WIDTH /= LONG else
-                   '1' when FB_REGDDR = FR_S3 and DDR_CS = '1' else '0';
+            WHEN FR_S2 => 
+                IF ddr_cs THEN
+                    fb_vdoe(2) <= NOT fb_oe_n AND NOT ddr_config;
+                    fb_le(2) <= NOT fb_wr_n;
+                    IF NOT bus_cyc AND line AND NOT fb_wr_n THEN
+                        fb_regddr_next <= FR_S2;
+                        video_ddr_ta <= '0'; -- mfro: ???
+                    ELSE
+                        video_ddr_ta <= '1';
+                        fb_regddr_next <= FR_S3;
+                    END IF;
+                ELSE
+                    fb_regddr_next <= FR_WAIT;
+                END IF;
+                
+            WHEN FR_S3 =>
+                IF ddr_cs THEN
+                    fb_vdoe(3) <= NOT fb_oe_n AND NOT clk_main AND NOT ddr_config;
+                    fb_le(3) <= NOT fb_wr_n;
+                    video_ddr_ta <= '1';
+                    bus_cyc_end <= '1';
+                    fb_regddr_next <= FR_WAIT;
+                ELSE
+                    fb_regddr_next <= FR_WAIT;
+                END IF;
+        END CASE;
+    END PROCESS fbctrl_dec;
 
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     ------------------------------------------------------ DDR State Machine --------------------------------------------------------------------------------------
-    DDR_STATE_REG: process
-    begin
-        wait until DDRCLK0 = '1' and DDRCLK0' event;
-        DDR_STATE <= DDR_NEXT_STATE;
-    end process DDR_STATE_REG;
+    ddr_state_reg : PROCESS
+    BEGIN
+        WAIT UNTIL rising_edge(ddrclk0);
+        ddr_state <= ddr_next_state;
+    END PROCESS ddr_state_reg;
 
-    DDR_STATE_DEC: process(DDR_STATE, DDR_REFRESH_REQ, CPU_DDR_SYNC, DDR_CONFIG, fb_wr_n, DDR_ACCESS, BLITTER_WR, FIFO_REQ, FIFO_BANK_OK,
-                           FIFO_MW, CPU_REQ, VIDEO_ADR_CNT, DDR_SEL, FB_SIZE1, FB_SIZE0, DATA_IN, FIFO_BA, DDR_REFRESH_SIG)
+    DDR_STATE_DEC: process(ALL)
     begin
         case DDR_STATE is
             when DS_T1 =>
@@ -712,9 +725,13 @@ DATA_IN(18) and not fb_wr_n and not FB_SIZE0 and not FB_SIZE1 when DDR_STATE = D
             '1' when DDR_STATE = DS_R2 and DDR_REFRESH_SIG = x"9" else '0';
 
     -- DDR controller:
-    -- VIDEO RAM CONTROL REGISTER (is IN VIDEO_MUX_CTR) 
-    -- $F0000400: BIT 0: VCKE; 1: not nVCS ;2:REFRESH ON , (0=FIFO and CNT CLEAR); 
-    -- 3: CONFIG; 8: FIFO_ACTIVE; 
+    -- VIDEO RAM CONTROL REGISTER (is in VIDEO_MUX_CTR) 
+    -- $F0000400:
+    --      BIT 0: VCKE
+    --      BIT 1: not nVCS
+    --      BIT 2: REFRESH ON , (0=FIFO and CNT CLEAR); 
+    --      BIT 3: CONFIG
+    --      BIT 8: FIFO_ACTIVE; 
     VCKE <= VCKE_I;
     VCKE_I <= vram_control(0);
     vcs_n <= VCS_In;
