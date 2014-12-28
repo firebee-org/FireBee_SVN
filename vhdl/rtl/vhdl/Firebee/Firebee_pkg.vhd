@@ -168,7 +168,7 @@ PACKAGE firebee_pkg IS
             fb_ale          : IN STD_LOGIC;
             fb_wr_n         : IN STD_LOGIC;
             fifo_clr        : IN STD_LOGIC;
-            video_control_register   : IN UNSIGNED (15 DOWNTO 0);
+            vram_control    : IN UNSIGNED (15 DOWNTO 0);
             blitter_adr     : IN UNSIGNED (31 DOWNTO 0);
             blitter_sig     : IN STD_LOGIC;
             blitter_wr      : IN STD_LOGIC;

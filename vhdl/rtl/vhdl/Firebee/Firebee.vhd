@@ -827,7 +827,7 @@ BEGIN
             vcs_n                       => vcs_n,
             fifo_clr                    => fifo_clr,
             DDRCLK0                     => clk_ddr(0),
-            video_control_register      => UNSIGNED(video_ram_ctr),
+            vram_control                => UNSIGNED(video_ram_ctr),
             vcke                        => vcke,
             data_in                     => UNSIGNED(fb_ad),
             STD_LOGIC_VECTOR(data_out)  => data_out_ddr_ctrl,
